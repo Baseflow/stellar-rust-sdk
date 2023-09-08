@@ -112,6 +112,16 @@ impl Request for AccountsRequest {
         query.trim_end_matches('&').to_string()
     }
 
+    // Build the URL for the request
+    fn build_url(&self, base_url: &str) -> String {
+        format!(
+            "{}{}?{}",
+            base_url,
+            self.get_path(),
+            self.get_query_parameters()
+        )
+    }
+
     // Gets the body parameters for the request
     fn validate(&self) -> Result<(), String> {
         if let Some(sponsor) = &self.sponsor {

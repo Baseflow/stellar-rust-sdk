@@ -36,6 +36,22 @@ impl HorizonClient {
         self.get::<AccountsResponse>(request).await
     }
 
+    /// Gets the base URL for the Horizon server
+    /// # Arguments
+    /// * `self` - The Horizon client
+    /// * request - The account request
+    /// # Returns
+    /// The account response
+    /// # Errors
+    /// Returns an error if the request fails
+    /// [GET /accounts/{account_id}](https://www.stellar.org/developers/horizon/reference/endpoints/accounts-single.html)
+    pub async fn get_single_account(
+        &self,
+        request: &SingleAccountRequest,
+    ) -> Result<SingleAccountsResponse, String> {
+        self.get::<SingleAccountsResponse>(request).await
+    }
+
     /// Sends a GET request to the server
     /// # Arguments
     /// * `TResponse` - The type of the response
@@ -47,14 +63,10 @@ impl HorizonClient {
         // Validate the request.
         request.validate()?;
 
+        //match request by SingleAccountRequest or AccountsRequest
         // Determine the url
         // TODO: construct with query parameters
-        let url = format!(
-            "{}{}?{}",
-            self.base_url,
-            request.get_path(),
-            request.get_query_parameters()
-        );
+        let url = request.build_url(&self.base_url);
         let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
         let result: TResponse = handle_response(response).await?;
         Ok(result)
@@ -100,6 +112,8 @@ fn url_validate(url: &str) -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
+    use crate::horizon_client;
+
     use super::*;
 
     #[test]
@@ -127,12 +141,30 @@ mod tests {
         // construct request
         let mut accounts_request = AccountsRequest::new();
         accounts_request
-            .set_sponsor("GAVCBYUQSQA77EOOQMSDDXE6VSWDZRGOZOGMLWGFR6YR4TR243VWBDFO")
+            .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
             .set_limit(10);
 
         // call the get_account_list method to retrieve the account list response
         let _accounts_response = horizon_client.get_account_list(&accounts_request).await;
         // will throw exception for now
+        assert!(_accounts_response.is_ok());
+
         // assert_eq!(accounts_response.accounts.len(), 0);
+    }
+
+    #[tokio::test]
+    async fn test_get_single_account() {
+        // Initialize horizon client
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        // construct request
+        let mut single_account_request = SingleAccountRequest::new();
+        single_account_request
+            .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string());
+
+        let _single_account_response = horizon_client.get_single_account(&single_account_request).await;
+
+        assert!(_single_account_response.is_ok());
     }
 }

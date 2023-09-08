@@ -24,6 +24,14 @@ pub trait Request {
     /// This method is called before the request is sent
     /// to the server
     fn validate(&self) -> Result<(), String>;
+
+    /// Build the URL for the request
+    /// # Arguments
+    /// * `self` - The request object
+    /// * `base_url` - The base URL for the Horizon server
+    /// # Returns
+    /// The URL for the request
+    fn build_url(&self, base_url: &str) -> String;
 }
 
 /// is_public_key validates a public key
