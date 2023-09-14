@@ -4,7 +4,7 @@ name: Cargo build and test
 
 jobs:
   build_and_test:
-    name: Rust project
+    name: Build and test Stellar SDK
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
