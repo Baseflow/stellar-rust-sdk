@@ -95,7 +95,6 @@ pub mod ledgers;
 /// The models module, here the Request and Response traits are defined
 pub mod models;
 pub mod xdr;
-
 /// The asset type
 /// Native - The native asset
 /// Issued - An issued asset
