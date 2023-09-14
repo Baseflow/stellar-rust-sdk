@@ -1,4 +1,4 @@
-use crate::models::Request;
+use crate::{models::Request, assets::prelude::{AllAssetsRequest, AllAssetsResponse}};
 use reqwest;
 use url::Url;
 
@@ -52,6 +52,13 @@ impl HorizonClient {
         self.get::<SingleAccountsResponse>(request).await
     }
 
+    pub async fn get_all_assets(
+        &self,
+        request: &AllAssetsRequest,
+    ) -> Result<AllAssetsResponse, String> {
+        self.get::<AllAssetsResponse>(request).await
+    }
+
     /// Sends a GET request to the server
     /// # Arguments
     /// * `TResponse` - The type of the response
@@ -86,7 +93,7 @@ async fn handle_response<TResponse: Default>(
     println!("Response: {:?}", response);
     match response.status() {
         reqwest::StatusCode::OK => {
-            let response = response.text().await.map_err(|e| e.to_string())?;
+            let _response = response.text().await.map_err(|e| e.to_string())?;
             Ok(TResponse::default())
             //decode(&response.as_bytes()).map_err(|e| e.to_string());
             // match result {
@@ -112,7 +119,7 @@ fn url_validate(url: &str) -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
-    use crate::horizon_client;
+    use crate::assets::prelude::AllAssetsRequest;
 
     use super::*;
 
@@ -163,8 +170,27 @@ mod tests {
         single_account_request
             .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string());
 
-        let _single_account_response = horizon_client.get_single_account(&single_account_request).await;
+        let _single_account_response = horizon_client
+            .get_single_account(&single_account_request)
+            .await;
 
         assert!(_single_account_response.is_ok());
+    }
+
+    #[tokio::test]
+    async fn test_get_all_assests() {
+        // Initialize horizon client
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        
+        // construct request
+        let mut all_assets_request = AllAssetsRequest::new();
+        all_assets_request.set_asset_issuer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string());
+
+        let _all_assets_response = horizon_client
+            .get_all_assets(&all_assets_request)
+            .await;
+
+        assert!(_all_assets_response.is_ok());
     }
 }
