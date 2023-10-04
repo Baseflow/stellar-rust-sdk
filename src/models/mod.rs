@@ -34,6 +34,11 @@ pub trait Request {
     fn build_url(&self, base_url: &str) -> String;
 }
 
+pub trait Response: Sized {
+
+    fn from_json(json: String) -> Result<Self, String>;
+}
+
 /// is_public_key validates a public key
 /// # Arguments
 /// * `public_key` - The public key to validate

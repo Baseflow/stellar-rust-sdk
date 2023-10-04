@@ -44,7 +44,8 @@ impl Request for SingleAccountRequest {
 }
 
 impl SingleAccountRequest {
-    pub fn set_account_id(&mut self, account_id: String) {
+    pub fn set_account_id(&mut self, account_id: String) -> &mut Self{
         self.account_id = Some(account_id);
+        self
     }
 }
