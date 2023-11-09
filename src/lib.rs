@@ -1,6 +1,7 @@
 mod assets;
 mod accounts;
 mod ledgers;
+mod claimable_balances;
 mod horizon_client;
 mod models;
 mod xdr;
