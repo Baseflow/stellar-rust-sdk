@@ -1,40 +1,7 @@
 use crate::models::*;
 
-/// The asset type
-/// Native - The native asset
-/// Issued - An issued asset
-/// [AccountsRequest](struct.AccountsRequest.html)
-pub enum AssetType {
-    Native,
-    Issued,
-}
-
-impl std::fmt::Display for AssetType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            AssetType::Native => write!(f, "native"),
-            AssetType::Issued => write!(f, "issued"),
-        }
-    }
-}
-
-/// The order of the records
-/// Asc - Ascending order
-/// Desc - Descending order
-/// [AccountsRequest](struct.AccountsRequest.html)
-pub enum Order {
-    Asc,
-    Desc,
-}
-
-impl std::fmt::Display for Order {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Order::Asc => write!(f, "asc"),
-            Order::Desc => write!(f, "desc"),
-        }
-    }
-}
+use super::super::Order;
+use super::super::AssetType;
 
 /// AccountsRequest is the request object for the /accounts endpoint
 /// [More Details](https://www.stellar.org/developers/horizon/reference/endpoints/accounts.html "Accounts")
@@ -168,8 +135,8 @@ impl AccountsRequest {
     /// # Returns
     /// The request object
     /// [AccountsRequest](struct.AccountsRequest.html)
-    pub fn set_sponsor(&mut self, sponsor: &str) -> &mut Self {
-        self.sponsor = Some(sponsor.to_owned());
+    pub fn set_sponsor(&mut self, sponsor: impl Into<String>) -> &mut Self {
+        self.sponsor = Some(sponsor.into());
         self
     }
 
