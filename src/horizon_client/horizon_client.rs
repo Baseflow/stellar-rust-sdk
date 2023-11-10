@@ -3,6 +3,7 @@ use crate::{
         AccountsRequest, AccountsResponse, SingleAccountRequest, SingleAccountsResponse,
     },
     assets::prelude::{AllAssetsRequest, AllAssetsResponse},
+    claimable_balances::prelude::{AllClaimableBalancesRequest, AllClaimableBalancesResponse},
     ledgers::prelude::{
         LedgersRequest, LedgersResponse, SingleLedgerRequest, SingleLedgerResponse,
     },
@@ -77,6 +78,22 @@ impl HorizonClient {
         self.get::<AllAssetsResponse>(request).await
     }
 
+    /// Gets the base URL for the Horizon server
+    /// # Arguments
+    /// * `self` - The Horizon client
+    /// * request - The all claimable balances request
+    /// # Returns
+    /// The all claimable balances response
+    /// # Errors
+    /// Returns an error if the request fails
+    /// [GET /claimable_balances/all](https://www.stellar.org/developers/horizon/reference/endpoints/claimable_balances-all.html)
+    pub async fn get_all_claimable_balances(
+        &self,
+        request: &AllClaimableBalancesRequest,
+    ) -> Result<AllClaimableBalancesResponse, String> {
+        self.get::<AllClaimableBalancesResponse>(request).await
+    }
+
     pub async fn get_all_ledgers(
         &self,
         request: &LedgersRequest,
@@ -112,7 +129,6 @@ impl HorizonClient {
         let url = request.build_url(&self.base_url);
         println!("\n\nURL: {}", url);
         let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
-        println!("Response: {:?}", response);
         let result: TResponse = handle_response(response).await?;
 
         // print!("\n\nResult: {:?}", result);
@@ -134,6 +150,7 @@ async fn handle_response<TResponse: Response>(
     match response.status() {
         reqwest::StatusCode::OK => {
             let _response = response.text().await.map_err(|e| e.to_string())?;
+            // println!("\n\nResponse: {:?}", _response);
             TResponse::from_json(_response)
         }
         _ => {
@@ -155,6 +172,7 @@ fn url_validate(url: &str) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use base64::encode;
+    use chrono::{DateTime, TimeZone, Utc};
 
     use crate::{assets::prelude::AllAssetsRequest, ledgers::prelude::SingleLedgerRequest};
 
@@ -194,7 +212,6 @@ mod tests {
 
         assert!(_accounts_response.is_ok());
 
-        // Testing some random values of the response
         assert_eq!(
             _accounts_response
                 .clone()
@@ -457,7 +474,6 @@ mod tests {
 
         assert!(_single_account_response.is_ok());
 
-        // Testing some random values of the response
         assert_eq!(
             _single_account_response
                 .clone()
@@ -877,7 +893,6 @@ mod tests {
 
         assert!(_all_ledgers_response.clone().is_ok());
 
-        // Testing some random values of the response
         assert_eq!(
             _all_ledgers_response
                 .clone()
@@ -927,8 +942,6 @@ mod tests {
                 .get_paging_token(),
             "8589934592".to_string()
         );
-
-        // Testing some random values of the response
     }
 
     #[tokio::test]
@@ -1087,7 +1100,6 @@ mod tests {
             decoded_xdr_header.scp_value.close_time,
             stellar_xdr::TimePoint(1686734388)
         );
-
     }
 
     #[tokio::test]
@@ -1142,13 +1154,7 @@ mod tests {
             "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99"
         );
 
-        assert_eq!(
-            _single_ledger_response
-                .clone()
-                .unwrap()
-                .get_sequence(),
-            2
-        );
+        assert_eq!(_single_ledger_response.clone().unwrap().get_sequence(), 2);
 
         assert_eq!(
             _single_ledger_response
@@ -1266,5 +1272,104 @@ mod tests {
                 "0000000000000000000000000000000000000000000000000000000000000000"
             );
         }
+    }
+
+    #[tokio::test]
+    async fn test_get_all_claimable_balances() {
+        // Initialize horizon client
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        // construct request
+        let mut all_claimable_balances_request = AllClaimableBalancesRequest::new();
+        all_claimable_balances_request.set_limit(2);
+
+        let _all_claimable_balances_response = horizon_client
+            .get_all_claimable_balances(&all_claimable_balances_request)
+            .await;
+
+        assert!(_all_claimable_balances_response.clone().is_ok());
+
+        let binding = _all_claimable_balances_response.clone().unwrap();
+        let predicate = binding.embedded().records()[1].claimants()[1].predicate();
+
+        let now = Utc::now();
+
+        let jan_first_2022 = Utc::with_ymd_and_hms(&Utc, 2022, 1, 1, 0, 0, 0).unwrap();
+
+        assert_eq!(predicate.is_valid_claim(now), true);
+
+        assert_eq!(predicate.is_valid_claim(jan_first_2022), false);
+
+        assert_eq!(
+            _all_claimable_balances_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .id(),
+            "000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca"
+        );
+
+        assert_eq!(
+            _all_claimable_balances_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .asset(),
+            "native"
+        );
+
+        assert_eq!(
+            _all_claimable_balances_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .amount(),
+            "12.3300000"
+        );
+
+        assert_eq!(
+            _all_claimable_balances_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .sponsor(),
+            "GD7TMSN67PCPZ4SXQHNG4GFO4KEMGTAT6MGWQGKBPOFDY7TP2IYDYFVI"
+        );
+
+        assert_eq!(
+            *_all_claimable_balances_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .last_modified_ledger(),
+            1560
+        );
+
+        assert_eq!(
+            _all_claimable_balances_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .last_modified_time(),
+            "2023-06-14T11:38:24Z"
+        );
+
+        assert_eq!(
+            *_all_claimable_balances_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .flags()
+                .clawback_enabled(),
+            false
+        );
     }
 }

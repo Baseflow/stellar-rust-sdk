@@ -1,234 +1,228 @@
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use chrono::DateTime;
+use chrono::Utc;
+use derive_getters::Getters;
+use serde::Deserialize;
+use serde::Serialize;
 
 use crate::models::Response;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct ClaimableBalancesResponse {
-    _links: Links,
-    _embedded: EmbeddedRecords,
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct AllClaimableBalancesResponse {
+    #[serde(rename = "_links")]
+    links: Links,
+    #[serde(rename = "_embedded")]
+    embedded: Embedded,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct Links {
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Links {
     #[serde(rename = "self")]
-    self_link: Href,
-    next: Href,
-    prev: Href,
+    self_field: Self_field,
+    next: Next,
+    prev: Prev,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct Href {
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Self_field {
     href: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct EmbeddedRecords {
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Next {
+    href: String,
+}
+
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Prev {
+    href: String,
+}
+
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Embedded {
     records: Vec<Record>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct Record {
-    _links: RecordLinks,
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Record {
+    #[serde(rename = "_links")]
+    links: RecordsLinks,
     id: String,
     asset: String,
     amount: String,
     sponsor: String,
-    last_modified_ledger: u64,
+    #[serde(rename = "last_modified_ledger")]
+    last_modified_ledger: i64,
+    #[serde(rename = "last_modified_time")]
     last_modified_time: String,
     claimants: Vec<Claimant>,
     flags: Flags,
+    #[serde(rename = "paging_token")]
     paging_token: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct RecordLinks {
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct RecordsLinks {
     #[serde(rename = "self")]
-    self_link: Href,
-    transactions: Href,
-    operations: Href,
+    self_field: Records_Self_field,
+    transactions: Transactions,
+    operations: Operations,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct Claimant {
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Records_Self_field {
+    href: String,
+}
+
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Transactions {
+    href: String,
+    templated: bool,
+}
+
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Operations {
+    href: String,
+    templated: bool,
+}
+
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Claimant {
     destination: String,
     predicate: Predicate,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-enum Predicate {
-    Unconditional { unconditional: bool },
-    Conditional {
-        or: Vec<ConditionalPredicate>,
-    },
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Predicate {
+    unconditional: Option<bool>,
+    or: Option<Vec<Or>>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct ConditionalPredicate {
-    #[serde(flatten)]
-    inner: HashMap<String, Value>,
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Or {
+    and: Option<Vec<And>>,
+    #[serde(rename = "abs_before")]
+    abs_before: Option<String>,
+    #[serde(rename = "abs_before_epoch")]
+    abs_before_epoch: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(untagged)]
-enum Value {
-    String(String),
-    Boolean(bool),
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct And {
+    not: Option<Not>,
+    #[serde(rename = "abs_before")]
+    abs_before: Option<String>,
+    #[serde(rename = "abs_before_epoch")]
+    abs_before_epoch: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct Flags {
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Not {
+    #[serde(rename = "abs_before")]
+    abs_before: String,
+    #[serde(rename = "abs_before_epoch")]
+    abs_before_epoch: String,
+}
+
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Flags {
+    #[serde(rename = "clawback_enabled")]
     clawback_enabled: bool,
 }
 
-impl Response for ClaimableBalancesResponse {
+impl Response for AllClaimableBalancesResponse {
     fn from_json(json: String) -> Result<Self, String> {
-        serde_json::from_str(&json).map_err(|e| e.to_string())
-    }
-}
+        let response = serde_json::from_str(&json).map_err(|e| e.to_string())?;
 
-impl ClaimableBalancesResponse {
-    pub fn get_links(&self) -> Links {
-        self._links.clone()
-    }
-
-    pub fn get_embedded(&self) -> EmbeddedRecords {
-        self._embedded.clone()
-    }
-}
-
-impl Links {
-    pub fn get_self_link(&self) -> Href {
-        self.self_link.clone()
-    }
-
-    pub fn get_next(&self) -> Href {
-        self.next.clone()
-    }
-
-    pub fn get_prev(&self) -> Href {
-        self.prev.clone()
-    }
-}
-
-impl EmbeddedRecords {
-    pub fn get_records(&self) -> Vec<Record> {
-        self.records.clone()
-    }
-
-    pub fn get_single_record(&self, index: usize) -> Record {
-        self.records[index].clone()
-    }
-}
-
-impl Record {
-    pub fn get_id(&self) -> String {
-        self.id.clone()
-    }
-
-    pub fn get_asset(&self) -> String {
-        self.asset.clone()
-    }
-
-    pub fn get_amount(&self) -> String {
-        self.amount.clone()
-    }
-
-    pub fn get_sponsor(&self) -> String {
-        self.sponsor.clone()
-    }
-
-    pub fn get_last_modified_ledger(&self) -> u64 {
-        self.last_modified_ledger
-    }
-
-    pub fn get_last_modified_time(&self) -> String {
-        self.last_modified_time.clone()
-    }
-
-    pub fn get_claimants(&self) -> Vec<Claimant> {
-        self.claimants.clone()
-    }
-
-    pub fn get_flags(&self) -> Flags {
-        self.flags.clone()
-    }
-
-    pub fn get_paging_token(&self) -> String {
-        self.paging_token.clone()
-    }
-
-    pub fn get_links(&self) -> RecordLinks {
-        self._links.clone()
-    }
-}
-
-impl RecordLinks {
-    pub fn get_self_link(&self) -> Href {
-        self.self_link.clone()
-    }
-
-    pub fn get_transactions(&self) -> Href {
-        self.transactions.clone()
-    }
-
-    pub fn get_operations(&self) -> Href {
-        self.operations.clone()
-    }
-}
-
-impl Claimant {
-    pub fn get_destination(&self) -> String {
-        self.destination.clone()
-    }
-
-    pub fn get_predicate(&self) -> Predicate {
-        self.predicate.clone()
-    }
-}
-
-impl Flags {
-    pub fn get_clawback_enabled(&self) -> bool {
-        self.clawback_enabled
+        Ok(response)
     }
 }
 
 impl Predicate {
-    pub fn get_unconditional(&self) -> bool {
-        match self {
-            Predicate::Unconditional { unconditional } => unconditional.clone(),
-            _ => false,
-        }
-    }
-
-    pub fn get_conditional(&self) -> Vec<ConditionalPredicate> {
-        match self {
-            Predicate::Conditional { or } => or.clone(),
-            _ => Vec::new(),
-        }
-    }
-}
-
-impl ConditionalPredicate {
-    pub fn get_inner(&self) -> HashMap<String, Value> {
-        self.inner.clone()
-    }
-}
-
-impl Value {
-    pub fn get_string(&self) -> String {
-        match self {
-            Value::String(string) => string.clone(),
-            _ => String::new(),
-        }
-    }
-
-    pub fn get_boolean(&self) -> bool {
-        match self {
-            Value::Boolean(boolean) => boolean.clone(),
-            _ => false,
+    // This method checks if a claim is valid at a specific datetime.
+    pub fn is_valid_claim(&self, datetime: DateTime<Utc>) -> bool {
+        // If the predicate is marked as unconditional, the claim is always valid.
+        if let Some(true) = self.unconditional {
+            true
+        } 
+        // If there are 'or' conditions, check if any of these conditions validate the claim.
+        else if let Some(or_conditions) = &self.or {
+            or_conditions.iter().any(|or| or.is_valid(datetime))
+        } 
+        // If there are no conditions, the claim is valid.
+        else {
+            true
         }
     }
 }
 
+
+impl Or {
+    // This method checks if any condition under 'or' validates the claim.
+    fn is_valid(&self, datetime: DateTime<Utc>) -> bool {
+        // If there are 'and' conditions, check if any combination of these conditions is valid.
+        if let Some(and_conditions) = &self.and {
+            and_conditions.iter().any(|and| and.is_valid(datetime))
+        } 
+        // If there is an 'abs_before' condition, check if the datetime is before this date.
+        else if let Some(abs_before) = &self.abs_before {
+            if let Ok(abs_before_date) = DateTime::parse_from_rfc3339(abs_before) {
+                datetime < abs_before_date
+            } else {
+                false
+            }
+        } 
+        // If no specific condition is found, the claim is valid.
+        else {
+            true
+        }
+    }
+}
+
+impl And {
+    // This method checks if all conditions under 'and' are met.
+    fn is_valid(&self, datetime: DateTime<Utc>) -> bool {
+        let mut is_valid = true;
+
+        // If there is an 'abs_before' condition, check if the datetime is before this date.
+        if let Some(abs_before) = &self.abs_before {
+            if let Ok(abs_before_date) = DateTime::parse_from_rfc3339(abs_before) {
+                is_valid &= datetime < abs_before_date;
+            }
+        }
+
+        // If there is a 'not' condition, it should also validate the datetime.
+        if let Some(not_condition) = &self.not {
+            is_valid &= not_condition.is_valid(datetime);
+        }
+
+        is_valid
+    }
+}
+
+impl Not {
+    // This method checks if the datetime does not fall before the specified date, negating the condition.
+    fn is_valid(&self, datetime: DateTime<Utc>) -> bool {
+        if let Ok(not_before_date) = DateTime::parse_from_rfc3339(&self.abs_before) {
+            datetime >= not_before_date
+        } else {
+            false
+        }
+    }
+}

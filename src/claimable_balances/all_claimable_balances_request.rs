@@ -46,7 +46,7 @@ impl Request for AllClaimableBalancesRequest {
 
     /// Gets the relative URL for the request
     fn get_path(&self) -> &str {
-        "/claimable_balances/all"
+        "/claimable_balances/"
     }
 
     // Gets the query parameters for the request
@@ -82,7 +82,7 @@ impl Request for AllClaimableBalancesRequest {
     /// The URL for the request
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}{}{}",
+            "{}{}?{}",
             base_url,
             self.get_path(),
             self.get_query_parameters()
