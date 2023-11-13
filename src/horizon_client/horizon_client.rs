@@ -3,7 +3,10 @@ use crate::{
         AccountsRequest, AccountsResponse, SingleAccountRequest, SingleAccountsResponse,
     },
     assets::prelude::{AllAssetsRequest, AllAssetsResponse},
-    claimable_balances::prelude::{AllClaimableBalancesRequest, AllClaimableBalancesResponse},
+    claimable_balances::prelude::{
+        AllClaimableBalancesRequest, AllClaimableBalancesResponse, SingleClaimableBalanceRequest,
+        SingleClaimableBalanceResponse,
+    },
     ledgers::prelude::{
         LedgersRequest, LedgersResponse, SingleLedgerRequest, SingleLedgerResponse,
     },
@@ -94,6 +97,22 @@ impl HorizonClient {
         self.get::<AllClaimableBalancesResponse>(request).await
     }
 
+    /// Gets the base URL for the Horizon server
+    /// # Arguments
+    /// * `self` - The Horizon client
+    /// * request - The single claimable balance request
+    /// # Returns
+    /// The single claimable balance response
+    /// # Errors
+    /// Returns an error if the request fails
+    /// [GET /claimable_balances/{claimable_balance_id}](https://www.stellar.org/developers/horizon/reference/endpoints/claimable_balances-single.html)
+    pub async fn get_single_claimable_balance(
+        &self,
+        request: &SingleClaimableBalanceRequest,
+    ) -> Result<SingleClaimableBalanceResponse, String> {
+        self.get::<SingleClaimableBalanceResponse>(request).await
+    }
+
     pub async fn get_all_ledgers(
         &self,
         request: &LedgersRequest,
@@ -127,8 +146,9 @@ impl HorizonClient {
         // TODO: construct with query parameters
 
         let url = request.build_url(&self.base_url);
-        println!("\n\nURL: {}", url);
+        // println!("\n\nURL: {}", url);
         let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
+        println!("\n\nREQWEST RESPONSE: {:?}", response);
         let result: TResponse = handle_response(response).await?;
 
         // print!("\n\nResult: {:?}", result);
@@ -150,7 +170,7 @@ async fn handle_response<TResponse: Response>(
     match response.status() {
         reqwest::StatusCode::OK => {
             let _response = response.text().await.map_err(|e| e.to_string())?;
-            // println!("\n\nResponse: {:?}", _response);
+            // println!("\n\nHANDLE_RESPONSE RESPONSE: {:?}", _response);
             TResponse::from_json(_response)
         }
         _ => {
@@ -161,11 +181,13 @@ async fn handle_response<TResponse: Response>(
 }
 /// url_validate validates a URL
 fn url_validate(url: &str) -> Result<(), String> {
+    println!("URL: {}", url);
     // check if start with http:// or https://
     if !url.starts_with("http://") && !url.starts_with("https://") {
         return Err(format!("URL must start with http:// or https://: {}", url));
     }
     Url::parse(url).map_err(|e| e.to_string())?;
+    
     Ok(())
 }
 
@@ -174,7 +196,11 @@ mod tests {
     use base64::encode;
     use chrono::{DateTime, TimeZone, Utc};
 
-    use crate::{assets::prelude::AllAssetsRequest, ledgers::prelude::SingleLedgerRequest};
+    use crate::{
+        assets::prelude::AllAssetsRequest,
+        claimable_balances::prelude::SingleClaimableBalanceRequest,
+        ledgers::prelude::SingleLedgerRequest,
+    };
 
     use super::*;
 
@@ -1370,6 +1396,109 @@ mod tests {
                 .flags()
                 .clawback_enabled(),
             false
+        );
+    }
+
+    #[tokio::test]
+    async fn test_get_single_claimable_balance() {
+        // Initialize horizon client
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        // construct request
+        let mut single_claimable_balance_request = SingleClaimableBalanceRequest::new();
+        single_claimable_balance_request.set_claimable_balance_id(
+            "000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string(),
+        );
+
+        let single_claimable_balance_response = horizon_client
+            .get_single_claimable_balance(&single_claimable_balance_request)
+            .await;
+
+        assert!(single_claimable_balance_response.is_ok());
+
+        let binding = single_claimable_balance_response.clone().unwrap();
+
+        let predicate = binding.claimants()[1].predicate();
+
+        let now = Utc::now();
+
+        let jan_first_2022 = Utc::with_ymd_and_hms(&Utc, 2022, 1, 1, 0, 0, 0).unwrap();
+
+        assert_eq!(predicate.is_valid_claim(now), true);
+
+        assert_eq!(predicate.is_valid_claim(jan_first_2022), false);
+
+
+        assert_eq!(
+            single_claimable_balance_response
+                .clone()
+                .unwrap()
+                .id()
+                .to_string(),
+            "000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca"
+        );
+
+        assert_eq!(
+            single_claimable_balance_response
+                .clone()
+                .unwrap()
+                .asset()
+                .to_string(),
+            "native"
+        );
+
+        assert_eq!(
+            single_claimable_balance_response
+                .clone()
+                .unwrap()
+                .amount()
+                .to_string(),
+            "12.3300000"
+        );
+
+        assert_eq!(
+            single_claimable_balance_response
+                .clone()
+                .unwrap()
+                .sponsor()
+                .to_string(),
+            "GD7TMSN67PCPZ4SXQHNG4GFO4KEMGTAT6MGWQGKBPOFDY7TP2IYDYFVI"
+        );
+
+        assert_eq!(
+            *single_claimable_balance_response
+                .clone()
+                .unwrap()
+                .last_modified_ledger(),
+            1560
+        );
+
+        assert_eq!(
+            single_claimable_balance_response
+                .clone()
+                .unwrap()
+                .last_modified_time()
+                .to_string(),
+            "2023-06-14T11:38:24Z"
+        );
+
+        assert_eq!(
+            *single_claimable_balance_response
+                .clone()
+                .unwrap()
+                .flags()
+                .clawback_enabled(),
+            false
+        );
+
+        assert_eq!(
+            single_claimable_balance_response
+                .clone()
+                .unwrap()
+                .paging_token()
+                .to_string(),
+            "1560-000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca"
         );
     }
 }
