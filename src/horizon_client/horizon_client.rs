@@ -33,7 +33,7 @@ impl HorizonClient {
         Ok(Self { base_url })
     }
 
-    /// Gets the base URL for the Horizon server
+    /// Gets an account list from the server
     /// # Arguments
     /// * `self` - The Horizon client
     /// * request - The accounts request
@@ -49,7 +49,7 @@ impl HorizonClient {
         self.get::<AccountsResponse>(request).await
     }
 
-    /// Gets the base URL for the Horizon server
+    /// Gets a single account from the server
     /// # Arguments
     /// * `self` - The Horizon client
     /// * request - The account request
@@ -65,7 +65,7 @@ impl HorizonClient {
         self.get::<SingleAccountsResponse>(request).await
     }
 
-    /// Gets the base URL for the Horizon server
+    /// Gets all assets from the server
     /// # Arguments
     /// * `self` - The Horizon client
     /// * request - The all assets request
@@ -81,7 +81,7 @@ impl HorizonClient {
         self.get::<AllAssetsResponse>(request).await
     }
 
-    /// Gets the base URL for the Horizon server
+    /// Gets all claimable balances from the server
     /// # Arguments
     /// * `self` - The Horizon client
     /// * request - The all claimable balances request
@@ -97,7 +97,7 @@ impl HorizonClient {
         self.get::<AllClaimableBalancesResponse>(request).await
     }
 
-    /// Gets the base URL for the Horizon server
+    /// Gets a single claimable balance from the server
     /// # Arguments
     /// * `self` - The Horizon client
     /// * request - The single claimable balance request
@@ -113,6 +113,15 @@ impl HorizonClient {
         self.get::<SingleClaimableBalanceResponse>(request).await
     }
 
+    /// Gets the all ledger response from the server
+    /// # Arguments
+    /// * `self` - The Horizon client
+    /// * request - The ledgers request
+    /// # Returns
+    /// The ledgers response
+    /// # Errors
+    /// Returns an error if the request fails
+    /// [GET /ledgers](https://www.stellar.org/developers/horizon/reference/endpoints/ledgers-all.html)
     pub async fn get_all_ledgers(
         &self,
         request: &LedgersRequest,
@@ -120,6 +129,15 @@ impl HorizonClient {
         self.get::<LedgersResponse>(request).await
     }
 
+    /// Gets a single ledger from the server
+    /// # Arguments
+    /// * `self` - The Horizon client
+    /// * request - The single ledger request
+    /// # Returns
+    /// The single ledger response
+    /// # Errors
+    /// Returns an error if the request fails
+    /// [GET /ledgers/{ledger_id}](https://www.stellar.org/developers/horizon/reference/endpoints/ledgers-single.html)
     pub async fn get_single_ledger(
         &self,
         request: &SingleLedgerRequest,
@@ -146,7 +164,6 @@ impl HorizonClient {
         // TODO: construct with query parameters
 
         let url = request.build_url(&self.base_url);
-        // println!("\n\nURL: {}", url);
         let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
         println!("\n\nREQWEST RESPONSE: {:?}", response);
         let result: TResponse = handle_response(response).await?;
@@ -170,7 +187,6 @@ async fn handle_response<TResponse: Response>(
     match response.status() {
         reqwest::StatusCode::OK => {
             let _response = response.text().await.map_err(|e| e.to_string())?;
-            // println!("\n\nHANDLE_RESPONSE RESPONSE: {:?}", _response);
             TResponse::from_json(_response)
         }
         _ => {
@@ -187,7 +203,7 @@ fn url_validate(url: &str) -> Result<(), String> {
         return Err(format!("URL must start with http:// or https://: {}", url));
     }
     Url::parse(url).map_err(|e| e.to_string())?;
-    
+
     Ok(())
 }
 
@@ -1428,7 +1444,6 @@ mod tests {
         assert_eq!(predicate.is_valid_claim(now), true);
 
         assert_eq!(predicate.is_valid_claim(jan_first_2022), false);
-
 
         assert_eq!(
             single_claimable_balance_response

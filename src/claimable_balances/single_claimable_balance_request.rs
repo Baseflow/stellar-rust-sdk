@@ -1,9 +1,4 @@
-use chrono::format;
-
 use crate::models::*;
-
-use super::super::AssetType;
-use super::super::Order;
 
 /// SingleClaimableBalanceRequest is the struct that implements the type for the /claimable_balances endpoint to get a single claimable balance
 /// [More Details](https://laboratory.stellar.org/#explorer?resource=claimable_balances&endpoint=single&network=test "Single Claimable Balance")
@@ -50,13 +45,6 @@ impl Request for SingleClaimableBalanceRequest {
     /// # Returns
     /// The URL for the request
     fn build_url(&self, base_url: &str) -> String {
-        println!("\n\nBUILD URL: {:?}", format!(
-            "{}{}{}",
-            base_url,
-            self.get_path(),
-            self.get_query_parameters()
-        ));
-
         format!(
             "{}{}{}",
             base_url,
