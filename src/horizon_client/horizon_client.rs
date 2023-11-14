@@ -255,246 +255,135 @@ mod tests {
         assert!(_accounts_response.is_ok());
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_account_id(),
-            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()
+            _accounts_response.clone().unwrap()._embedded().records()[0].account_id(),
+            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7"
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_id(),
-            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()
+            _accounts_response.clone().unwrap()._embedded().records()[0].id(),
+            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7"
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_sequence(),
-            "4380492979765248".to_string()
+            _accounts_response.clone().unwrap()._embedded().records()[0].sequence(),
+            "4380492979765248"
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_subentry_count(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0].subentry_count(),
             0
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_last_modified_ledger(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0].last_modified_ledger(),
             1019913
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_last_modified_time(),
+            _accounts_response.clone().unwrap()._embedded().records()[0].last_modified_time(),
             "2023-08-15T09:46:25Z"
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_thresholds()
-                .get_low_threshold(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0]
+                .thresholds()
+                .low_threshold(),
             0
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_thresholds()
-                .get_med_threshold(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0]
+                .thresholds()
+                .med_threshold(),
             0
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_thresholds()
-                .get_high_threshold(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0]
+                .thresholds()
+                .high_threshold(),
             0
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_flags()
-                .get_auth_required(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0]
+                .flags()
+                .auth_required(),
             false
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_flags()
-                .get_auth_revocable(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0]
+                .flags()
+                .auth_revocable(),
             false
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_flags()
-                .get_auth_immutable(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0]
+                .flags()
+                .auth_immutable(),
             false
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_flags()
-                .get_auth_clawback_enabled(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0]
+                .flags()
+                .auth_clawback_enabled(),
             false
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_balances()[0]
-                .get_balance(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0].balances()[0].balance(),
             "10000.0000000".to_string()
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_balances()[0]
-                .get_asset_type(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0].balances()[0]
+                .asset_type(),
             "native".to_string()
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_balances()[0]
-                .get_buying_liabilities(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0].balances()[0]
+                .buying_liabilities(),
             "0.0000000".to_string()
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_balances()[0]
-                .get_selling_liabilities(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0].balances()[0]
+                .selling_liabilities(),
             "0.0000000".to_string()
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_signers()[0]
-                .get_key(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0].signers()[0].key(),
             "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_signers()[0]
-                .get_weight(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0].signers()[0].weight(),
             1
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_signers()[0]
-                .get_type(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0].signers()[0]
+                .signer_type(),
             "ed25519_public_key".to_string()
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_num_sponsoring(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0].num_sponsoring(),
             0
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_num_sponsored(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0].num_sponsored(),
             0
         );
 
         assert_eq!(
-            _accounts_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_paging_token(),
+            *_accounts_response.clone().unwrap()._embedded().records()[0].paging_token(),
             "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()
         );
     }
@@ -520,34 +409,34 @@ mod tests {
             _single_account_response
                 .clone()
                 .unwrap()
-                .get_account_id()
+                .account_id()
                 .to_string(),
-            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()
+            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7"
         );
 
         assert_eq!(
             _single_account_response
                 .clone()
                 .unwrap()
-                .get_sequence()
+                .sequence()
                 .to_string(),
-            "4380492979765248".to_string()
+            "4380492979765248"
         );
 
         assert_eq!(
-            _single_account_response
+            *_single_account_response
                 .clone()
                 .as_ref()
                 .unwrap()
-                .get_subentry_count(),
+                .subentry_count(),
             0
         );
 
         assert_eq!(
-            _single_account_response
+            *_single_account_response
                 .as_ref()
                 .unwrap()
-                .get_last_modified_ledger(),
+                .last_modified_ledger(),
             1019913
         );
 
@@ -555,130 +444,121 @@ mod tests {
             _single_account_response
                 .as_ref()
                 .unwrap()
-                .get_last_modified_time(),
+                .last_modified_time(),
             "2023-08-15T09:46:25Z"
         );
 
         assert_eq!(
-            _single_account_response
+            *_single_account_response
                 .as_ref()
                 .unwrap()
-                .get_thresholds()
-                .get_low_threshold(),
+                .thresholds()
+                .low_threshold(),
             0
         );
 
         assert_eq!(
-            _single_account_response
+            *_single_account_response
                 .as_ref()
                 .unwrap()
-                .get_thresholds()
-                .get_med_threshold(),
+                .thresholds()
+                .med_threshold(),
             0
         );
 
         assert_eq!(
-            _single_account_response
+            *_single_account_response
                 .as_ref()
                 .unwrap()
-                .get_thresholds()
-                .get_high_threshold(),
+                .thresholds()
+                .high_threshold(),
             0
         );
 
         assert_eq!(
-            _single_account_response
+            *_single_account_response
                 .as_ref()
                 .unwrap()
-                .get_flags()
-                .get_auth_required(),
+                .flags()
+                .auth_required(),
             false
         );
 
         assert_eq!(
-            _single_account_response
+            *_single_account_response
                 .as_ref()
                 .unwrap()
-                .get_flags()
-                .get_auth_revocable(),
+                .flags()
+                .auth_revocable(),
             false
         );
 
         assert_eq!(
-            _single_account_response
+            *_single_account_response
                 .as_ref()
                 .unwrap()
-                .get_flags()
-                .get_auth_immutable(),
+                .flags()
+                .auth_immutable(),
             false
         );
 
         assert_eq!(
-            _single_account_response
+            *_single_account_response
                 .as_ref()
                 .unwrap()
-                .get_flags()
-                .get_auth_clawback_enabled(),
+                .flags()
+                .auth_clawback_enabled(),
             false
         );
 
         assert_eq!(
-            _single_account_response.as_ref().unwrap().get_balances()[0].get_balance(),
-            "10000.0000000".to_string()
+            _single_account_response.as_ref().unwrap().balances()[0].balance(),
+            "10000.0000000"
         );
 
         assert_eq!(
-            _single_account_response.as_ref().unwrap().get_balances()[0].get_asset_type(),
-            "native".to_string()
+            _single_account_response.as_ref().unwrap().balances()[0].asset_type(),
+            "native"
         );
 
         assert_eq!(
-            _single_account_response.as_ref().unwrap().get_balances()[0].get_buying_liabilities(),
-            "0.0000000".to_string()
+            _single_account_response.as_ref().unwrap().balances()[0].buying_liabilities(),
+            "0.0000000"
         );
 
         assert_eq!(
-            _single_account_response.as_ref().unwrap().get_balances()[0].get_selling_liabilities(),
-            "0.0000000".to_string()
+            _single_account_response.as_ref().unwrap().balances()[0].selling_liabilities(),
+            "0.0000000"
         );
 
         assert_eq!(
-            _single_account_response.as_ref().unwrap().get_signers()[0].get_key(),
-            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()
+            _single_account_response.as_ref().unwrap().signers()[0].key(),
+            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7"
         );
 
         assert_eq!(
-            _single_account_response.as_ref().unwrap().get_signers()[0].get_weight(),
+            *_single_account_response.as_ref().unwrap().signers()[0].weight(),
             1
         );
 
         assert_eq!(
-            _single_account_response.as_ref().unwrap().get_signers()[0].get_type(),
-            "ed25519_public_key".to_string()
+            _single_account_response.as_ref().unwrap().signers()[0].type_(),
+            "ed25519_public_key"
         );
 
         assert_eq!(
-            _single_account_response
-                .as_ref()
-                .unwrap()
-                .get_num_sponsoring(),
+            *_single_account_response.as_ref().unwrap().num_sponsoring(),
             0
         );
 
         assert_eq!(
-            _single_account_response
-                .as_ref()
-                .unwrap()
-                .get_num_sponsored(),
+            *_single_account_response.as_ref().unwrap().num_sponsored(),
             0
         );
 
         assert_eq!(
-            _single_account_response
-                .as_ref()
-                .unwrap()
-                .get_paging_token(),
-            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()
+            _single_account_response.as_ref().unwrap().paging_token(),
+            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7"
         );
     }
 
@@ -699,223 +579,129 @@ mod tests {
         assert!(_all_assets_response.is_ok());
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_asset_type(),
-            "credit_alphanum4".to_string()
+            _all_assets_response.clone().unwrap()._embedded().records()[0].asset_type(),
+            "credit_alphanum4"
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_asset_code(),
-            "0".to_string()
+            _all_assets_response.clone().unwrap()._embedded().records()[0].asset_code(),
+            "0"
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_asset_issuer(),
+            _all_assets_response.clone().unwrap()._embedded().records()[0].asset_issuer(),
             "GCINFW5NLMVSE7KWH5BOVL2NTRP2HN6LSXTIL76GOVIORLFM6YN5ZTRS"
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_paging_token(),
+            _all_assets_response.clone().unwrap()._embedded().records()[0].paging_token(),
             "0_GCINFW5NLMVSE7KWH5BOVL2NTRP2HN6LSXTIL76GOVIORLFM6YN5ZTRS_credit_alphanum4"
-                .to_string()
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_num_accounts(),
+            *_all_assets_response.clone().unwrap()._embedded().records()[0].num_accounts(),
             0
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_num_claimable_balances(),
+            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+                .num_claimable_balances(),
             0
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_num_liquidity_pools(),
+            *_all_assets_response.clone().unwrap()._embedded().records()[0].num_liquidity_pools(),
             0
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_amount(),
-            "0.0000000".to_string()
+            _all_assets_response.clone().unwrap()._embedded().records()[0].amount(),
+            "0.0000000"
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_accounts()
-                .get_authorized(),
+            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+                .accounts()
+                .authorized(),
             0
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_accounts()
-                .get_authorized_to_maintain_liabilities(),
+            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+                .accounts()
+                .authorized_to_maintain_liabilities(),
             0
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_accounts()
-                .get_unauthorized(),
+            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+                .accounts()
+                .unauthorized(),
             1
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_claimable_balances_amount(),
-            "0.0000000".to_string()
+            _all_assets_response.clone().unwrap()._embedded().records()[0]
+                .claimable_balances_amount(),
+            "0.0000000"
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_liquidity_pools_amount(),
-            "0.0000000".to_string()
+            _all_assets_response.clone().unwrap()._embedded().records()[0].liquidity_pools_amount(),
+            "0.0000000"
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_contracts_amount(),
-            "0.0000000".to_string()
+            _all_assets_response.clone().unwrap()._embedded().records()[0].contracts_amount(),
+            "0.0000000"
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_balances()
-                .get_authorized(),
-            "0.0000000".to_string()
+            _all_assets_response.clone().unwrap()._embedded().records()[0]
+                .balances()
+                .authorized(),
+            "0.0000000"
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_balances()
-                .get_authorized_to_maintain_liabilities(),
-            "0.0000000".to_string()
+            _all_assets_response.clone().unwrap()._embedded().records()[0]
+                .balances()
+                .authorized_to_maintain_liabilities(),
+            "0.0000000"
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_balances()
-                .get_unauthorized(),
-            "1.0000000".to_string()
+            _all_assets_response.clone().unwrap()._embedded().records()[0]
+                .balances()
+                .unauthorized(),
+            "1.0000000"
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_flags()
-                .get_auth_required(),
+            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+                .flags()
+                .auth_required(),
             true
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_flags()
-                .get_auth_revocable(),
+            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+                .flags()
+                .auth_revocable(),
             true
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_flags()
-                .get_auth_immutable(),
+            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+                .flags()
+                .auth_immutable(),
             false
         );
 
         assert_eq!(
-            _all_assets_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_records()[0]
-                .get_flags()
-                .get_auth_clawback_enabled(),
+            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+                .flags()
+                .auth_clawback_enabled(),
             true
         );
     }
@@ -936,53 +722,29 @@ mod tests {
         assert!(_all_ledgers_response.clone().is_ok());
 
         assert_eq!(
-            _all_ledgers_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_single_record(0)
-                .get_hash(),
+            _all_ledgers_response.clone().unwrap()._embedded().records()[0].hash(),
             "eca856e0073dc2087249dc929ed31c09c3babfef2e687b685d0513dbe6489a18"
         );
 
         assert_eq!(
-            _all_ledgers_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_single_record(0)
-                .get_prev_hash(),
-            "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99".to_string()
+            _all_ledgers_response.clone().unwrap()._embedded().records()[0].prev_hash(),
+            "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99"
         );
 
         assert_eq!(
-            _all_ledgers_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_single_record(0)
-                .get_sequence(),
+            *_all_ledgers_response.clone().unwrap()._embedded().records()[0].sequence(),
             2
         );
 
         assert_eq!(
-            _all_ledgers_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_single_record(0)
-                .get_successful_transaction_count(),
+            *_all_ledgers_response.clone().unwrap()._embedded().records()[0]
+                .successful_transaction_count(),
             0
         );
 
         assert_eq!(
-            _all_ledgers_response
-                .clone()
-                .unwrap()
-                .get__embedded()
-                .get_single_record(0)
-                .get_paging_token(),
-            "8589934592".to_string()
+            _all_ledgers_response.clone().unwrap()._embedded().records()[0].paging_token(),
+            "8589934592"
         );
     }
 
@@ -1003,109 +765,100 @@ mod tests {
         assert!(_single_ledger_response.clone().is_ok());
 
         assert_eq!(
-            _single_ledger_response.clone().unwrap().get_id(),
-            "eca856e0073dc2087249dc929ed31c09c3babfef2e687b685d0513dbe6489a18".to_string()
+            _single_ledger_response.clone().unwrap().id(),
+            "eca856e0073dc2087249dc929ed31c09c3babfef2e687b685d0513dbe6489a18"
         );
 
         assert_eq!(
-            _single_ledger_response.clone().unwrap().get_paging_token(),
-            "8589934592".to_string()
+            _single_ledger_response.clone().unwrap().paging_token(),
+            "8589934592"
         );
 
         assert_eq!(
-            _single_ledger_response.clone().unwrap().get_hash(),
-            "eca856e0073dc2087249dc929ed31c09c3babfef2e687b685d0513dbe6489a18".to_string()
+            _single_ledger_response.clone().unwrap().hash(),
+            "eca856e0073dc2087249dc929ed31c09c3babfef2e687b685d0513dbe6489a18"
         );
 
         assert_eq!(
-            _single_ledger_response.clone().unwrap().get_prev_hash(),
-            "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99".to_string()
+            _single_ledger_response.clone().unwrap().prev_hash(),
+            "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99"
         );
 
-        assert_eq!(_single_ledger_response.clone().unwrap().get_sequence(), 2);
+        assert_eq!(*_single_ledger_response.clone().unwrap().sequence(), 2);
 
         assert_eq!(
-            _single_ledger_response
+            *_single_ledger_response
                 .clone()
                 .unwrap()
-                .get_successful_transaction_count(),
+                .successful_transaction_count(),
             0
         );
 
         assert_eq!(
-            _single_ledger_response
+            *_single_ledger_response
                 .clone()
                 .unwrap()
-                .get_failed_transaction_count(),
+                .failed_transaction_count(),
             0
         );
 
         assert_eq!(
-            _single_ledger_response
-                .clone()
-                .unwrap()
-                .get_operation_count(),
+            *_single_ledger_response.clone().unwrap().operation_count(),
             0
         );
 
         assert_eq!(
-            _single_ledger_response
+            *_single_ledger_response
                 .clone()
                 .unwrap()
-                .get_tx_set_operation_count(),
+                .tx_set_operation_count(),
             0
         );
 
         assert_eq!(
-            _single_ledger_response.clone().unwrap().get_closed_at(),
-            "2023-06-14T09:19:48Z".to_string()
+            _single_ledger_response.clone().unwrap().closed_at(),
+            "2023-06-14T09:19:48Z"
         );
 
         assert_eq!(
-            _single_ledger_response.clone().unwrap().get_total_coins(),
+            _single_ledger_response.clone().unwrap().total_coins(),
             "100000000000.0000000"
         );
 
         assert_eq!(
-            _single_ledger_response.clone().unwrap().get_fee_pool(),
+            _single_ledger_response.clone().unwrap().fee_pool(),
             "0.0000000"
         );
 
         assert_eq!(
-            _single_ledger_response
+            *_single_ledger_response
                 .clone()
                 .unwrap()
-                .get_base_fee_in_stroops(),
+                .base_fee_in_stroops(),
             100
         );
 
         assert_eq!(
-            _single_ledger_response
+            *_single_ledger_response
                 .clone()
                 .unwrap()
-                .get_base_reserve_in_stroops(),
+                .base_reserve_in_stroops(),
             100000000
         );
 
         assert_eq!(
-            _single_ledger_response
-                .clone()
-                .unwrap()
-                .get_max_tx_set_size(),
+            *_single_ledger_response.clone().unwrap().max_tx_set_size(),
             100
         );
 
         assert_eq!(
-            _single_ledger_response
-                .clone()
-                .unwrap()
-                .get_protocol_version(),
+            *_single_ledger_response.clone().unwrap().protocol_version(),
             0
         );
 
         let decoded_xdr_header = _single_ledger_response
             .unwrap()
-            .get_decoded_header_xdr()
+            .decoded_header_xdr()
             .unwrap();
 
         assert_eq!(
@@ -1161,137 +914,100 @@ mod tests {
         assert!(_single_ledger_response.is_ok());
 
         assert_eq!(
-            _single_ledger_response
-                .clone()
-                .unwrap()
-                .get_id()
-                .to_string(),
+            _single_ledger_response.clone().unwrap().id(),
             "eca856e0073dc2087249dc929ed31c09c3babfef2e687b685d0513dbe6489a18"
         );
 
         assert_eq!(
-            _single_ledger_response
-                .clone()
-                .unwrap()
-                .get_paging_token()
-                .to_string(),
+            _single_ledger_response.clone().unwrap().paging_token(),
             "8589934592"
         );
 
         assert_eq!(
-            _single_ledger_response
-                .clone()
-                .unwrap()
-                .get_hash()
-                .to_string(),
+            _single_ledger_response.clone().unwrap().hash().to_string(),
             "eca856e0073dc2087249dc929ed31c09c3babfef2e687b685d0513dbe6489a18"
         );
 
         assert_eq!(
-            _single_ledger_response
-                .clone()
-                .unwrap()
-                .get_prev_hash()
-                .to_string(),
+            _single_ledger_response.clone().unwrap().prev_hash(),
             "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99"
         );
 
-        assert_eq!(_single_ledger_response.clone().unwrap().get_sequence(), 2);
+        assert_eq!(*_single_ledger_response.clone().unwrap().sequence(), 2);
 
         assert_eq!(
-            _single_ledger_response
+            *_single_ledger_response
                 .clone()
                 .unwrap()
-                .get_successful_transaction_count(),
+                .successful_transaction_count(),
             0
         );
 
         assert_eq!(
-            _single_ledger_response
+            *_single_ledger_response
                 .clone()
                 .unwrap()
-                .get_failed_transaction_count(),
+                .failed_transaction_count(),
             0
         );
 
         assert_eq!(
-            _single_ledger_response
-                .clone()
-                .unwrap()
-                .get_operation_count(),
+            *_single_ledger_response.clone().unwrap().operation_count(),
             0
         );
 
         assert_eq!(
-            _single_ledger_response
+            *_single_ledger_response
                 .clone()
                 .unwrap()
-                .get_tx_set_operation_count(),
+                .tx_set_operation_count(),
             0
         );
 
         assert_eq!(
-            _single_ledger_response
-                .clone()
-                .unwrap()
-                .get_closed_at()
-                .to_string(),
+            _single_ledger_response.clone().unwrap().closed_at(),
             "2023-06-14T09:19:48Z"
         );
 
         assert_eq!(
-            _single_ledger_response
-                .clone()
-                .unwrap()
-                .get_total_coins()
-                .to_string(),
+            _single_ledger_response.clone().unwrap().total_coins(),
             "100000000000.0000000"
         );
 
         assert_eq!(
-            _single_ledger_response
-                .clone()
-                .unwrap()
-                .get_fee_pool()
-                .to_string(),
+            _single_ledger_response.clone().unwrap().fee_pool(),
             "0.0000000"
         );
 
         assert_eq!(
-            _single_ledger_response
+            *_single_ledger_response
                 .clone()
                 .unwrap()
-                .get_base_fee_in_stroops(),
+                .base_fee_in_stroops(),
             100
         );
 
         assert_eq!(
-            _single_ledger_response
+            *_single_ledger_response
                 .clone()
                 .unwrap()
-                .get_base_reserve_in_stroops(),
+                .base_reserve_in_stroops(),
             100000000
         );
 
         assert_eq!(
-            _single_ledger_response
-                .clone()
-                .unwrap()
-                .get_max_tx_set_size(),
+            *_single_ledger_response.clone().unwrap().max_tx_set_size(),
             100
         );
 
         assert_eq!(
-            _single_ledger_response
-                .clone()
-                .unwrap()
-                .get_protocol_version(),
+            *_single_ledger_response.clone().unwrap().protocol_version(),
             0
         );
 
         let _decoded_header_xdr = _single_ledger_response
             .unwrap()
-            .get_decoded_header_xdr()
+            .decoded_header_xdr()
             .unwrap();
 
         assert_eq!(
