@@ -3,11 +3,13 @@ use serde::{Deserialize, Serialize};
 
 use crate::models::Response;
 
+/// Struct defining the self link in the list all accounts response.
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct SelfLink {
     href: String,
 }
 
+/// Struct defining the links in the list all accounts response.
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct Links {    
     #[serde(rename = "self")]
@@ -16,6 +18,7 @@ pub struct Links {
     prev: Option<SelfLink>,
 }
 
+/// Struct defining a single balance in the list all accounts response.
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct Balances {
     balance: String,
@@ -24,6 +27,7 @@ pub struct Balances {
     asset_type: String,
 }
 
+/// Struct defining the thresholds in the list all accounts response.
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct Thresholds {
     low_threshold: i32,
@@ -31,6 +35,7 @@ pub struct Thresholds {
     high_threshold: i32,
 }
 
+/// Struct defining the flags in the list all accounts response.
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct Flags {
     auth_required: bool,
@@ -39,6 +44,7 @@ pub struct Flags {
     auth_clawback_enabled: bool,
 }
 
+/// Struct defining a single signer in the list all accounts response.
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct Signers {
     weight: i32,
@@ -47,6 +53,7 @@ pub struct Signers {
     signer_type: String,
 }
 
+/// Struct defining a record of a single account in the list all accounts response.
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct Record {
     #[serde(rename = "_links")]
@@ -67,11 +74,13 @@ pub struct Record {
     paging_token: String,
 }
 
+/// Struct defining the embedded object in the list all accounts response.
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct Embedded {
     records: Vec<Record>,
 }
 
+/// Struct defining the list all accounts response.
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct AccountsResponse {
     _links: Links,

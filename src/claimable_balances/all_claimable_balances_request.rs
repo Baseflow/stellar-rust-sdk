@@ -29,10 +29,6 @@ pub struct AllClaimableBalancesRequest {
 }
 
 impl Request for AllClaimableBalancesRequest {
-    /// Creates a new request object
-    /// # Returns
-    /// A new request object
-    /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
     fn new() -> Self {
         AllClaimableBalancesRequest {
             sponsor: None,
@@ -44,12 +40,10 @@ impl Request for AllClaimableBalancesRequest {
         }
     }
 
-    /// Gets the relative URL for the request
     fn get_path(&self) -> &str {
         "/claimable_balances/"
     }
 
-    // Gets the query parameters for the request
     fn get_query_parameters(&self) -> String {
         let mut query = String::new();
         if let Some(sponsor) = &self.sponsor {
@@ -74,12 +68,6 @@ impl Request for AllClaimableBalancesRequest {
         query.trim_end_matches('&').to_string()
     }
 
-    /// Builds the URL for the request
-    /// # Arguments
-    /// * `self` - The request object
-    /// * `base_url` - The base URL for the Horizon server
-    /// # Returns
-    /// The URL for the request
     fn build_url(&self, base_url: &str) -> String {
         format!(
             "{}{}?{}",

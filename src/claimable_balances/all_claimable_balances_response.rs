@@ -154,6 +154,7 @@ impl Response for AllClaimableBalancesResponse {
     }
 }
 
+/// This method checks if a claim is valid at a specific datetime.
 impl Predicate {
     // This method checks if a claim is valid at a specific datetime.
     pub fn is_valid_claim(&self, datetime: DateTime<Utc>) -> bool {

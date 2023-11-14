@@ -2,6 +2,7 @@ use crate::models::Response;
 use derive_getters::Getters;
 use serde::{Deserialize, Serialize};
 
+/// Struct defining the self link in the list all accounts response.
 #[derive(Debug, Serialize, Deserialize, Clone, Getters)]
 pub struct Links {
     #[serde(rename = "self")]
@@ -10,17 +11,20 @@ pub struct Links {
     prev: Link,
 }
 
+/// Struct defining the self link in the list all accounts response.
 #[derive(Debug, Serialize, Deserialize, Clone, Getters)]
 pub struct Link {
     href: Option<String>,
     toml: Option<Toml>,
 }
 
+/// Struct defining the self link in the list all accounts response.
 #[derive(Debug, Serialize, Deserialize, Clone, Getters)]
 pub struct Toml {
     href: String,
 }
 
+/// Struct defining a single balance in the list all accounts response.
 #[derive(Debug, Serialize, Deserialize, Clone, Getters)]
 pub struct Records {
     _links: Link,
@@ -41,6 +45,7 @@ pub struct Records {
     flags: Flags,
 }
 
+/// Struct defining a single balance in the list all accounts response.
 #[derive(Debug, Serialize, Deserialize, Clone, Getters)]
 pub struct AccountInfo {
     authorized: u32,
@@ -48,6 +53,7 @@ pub struct AccountInfo {
     unauthorized: u32,
 }
 
+/// Struct defining a single balance in the list all accounts response.
 #[derive(Debug, Serialize, Deserialize, Clone, Getters)]
 pub struct AccountBalances {
     authorized: String,
@@ -55,6 +61,7 @@ pub struct AccountBalances {
     unauthorized: String,
 }
 
+/// Struct defining the thresholds in the list all accounts response.
 #[derive(Debug, Serialize, Deserialize, Clone, Getters)]
 pub struct Flags {
     auth_required: bool,
@@ -63,11 +70,13 @@ pub struct Flags {
     auth_clawback_enabled: bool,
 }
 
+/// Struct defining the embedded in the list all accounts response.
 #[derive(Debug, Serialize, Deserialize, Clone, Getters)]
 pub struct Embedded {
     records: Vec<Records>,
 }
 
+/// Struct defining the list all accounts response.
 #[derive(Debug, Serialize, Deserialize, Clone, Getters)]
 pub struct AllAssetsResponse {
     _links: Links,

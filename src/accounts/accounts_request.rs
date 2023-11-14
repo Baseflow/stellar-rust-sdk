@@ -1,7 +1,7 @@
 use crate::models::*;
 
-use super::super::Order;
 use super::super::AssetType;
+use super::super::Order;
 
 /// AccountsRequest is the request object for the /accounts endpoint
 /// [More Details](https://www.stellar.org/developers/horizon/reference/endpoints/accounts.html "Accounts")
@@ -31,10 +31,6 @@ pub struct AccountsRequest {
 }
 
 impl Request for AccountsRequest {
-    /// Creates a new request object
-    /// # Returns
-    /// A new request object
-    /// [AccountsRequest](struct.AccountsRequest.html)
     fn new() -> Self {
         AccountsRequest {
             sponsor: None,
@@ -47,12 +43,10 @@ impl Request for AccountsRequest {
         }
     }
 
-    /// Gets the relative URL for the request
     fn get_path(&self) -> &str {
         "/accounts"
     }
 
-    // Gets the query parameters for the request
     fn get_query_parameters(&self) -> String {
         let mut query = String::new();
         if let Some(sponsor) = &self.sponsor {
@@ -79,7 +73,6 @@ impl Request for AccountsRequest {
         query.trim_end_matches('&').to_string()
     }
 
-    // Build the URL for the request
     fn build_url(&self, base_url: &str) -> String {
         format!(
             "{}{}?{}",
@@ -89,7 +82,6 @@ impl Request for AccountsRequest {
         )
     }
 
-    // Gets the body parameters for the request
     fn validate(&self) -> Result<(), String> {
         if let Some(sponsor) = &self.sponsor {
             let is_valid = is_public_key(sponsor);

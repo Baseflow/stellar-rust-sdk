@@ -4,6 +4,7 @@ use stellar_xdr::{LedgerHeader, ReadXdr};
 
 use crate::models::Response;
 
+/// Struct defining the self link in the list all accounts response.
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct SingleLedgerResponse {
     _links: Links,
@@ -26,6 +27,7 @@ pub struct SingleLedgerResponse {
     header_xdr: String,
 }
 
+/// Struct defining the self link in the list all ledgers response.
 #[derive(Debug, Deserialize, Clone, Getters)]
 struct Links {
     #[serde(rename = "self")]
@@ -36,18 +38,21 @@ struct Links {
     effects: Link,
 }
 
+/// Struct defining the self link in the list all ledgers response.
 #[derive(Debug, Deserialize, Clone, Getters)]
 struct Link {
     href: String,
     templated: Option<bool>,
 }
 
+/// Struct defining the embedded records in the list all ledgers response.
 impl Response for SingleLedgerResponse {
     fn from_json(json: String) -> Result<Self, String> {
         serde_json::from_str(&json).map_err(|e| e.to_string())
     }
 }
 
+/// Struct defining the embedded records in the list all ledgers response.
 impl SingleLedgerResponse {
     pub fn decoded_header_xdr(&self) -> Result<LedgerHeader, String> {
         let encoded = self.header_xdr.as_bytes();

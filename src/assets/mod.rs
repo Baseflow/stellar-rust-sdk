@@ -1,5 +1,5 @@
-mod all_assets_request;
-mod all_assets_response;
+pub mod all_assets_request;
+pub mod all_assets_response;
 
 pub mod prelude {
     pub use super::all_assets_request::*;
