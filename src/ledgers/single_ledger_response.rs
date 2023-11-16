@@ -29,7 +29,7 @@ pub struct SingleLedgerResponse {
 
 /// Struct defining the self link in the list all ledgers response.
 #[derive(Debug, Deserialize, Clone, Getters)]
-struct Links {
+pub struct Links {
     #[serde(rename = "self")]
     self_: Link,
     transactions: Link,
@@ -40,7 +40,7 @@ struct Links {
 
 /// Struct defining the self link in the list all ledgers response.
 #[derive(Debug, Deserialize, Clone, Getters)]
-struct Link {
+pub struct Link {
     href: String,
     templated: Option<bool>,
 }
