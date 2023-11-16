@@ -5,6 +5,45 @@ pub struct SingleLedgerRequest {
     sequence: u32,
 }
 
+// region: --- States
+#[derive(Default, Clone)]
+pub struct Sequence(u32);
+#[derive(Default, Clone)]
+pub struct NoSequence;
+// endregion: --- States
+
+#[derive(Default, Clone)]
+pub struct SingleLedgerRequestBuilder<S> {
+    sequence: S,
+}
+
+impl SingleLedgerRequestBuilder<NoSequence> {
+    pub fn new() -> Self {
+        SingleLedgerRequestBuilder::default()
+    }
+}
+
+impl<S> SingleLedgerRequestBuilder<S> {
+    pub fn sequence(
+        self,
+        sequence: impl Into<u32>,
+    ) -> SingleLedgerRequestBuilder<Sequence> {
+
+        SingleLedgerRequestBuilder {    
+            sequence: Sequence(sequence.into()) 
+        }
+    }
+}
+
+impl SingleLedgerRequestBuilder<Sequence> {
+    pub fn build(self) -> Result<SingleLedgerRequest, String> {
+        Ok(SingleLedgerRequest { 
+            sequence: self.sequence.0
+        })
+    }
+}
+
+
 impl Request for SingleLedgerRequest {
     fn new() -> Self {
         Self { sequence: 0 }
