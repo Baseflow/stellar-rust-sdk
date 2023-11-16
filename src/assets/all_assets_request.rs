@@ -25,10 +25,6 @@ pub struct AllAssetsRequest {
 }
 
 impl Request for AllAssetsRequest {
-    /// Creates a new request object
-    /// # Returns
-    /// A new request object
-    /// [AllAssetsRequest](struct.AllAssetsRequest.html)
     fn new() -> Self {
         AllAssetsRequest {
             asset_code: None,
@@ -39,12 +35,10 @@ impl Request for AllAssetsRequest {
         }
     }
 
-    /// Gets the relative URL for the request
     fn get_path(&self) -> &str {
         "/assets"
     }
 
-    /// Gets the query parameters for the request
     fn get_query_parameters(&self) -> String {
         let mut query = String::new();
         if let Some(asset_code) = &self.asset_code {
@@ -66,7 +60,6 @@ impl Request for AllAssetsRequest {
         query.trim_end_matches('&').to_string()
     }
 
-    /// Validates the request
     fn validate(&self) -> Result<(), String> {
         if let Some(asset_code) = &self.asset_code {
             // TODO: implement full asset code regex
@@ -97,7 +90,6 @@ impl Request for AllAssetsRequest {
         Ok(())
     }
 
-    /// Builds the URL for the request
     fn build_url(&self, base_url: &str) -> String {
         format!(
             "{}{}?{}",

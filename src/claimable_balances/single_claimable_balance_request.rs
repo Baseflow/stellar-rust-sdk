@@ -10,26 +10,16 @@ pub struct SingleClaimableBalanceRequest {
 }
 
 impl Request for SingleClaimableBalanceRequest {
-    /// Creates a new request object
-    /// # Returns
-    /// A new request object
-    /// [SingleClaimableBalanceRequest](struct.SingleClaimableBalanceRequest.html)
     fn new() -> Self {
         SingleClaimableBalanceRequest {
             claimable_balance_id: None,
         }
     }
 
-    /// Gets the relative URL for the request
-    /// # Returns
-    /// The relative URL for the request
     fn get_path(&self) -> &str {
         "/claimable_balances/"
     }
 
-    /// Gets the query parameters for the request
-    /// # Returns
-    /// The query parameters for the request
     fn get_query_parameters(&self) -> String {
         let mut query = String::new();
         if let Some(claimable_balance_id) = &self.claimable_balance_id {
@@ -38,12 +28,6 @@ impl Request for SingleClaimableBalanceRequest {
         query
     }
 
-    /// Builds the URL for the request
-    /// # Arguments
-    /// * `self` - The request object
-    /// * `base_url` - The base URL for the Horizon server
-    /// # Returns
-    /// The URL for the request
     fn build_url(&self, base_url: &str) -> String {
         format!(
             "{}{}{}",
@@ -53,13 +37,7 @@ impl Request for SingleClaimableBalanceRequest {
         )
     }
 
-    /// Returns the type of request
-    /// # Returns
-    /// The type of request
-    /// [RequestType](../enum.RequestType.html)
-    /// [More Details](https://laboratory.stellar.org/#explorer?resource=claimable_balances&endpoint=single&network=test "Single Claimable Balance")
     fn validate(&self) -> Result<(), String> {
-
         // TODO: Validate claimable_balance_id
 
         Ok(())

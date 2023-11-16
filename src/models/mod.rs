@@ -2,6 +2,9 @@
 /// which is used to send requests to the server
 pub trait Request {
     /// Creates a new request object
+    /// # Returns
+    /// A new request object
+    /// [Request](trait.Request.html)
     fn new() -> Self;
 
     /// Gets the relative URL for the request
@@ -34,8 +37,9 @@ pub trait Request {
     fn build_url(&self, base_url: &str) -> String;
 }
 
+/// The response module defines trait functions that response objects have to implement.
 pub trait Response: Sized {
-
+    /// Deserialize the response from JSON
     fn from_json(json: String) -> Result<Self, String>;
 }
 

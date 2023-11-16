@@ -6,6 +6,7 @@ use serde::Deserialize;
 
 use crate::models::Response;
 
+/// Struct defining the self link in the list all accounts response.
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct Links {
     #[serde(rename = "self")]
@@ -19,17 +20,20 @@ pub struct Links {
     data: Link,
 }
 
+/// Struct defining the self link in the list all accounts response.
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct SelfLink {
     href: String,
 }
 
+/// Struct defining a single balance in the list all accounts response.
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct Link {
     href: String,
     templated: bool,
 }
 
+/// Struct defining the thresholds in the list all accounts response.
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct Thresholds {
     low_threshold: u32,
@@ -37,6 +41,7 @@ pub struct Thresholds {
     high_threshold: u32,
 }
 
+/// Struct defining the flags in the list all accounts response.
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct Flags {
     auth_required: bool,
@@ -45,6 +50,7 @@ pub struct Flags {
     auth_clawback_enabled: bool,
 }
 
+/// Struct defining a single signer in the list all accounts response.
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct Balance {
     balance: String,
@@ -53,6 +59,7 @@ pub struct Balance {
     asset_type: String,
 }
 
+/// Struct defining a single signer in the list all accounts response.
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct Signer {
     weight: u32,
@@ -61,9 +68,11 @@ pub struct Signer {
     type_: String,
 }
 
+/// Struct defining a record of a single account in the list all accounts response.
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct Data {}
 
+/// Struct defining a record of a single account in the list all accounts response.
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct SingleAccountsResponse {
     _links: Links,

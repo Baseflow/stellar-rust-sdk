@@ -6,10 +6,8 @@ use super::super::Order;
 pub struct LedgersRequest {
     /// The cursor for the page
     cursor: Option<u32>,
-
     /// The maximum number of records to return
     limit: Option<u32>,
-
     /// The order of the records
     order: Option<Order>,
 }
