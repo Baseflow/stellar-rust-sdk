@@ -55,9 +55,10 @@ pub struct LedgersResponse {
 }
 
 impl Response for LedgersResponse {
-    fn from_json(json: String) -> Result<Self, String> {
+    fn from_json(json: String) -> Result<Self, std::io::Error> {
         // serde_json::from_str(&json).map_err(|e| e.to_string())
 
-        serde_json::from_str(&json).map_err(|e| e.to_string())
+        serde_json::from_str(&json)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))
     }
 }

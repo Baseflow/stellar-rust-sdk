@@ -77,7 +77,7 @@ impl Request for AllClaimableBalancesRequest {
         )
     }
 
-    fn validate(&self) -> Result<(), String> {
+    fn validate(&self) -> Result<(), std::io::Error> {
         if let Some(sponsor) = &self.sponsor {
             let is_valid = is_public_key(sponsor);
             if is_valid.is_err() {

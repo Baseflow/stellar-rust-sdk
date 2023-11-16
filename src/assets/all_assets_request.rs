@@ -5,7 +5,6 @@ use super::super::Order;
 // AllAssetsRequest is the request for the /assets endpoint
 // [More Details] https://www.stellar.org/developers/horizon/reference/endpoints/assets-all.html "Assets"
 pub struct AllAssetsRequest {
-
     /// The assets identifying code. For example, if the asset is a credit issued on the Stellar network,
     /// the code will be the asset’s code. If the asset is a native asset, the code will be XLM.
     asset_code: Option<String>,
@@ -60,30 +59,42 @@ impl Request for AllAssetsRequest {
         query.trim_end_matches('&').to_string()
     }
 
-    fn validate(&self) -> Result<(), String> {
+    fn validate(&self) -> Result<(), std::io::Error> {
         if let Some(asset_code) = &self.asset_code {
             // TODO: implement full asset code regex
             if asset_code.len() > 12 {
-                return Err("asset_code must be 12 characters or less".to_string());
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidInput,
+                    "asset_code too long",
+                ));
             }
         }
 
         if let Some(asset_issuer) = &self.asset_issuer {
             // TODO: implement full asset issuer regex
             if asset_issuer.len() != 56 {
-                return Err("asset_issuer must be 56 characters".to_string());
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidInput,
+                    "asset_issuer must be 56 characters long",
+                ));
             }
         }
 
         if let Some(limit) = &self.limit {
             if *limit < 1 || *limit > 200 {
-                return Err("limit must be between 1 and 200".to_string());
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidInput,
+                    "limit out of range",
+                ));
             }
         }
 
         if let Some(cursor) = &self.cursor {
             if *cursor < 1 {
-                return Err("cursor must be greater than or equal to 1".to_string());
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidInput,
+                    "cursor out of range",
+                ));
             }
         }
 

@@ -37,7 +37,7 @@ impl Request for SingleClaimableBalanceRequest {
         )
     }
 
-    fn validate(&self) -> Result<(), String> {
+    fn validate(&self) -> Result<(), std::io::Error> {
         // TODO: Validate claimable_balance_id
 
         Ok(())

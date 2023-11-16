@@ -47,8 +47,10 @@ pub struct Link {
 
 /// Struct defining the embedded records in the list all ledgers response.
 impl Response for SingleLedgerResponse {
-    fn from_json(json: String) -> Result<Self, String> {
-        serde_json::from_str(&json).map_err(|e| e.to_string())
+    fn from_json(json: String) -> Result<Self, std::io::Error> {
+        serde_json::from_str(&json).map_err(|e| 
+            std::io::Error::new(std::io::ErrorKind::Other, e)
+        )
     }
 }
 

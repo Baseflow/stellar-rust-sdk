@@ -93,7 +93,9 @@ pub struct SingleAccountsResponse {
 }
 
 impl Response for SingleAccountsResponse {
-    fn from_json(json: String) -> Result<Self, String> {
-        serde_json::from_str(&json).map_err(|e| e.to_string())
+    fn from_json(json: String) -> Result<Self, std::io::Error> {
+        serde_json::from_str(&json).map_err(|e| 
+            std::io::Error::new(std::io::ErrorKind::Other, e.to_string())
+        )
     }
 }

@@ -15,7 +15,7 @@
 //! use stellar_rust_sdk::accounts::prelude::AccountsResponse;
 //! use crate::stellar_rust_sdk::models::Request;
 //! 
-//! async fn example() -> Result<(), Box<dyn std::error::Error>> {
+//! async fn example() -> Result<(), std::io::Error> {
 //! // Initialize horizon client
 //! let horizon_client =
 //!     HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
@@ -27,7 +27,7 @@
 //!     .set_limit(10);
 //!
 //! // call the get_account_list method to retrieve the account list response
-//! let _accounts_response: Result<AccountsResponse, String> =
+//! let _accounts_response: Result<AccountsResponse, std::io::Error> =
 //!     horizon_client.get_account_list(&accounts_request).await;
 //!
 //! assert!(_accounts_response.is_ok());

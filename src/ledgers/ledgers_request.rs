@@ -43,19 +43,25 @@ impl Request for LedgersRequest {
         query_parameters.join("&")
     }
 
-    fn validate(&self) -> Result<(), String> {
+    fn validate(&self) -> Result<(), std::io::Error> {
         if let Some(cursor) = &self.cursor {
             if *cursor < 1 {
-                return Err("cursor must be greater than or equal to 1".to_string());
+                return Err(
+                    std::io::Error::new(std::io::ErrorKind::InvalidInput, "cursor must be greater than or equal to 1")
+                );
             }
         }
 
         if let Some(limit) = &self.limit {
             if *limit < 1 {
-                return Err("limit must be greater than or equal to 1".to_string());
+                return Err(
+                    std::io::Error::new(std::io::ErrorKind::InvalidInput, "limit must be greater than or equal to 1")
+                );
             }
             if *limit > 200 {
-                return Err("limit must be less than or equal to 200".to_string());
+                return Err(
+                    std::io::Error::new(std::io::ErrorKind::InvalidInput, "limit must be less than or equal to 200")
+                );
             }
         }
 

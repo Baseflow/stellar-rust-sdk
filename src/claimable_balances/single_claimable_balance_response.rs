@@ -105,8 +105,9 @@ pub struct Flags {
 }
 
 impl Response for SingleClaimableBalanceResponse {
-    fn from_json(json: String) -> Result<Self, String> {
-        let response = serde_json::from_str(&json).map_err(|e| e.to_string())?;
+    fn from_json(json: String) -> Result<Self, std::io::Error> {
+        let response = serde_json::from_str(&json)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
 
         Ok(response)
     }
@@ -119,11 +120,11 @@ impl Predicate {
         // If the predicate is marked as unconditional, the claim is always valid.
         if let Some(true) = self.unconditional {
             true
-        } 
+        }
         // If there are 'or' conditions, check if any of these conditions validate the claim.
         else if let Some(or_conditions) = &self.or {
             or_conditions.iter().any(|or| or.is_valid(datetime))
-        } 
+        }
         // If there are no conditions, the claim is valid.
         else {
             true
@@ -131,14 +132,13 @@ impl Predicate {
     }
 }
 
-
 impl Or {
     // This method checks if any condition under 'or' validates the claim.
     fn is_valid(&self, datetime: DateTime<Utc>) -> bool {
         // If there are 'and' conditions, check if any combination of these conditions is valid.
         if let Some(and_conditions) = &self.and {
             and_conditions.iter().any(|and| and.is_valid(datetime))
-        } 
+        }
         // If there is an 'abs_before' condition, check if the datetime is before this date.
         else if let Some(abs_before) = &self.abs_before {
             if let Ok(abs_before_date) = DateTime::parse_from_rfc3339(abs_before) {
@@ -146,7 +146,7 @@ impl Or {
             } else {
                 false
             }
-        } 
+        }
         // If no specific condition is found, the claim is valid.
         else {
             true
@@ -185,4 +185,3 @@ impl Not {
         }
     }
 }
-

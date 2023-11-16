@@ -21,9 +21,11 @@ impl Request for SingleLedgerRequest {
         format!("{}", self.sequence)
     }
 
-    fn validate(&self) -> Result<(), String> {
+    fn validate(&self) -> Result<(), std::io::Error> {
         if self.sequence < 1 {
-            return Err("sequence must be greater than or equal to 1".to_string());
+            return Err(
+                std::io::Error::new(std::io::ErrorKind::InvalidInput, "sequence must be greater than or equal to 1")
+            );
         }
 
         Ok(())

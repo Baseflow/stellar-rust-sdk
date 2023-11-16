@@ -34,7 +34,7 @@ impl Request for SingleAccountRequest {
         )
     }
 
-    fn validate(&self) -> Result<(), String> {
+    fn validate(&self) -> Result<(), std::io::Error> {
         if let Some(account_id) = &self.account_id {
             let is_valid = is_public_key(account_id);
             if is_valid.is_err() {

@@ -84,8 +84,9 @@ pub struct AllAssetsResponse {
 }
 
 impl Response for AllAssetsResponse {
-    fn from_json(json: String) -> Result<Self, String> {
-        let response = serde_json::from_str(&json).map_err(|e| e.to_string())?;
+    fn from_json(json: String) -> Result<Self, std::io::Error> {
+        let response = serde_json::from_str(&json)
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
 
         Ok(response)
     }

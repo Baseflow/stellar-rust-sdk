@@ -82,7 +82,7 @@ impl Request for AccountsRequest {
         )
     }
 
-    fn validate(&self) -> Result<(), String> {
+    fn validate(&self) -> Result<(), std::io::Error> {
         if let Some(sponsor) = &self.sponsor {
             let is_valid = is_public_key(sponsor);
             if is_valid.is_err() {
@@ -99,21 +99,33 @@ impl Request for AccountsRequest {
 
         if let Some(cursor) = &self.cursor {
             if *cursor < 1 {
-                return Err("cursor must be greater than or equal to 1".to_string());
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidInput,
+                    "cursor must be greater than or equal to 1",
+                ));
             }
         }
 
         if let Some(limit) = &self.limit {
             if *limit < 1 {
-                return Err("limit must be greater than or equal to 1".to_string());
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidInput,
+                    "limit must be greater than or equal to 1",
+                ));
             }
             if *limit > 200 {
-                return Err("limit must be less than or equal to 200".to_string());
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidInput,
+                    "limit must be less than or equal to 200",
+                ));
             }
         }
 
         if self.signer.is_none() && self.sponsor.is_none() && self.asset.is_none() {
-            return Err("Exactly one filter is required. Please ensure that you are including a signer, sponsor, asset, or liquidity pool filter.".to_string());
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidInput,
+                "Must have a signer, sponsor, or asset",
+            ));
         }
 
         Ok(())
@@ -205,6 +217,11 @@ mod tests {
         // check that the validate throws an error
         let result = request.validate();
         assert!(result.is_err());
-        assert_eq!(result.unwrap_err(), "Public key must be 56 characters long");
+        
+        let result = result.unwrap_err();
+
+        assert_eq!(result.kind(), std::io::ErrorKind::InvalidInput);
+        assert!(result.to_string().contains("Public key must be 56 characters long"));
+
     }
 }
