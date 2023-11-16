@@ -3,31 +3,39 @@
 //! This is a Rust SDK for the Stellar Horizon API. It is a work in progress and is not yet ready for production use.
 //! This library defines traits for request and response objects. This library contains types that implement these traits for each endpoint in the Horizon API respectively.
 //! The request objects are used to build the request URL and the response objects are used to deserialize the response from JSON.
-//! 
+//!
 //! ## Examples
-//! 
+//!
 //! Here is an example on how to use this library:
 //!
 //! ```rust
+//!
+//! use stellar_rust_sdk::horizon_client::horizon_client::HorizonClient;
+//! use stellar_rust_sdk::accounts::prelude::AccountsRequest;
+//! use stellar_rust_sdk::accounts::prelude::AccountsResponse;
+//! use crate::stellar_rust_sdk::models::Request;
+//! 
+//! async fn example() -> Result<(), Box<dyn std::error::Error>> {
 //! // Initialize horizon client
 //! let horizon_client =
 //!     HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
-//! 
+//!
 //! // construct request
 //! let mut accounts_request = AccountsRequest::new();
 //! accounts_request
 //!     .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
 //!     .set_limit(10);
-//! 
+//!
 //! // call the get_account_list method to retrieve the account list response
 //! let _accounts_response: Result<AccountsResponse, String> =
 //!     horizon_client.get_account_list(&accounts_request).await;
-//! 
+//!
 //! assert!(_accounts_response.is_ok());
+//!     Ok(())
+//! }
 //! ```
-//! 
 //! ## Features
-//! 
+//!
 //! All the enpoints in the Horizon Api and wether or not they are supported by this library:
 //!
 //! - [x] `Accounts` - List all accounts endpoint
@@ -73,7 +81,6 @@
 //! - [ ] `Transactions for Account` - List all transactions for an account endpoint
 //! - [ ] `Transactions for Ledger` - List all transactions for a ledger endpoint
 //! - [ ] `Transactions for Liquidity Pool` - List all transactions for a liquidity pool endpoint
-
 
 /// The accounts module
 pub mod accounts;
