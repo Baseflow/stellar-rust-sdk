@@ -19,38 +19,28 @@ use crate::accounts::prelude::*;
 
 // region: --- States
 #[derive(Default, Clone)]
-pub struct NoBaseUrl;
+pub struct Sequence(u32);
 #[derive(Default, Clone)]
-pub struct BaseUrl(String);
+pub struct NoSequence;
 // endregion: --- States
 
 
-#[derive(Default, Clone)]
-pub struct HorizonClient<U> {
+pub struct HorizonClient {
     /// The base URL for the Horizon server
-    base_url: U,
+    base_url: String,
 }
 
-impl HorizonClient<NoBaseUrl> {
-    pub fn new () -> Self {
-        HorizonClient::default()
+impl HorizonClient {
+    /// Creates a new Horizon client
+    /// # Arguments
+    /// * `base_url` - The base URL for the Horizon server
+    /// # Returns
+    /// The Horizon client
+    pub fn new(base_url: String) -> Result<Self, String> {
+        url_validate(&base_url)?;
+        Ok(Self { base_url })
     }
-}
 
-impl<U> HorizonClient<U> {
-    pub fn base_url(
-        self,
-        base_url: impl Into<String>
-    ) -> Result<HorizonClient<BaseUrl>, String> {
-        let url: String = base_url.into();
-
-        url_validate(&url)?;
-
-        Ok(HorizonClient { base_url: BaseUrl(url) })
-    }
-}
-
-impl HorizonClient<BaseUrl> {
     /// Gets an account list from the server
     /// # Arguments
     /// * `self` - The Horizon client
@@ -181,7 +171,7 @@ impl HorizonClient<BaseUrl> {
         // Determine the url
         // TODO: construct with query parameters
 
-        let url = request.build_url(&self.base_url.0);
+        let url = request.build_url(&self.base_url);
         let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
         // println!("\n\nREQWEST RESPONSE: {:?}", response);
         let result: TResponse = handle_response(response).await?;
@@ -213,7 +203,6 @@ async fn handle_response<TResponse: Response>(
         }
     }
 }
-
 /// url_validate validates a URL
 fn url_validate(url: &str) -> Result<(), String> {
     // println!("URL: {}", url);
@@ -228,15 +217,9 @@ fn url_validate(url: &str) -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
-<<<<<<< HEAD
     use base64::{Engine, engine::general_purpose};
     use chrono::{ TimeZone, Utc};
 
-=======
-    use base64::encode;
-    use chrono::{DateTime, TimeZone, Utc};
-    
->>>>>>> 0d7723d (Rewrite HorizonClient in builder pattern)
     use crate::{
         assets::prelude::AllAssetsRequest,
         claimable_balances::prelude::SingleClaimableBalanceRequest,
@@ -244,9 +227,6 @@ mod tests {
     };
 
     use super::*;
-
-    static TESTNET_URL: &str = "https://horizon-testnet.stellar.org";
-
 
     #[test]
     fn test_url_validate_invalid_url() {
@@ -260,16 +240,15 @@ mod tests {
 
     #[test]
     fn test_url_validate_valid_url() {
-        let result = url_validate(TESTNET_URL);
+        let result = url_validate("https://horizon-testnet.stellar.org");
         assert!(result.is_ok());
     }
 
     #[tokio::test]
     async fn test_get_account_list() {
         // Initialize horizon client
-        let horizon_client = HorizonClient::new()
-            .base_url(TESTNET_URL)
-            .unwrap();
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
         let mut accounts_request = AccountsRequest::new();
@@ -420,9 +399,8 @@ mod tests {
     #[tokio::test]
     async fn test_get_single_account() {
         // Initialize horizon client
-        let horizon_client = HorizonClient::new()
-            .base_url(TESTNET_URL)
-            .unwrap();
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
         let mut single_account_request = SingleAccountRequest::new();
@@ -595,9 +573,8 @@ mod tests {
     #[tokio::test]
     async fn test_get_all_assests() {
         // Initialize horizon client
-        let horizon_client = HorizonClient::new()
-            .base_url(TESTNET_URL)
-            .unwrap();
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
         let mut all_assets_request: AllAssetsRequest = AllAssetsRequest::new();
@@ -740,9 +717,9 @@ mod tests {
     #[tokio::test]
     async fn test_get_all_ledgers() {
         // Initialize horizon client
-        let horizon_client = HorizonClient::new()
-            .base_url(TESTNET_URL)
-            .unwrap();
+
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
         let mut all_ledgers_request = LedgersRequest::new();
@@ -782,9 +759,8 @@ mod tests {
     #[tokio::test]
     async fn test_get_single_ledger() {
         // Initialize horizon client
-        let horizon_client = HorizonClient::new()
-            .base_url(TESTNET_URL)
-            .unwrap();
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
         let mut single_ledger_request = SingleLedgerRequest::new();
@@ -932,9 +908,8 @@ mod tests {
     #[tokio::test]
     async fn test_get_decoded_single_ledger() {
         // Initialize horizon client
-        let horizon_client = HorizonClient::new()
-            .base_url(TESTNET_URL)
-            .unwrap();
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
         let mut single_ledger_request = SingleLedgerRequest::new();
@@ -1068,9 +1043,8 @@ mod tests {
     #[tokio::test]
     async fn test_get_all_claimable_balances() {
         // Initialize horizon client
-        let horizon_client = HorizonClient::new()
-            .base_url(TESTNET_URL)
-            .unwrap();
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
         let mut all_claimable_balances_request = AllClaimableBalancesRequest::new();
@@ -1168,9 +1142,8 @@ mod tests {
     #[tokio::test]
     async fn test_get_single_claimable_balance() {
         // Initialize horizon client
-        let horizon_client = HorizonClient::new()
-            .base_url(TESTNET_URL)
-            .unwrap();
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
         let mut single_claimable_balance_request = SingleClaimableBalanceRequest::new();
