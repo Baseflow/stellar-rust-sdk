@@ -1,13 +1,33 @@
+use derive_getters::Getters;
 use url::Url;
 
-// --------------------------------SINGLE REQUEST--------------------------------
+use crate::models::Response;
 
+#[derive(Clone)]
+pub enum HttpMethod {
+    GET,
+    POST
+}
+
+// --------------------------------SINGLE REQUEST--------------------------------
 const SINGLE_LEDGERS_PATH: &str = "/ledgers";
 
+#[derive(Getters)]
 pub struct SingleLedgerRequest {
-    /// The sequence of the ledger
     sequence: u32,
-    base_path: String
+    path: String,
+    method: HttpMethod
+}
+
+impl SingleLedgerRequest {
+    pub fn build_url(&self, base_url: &BaseUrl) -> String {
+        format!(
+            "{}{}/{}",
+            base_url.0,
+            self.path(),
+            self.sequence()
+        )
+    }
 }
 
 // region: --- States
@@ -21,6 +41,7 @@ pub struct NoSequence;
 pub struct SingleLedgerRequestBuilder<S> {
     sequence: S,
     path: String,
+    method: HttpMethod,
 }
 
 impl Default for SingleLedgerRequestBuilder<NoSequence> {
@@ -28,6 +49,7 @@ impl Default for SingleLedgerRequestBuilder<NoSequence> {
         SingleLedgerRequestBuilder { 
             sequence: NoSequence,
             path: SINGLE_LEDGERS_PATH.into(),
+            method: HttpMethod::GET
         }
     }
 }
@@ -46,7 +68,8 @@ impl<S> SingleLedgerRequestBuilder<S> {
 
         SingleLedgerRequestBuilder {    
             sequence: Sequence(sequence.into()),
-            path: SINGLE_LEDGERS_PATH.into()
+            path: SINGLE_LEDGERS_PATH.into(),
+            method: HttpMethod::GET
         }
     }
 }
@@ -55,7 +78,8 @@ impl SingleLedgerRequestBuilder<Sequence> {
     pub fn build(self) -> Result<SingleLedgerRequest, String> {
         Ok(SingleLedgerRequest { 
             sequence: self.sequence.0,
-            base_path: self.path
+            path: self.path,
+            method: self.method
         })
     }
 }
@@ -63,7 +87,7 @@ impl SingleLedgerRequestBuilder<Sequence> {
 
 
 
-
+// --------------------------------HORIZON CLIENT--------------------------------
 #[derive(Default, Clone)]
 pub struct NoBaseUrl;
 #[derive(Default, Clone)]
@@ -93,11 +117,44 @@ impl HorizonClientNew<NoBaseUrl> {
 }
 
 impl HorizonClientNew<BaseUrl> {
-    pub fn test() {
-        println!("yay")
+    pub async fn send<TResponse: Response + std::fmt::Debug>(
+        &self,
+        request: SingleLedgerRequest
+    ) -> Result<TResponse, String> {
+        match request.method() {
+            HttpMethod::GET => Self::get(&self, request).await,
+            HttpMethod::POST => todo!()
+        }
+    }
+
+    async fn get<TResponse: Response + std::fmt::Debug>(
+        &self,
+        request: SingleLedgerRequest
+    ) -> Result<TResponse, String> {
+        let url = request.build_url(&self.base_url);
+        let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
+        println!("\n\nREQWEST RESPONSE: {:?}", response);
+        let result: TResponse = handle_response(response).await?;
+
+        Ok(result)
     }
 }
 
+async fn handle_response<TResponse: Response>(
+    response: reqwest::Response,
+) -> Result<TResponse, String> {
+    // println!("\n Response: {:?}", response);
+    match response.status() {
+        reqwest::StatusCode::OK => {
+            let _response = response.text().await.map_err(|e| e.to_string())?;
+            TResponse::from_json(_response)
+        }
+        _ => {
+            let response = response.text().await.map_err(|e| e.to_string())?;
+            Err(response)
+        }
+    }
+}
 
 fn url_validate(url_to_validate: impl Into<String>) -> Result<(), String> {
     // check if starts with http:// or https://
@@ -109,10 +166,14 @@ fn url_validate(url_to_validate: impl Into<String>) -> Result<(), String> {
 
     Ok(())
 }
+// --------------------------------------------------------------------------------------
+
 
 
 #[cfg(test)]
 mod tests {
+    use crate::ledgers::single_ledger_response::SingleLedgerResponse;
+
     use super::*;
 
     #[test]
@@ -127,7 +188,21 @@ mod tests {
             .sequence(2 as u32)
             .build()
             .unwrap();
+    }
 
+    #[tokio::test]
+    async fn test_get_single_ledger() {
+        let horizon_client = HorizonClientNew::new()
+            .base_url("https://horizon-testnet.stellar.org")
+            .unwrap();
 
+        let request = SingleLedgerRequestBuilder::new()
+            .sequence(2 as u32)
+            .build()
+            .unwrap();
+        
+        let response: Result<SingleLedgerResponse, String> = horizon_client.send(request).await;
+
+        assert!(response.clone().is_ok());
     }
 }
