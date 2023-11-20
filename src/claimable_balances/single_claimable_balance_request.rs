@@ -32,12 +32,6 @@ impl Request for SingleClaimableBalanceRequest {
             self.get_query_parameters()
         )
     }
-
-    fn validate(&self) -> Result<(), String> {
-        // TODO: Validate claimable_balance_id
-
-        Ok(())
-    }
 }
 
 /// Returns the claimable balance ID
