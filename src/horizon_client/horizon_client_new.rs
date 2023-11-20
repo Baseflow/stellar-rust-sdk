@@ -1,10 +1,10 @@
-use derive_getters::Getters;
 use url::Url;
 
-use crate::{models::{Response, Request}, ledgers::single_ledger_response::SingleLedgerResponse};
+use crate::{models::Response, ledgers::single_ledger_response::SingleLedgerResponse};
 
-pub trait RequestNew {
-    fn build_url(&self, base_url: &BaseUrl) -> String;
+pub trait Req {
+    fn get_path(&self) -> &str;
+    fn build_url(&self, base_url: &str) -> String;
 }
 
 // pub trait RequestBuilder {
@@ -12,91 +12,64 @@ pub trait RequestNew {
 // }
 
 
-#[derive(Clone)]
-pub enum HttpMethod {
-    GET,
-    POST
-}
-
-// --------------------------------SINGLE REQUEST--------------------------------
-const SINGLE_LEDGERS_PATH: &str = "/ledgers";
-
-#[derive(Getters)]
-pub struct SingleLedgerRequest {
-    sequence: u32,
-    path: String,
-    method: HttpMethod
-}
-
-impl RequestNew for SingleLedgerRequest {
-    fn build_url(&self, base_url: &BaseUrl) -> String {
-        format!(
-            "{}{}/{}",
-            base_url.0,
-            self.path(),
-            self.sequence()
-        )
-    }
-}
-
-// region: --- States
+// region: --- SingleLedgerRequest
 #[derive(Default, Clone)]
 pub struct Sequence(u32);
 #[derive(Default, Clone)]
 pub struct NoSequence;
-// endregion: --- States
 
-#[derive(Clone)]
-pub struct SingleLedgerRequestBuilder<S> {
+#[derive(Default)]
+pub struct SingleLedgerRequest<S> {
     sequence: S,
-    path: String,
-    method: HttpMethod,
 }
 
-impl Default for SingleLedgerRequestBuilder<NoSequence> {
-    fn default() -> Self {
-        SingleLedgerRequestBuilder { 
-            sequence: NoSequence,
-            path: SINGLE_LEDGERS_PATH.into(),
-            method: HttpMethod::GET
-        }
-    }
-}
-
-impl SingleLedgerRequestBuilder<NoSequence> {
+impl SingleLedgerRequest<NoSequence> {
     pub fn new() -> Self {
-        SingleLedgerRequestBuilder::default()
+        SingleLedgerRequest::default()
     }
 }
 
-impl<S> SingleLedgerRequestBuilder<S> {
-    pub fn sequence(
+impl<S> SingleLedgerRequest<S> {
+    pub fn set_sequence(
         self,
-        sequence: impl Into<u32>,
-    ) -> SingleLedgerRequestBuilder<Sequence> {
-
-        SingleLedgerRequestBuilder {    
-            sequence: Sequence(sequence.into()),
-            path: SINGLE_LEDGERS_PATH.into(),
-            method: HttpMethod::GET
+        sequence: u32,
+    ) -> Result<SingleLedgerRequest<Sequence>, String> {
+        if sequence < 1 {
+            return Err("sequence must be greater than or equal to 1".to_string());
         }
+
+        Ok(
+            SingleLedgerRequest {    
+                sequence: Sequence(sequence),
+            }
+        )
     }
 }
 
-impl SingleLedgerRequestBuilder<Sequence> {
-    pub fn build(self) -> Result<SingleLedgerRequest, String> {
-        Ok(SingleLedgerRequest { 
-            sequence: self.sequence.0,
-            path: self.path,
-            method: self.method
-        })
+impl SingleLedgerRequest<Sequence> {
+    fn get_sequence(&self) -> String {
+        self.sequence.0.to_string()
     }
 }
-// --------------------------------------------------------------------------------
+
+impl Req for SingleLedgerRequest<Sequence> {
+    fn get_path(&self) -> &str {
+        "/ledgers"
+    }
+
+    fn build_url(&self, base_url: &str) -> String {
+        format!(
+            "{}{}/{}",
+            base_url,
+            self.get_path(),
+            self.get_sequence()
+        )
+    }
+}
+// endregion
 
 
-
-// --------------------------------HORIZON CLIENT--------------------------------
+// region: --- horizon-client
 #[derive(Default, Clone)]
 pub struct NoBaseUrl;
 #[derive(Default, Clone)]
@@ -137,16 +110,16 @@ impl HorizonClientNew<BaseUrl> {
     /// [GET /ledgers/{ledger_id}](https://www.stellar.org/developers/horizon/reference/endpoints/ledgers-single.html)
     pub async fn get_single_ledger(
         &self,
-        request: &SingleLedgerRequest,
+        request: &SingleLedgerRequest<Sequence>,
     ) -> Result<SingleLedgerResponse, String> {
         self.get::<SingleLedgerResponse>(request).await
     }
 
     async fn get<TResponse: Response + std::fmt::Debug>(
         &self,
-        request: &impl RequestNew
+        request: &impl Req
     ) -> Result<TResponse, String> {
-        let url = request.build_url(&self.base_url);
+        let url = request.build_url(&self.base_url.0);
         let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
         // println!("\n\nREQWEST RESPONSE: {:?}", response);
         let result: TResponse = handle_response(response).await?;
@@ -181,31 +154,14 @@ fn url_validate(url_to_validate: impl Into<String>) -> Result<(), String> {
 
     Ok(())
 }
-// --------------------------------------------------------------------------------------
-
+// endregion
 
 
 #[cfg(test)]
 mod tests {
     use base64::encode;
 
-    use crate::ledgers::single_ledger_response::SingleLedgerResponse;
-
     use super::*;
-
-    #[test]
-    fn test_horizon_client() {
-        let horizon_client = HorizonClientNew::new()
-                .base_url("https://horizon-testnet.stellar.org");
-    }
-
-    #[test]
-    fn test_ledgers_request() {
-        let request = SingleLedgerRequestBuilder::new()
-            .sequence(2 as u32)
-            .build()
-            .unwrap();
-    }
 
     #[tokio::test]
     async fn test_get_single_ledger() {
@@ -213,10 +169,8 @@ mod tests {
             .base_url("https://horizon-testnet.stellar.org")
             .unwrap();
 
-        let request = SingleLedgerRequestBuilder::new()
-            .sequence(2 as u32)
-            .build()
-            .unwrap();
+        let request = SingleLedgerRequest::new()
+            .set_sequence(2).unwrap();
         
         let _single_ledger_response = horizon_client.get_single_ledger(&request).await;
 
