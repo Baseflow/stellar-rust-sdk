@@ -2,9 +2,9 @@ use crate::models::*;
 
 
 #[derive(Default, Clone)]
-pub struct Id(String);
+pub struct ClaimableBalanceId(String);
 #[derive(Default, Clone)]
-pub struct NoId;
+pub struct NoClaimableBalanceId;
 
 /// SingleClaimableBalanceRequest is the struct that implements the type for the /claimable_balances endpoint to get a single claimable balance
 /// [More Details](https://developers.stellar.org/api/horizon/resources/retrieve-a-claimable-balance) "Single Claimable Balance")
@@ -13,7 +13,7 @@ pub struct SingleClaimableBalanceRequest<I> {
     claimable_balance_id: I,
 }
 
-impl SingleClaimableBalanceRequest<NoId> {
+impl SingleClaimableBalanceRequest<NoClaimableBalanceId> {
     pub fn new() -> Self {
         SingleClaimableBalanceRequest::default()
     }
@@ -23,12 +23,14 @@ impl<I> SingleClaimableBalanceRequest<I> {
     pub fn set_claimable_balance_id(
         self,
         claimable_balance_id: String,
-    ) -> SingleClaimableBalanceRequest<Id> {
-        SingleClaimableBalanceRequest { claimable_balance_id: Id(claimable_balance_id) }
+    ) -> SingleClaimableBalanceRequest<ClaimableBalanceId> {
+        SingleClaimableBalanceRequest { 
+            claimable_balance_id: ClaimableBalanceId(claimable_balance_id) 
+        }
     }
 }
 
-impl Request for SingleClaimableBalanceRequest<Id> {
+impl Request for SingleClaimableBalanceRequest<ClaimableBalanceId> {
     fn get_path(&self) -> &str {
         "/claimable_balances/"
     }
