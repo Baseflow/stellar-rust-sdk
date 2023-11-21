@@ -119,11 +119,15 @@ impl AllClaimableBalancesRequest {
     /// # Returns
     /// The request object
     /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
-    pub fn set_cursor(self, cursor: u32) -> AllClaimableBalancesRequest {
-        AllClaimableBalancesRequest {
+    pub fn set_cursor(self, cursor: u32) -> Result<AllClaimableBalancesRequest, String> {
+        if cursor < 1 {
+            return Err("cursor must be greater than or equal to 1".to_string());
+        }
+
+        Ok(AllClaimableBalancesRequest {
             cursor: Some(cursor),
             ..self
-        }
+        })
     }
 
     /// Sets the limit for the request
@@ -133,11 +137,15 @@ impl AllClaimableBalancesRequest {
     /// # Returns
     /// The request object
     /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
-    pub fn set_limit(self, limit: u32) -> AllClaimableBalancesRequest {
-        AllClaimableBalancesRequest {
+    pub fn set_limit(self, limit: u32) -> Result<AllClaimableBalancesRequest, String> {
+        if limit < 1 || limit > 200 {
+            return Err("limit must be between 1 and 200".to_string());
+        }
+
+        Ok(AllClaimableBalancesRequest {
             limit: Some(limit),
             ..self
-        }
+        })
     }
 
     /// Sets the order for the request
@@ -152,5 +160,44 @@ impl AllClaimableBalancesRequest {
             order: Some(order),
             ..self
         }
+    }
+}
+
+impl Request for AllClaimableBalancesRequest {
+    fn get_path(&self) -> &str {
+        "/claimable_balances/"
+    }
+
+    fn get_query_parameters(&self) -> String {
+        let mut query = String::new();
+        if let Some(sponsor) = &self.sponsor {
+            query.push_str(&format!("sponsor={}&", sponsor));
+        }
+        if let Some(asset) = &self.asset {
+            query.push_str(&format!("asset={}&", asset));
+        }
+        if let Some(claimant) = &self.claimant {
+            query.push_str(&format!("claimant={}&", claimant));
+        }
+        if let Some(cursor) = &self.cursor {
+            query.push_str(&format!("cursor={}&", cursor));
+        }
+        if let Some(limit) = &self.limit {
+            query.push_str(&format!("limit={}&", limit));
+        }
+        if let Some(order) = &self.order {
+            query.push_str(&format!("order={}&", order));
+        }
+
+        query.trim_end_matches('&').to_string()
+    }
+
+    fn build_url(&self, base_url: &str) -> String {
+        format!(
+            "{}{}?{}",
+            base_url,
+            self.get_path(),
+            self.get_query_parameters()
+        )
     }
 }

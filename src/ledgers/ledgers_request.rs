@@ -79,11 +79,8 @@ impl LedgersRequest {
     /// The request object
     /// [AllAssetsRequest](struct.AllAssetsRequest.html)
     pub fn set_limit(self, limit: u32) -> Result<LedgersRequest, String> {
-        if limit < 1 {
-            return Err("limit must be greater than or equal to 1".to_string());
-        }
-        if limit > 200 {
-            return Err("limit must be less than or equal to 200".to_string());
+        if limit < 1 || limit > 200 {
+            return Err("limit must be between 1 and 200".to_string());
         }
 
         Ok(

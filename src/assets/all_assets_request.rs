@@ -4,9 +4,9 @@ use super::super::Order;
 
 
 // AllAssetsRequest is the request for the /assets endpoint
-// [More Details] https://www.stellar.org/developers/horizon/reference/endpoints/assets-all.html "Assets"
+// [More Details] https://developers.stellar.org/api/horizon/resources/list-all-assets "Assets"
+#[derive(Default)]
 pub struct AllAssetsRequest {
-
     /// The assets identifying code. For example, if the asset is a credit issued on the Stellar network,
     /// the code will be the asset’s code. If the asset is a native asset, the code will be XLM.
     asset_code: Option<String>,
@@ -25,55 +25,36 @@ pub struct AllAssetsRequest {
     order: Option<Order>,
 }
 
+impl AllAssetsRequest {
+    pub fn new() -> AllAssetsRequest {
+        AllAssetsRequest::default()
+    }
+}
+
 impl Request for AllAssetsRequest {
-    fn new() -> Self {
-        AllAssetsRequest {
-            asset_code: None,
-            asset_issuer: None,
-            cursor: None,
-            limit: None,
-            order: None,
-        }
+    fn get_path(&self) -> &str {
+        "/assets"
     }
 
     fn get_query_parameters(&self) -> String {
-        vec![
-            self.asset_code.as_ref().map(|ac| format!("asset_code={}", ac)),
-            self.asset_issuer.as_ref().map(|ai| format!("asset_issuer={}", ai)),
-            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
-            self.limit.as_ref().map(|l| format!("limit={}", l)),
-            self.order.as_ref().map(|o| format!("order={}", o)),
-        ].build_query_parameters()
-    }
-
-    fn validate(&self) -> Result<(), String> {
+        let mut query = String::new();
         if let Some(asset_code) = &self.asset_code {
-            // TODO: implement full asset code regex
-            if asset_code.len() > 12 {
-                return Err("asset_code must be 12 characters or less".to_string());
-            }
+            query.push_str(&format!("asset_code={}&", asset_code));
         }
-
         if let Some(asset_issuer) = &self.asset_issuer {
-            // TODO: implement full asset issuer regex
-            if asset_issuer.len() != 56 {
-                return Err("asset_issuer must be 56 characters".to_string());
-            }
+            query.push_str(&format!("asset_issuer={}&", asset_issuer));
         }
-
-        if let Some(limit) = &self.limit {
-            if *limit < 1 || *limit > 200 {
-                return Err("limit must be between 1 and 200".to_string());
-            }
-        }
-
         if let Some(cursor) = &self.cursor {
-            if *cursor < 1 {
-                return Err("cursor must be greater than or equal to 1".to_string());
-            }
+            query.push_str(&format!("cursor={}&", cursor));
+        }
+        if let Some(limit) = &self.limit {
+            query.push_str(&format!("limit={}&", limit));
+        }
+        if let Some(order) = &self.order {
+            query.push_str(&format!("order={}&", order));
         }
 
-        Ok(())
+        query.trim_end_matches('&').to_string()
     }
 
     fn build_url(&self, base_url: &str) -> String {
@@ -93,9 +74,15 @@ impl AllAssetsRequest {
     /// # Returns
     /// The request object
     /// [AllAssetsRequest](struct.AllAssetsRequest.html)
-    pub fn set_asset_code(&mut self, asset_code: &str) -> &mut Self {
-        self.asset_code = Some(asset_code.to_owned());
-        self
+    pub fn set_asset_code(self, asset_code: &str) -> Result<AllAssetsRequest, String> {
+        if asset_code.len() > 12 {
+            return Err("asset_code must be 12 characters or less".to_string());
+        }
+
+        Ok(AllAssetsRequest {
+            asset_code: Some(asset_code.to_string()),
+            ..self
+        })
     }
 
     /// Sets the asset issuer
@@ -104,9 +91,15 @@ impl AllAssetsRequest {
     /// # Returns
     /// The request object
     /// [AllAssetsRequest](struct.AllAssetsRequest.html)
-    pub fn set_asset_issuer(&mut self, asset_issuer: &str) -> &mut Self {
-        self.asset_issuer = Some(asset_issuer.to_owned());
-        self
+    pub fn set_asset_issuer(self, asset_issuer: &str) -> Result<AllAssetsRequest, String> {
+        if asset_issuer.len() != 56 {
+            return Err("asset_issuer must be 56 characters".to_string());
+        }
+
+        Ok(AllAssetsRequest {
+            asset_issuer: Some(asset_issuer.to_string()),
+            ..self
+        })
     }
 
     /// Sets the cursor
@@ -115,9 +108,15 @@ impl AllAssetsRequest {
     /// # Returns
     /// The request object
     /// [AllAssetsRequest](struct.AllAssetsRequest.html)
-    pub fn set_cursor(&mut self, cursor: u32) -> &mut Self {
-        self.cursor = Some(cursor);
-        self
+    pub fn set_cursor(self, cursor: u32) -> Result<AllAssetsRequest, String> {
+        if cursor < 1 {
+            return Err("cursor must be greater than or equal to 1".to_string());
+        }
+
+        Ok(AllAssetsRequest {
+            cursor: Some(cursor),
+            ..self
+        })
     }
 
     /// Sets the limit
@@ -126,9 +125,15 @@ impl AllAssetsRequest {
     /// # Returns
     /// The request object
     /// [AllAssetsRequest](struct.AllAssetsRequest.html)
-    pub fn set_limit(&mut self, limit: u32) -> &mut Self {
-        self.limit = Some(limit);
-        self
+    pub fn set_limit(self, limit: u32) -> Result<AllAssetsRequest, String> {
+        if limit < 1 || limit > 200 {
+            return Err("limit must be between 1 and 200".to_string());
+        }
+
+        Ok(AllAssetsRequest {
+            limit: Some(limit),
+            ..self
+        })
     }
 
     /// Sets the order
@@ -137,8 +142,10 @@ impl AllAssetsRequest {
     /// # Returns
     /// The request object
     /// [AllAssetsRequest](struct.AllAssetsRequest.html)
-    pub fn set_order(&mut self, order: Order) -> &mut Self {
-        self.order = Some(order);
-        self
+    pub fn set_order(self, order: Order) -> AllAssetsRequest {
+        AllAssetsRequest {
+            order: Some(order),
+            ..self
+        }
     }
 }
