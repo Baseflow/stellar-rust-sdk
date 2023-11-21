@@ -208,8 +208,8 @@ mod tests {
 
     use crate::{
         assets::prelude::AllAssetsRequest,
-        claimable_balances::prelude::SingleClaimableBalanceRequest,
-        ledgers::prelude::SingleLedgerRequest,
+        claimable_balances::{prelude::SingleClaimableBalanceRequest, single_claimable_balance_request},
+        ledgers::{prelude::SingleLedgerRequest, single_ledger_request},
     };
 
     use super::*;
@@ -1130,11 +1130,8 @@ mod tests {
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
-        // construct request
-        let mut single_claimable_balance_request = SingleClaimableBalanceRequest::new();
-        single_claimable_balance_request.set_claimable_balance_id(
-            "000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string(),
-        );
+        let single_claimable_balance_request = SingleClaimableBalanceRequest::new()
+            .set_claimable_balance_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string());
 
         let single_claimable_balance_response = horizon_client
             .get_single_claimable_balance(&single_claimable_balance_request)

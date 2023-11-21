@@ -1,19 +1,34 @@
 use crate::models::*;
 
-/// SingleClaimableBalanceRequest is the struct that implements the type for the /claimable_balances endpoint to get a single claimable balance
-/// [More Details](https://laboratory.stellar.org/#explorer?resource=claimable_balances&endpoint=single&network=test "Single Claimable Balance")
-#[derive(Debug)]
-pub struct SingleClaimableBalanceRequest {
-    /// Claimable Balance ID
-    /// [Stellar Documentation](https://developers.stellar.org/api/resources/claimablebalances/single/ "Claimable Balance ID")
-    claimable_balance_id: Option<String>,
+
+#[derive(Default, Clone)]
+pub struct Id(String);
+#[derive(Default, Clone)]
+pub struct NoId;
+
+#[derive(Default)]
+pub struct SingleClaimableBalanceRequest<I> {
+    claimable_balance_id: I,
 }
 
-impl Request for SingleClaimableBalanceRequest {
-    fn new() -> Self {
-        SingleClaimableBalanceRequest {
-            claimable_balance_id: None,
-        }
+impl SingleClaimableBalanceRequest<NoId> {
+    pub fn new() -> Self {
+        SingleClaimableBalanceRequest::default()
+    }
+}
+
+impl<I> SingleClaimableBalanceRequest<I> {
+    pub fn set_claimable_balance_id(
+        self,
+        claimable_balance_id: String,
+    ) -> SingleClaimableBalanceRequest<Id> {
+        SingleClaimableBalanceRequest { claimable_balance_id: Id(claimable_balance_id) }
+    }
+}
+
+impl Request for SingleClaimableBalanceRequest<Id> {
+    fn get_path(&self) -> &str {
+        "/claimable_balances/"
     }
 
     fn get_query_parameters(&self) -> String {
@@ -34,14 +49,3 @@ impl Request for SingleClaimableBalanceRequest {
     }
 }
 
-/// Returns the claimable balance ID
-/// # Arguments
-/// * `self` - The request object
-/// # Returns
-/// The claimable balance ID
-impl SingleClaimableBalanceRequest {
-    pub fn set_claimable_balance_id(&mut self, claimable_balance_id: String) -> &mut Self {
-        self.claimable_balance_id = Some(claimable_balance_id);
-        self
-    }
-}
