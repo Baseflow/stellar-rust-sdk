@@ -6,6 +6,8 @@ pub struct Id(String);
 #[derive(Default, Clone)]
 pub struct NoId;
 
+/// SingleClaimableBalanceRequest is the struct that implements the type for the /claimable_balances endpoint to get a single claimable balance
+/// [More Details](https://developers.stellar.org/api/horizon/resources/retrieve-a-claimable-balance) "Single Claimable Balance")
 #[derive(Default)]
 pub struct SingleClaimableBalanceRequest<I> {
     claimable_balance_id: I,
@@ -33,10 +35,8 @@ impl Request for SingleClaimableBalanceRequest<Id> {
 
     fn get_query_parameters(&self) -> String {
         let mut query = String::new();
-        if let Some(claimable_balance_id) = &self.claimable_balance_id {
-            query.push_str(&format!("{}", claimable_balance_id));
-        }
-        format!("/{}", query)
+        query.push_str(&format!("{}", self.claimable_balance_id.0));
+        query
     }
 
     fn build_url(&self, base_url: &str) -> String {

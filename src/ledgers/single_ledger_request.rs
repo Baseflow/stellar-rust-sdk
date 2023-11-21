@@ -60,6 +60,27 @@ impl<S> SingleLedgerRequest<S> {
     }
 }
 
+impl Request for SingleLedgerRequest<Sequence> {
+    fn get_path(&self) -> &str {
+        "/ledgers"
+    }
+
+    fn get_query_parameters(&self) -> String {
+        format!("{}", self.sequence.0)
+    }
+
+    fn build_url(&self, base_url: &str) -> String {
+        format!(
+            "{}{}/{}",
+            base_url,
+            self.get_path(),
+            self.get_query_parameters()
+        )
+    }
+}
+
+
+
 #[cfg(test)]
 mod tests {
     use super::*;

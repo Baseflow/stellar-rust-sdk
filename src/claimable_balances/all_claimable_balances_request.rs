@@ -5,6 +5,7 @@ use super::super::AssetType;
 
 /// AllClaimableBalancesRequest is the request type for the /claimable_balances/all endpoint
 /// [More Details] (https://www.stellar.org/developers/horizon/reference/endpoints/claimable_balances-all.html) "All Claimable Balances")
+#[derive(Default)]
 pub struct AllClaimableBalancesRequest {
     /// Account ID of the sponsor. Every account in the response will either be sponsored by the
     /// given account ID or have a subentry (trustline, offer, or data entry) which is sponsored by
@@ -28,16 +29,15 @@ pub struct AllClaimableBalancesRequest {
     order: Option<Order>,
 }
 
+impl AllClaimableBalancesRequest {
+    pub fn new() -> Self {
+        AllClaimableBalancesRequest::default()
+    }
+}
+
 impl Request for AllClaimableBalancesRequest {
-    fn new() -> Self {
-        AllClaimableBalancesRequest {
-            sponsor: None,
-            asset: None,
-            claimant: None,
-            cursor: None,
-            limit: None,
-            order: None,
-        }
+    fn get_path(&self) -> &str {
+        "/claimable_balances/"
     }
 
     fn get_query_parameters(&self) -> String {
@@ -59,24 +59,6 @@ impl Request for AllClaimableBalancesRequest {
             self.get_query_parameters()
         )
     }
-
-    fn validate(&self) -> Result<(), String> {
-        if let Some(sponsor) = &self.sponsor {
-            let is_valid = is_public_key(sponsor);
-            if is_valid.is_err() {
-                return Err(is_valid.unwrap_err());
-            }
-        }
-
-        if let Some(claimant) = &self.claimant {
-            let is_valid = is_public_key(claimant);
-            if is_valid.is_err() {
-                return Err(is_valid.unwrap_err());
-            }
-        }
-
-        Ok(())
-    }
 }
 
 impl AllClaimableBalancesRequest {
@@ -87,9 +69,15 @@ impl AllClaimableBalancesRequest {
     /// # Returns
     /// The request object
     /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
-    pub fn set_sponsor(&mut self, sponsor: String) -> &mut Self {
-        self.sponsor = Some(sponsor);
-        self
+    pub fn set_sponsor(self, sponsor: String) -> Result<AllClaimableBalancesRequest, String> {
+        if let Err(e) = is_public_key(&sponsor) {
+            return Err(e.to_string());
+        }
+
+        Ok(AllClaimableBalancesRequest {
+            sponsor: Some(sponsor),
+            ..self
+        })
     }
 
     /// Sets the asset for the request
@@ -99,9 +87,11 @@ impl AllClaimableBalancesRequest {
     /// # Returns
     /// The request object
     /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
-    pub fn set_asset(&mut self, asset: AssetType) -> &mut Self {
-        self.asset = Some(asset);
-        self
+    pub fn set_asset(self, asset: AssetType) -> AllClaimableBalancesRequest {
+        AllClaimableBalancesRequest {
+            asset: Some(asset),
+            ..self
+        }        
     }
 
     /// Sets the claimant for the request
@@ -111,9 +101,15 @@ impl AllClaimableBalancesRequest {
     /// # Returns
     /// The request object
     /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
-    pub fn set_claimant(&mut self, claimant: String) -> &mut Self {
-        self.claimant = Some(claimant);
-        self
+    pub fn set_claimant(self, claimant: String) -> Result<AllClaimableBalancesRequest, String> {
+        if let Err(e) = is_public_key(&claimant) {
+            return Err(e.to_string());
+        }
+
+        Ok(AllClaimableBalancesRequest {
+            claimant: Some(claimant),
+            ..self
+        })
     }
 
     /// Sets the cursor for the request
@@ -123,9 +119,11 @@ impl AllClaimableBalancesRequest {
     /// # Returns
     /// The request object
     /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
-    pub fn set_cursor(&mut self, cursor: u32) -> &mut Self {
-        self.cursor = Some(cursor);
-        self
+    pub fn set_cursor(self, cursor: u32) -> AllClaimableBalancesRequest {
+        AllClaimableBalancesRequest {
+            cursor: Some(cursor),
+            ..self
+        }
     }
 
     /// Sets the limit for the request
@@ -135,9 +133,11 @@ impl AllClaimableBalancesRequest {
     /// # Returns
     /// The request object
     /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
-    pub fn set_limit(&mut self, limit: u32) -> &mut Self {
-        self.limit = Some(limit);
-        self
+    pub fn set_limit(self, limit: u32) -> AllClaimableBalancesRequest {
+        AllClaimableBalancesRequest {
+            limit: Some(limit),
+            ..self
+        }
     }
 
     /// Sets the order for the request
@@ -147,8 +147,10 @@ impl AllClaimableBalancesRequest {
     /// # Returns
     /// The request object
     /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
-    pub fn set_order(&mut self, order: Order) -> &mut Self {
-        self.order = Some(order);
-        self
+    pub fn set_order(self, order: Order) -> AllClaimableBalancesRequest {
+        AllClaimableBalancesRequest {
+            order: Some(order),
+            ..self
+        }
     }
 }
