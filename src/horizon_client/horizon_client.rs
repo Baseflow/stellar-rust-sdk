@@ -1,6 +1,7 @@
 use crate::{
     accounts::prelude::{
-        AccountsRequest, AccountsResponse, SingleAccountRequest, SingleAccountsResponse,
+        ValidAccountsRequest, AccountsResponse, SingleAccountRequest, SingleAccountsResponse,
+        AccountId
     },
     assets::prelude::{AllAssetsRequest, AllAssetsResponse},
     claimable_balances::prelude::{
@@ -14,9 +15,6 @@ use crate::{
 };
 use reqwest;
 use url::Url;
-
-use crate::accounts::prelude::*;
-
 
 pub struct HorizonClient {
     /// The base URL for the Horizon server
@@ -45,7 +43,7 @@ impl HorizonClient {
     /// [GET /accounts](https://www.stellar.org/developers/horizon/reference/endpoints/accounts.html)
     pub async fn get_account_list(
         &self,
-        request: &AccountsRequest,
+        request: &impl ValidAccountsRequest,
     ) -> Result<AccountsResponse, String> {
         self.get::<AccountsResponse>(request).await
     }
@@ -208,8 +206,9 @@ mod tests {
 
     use crate::{
         assets::prelude::AllAssetsRequest,
-        claimable_balances::{prelude::SingleClaimableBalanceRequest, single_claimable_balance_request},
-        ledgers::{prelude::SingleLedgerRequest, single_ledger_request},
+        accounts::prelude::AccountsRequest,
+        claimable_balances::prelude::SingleClaimableBalanceRequest,
+        ledgers::prelude::SingleLedgerRequest,
     };
 
     use super::*;
@@ -237,10 +236,9 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let mut accounts_request = AccountsRequest::new();
-        accounts_request
-            .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
-            .set_limit(10);
+        let accounts_request = AccountsRequest::new()
+            .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap()
+            .set_limit(10).unwrap();
 
         // call the get_account_list method to retrieve the account list response
         let _accounts_response: Result<AccountsResponse, String> =
@@ -389,7 +387,7 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let mut single_account_request = SingleAccountRequest::new()
+        let single_account_request = SingleAccountRequest::new()
             .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
             .unwrap();
 
@@ -563,7 +561,7 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let mut all_assets_request: AllAssetsRequest = AllAssetsRequest::new()
+        let all_assets_request: AllAssetsRequest = AllAssetsRequest::new()
             .set_limit(1).unwrap();
 
         let _all_assets_response = horizon_client.get_all_assets(&all_assets_request).await;
@@ -746,7 +744,7 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let mut single_ledger_request = SingleLedgerRequest::new()
+        let single_ledger_request = SingleLedgerRequest::new()
             .set_sequence(2).unwrap();
 
         let _single_ledger_response = horizon_client
@@ -1030,7 +1028,7 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let mut all_claimable_balances_request = AllClaimableBalancesRequest::new()
+        let all_claimable_balances_request = AllClaimableBalancesRequest::new()
             .set_limit(2).unwrap();
 
         let _all_claimable_balances_response = horizon_client
