@@ -5,7 +5,7 @@ use crate::{
     assets::prelude::{AllAssetsRequest, AllAssetsResponse},
     claimable_balances::prelude::{
         AllClaimableBalancesRequest, AllClaimableBalancesResponse, SingleClaimableBalanceRequest,
-        SingleClaimableBalanceResponse,
+        SingleClaimableBalanceResponse, Id,
     },
     ledgers::{prelude::{
         LedgersRequest, LedgersResponse, SingleLedgerRequest, SingleLedgerResponse,
@@ -109,7 +109,7 @@ impl HorizonClient {
     /// [GET /claimable_balances/{claimable_balance_id}](https://www.stellar.org/developers/horizon/reference/endpoints/claimable_balances-single.html)
     pub async fn get_single_claimable_balance(
         &self,
-        request: &SingleClaimableBalanceRequest,
+        request: &SingleClaimableBalanceRequest<Id>,
     ) -> Result<SingleClaimableBalanceResponse, String> {
         self.get::<SingleClaimableBalanceResponse>(request).await
     }
@@ -1032,8 +1032,8 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let mut all_claimable_balances_request = AllClaimableBalancesRequest::new();
-        all_claimable_balances_request.set_limit(2);
+        let mut all_claimable_balances_request = AllClaimableBalancesRequest::new()
+            .set_limit(2);
 
         let _all_claimable_balances_response = horizon_client
             .get_all_claimable_balances(&all_claimable_balances_request)
