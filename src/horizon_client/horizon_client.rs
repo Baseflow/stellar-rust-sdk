@@ -15,8 +15,6 @@ use crate::{
 use reqwest;
 use url::Url;
 
-use crate::accounts::prelude::*;
-
 pub struct HorizonClient {
     /// The base URL for the Horizon server
     base_url: String,
@@ -165,7 +163,7 @@ impl HorizonClient {
 
         let url = request.build_url(&self.base_url);
         let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
-        println!("\n\nREQWEST RESPONSE: {:?}", response);
+        // println!("\n\nREQWEST RESPONSE: {:?}", response);
         let result: TResponse = handle_response(response).await?;
 
         // print!("\n\nResult: {:?}", result);
@@ -197,7 +195,7 @@ async fn handle_response<TResponse: Response>(
 }
 /// url_validate validates a URL
 fn url_validate(url: &str) -> Result<(), String> {
-    println!("URL: {}", url);
+    // println!("URL: {}", url);
     // check if start with http:// or https://
     if !url.starts_with("http://") && !url.starts_with("https://") {
         return Err(format!("URL must start with http:// or https://: {}", url));
@@ -209,8 +207,8 @@ fn url_validate(url: &str) -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
-    use base64::encode;
-    use chrono::{DateTime, TimeZone, Utc};
+    use base64::{Engine, engine::general_purpose};
+    use chrono::{ TimeZone, Utc};
 
     use crate::{
         assets::prelude::AllAssetsRequest,
@@ -883,8 +881,8 @@ mod tests {
         assert_eq!(decoded_xdr_header.max_tx_set_size, 100);
 
         let tx_set_hash = decoded_xdr_header.scp_value.tx_set_hash.to_string();
-        let tx_set_hash_bytes = hex::decode(tx_set_hash).expect("Failed to decode hex");
-        let tx_set_hash_base64 = encode(&tx_set_hash_bytes);
+        let tx_set_hash_bytes = hex::decode(tx_set_hash.clone()).expect("Failed to decode hex");
+        let tx_set_hash_base64 = general_purpose::STANDARD.encode(tx_set_hash_bytes.clone());
 
         assert_eq!(
             tx_set_hash_base64,

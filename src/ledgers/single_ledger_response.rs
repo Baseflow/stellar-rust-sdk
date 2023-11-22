@@ -1,5 +1,5 @@
 use derive_getters::Getters;
-use serde::{de, Deserialize};
+use serde::Deserialize;
 use stellar_xdr::{LedgerHeader, ReadXdr};
 
 use crate::models::Response;

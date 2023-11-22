@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
 
-    use ::stellar_xdr::{LedgerHeader, ReadXdr};
+    use ::stellar_xdr::ReadXdr;
     use stellar_xdr::curr as stellar_xdr;
 
     // TODO, add vice versa.

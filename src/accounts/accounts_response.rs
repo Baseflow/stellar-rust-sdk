@@ -5,17 +5,17 @@ use crate::models::Response;
 
 /// Struct defining the self link in the list all accounts response.
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
-pub struct SelfLink {
+pub struct AccountsResponseSelfLink {
     href: String,
 }
 
 /// Struct defining the links in the list all accounts response.
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
-pub struct Links {    
+pub struct AccountsResponseLinks {    
     #[serde(rename = "self")]
-    self_link: SelfLink,
-    next: Option<SelfLink>,
-    prev: Option<SelfLink>,
+    self_link: AccountsResponseSelfLink,
+    next: Option<AccountsResponseSelfLink>,
+    prev: Option<AccountsResponseSelfLink>,
 }
 
 /// Struct defining a single balance in the list all accounts response.
@@ -29,7 +29,7 @@ pub struct Balances {
 
 /// Struct defining the thresholds in the list all accounts response.
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
-pub struct Thresholds {
+pub struct AccountsResponseThresholds {
     low_threshold: i32,
     med_threshold: i32,
     high_threshold: i32,
@@ -37,7 +37,7 @@ pub struct Thresholds {
 
 /// Struct defining the flags in the list all accounts response.
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
-pub struct Flags {
+pub struct AccountsResponseFlags {
     auth_required: bool,
     auth_revocable: bool,
     auth_immutable: bool,
@@ -57,15 +57,15 @@ pub struct Signers {
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct Record {
     #[serde(rename = "_links")]
-    links: Links,
+    links: AccountsResponseLinks,
     id: String,
     account_id: String,
     sequence: String,
     subentry_count: i32,
     last_modified_ledger: i64,
     last_modified_time: String,
-    thresholds: Thresholds,
-    flags: Flags,
+    thresholds: AccountsResponseThresholds,
+    flags: AccountsResponseFlags,
     balances: Vec<Balances>,
     signers: Vec<Signers>,
     data: serde_json::Value,
@@ -83,7 +83,7 @@ pub struct Embedded {
 /// Struct defining the list all accounts response.
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct AccountsResponse {
-    _links: Links,
+    _links: AccountsResponseLinks,
     _embedded: Embedded,
 }
 

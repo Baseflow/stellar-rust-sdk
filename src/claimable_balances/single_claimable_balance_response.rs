@@ -29,14 +29,14 @@ pub struct SingleClaimableBalanceResponse {
 #[serde(rename_all = "camelCase")]
 pub struct Links {
     #[serde(rename = "self")]
-    pub self_field: Self_field,
+    pub self_field: SelfField,
     pub transactions: Transactions,
     pub operations: Operations,
 }
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct Self_field {
+pub struct SelfField {
     pub href: String,
 }
 

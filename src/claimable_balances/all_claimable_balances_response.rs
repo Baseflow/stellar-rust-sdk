@@ -10,23 +10,23 @@ use crate::models::Response;
 #[serde(rename_all = "camelCase")]
 pub struct AllClaimableBalancesResponse {
     #[serde(rename = "_links")]
-    links: Links,
+    links: AllClaimableBalancesLinks,
     #[serde(rename = "_embedded")]
     embedded: Embedded,
 }
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct Links {
+pub struct AllClaimableBalancesLinks {
     #[serde(rename = "self")]
-    self_field: Self_field,
+    self_field: AllClaimableAssetsReponseSelfField,
     next: Next,
     prev: Prev,
 }
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct Self_field {
+pub struct AllClaimableAssetsReponseSelfField {
     href: String,
 }
 
@@ -61,8 +61,8 @@ pub struct Record {
     last_modified_ledger: i64,
     #[serde(rename = "last_modified_time")]
     last_modified_time: String,
-    claimants: Vec<Claimant>,
-    flags: Flags,
+    claimants: Vec<AllClaimableAssetsResponseClaimant>,
+    flags: AllClaimableResponseFlags,
     #[serde(rename = "paging_token")]
     paging_token: String,
 }
@@ -71,49 +71,49 @@ pub struct Record {
 #[serde(rename_all = "camelCase")]
 pub struct RecordsLinks {
     #[serde(rename = "self")]
-    self_field: Records_Self_field,
-    transactions: Transactions,
-    operations: Operations,
+    self_field: RecordsSelfField,
+    transactions: AllClaimableAssetsResponseTransactions,
+    operations: AllClaimableAssetsResponseOperations,
 }
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct Records_Self_field {
+pub struct RecordsSelfField {
     href: String,
 }
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct Transactions {
-    href: String,
-    templated: bool,
-}
-
-#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
-pub struct Operations {
+pub struct AllClaimableAssetsResponseTransactions {
     href: String,
     templated: bool,
 }
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct Claimant {
+pub struct AllClaimableAssetsResponseOperations {
+    href: String,
+    templated: bool,
+}
+
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct AllClaimableAssetsResponseClaimant {
     destination: String,
-    predicate: Predicate,
+    predicate: AllClaimableAssetsResponsePredicate,
 }
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct Predicate {
+pub struct AllClaimableAssetsResponsePredicate {
     unconditional: Option<bool>,
-    or: Option<Vec<Or>>,
+    or: Option<Vec<AllClaimableAssetsOr>>,
 }
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct Or {
-    and: Option<Vec<And>>,
+pub struct AllClaimableAssetsOr {
+    and: Option<Vec<AllClaimableAssetsResponseAnd>>,
     #[serde(rename = "abs_before")]
     abs_before: Option<String>,
     #[serde(rename = "abs_before_epoch")]
@@ -122,8 +122,8 @@ pub struct Or {
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct And {
-    not: Option<Not>,
+pub struct AllClaimableAssetsResponseAnd {
+    not: Option<AllClaimableBalancesResponseNot>,
     #[serde(rename = "abs_before")]
     abs_before: Option<String>,
     #[serde(rename = "abs_before_epoch")]
@@ -132,7 +132,7 @@ pub struct And {
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct Not {
+pub struct AllClaimableBalancesResponseNot {
     #[serde(rename = "abs_before")]
     abs_before: String,
     #[serde(rename = "abs_before_epoch")]
@@ -141,7 +141,7 @@ pub struct Not {
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct Flags {
+pub struct AllClaimableResponseFlags {
     #[serde(rename = "clawback_enabled")]
     clawback_enabled: bool,
 }
@@ -155,7 +155,7 @@ impl Response for AllClaimableBalancesResponse {
 }
 
 /// This method checks if a claim is valid at a specific datetime.
-impl Predicate {
+impl AllClaimableAssetsResponsePredicate {
     // This method checks if a claim is valid at a specific datetime.
     pub fn is_valid_claim(&self, datetime: DateTime<Utc>) -> bool {
         // If the predicate is marked as unconditional, the claim is always valid.
@@ -174,7 +174,7 @@ impl Predicate {
 }
 
 
-impl Or {
+impl AllClaimableAssetsOr {
     // This method checks if any condition under 'or' validates the claim.
     fn is_valid(&self, datetime: DateTime<Utc>) -> bool {
         // If there are 'and' conditions, check if any combination of these conditions is valid.
@@ -196,7 +196,7 @@ impl Or {
     }
 }
 
-impl And {
+impl AllClaimableAssetsResponseAnd {
     // This method checks if all conditions under 'and' are met.
     fn is_valid(&self, datetime: DateTime<Utc>) -> bool {
         let mut is_valid = true;
@@ -217,7 +217,7 @@ impl And {
     }
 }
 
-impl Not {
+impl AllClaimableBalancesResponseNot {
     // This method checks if the datetime does not fall before the specified date, negating the condition.
     fn is_valid(&self, datetime: DateTime<Utc>) -> bool {
         if let Ok(not_before_date) = DateTime::parse_from_rfc3339(&self.abs_before) {

@@ -1,8 +1,5 @@
 use crate::models::*;
 
-use super::super::AssetType;
-use super::super::Order;
-
 pub struct SingleLedgerRequest {
     /// The sequence of the ledger
     sequence: u32,

@@ -1,6 +1,5 @@
 use crate::models::*;
 
-use super::super::AssetType;
 use super::super::Order;
 
 pub struct LedgersRequest {

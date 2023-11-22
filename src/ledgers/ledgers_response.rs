@@ -5,7 +5,7 @@ use crate::models::Response;
 
 /// Struct defining the self link in the list all ledgers response.
 #[derive(Debug, Deserialize, Clone, Getters)]
-pub struct Link {
+pub struct LedgersResponseLink {
     #[serde(rename = "self")]
     self_link: SelfLink,
     next: Option<SelfLink>,
@@ -21,7 +21,7 @@ pub struct SelfLink {
 /// Struct defining a record of a single ledger in the list all ledgers response.
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct Records {
-    _links: Link,
+    _links: LedgersResponseLink,
     id: String,
     paging_token: String,
     hash: String,
@@ -50,7 +50,7 @@ pub struct Embedded {
 /// Struct defining the list all ledgers response.
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct LedgersResponse {
-    _links: Link,
+    _links: LedgersResponseLink,
     _embedded: Embedded,
 }
 
