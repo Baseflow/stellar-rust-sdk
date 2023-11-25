@@ -11,7 +11,7 @@ impl Request for SingleLedgerRequest {
     }
 
     fn get_query_parameters(&self) -> String {
-        format!("{}", self.sequence)
+        format!("/{}", self.sequence)
     }
 
     fn validate(&self) -> Result<(), String> {
@@ -24,7 +24,7 @@ impl Request for SingleLedgerRequest {
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}/{}/{}",
+            "{}/{}{}",
             base_url,
             super::LEDGERS_PATH,
             self.get_query_parameters()

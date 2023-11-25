@@ -21,21 +21,21 @@ impl Request for LedgersRequest {
     }
 
     fn get_query_parameters(&self) -> String {
-        let mut query_parameters = vec![];
+        let mut query = vec![];
 
         if let Some(cursor) = &self.cursor {
-            query_parameters.push(format!("cursor={}", cursor));
+            query.push(format!("cursor={}", cursor));
         }
 
         if let Some(limit) = &self.limit {
-            query_parameters.push(format!("limit={}", limit));
+            query.push(format!("limit={}", limit));
         }
 
         if let Some(order) = &self.order {
-            query_parameters.push(format!("order={}", order));
+            query.push(format!("order={}", order));
         }
 
-        query_parameters.join("&")
+        format!("{}{}", match query.is_empty() {true => "", false => "?"}, query.join("&"))
     }
 
     fn validate(&self) -> Result<(), String> {
@@ -59,7 +59,7 @@ impl Request for LedgersRequest {
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}/{}?{}",
+            "{}/{}{}",
             base_url,
             super::LEDGERS_PATH,
             self.get_query_parameters()
@@ -107,7 +107,7 @@ mod tests {
         let request = LedgersRequest::new();
         assert_eq!(
             request.build_url("https://horizon-testnet.stellar.org"),
-            "https://horizon-testnet.stellar.org/ledgers?"
+            "https://horizon-testnet.stellar.org/ledgers"
         );
     }
 }

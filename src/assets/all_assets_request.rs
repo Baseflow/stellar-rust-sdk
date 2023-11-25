@@ -36,24 +36,24 @@ impl Request for AllAssetsRequest {
     }
 
     fn get_query_parameters(&self) -> String {
-        let mut query = String::new();
+        let mut query = vec![];
         if let Some(asset_code) = &self.asset_code {
-            query.push_str(&format!("asset_code={}&", asset_code));
+            query.push(format!("asset_code={}", asset_code));
         }
         if let Some(asset_issuer) = &self.asset_issuer {
-            query.push_str(&format!("asset_issuer={}&", asset_issuer));
+            query.push(format!("asset_issuer={}", asset_issuer));
         }
         if let Some(cursor) = &self.cursor {
-            query.push_str(&format!("cursor={}&", cursor));
+            query.push(format!("cursor={}", cursor));
         }
         if let Some(limit) = &self.limit {
-            query.push_str(&format!("limit={}&", limit));
+            query.push(format!("limit={}", limit));
         }
         if let Some(order) = &self.order {
-            query.push_str(&format!("order={}&", order));
+            query.push(format!("order={}", order));
         }
 
-        query.trim_end_matches('&').to_string()
+        format!("{}{}", match query.is_empty() {true => "", false => "?"}, query.join("&"))
     }
 
     fn validate(&self) -> Result<(), String> {
@@ -88,7 +88,7 @@ impl Request for AllAssetsRequest {
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}/{}?{}",
+            "{}/{}{}",
             base_url,
             super::ASSET_PATH,
             self.get_query_parameters()

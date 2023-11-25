@@ -21,12 +21,12 @@ impl Request for SingleClaimableBalanceRequest {
         if let Some(claimable_balance_id) = &self.claimable_balance_id {
             query.push_str(&format!("{}", claimable_balance_id));
         }
-        query
+        format!("/{}", query)
     }
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}/{}/{}",
+            "{}/{}{}",
             base_url,
             super::CLAIMABLE_BALANCES_PATH,            
             self.get_query_parameters()
