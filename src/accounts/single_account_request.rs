@@ -12,10 +12,6 @@ impl Request for SingleAccountRequest {
         SingleAccountRequest { account_id: None }
     }
 
-    fn get_path(&self) -> &str {
-        "/accounts/"
-    }
-
     fn get_query_parameters(&self) -> String {
         let mut query = String::new();
         if let Some(account_id) = &self.account_id {
@@ -27,9 +23,9 @@ impl Request for SingleAccountRequest {
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}{}{}",
+            "{}/{}/{}",
             base_url,
-            self.get_path(),
+            super::ACCOUNTS_PATH,
             self.get_query_parameters()
         )
     }

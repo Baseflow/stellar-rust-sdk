@@ -1,6 +1,6 @@
 use crate::models::Request;
-
 use super::super::Order;
+
 
 // AllAssetsRequest is the request for the /assets endpoint
 // [More Details] https://www.stellar.org/developers/horizon/reference/endpoints/assets-all.html "Assets"
@@ -33,10 +33,6 @@ impl Request for AllAssetsRequest {
             limit: None,
             order: None,
         }
-    }
-
-    fn get_path(&self) -> &str {
-        "/assets"
     }
 
     fn get_query_parameters(&self) -> String {
@@ -92,9 +88,9 @@ impl Request for AllAssetsRequest {
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}{}?{}",
+            "{}/{}?{}",
             base_url,
-            self.get_path(),
+            super::ASSET_PATH,
             self.get_query_parameters()
         )
     }

@@ -7,13 +7,6 @@ pub trait Request {
     /// [Request](trait.Request.html)
     fn new() -> Self;
 
-    /// Gets the relative URL for the request
-    /// # Arguments
-    /// * `self` - The request object
-    /// # Returns
-    /// The relative URL for the request
-    fn get_path(&self) -> &str;
-
     /// Gets the query parameters for the request
     /// # Arguments
     /// * `self` - The request object

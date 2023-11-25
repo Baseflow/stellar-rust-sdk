@@ -43,10 +43,6 @@ impl Request for AccountsRequest {
         }
     }
 
-    fn get_path(&self) -> &str {
-        "/accounts"
-    }
-
     fn get_query_parameters(&self) -> String {
         let mut query = String::new();
         if let Some(sponsor) = &self.sponsor {
@@ -75,9 +71,9 @@ impl Request for AccountsRequest {
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}{}?{}",
+            "{}/{}?{}",
             base_url,
-            self.get_path(),
+            super::ACCOUNTS_PATH,
             self.get_query_parameters()
         )
     }
@@ -194,7 +190,10 @@ mod tests {
     #[test]
     fn test_accounts_request() {
         let request = AccountsRequest::new();
-        assert_eq!(request.get_path(), "/accounts");
+        assert_eq!(
+            request.build_url("https://horizon-testnet.stellar.org"),
+            "https://horizon-testnet.stellar.org/accounts?"
+        );
     }
 
     #[test]

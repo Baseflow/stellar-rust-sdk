@@ -10,10 +10,6 @@ impl Request for SingleLedgerRequest {
         Self { sequence: 0 }
     }
 
-    fn get_path(&self) -> &str {
-        "/ledgers"
-    }
-
     fn get_query_parameters(&self) -> String {
         format!("{}", self.sequence)
     }
@@ -28,9 +24,9 @@ impl Request for SingleLedgerRequest {
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}{}/{}",
+            "{}/{}/{}",
             base_url,
-            self.get_path(),
+            super::LEDGERS_PATH,
             self.get_query_parameters()
         )
     }
@@ -56,7 +52,6 @@ mod tests {
     #[test]
     fn test_ledgers_request() {
         let request = SingleLedgerRequest::new();
-
-        assert_eq!(request.get_path(), "/ledgers");
+        assert_eq!(request.build_url("https://horizon-testnet.stellar.org"), "https://horizon-testnet.stellar.org/ledgers/0");
     }
 }

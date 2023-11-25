@@ -20,10 +20,6 @@ impl Request for LedgersRequest {
         }
     }
 
-    fn get_path(&self) -> &str {
-        "/ledgers"
-    }
-
     fn get_query_parameters(&self) -> String {
         let mut query_parameters = vec![];
 
@@ -63,9 +59,9 @@ impl Request for LedgersRequest {
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}{}?{}",
+            "{}/{}?{}",
             base_url,
-            self.get_path(),
+            super::LEDGERS_PATH,
             self.get_query_parameters()
         )
     }
@@ -109,7 +105,9 @@ mod tests {
     #[test]
     fn test_ledgers_request() {
         let request = LedgersRequest::new();
-
-        assert_eq!(request.get_path(), "/ledgers");
+        assert_eq!(
+            request.build_url("https://horizon-testnet.stellar.org"),
+            "https://horizon-testnet.stellar.org/ledgers?"
+        );
     }
 }

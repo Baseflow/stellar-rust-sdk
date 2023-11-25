@@ -3,6 +3,8 @@ pub mod ledgers_response;
 pub mod single_ledger_request;
 pub mod single_ledger_response;
 
+static LEDGERS_PATH: &str = "ledgers";
+
 pub mod prelude {
     pub use super::ledgers_request::*;
     pub use super::ledgers_response::*;
