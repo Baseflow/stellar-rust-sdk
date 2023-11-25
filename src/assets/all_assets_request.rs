@@ -1,5 +1,6 @@
-use crate::models::Request;
+use crate::{models::Request, BuildQueryParametersExt};
 use super::super::Order;
+
 
 
 // AllAssetsRequest is the request for the /assets endpoint
@@ -36,24 +37,13 @@ impl Request for AllAssetsRequest {
     }
 
     fn get_query_parameters(&self) -> String {
-        let mut query = vec![];
-        if let Some(asset_code) = &self.asset_code {
-            query.push(format!("asset_code={}", asset_code));
-        }
-        if let Some(asset_issuer) = &self.asset_issuer {
-            query.push(format!("asset_issuer={}", asset_issuer));
-        }
-        if let Some(cursor) = &self.cursor {
-            query.push(format!("cursor={}", cursor));
-        }
-        if let Some(limit) = &self.limit {
-            query.push(format!("limit={}", limit));
-        }
-        if let Some(order) = &self.order {
-            query.push(format!("order={}", order));
-        }
-
-        format!("{}{}", match query.is_empty() {true => "", false => "?"}, query.join("&"))
+        vec![
+            self.asset_code.as_ref().map(|ac| format!("asset_code={}", ac)),
+            self.asset_issuer.as_ref().map(|ai| format!("asset_issuer={}", ai)),
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+        ].build_query_parameters()
     }
 
     fn validate(&self) -> Result<(), String> {

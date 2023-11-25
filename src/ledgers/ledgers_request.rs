@@ -1,4 +1,4 @@
-use crate::models::*;
+use crate::{BuildQueryParametersExt, models::*};
 
 use super::super::Order;
 
@@ -21,21 +21,11 @@ impl Request for LedgersRequest {
     }
 
     fn get_query_parameters(&self) -> String {
-        let mut query = vec![];
-
-        if let Some(cursor) = &self.cursor {
-            query.push(format!("cursor={}", cursor));
-        }
-
-        if let Some(limit) = &self.limit {
-            query.push(format!("limit={}", limit));
-        }
-
-        if let Some(order) = &self.order {
-            query.push(format!("order={}", order));
-        }
-
-        format!("{}{}", match query.is_empty() {true => "", false => "?"}, query.join("&"))
+        vec![
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+        ].build_query_parameters()
     }
 
     fn validate(&self) -> Result<(), String> {

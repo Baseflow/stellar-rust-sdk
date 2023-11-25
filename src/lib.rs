@@ -129,3 +129,17 @@ impl std::fmt::Display for Order {
         }
     }
 }
+
+trait BuildQueryParametersExt<T> {
+    fn build_query_parameters(self) -> String;
+}
+
+impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
+    fn build_query_parameters(self) -> String {
+        let params = self.into_iter().filter_map(|x| x.map(|val| val.to_string())).collect::<Vec<String>>().join("&");
+        match params.is_empty() {
+            true => "".to_string(),
+            false => format!("?{}", params),
+        }
+    }
+}

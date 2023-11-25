@@ -1,4 +1,4 @@
-use crate::models::*;
+use crate::{BuildQueryParametersExt, models::*};
 
 use super::super::AssetType;
 use super::super::Order;
@@ -44,29 +44,17 @@ impl Request for AccountsRequest {
     }
 
     fn get_query_parameters(&self) -> String {
-        let mut query = vec![];
-        if let Some(sponsor) = &self.sponsor {
-            query.push(format!("sponsor={}", sponsor));
-        }
-        if let Some(signer) = &self.signer {
-            query.push(format!("signer={}", signer));
-        }
-        if let Some(asset) = &self.asset {
-            query.push(format!("asset={}", asset));
-        }
-        if let Some(cursor) = &self.cursor {
-            query.push(format!("cursor={}", cursor));
-        }
-        if let Some(limit) = &self.limit {
-            query.push(format!("limit={}", limit));
-        }
-        if let Some(order) = &self.order {
-            query.push(format!("order={}", order));
-        }
-        if let Some(liquidity_pool) = &self.liquidity_pool {
-            query.push(format!("liquidity_pool={}", liquidity_pool));
-        }
-        format!("{}{}", match query.is_empty() {true => "", false => "?"}, query.join("&"))
+        vec![
+            self.sponsor.as_ref().map(|s| format!("sponsor={}", s)),
+            self.signer.as_ref().map(|s| format!("signer={}", s)),
+            self.asset.as_ref().map(|a| format!("asset={}", a)),
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+            self.liquidity_pool
+                .as_ref()
+                .map(|lp| format!("liquidity_pool={}", lp)),
+        ].build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {
