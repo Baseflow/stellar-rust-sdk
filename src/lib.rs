@@ -136,7 +136,10 @@ trait BuildQueryParametersExt<T> {
 
 impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
     fn build_query_parameters(self) -> String {
-        let params = self.into_iter().filter_map(|x| x.map(|val| val.to_string())).collect::<Vec<String>>().join("&");
+        let params = self.into_iter()
+            // The filter_map function filters out the None values, leaving only the Some values with formatted strings.
+            .filter_map(|x| x.map(|val| val.to_string()))
+            .collect::<Vec<String>>().join("&");
         match params.is_empty() {
             true => "".to_string(),
             false => format!("?{}", params),
