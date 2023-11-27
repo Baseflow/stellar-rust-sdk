@@ -1,6 +1,7 @@
-use crate::models::Request;
-
+use crate::{models::Request, BuildQueryParametersExt};
 use super::super::Order;
+
+
 
 // AllAssetsRequest is the request for the /assets endpoint
 // [More Details] https://www.stellar.org/developers/horizon/reference/endpoints/assets-all.html "Assets"
@@ -35,29 +36,14 @@ impl Request for AllAssetsRequest {
         }
     }
 
-    fn get_path(&self) -> &str {
-        "/assets"
-    }
-
     fn get_query_parameters(&self) -> String {
-        let mut query = String::new();
-        if let Some(asset_code) = &self.asset_code {
-            query.push_str(&format!("asset_code={}&", asset_code));
-        }
-        if let Some(asset_issuer) = &self.asset_issuer {
-            query.push_str(&format!("asset_issuer={}&", asset_issuer));
-        }
-        if let Some(cursor) = &self.cursor {
-            query.push_str(&format!("cursor={}&", cursor));
-        }
-        if let Some(limit) = &self.limit {
-            query.push_str(&format!("limit={}&", limit));
-        }
-        if let Some(order) = &self.order {
-            query.push_str(&format!("order={}&", order));
-        }
-
-        query.trim_end_matches('&').to_string()
+        vec![
+            self.asset_code.as_ref().map(|ac| format!("asset_code={}", ac)),
+            self.asset_issuer.as_ref().map(|ai| format!("asset_issuer={}", ai)),
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+        ].build_query_parameters()
     }
 
     fn validate(&self) -> Result<(), String> {
@@ -92,9 +78,9 @@ impl Request for AllAssetsRequest {
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}{}?{}",
+            "{}/{}{}",
             base_url,
-            self.get_path(),
+            super::ASSET_PATH,
             self.get_query_parameters()
         )
     }

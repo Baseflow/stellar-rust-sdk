@@ -16,23 +16,19 @@ impl Request for SingleClaimableBalanceRequest {
         }
     }
 
-    fn get_path(&self) -> &str {
-        "/claimable_balances/"
-    }
-
     fn get_query_parameters(&self) -> String {
         let mut query = String::new();
         if let Some(claimable_balance_id) = &self.claimable_balance_id {
             query.push_str(&format!("{}", claimable_balance_id));
         }
-        query
+        format!("/{}", query)
     }
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}{}{}",
+            "{}/{}{}",
             base_url,
-            self.get_path(),
+            super::CLAIMABLE_BALANCES_PATH,            
             self.get_query_parameters()
         )
     }

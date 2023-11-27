@@ -1,4 +1,4 @@
-use crate::models::*;
+use crate::{BuildQueryParametersExt, models::*};
 
 use super::super::AssetType;
 use super::super::Order;
@@ -43,41 +43,25 @@ impl Request for AccountsRequest {
         }
     }
 
-    fn get_path(&self) -> &str {
-        "/accounts"
-    }
-
     fn get_query_parameters(&self) -> String {
-        let mut query = String::new();
-        if let Some(sponsor) = &self.sponsor {
-            query.push_str(&format!("sponsor={}&", sponsor));
-        }
-        if let Some(signer) = &self.signer {
-            query.push_str(&format!("signer={}&", signer));
-        }
-        if let Some(asset) = &self.asset {
-            query.push_str(&format!("asset={}&", asset));
-        }
-        if let Some(cursor) = &self.cursor {
-            query.push_str(&format!("cursor={}&", cursor));
-        }
-        if let Some(limit) = &self.limit {
-            query.push_str(&format!("limit={}&", limit));
-        }
-        if let Some(order) = &self.order {
-            query.push_str(&format!("order={}&", order));
-        }
-        if let Some(liquidity_pool) = &self.liquidity_pool {
-            query.push_str(&format!("liquidity_pool={}&", liquidity_pool));
-        }
-        query.trim_end_matches('&').to_string()
+        vec![
+            self.sponsor.as_ref().map(|s| format!("sponsor={}", s)),
+            self.signer.as_ref().map(|s| format!("signer={}", s)),
+            self.asset.as_ref().map(|a| format!("asset={}", a)),
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+            self.liquidity_pool
+                .as_ref()
+                .map(|lp| format!("liquidity_pool={}", lp)),
+        ].build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}{}?{}",
+            "{}/{}{}",
             base_url,
-            self.get_path(),
+            super::ACCOUNTS_PATH,
             self.get_query_parameters()
         )
     }
@@ -194,7 +178,10 @@ mod tests {
     #[test]
     fn test_accounts_request() {
         let request = AccountsRequest::new();
-        assert_eq!(request.get_path(), "/accounts");
+        assert_eq!(
+            request.build_url("https://horizon-testnet.stellar.org"),
+            "https://horizon-testnet.stellar.org/accounts"
+        );
     }
 
     #[test]

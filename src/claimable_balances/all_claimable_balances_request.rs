@@ -1,4 +1,4 @@
-use crate::models::*;
+use crate::{BuildQueryParametersExt, models::*};
 
 use super::super::Order;
 use super::super::AssetType;
@@ -40,39 +40,22 @@ impl Request for AllClaimableBalancesRequest {
         }
     }
 
-    fn get_path(&self) -> &str {
-        "/claimable_balances/"
-    }
-
     fn get_query_parameters(&self) -> String {
-        let mut query = String::new();
-        if let Some(sponsor) = &self.sponsor {
-            query.push_str(&format!("sponsor={}&", sponsor));
-        }
-        if let Some(asset) = &self.asset {
-            query.push_str(&format!("asset={}&", asset));
-        }
-        if let Some(claimant) = &self.claimant {
-            query.push_str(&format!("claimant={}&", claimant));
-        }
-        if let Some(cursor) = &self.cursor {
-            query.push_str(&format!("cursor={}&", cursor));
-        }
-        if let Some(limit) = &self.limit {
-            query.push_str(&format!("limit={}&", limit));
-        }
-        if let Some(order) = &self.order {
-            query.push_str(&format!("order={}&", order));
-        }
-
-        query.trim_end_matches('&').to_string()
+        vec![
+            self.sponsor.as_ref().map(|s| format!("sponsor={}", s)),
+            self.asset.as_ref().map(|a| format!("asset={}", a)),
+            self.claimant.as_ref().map(|c| format!("claimant={}", c)),
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+        ].build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}{}?{}",
+            "{}/{}/{}",
             base_url,
-            self.get_path(),
+            super::CLAIMABLE_BALANCES_PATH,            
             self.get_query_parameters()
         )
     }
