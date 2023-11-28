@@ -146,21 +146,12 @@ impl<Sp, NoSigner, NoAsset, NoLiquidityPool> AccountsRequest<Sp, NoSigner, NoAss
 }
 
 impl Request for AccountsRequest<Sponsor, NoSigner, NoAsset, NoLiquidityPool> {
-    fn get_path(&self) -> &str {
-        "/accounts"
-    }
-
     fn get_query_parameters(&self) -> String {
         vec![
-            self.sponsor.as_ref().map(|s| format!("sponsor={}", s)),
-            self.signer.as_ref().map(|s| format!("signer={}", s)),
-            self.asset.as_ref().map(|a| format!("asset={}", a)),
             self.cursor.as_ref().map(|c| format!("cursor={}", c)),
             self.limit.as_ref().map(|l| format!("limit={}", l)),
             self.order.as_ref().map(|o| format!("order={}", o)),
-            self.liquidity_pool
-                .as_ref()
-                .map(|lp| format!("liquidity_pool={}", lp)),
+            Some(format!("sponsor={}", self.sponsor.0))
         ].build_query_parameters()
     }
 
@@ -201,32 +192,20 @@ impl<NoSponsor, Si, NoAsset, NoLiquidityPool> AccountsRequest<NoSponsor, Si, NoA
 }
 
 impl Request for AccountsRequest<NoSponsor, Signer, NoAsset, NoLiquidityPool> {
-    fn get_path(&self) -> &str {
-        "/accounts"
-    }
-
     fn get_query_parameters(&self) -> String {
-        let mut query = String::new();
-
-        query.push_str(&format!("signer={}&", self.signer.0));
-
-        if let Some(cursor) = &self.cursor {
-            query.push_str(&format!("cursor={}&", cursor));
-        }
-        if let Some(limit) = &self.limit {
-            query.push_str(&format!("limit={}&", limit));
-        }
-        if let Some(order) = &self.order {
-            query.push_str(&format!("order={}&", order));
-        }
-        query.trim_end_matches('&').to_string()
+        vec![
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+            Some(format!("signer={}", self.signer.0))
+        ].build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
             "{}{}?{}",
             base_url,
-            self.get_path(),
+            super::ACCOUNTS_PATH,
             self.get_query_parameters()
         )
     }
@@ -254,32 +233,20 @@ impl<NoSponsor, NoSigner, A, NoLiquidityPool> AccountsRequest<NoSponsor, NoSigne
 }
 
 impl Request for AccountsRequest<NoSponsor, NoSigner, Asset, NoLiquidityPool> {
-    fn get_path(&self) -> &str {
-        "/accounts"
-    }
-
     fn get_query_parameters(&self) -> String {
-        let mut query = String::new();
-
-        query.push_str(&format!("asset={}&", self.asset.0));
-
-        if let Some(cursor) = &self.cursor {
-            query.push_str(&format!("cursor={}&", cursor));
-        }
-        if let Some(limit) = &self.limit {
-            query.push_str(&format!("limit={}&", limit));
-        }
-        if let Some(order) = &self.order {
-            query.push_str(&format!("order={}&", order));
-        }
-        query.trim_end_matches('&').to_string()
+        vec![
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+            Some(format!("asset={}", self.asset.0))
+        ].build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
             "{}{}?{}",
             base_url,
-            self.get_path(),
+            super::ACCOUNTS_PATH,
             self.get_query_parameters()
         )
     }
@@ -308,32 +275,20 @@ impl<NoSponsor, NoSigner, NoAsset, L> AccountsRequest<NoSponsor, NoSigner, NoAss
 }
 
 impl Request for AccountsRequest<NoSponsor, NoSigner, NoAsset, LiquidityPool> {
-    fn get_path(&self) -> &str {
-        "/accounts"
-    }
-
     fn get_query_parameters(&self) -> String {
-        let mut query = String::new();
-
-        query.push_str(&format!("asset={}&", self.liquidity_pool.0));
-
-        if let Some(cursor) = &self.cursor {
-            query.push_str(&format!("cursor={}&", cursor));
-        }
-        if let Some(limit) = &self.limit {
-            query.push_str(&format!("limit={}&", limit));
-        }
-        if let Some(order) = &self.order {
-            query.push_str(&format!("order={}&", order));
-        }
-        query.trim_end_matches('&').to_string()
+        vec![
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+            Some(format!("liquidity_pool={}", self.liquidity_pool.0))
+        ].build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
             "{}{}?{}",
             base_url,
-            self.get_path(),
+            super::ACCOUNTS_PATH,
             self.get_query_parameters()
         )
     }
@@ -346,12 +301,12 @@ impl Request for AccountsRequest<NoSponsor, NoSigner, NoAsset, LiquidityPool> {
 mod tests {
     use super::*;
 
-    #[test]
-    fn test_accounts_request() {
-        let request = AccountsRequest::new()
-            .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()).unwrap();
-        assert_eq!(request.get_path(), "/accounts");
-    }
+    // #[test]
+    // fn test_accounts_request() {
+    //     let request = AccountsRequest::new()
+    //         .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()).unwrap();
+    //     assert_eq!(request.get_path(), "/accounts");
+    // }
 
     #[test]
     fn test_accounts_request_set_sponsor() {

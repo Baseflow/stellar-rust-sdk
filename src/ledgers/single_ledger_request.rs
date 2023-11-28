@@ -18,25 +18,6 @@ impl SingleLedgerRequest<NoSequence> {
     }
 }
 
-impl Request for SingleLedgerRequest<Sequence> {
-    fn get_path(&self) -> &str {
-        "/ledgers"
-    }
-
-    fn get_query_parameters(&self) -> String {
-        format!("/{}", self.sequence.0)
-    }
-
-    fn build_url(&self, base_url: &str) -> String {
-        format!(
-            "{}/{}{}",
-            base_url,
-            super::LEDGERS_PATH,
-            self.get_query_parameters()
-        )
-    }
-}
-
 impl<S> SingleLedgerRequest<S> {
     /// Sets the sequence
     /// # Arguments
@@ -61,19 +42,15 @@ impl<S> SingleLedgerRequest<S> {
 }
 
 impl Request for SingleLedgerRequest<Sequence> {
-    fn get_path(&self) -> &str {
-        "/ledgers"
-    }
-
     fn get_query_parameters(&self) -> String {
-        format!("{}", self.sequence.0)
+        format!("/{}", self.sequence.0)
     }
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}{}/{}",
+            "{}/{}{}",
             base_url,
-            self.get_path(),
+            super::LEDGERS_PATH,
             self.get_query_parameters()
         )
     }
@@ -90,6 +67,6 @@ mod tests {
         let request = SingleLedgerRequest::new()
             .set_sequence(2).unwrap();
 
-        assert_eq!(request.get_path(), "/ledgers");
+        // assert_eq!(request.get_path(), "/ledgers");
     }
 }
