@@ -36,10 +36,6 @@ impl AllClaimableBalancesRequest {
 }
 
 impl Request for AllClaimableBalancesRequest {
-    fn get_path(&self) -> &str {
-        "/claimable_balances/"
-    }
-
     fn get_query_parameters(&self) -> String {
         vec![
             self.sponsor.as_ref().map(|s| format!("sponsor={}", s)),
@@ -160,44 +156,5 @@ impl AllClaimableBalancesRequest {
             order: Some(order),
             ..self
         }
-    }
-}
-
-impl Request for AllClaimableBalancesRequest {
-    fn get_path(&self) -> &str {
-        "/claimable_balances/"
-    }
-
-    fn get_query_parameters(&self) -> String {
-        let mut query = String::new();
-        if let Some(sponsor) = &self.sponsor {
-            query.push_str(&format!("sponsor={}&", sponsor));
-        }
-        if let Some(asset) = &self.asset {
-            query.push_str(&format!("asset={}&", asset));
-        }
-        if let Some(claimant) = &self.claimant {
-            query.push_str(&format!("claimant={}&", claimant));
-        }
-        if let Some(cursor) = &self.cursor {
-            query.push_str(&format!("cursor={}&", cursor));
-        }
-        if let Some(limit) = &self.limit {
-            query.push_str(&format!("limit={}&", limit));
-        }
-        if let Some(order) = &self.order {
-            query.push_str(&format!("order={}&", order));
-        }
-
-        query.trim_end_matches('&').to_string()
-    }
-
-    fn build_url(&self, base_url: &str) -> String {
-        format!(
-            "{}{}?{}",
-            base_url,
-            self.get_path(),
-            self.get_query_parameters()
-        )
     }
 }

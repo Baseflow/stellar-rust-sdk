@@ -1,8 +1,6 @@
 use crate::{models::Request, BuildQueryParametersExt};
 use super::super::Order;
 
-
-
 // AllAssetsRequest is the request for the /assets endpoint
 // [More Details] https://developers.stellar.org/api/horizon/resources/list-all-assets "Assets"
 #[derive(Default)]
@@ -32,29 +30,14 @@ impl AllAssetsRequest {
 }
 
 impl Request for AllAssetsRequest {
-    fn get_path(&self) -> &str {
-        "/assets"
-    }
-
     fn get_query_parameters(&self) -> String {
-        let mut query = String::new();
-        if let Some(asset_code) = &self.asset_code {
-            query.push_str(&format!("asset_code={}&", asset_code));
-        }
-        if let Some(asset_issuer) = &self.asset_issuer {
-            query.push_str(&format!("asset_issuer={}&", asset_issuer));
-        }
-        if let Some(cursor) = &self.cursor {
-            query.push_str(&format!("cursor={}&", cursor));
-        }
-        if let Some(limit) = &self.limit {
-            query.push_str(&format!("limit={}&", limit));
-        }
-        if let Some(order) = &self.order {
-            query.push_str(&format!("order={}&", order));
-        }
-
-        query.trim_end_matches('&').to_string()
+        vec![
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+            self.asset_code.as_ref().map(|ac| format!("asset_code={}", ac)),
+            self.asset_issuer.as_ref().map(|ac| format!("asset_issuer={}", ac))
+        ].build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {

@@ -31,10 +31,6 @@ impl<I> SingleClaimableBalanceRequest<I> {
 }
 
 impl Request for SingleClaimableBalanceRequest<ClaimableBalanceId> {
-    fn get_path(&self) -> &str {
-        "/claimable_balances/"
-    }
-
     fn get_query_parameters(&self) -> String {
         let mut query = String::new();
         query.push_str(&format!("{}", self.claimable_balance_id.0));

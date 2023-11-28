@@ -38,10 +38,6 @@ impl<I> SingleAccountRequest<I> {
 }
 
 impl Request for SingleAccountRequest<AccountId> {
-    fn get_path(&self) -> &str {
-        "/accounts/"
-    }
-
     fn get_query_parameters(&self) -> String {
         let mut query = String::new();
         query.push_str(&format!("{}", self.account_id.0));
