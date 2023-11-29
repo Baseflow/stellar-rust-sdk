@@ -17,9 +17,7 @@ impl SingleAccountRequest<NoAccountId> {
     pub fn new() -> Self {
         SingleAccountRequest::default()
     }
-}
 
-impl<I> SingleAccountRequest<I> {
     /// Sets the account ID of the account to get.
     /// # Arguments
     /// * `account_id` - The account ID of the account to get.
@@ -46,6 +44,8 @@ impl Request for SingleAccountRequest<AccountId> {
     }
 
     fn build_url(&self, base_url: &str) -> String {
+        // This URL is not built with query paramaters, but with the AccountID as addition to the path.
+        // therefore there is no `?` but a `/` in the formatted string.
         format!(
             "{}/{}/{}",
             base_url,

@@ -16,9 +16,7 @@ impl SingleLedgerRequest<NoSequence> {
     pub fn new() -> Self {
         SingleLedgerRequest::default()
     }
-}
 
-impl<S> SingleLedgerRequest<S> {
     /// Sets the sequence
     /// # Arguments
     /// * `sequence` - The sequence

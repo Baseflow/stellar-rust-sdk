@@ -23,12 +23,6 @@ pub struct AllAssetsRequest {
     order: Option<Order>,
 }
 
-impl AllAssetsRequest {
-    pub fn new() -> AllAssetsRequest {
-        AllAssetsRequest::default()
-    }
-}
-
 impl Request for AllAssetsRequest {
     fn get_query_parameters(&self) -> String {
         vec![
@@ -51,6 +45,10 @@ impl Request for AllAssetsRequest {
 }
 
 impl AllAssetsRequest {
+    pub fn new() -> AllAssetsRequest {
+        AllAssetsRequest::default()
+    }
+
     /// Sets the asset code
     /// # Arguments
     /// * `asset_code` - The asset code

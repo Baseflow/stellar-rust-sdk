@@ -23,6 +23,12 @@ pub struct NoAsset;
 pub struct LiquidityPool(String);
 #[derive(Default, Clone)]
 pub struct NoLiquidityPool;
+
+
+#[derive(Default, Clone)]
+pub struct Cursor(u32);
+#[derive(Default, Clone)]
+pub struct NoCursor;
 // endregion
 
 pub trait ValidAccountsRequest: Request {}
@@ -58,13 +64,6 @@ pub struct AccountsRequest<Sp, Si, A, L> {
     /// or desc (descending). If this argument isn’t set, it defaults to asc.
     order: Option<Order>,
 
-}
-
-
-impl AccountsRequest<NoSponsor, NoSigner, NoAsset, NoLiquidityPool> {
-    pub fn new() -> Self {
-        AccountsRequest::default()
-    }
 }
 
 impl<Sp, Si, A, L> AccountsRequest<Sp, Si, A, L> {
@@ -120,8 +119,11 @@ impl<Sp, Si, A, L> AccountsRequest<Sp, Si, A, L> {
     }
 }
 
-// region: sponsor filter
-impl<Sp, NoSigner, NoAsset, NoLiquidityPool> AccountsRequest<Sp, NoSigner, NoAsset, NoLiquidityPool> {
+impl AccountsRequest<NoSponsor, NoSigner, NoAsset, NoLiquidityPool> {
+    pub fn new() -> Self {
+        AccountsRequest::default()
+    }
+    
     /// Sets the public key of the sponsor
     /// # Arguments
     /// * `sponsor` - The public key of the sponsor
@@ -142,6 +144,63 @@ impl<Sp, NoSigner, NoAsset, NoLiquidityPool> AccountsRequest<Sp, NoSigner, NoAss
             limit: self.limit,
             order: self.order,
         })
+    }
+
+    /// Sets the public key of the signer
+    /// # Arguments
+    /// * `signer` - The public key of the signer
+    /// # Returns
+    /// The request object
+    /// [AccountsRequest](struct.AccountsRequest.html)
+    pub fn set_signer(self, signer: &str) -> Result<AccountsRequest<NoSponsor, Signer, NoAsset, NoLiquidityPool>, String> {
+        if let Err(e) = is_public_key(&signer) {
+            return Err(e.to_string());
+        }
+
+        Ok(AccountsRequest {
+            sponsor: self.sponsor,
+            signer: Signer(signer.to_string()),
+            asset: self.asset,
+            liquidity_pool: self.liquidity_pool,
+            cursor: self.cursor,
+            limit: self.limit,
+            order: self.order,
+        })
+    }
+
+    /// Sets the asset type
+    /// # Arguments
+    /// * `asset` - The asset type
+    /// # Returns
+    /// [AccountsRequest](struct.AccountsRequest.html)
+    pub fn set_asset(self, asset: AssetType) -> AccountsRequest<NoSponsor, NoSigner, Asset, NoLiquidityPool> {
+        AccountsRequest {
+            sponsor: self.sponsor,
+            signer: self.signer,
+            asset: Asset(asset),
+            liquidity_pool: self.liquidity_pool,
+            cursor: self.cursor,
+            limit: self.limit,
+            order: self.order,
+        }
+    }
+
+    /// Sets the liquidity pool
+    /// # Arguments
+    /// * `liquidity_pool` - The liquidity pool
+    /// # Returns
+    /// The request object
+    /// [AccountsRequest](struct.AccountsRequest.html)
+    pub fn set_liquidity_pool(self, liquidity_pool: impl Into<String>) -> AccountsRequest<NoSponsor, NoSigner, NoAsset, LiquidityPool> {
+        AccountsRequest {
+            sponsor: self.sponsor,
+            signer: self.signer,
+            asset: self.asset,
+            liquidity_pool: LiquidityPool(liquidity_pool.into()),
+            cursor: self.cursor,
+            limit: self.limit,
+            order: self.order,
+        }
     }
 }
 
@@ -164,32 +223,6 @@ impl Request for AccountsRequest<Sponsor, NoSigner, NoAsset, NoLiquidityPool> {
         )
     }
 }
-// endregion
-
-// region: signer filter
-impl<NoSponsor, Si, NoAsset, NoLiquidityPool> AccountsRequest<NoSponsor, Si, NoAsset, NoLiquidityPool> {
-    /// Sets the public key of the signer
-    /// # Arguments
-    /// * `signer` - The public key of the signer
-    /// # Returns
-    /// The request object
-    /// [AccountsRequest](struct.AccountsRequest.html)
-    pub fn set_signer(self, signer: &str) -> Result<AccountsRequest<NoSponsor, Signer, NoAsset, NoLiquidityPool>, String> {
-        if let Err(e) = is_public_key(&signer) {
-            return Err(e.to_string());
-        }
-
-        Ok(AccountsRequest {
-            sponsor: self.sponsor,
-            signer: Signer(signer.to_string()),
-            asset: self.asset,
-            liquidity_pool: self.liquidity_pool,
-            cursor: self.cursor,
-            limit: self.limit,
-            order: self.order,
-        })
-    }
-}
 
 impl Request for AccountsRequest<NoSponsor, Signer, NoAsset, NoLiquidityPool> {
     fn get_query_parameters(&self) -> String {
@@ -203,32 +236,11 @@ impl Request for AccountsRequest<NoSponsor, Signer, NoAsset, NoLiquidityPool> {
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}{}?{}",
+            "{}/{}{}",
             base_url,
             super::ACCOUNTS_PATH,
             self.get_query_parameters()
         )
-    }
-}
-// endregion
-
-// region: asset filter
-impl<NoSponsor, NoSigner, A, NoLiquidityPool> AccountsRequest<NoSponsor, NoSigner, A, NoLiquidityPool> {
-    /// Sets the asset type
-    /// # Arguments
-    /// * `asset` - The asset type
-    /// # Returns
-    /// [AccountsRequest](struct.AccountsRequest.html)
-    pub fn set_asset(self, asset: AssetType) -> AccountsRequest<NoSponsor, NoSigner, Asset, NoLiquidityPool> {
-        AccountsRequest {
-            sponsor: self.sponsor,
-            signer: self.signer,
-            asset: Asset(asset),
-            liquidity_pool: self.liquidity_pool,
-            cursor: self.cursor,
-            limit: self.limit,
-            order: self.order,
-        }
     }
 }
 
@@ -244,33 +256,11 @@ impl Request for AccountsRequest<NoSponsor, NoSigner, Asset, NoLiquidityPool> {
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}{}?{}",
+            "{}/{}{}",
             base_url,
             super::ACCOUNTS_PATH,
             self.get_query_parameters()
         )
-    }
-}
-// endregion
-
-// region: liquidity pool filter
-impl<NoSponsor, NoSigner, NoAsset, L> AccountsRequest<NoSponsor, NoSigner, NoAsset, L> {
-    /// Sets the liquidity pool
-    /// # Arguments
-    /// * `liquidity_pool` - The liquidity pool
-    /// # Returns
-    /// The request object
-    /// [AccountsRequest](struct.AccountsRequest.html)
-    pub fn set_liquidity_pool(self, liquidity_pool: impl Into<String>) -> AccountsRequest<NoSponsor, NoSigner, NoAsset, LiquidityPool> {
-        AccountsRequest {
-            sponsor: self.sponsor,
-            signer: self.signer,
-            asset: self.asset,
-            liquidity_pool: LiquidityPool(liquidity_pool.into()),
-            cursor: self.cursor,
-            limit: self.limit,
-            order: self.order,
-        }
     }
 }
 
@@ -286,15 +276,13 @@ impl Request for AccountsRequest<NoSponsor, NoSigner, NoAsset, LiquidityPool> {
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}{}?{}",
+            "{}/{}{}",
             base_url,
             super::ACCOUNTS_PATH,
             self.get_query_parameters()
         )
     }
 }
-
-// endregion
 
 
 #[cfg(test)]

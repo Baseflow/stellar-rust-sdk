@@ -29,12 +29,6 @@ pub struct AllClaimableBalancesRequest {
     order: Option<Order>,
 }
 
-impl AllClaimableBalancesRequest {
-    pub fn new() -> Self {
-        AllClaimableBalancesRequest::default()
-    }
-}
-
 impl Request for AllClaimableBalancesRequest {
     fn get_query_parameters(&self) -> String {
         vec![
@@ -58,6 +52,10 @@ impl Request for AllClaimableBalancesRequest {
 }
 
 impl AllClaimableBalancesRequest {
+    pub fn new() -> Self {
+        AllClaimableBalancesRequest::default()
+    }
+
     /// Sets the sponsor for the request
     /// # Arguments
     /// * `self` - The request object

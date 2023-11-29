@@ -17,9 +17,7 @@ impl SingleClaimableBalanceRequest<NoClaimableBalanceId> {
     pub fn new() -> Self {
         SingleClaimableBalanceRequest::default()
     }
-}
 
-impl<I> SingleClaimableBalanceRequest<I> {
     pub fn set_claimable_balance_id(
         self,
         claimable_balance_id: String,
@@ -39,7 +37,7 @@ impl Request for SingleClaimableBalanceRequest<ClaimableBalanceId> {
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}/{}{}",
+            "{}/{}/{}",
             base_url,
             super::CLAIMABLE_BALANCES_PATH,            
             self.get_query_parameters()
