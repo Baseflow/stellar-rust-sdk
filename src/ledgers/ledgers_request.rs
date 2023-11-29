@@ -1,6 +1,4 @@
-use crate::{BuildQueryParametersExt, models::*};
-
-use super::super::Order;
+use crate::{BuildQueryParametersExt, models::*, Order};
 
 #[derive(Default)]
 pub struct LedgersRequest {

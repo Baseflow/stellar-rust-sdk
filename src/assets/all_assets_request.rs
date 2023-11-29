@@ -1,5 +1,4 @@
-use crate::{models::Request, BuildQueryParametersExt};
-use super::super::Order;
+use crate::{models::Request, BuildQueryParametersExt, Order};
 
 // AllAssetsRequest is the request for the /assets endpoint
 // [More Details] https://developers.stellar.org/api/horizon/resources/list-all-assets "Assets"
