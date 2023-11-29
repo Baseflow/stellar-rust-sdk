@@ -1,7 +1,4 @@
-use crate::{BuildQueryParametersExt, models::*};
-
-use super::super::AssetType;
-use super::super::Order;
+use crate::{BuildQueryParametersExt, models::*, AssetType, Order};
 
 // region: States
 #[derive(Default, Clone)]
@@ -23,12 +20,6 @@ pub struct NoAsset;
 pub struct LiquidityPool(String);
 #[derive(Default, Clone)]
 pub struct NoLiquidityPool;
-
-
-#[derive(Default, Clone)]
-pub struct Cursor(u32);
-#[derive(Default, Clone)]
-pub struct NoCursor;
 // endregion
 
 pub trait ValidAccountsRequest: Request {}
