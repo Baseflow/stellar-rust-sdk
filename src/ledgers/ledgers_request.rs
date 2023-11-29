@@ -16,42 +16,7 @@ impl LedgersRequest {
     pub fn new() -> Self {
         LedgersRequest::default()
     }
-}
 
-impl Request for LedgersRequest {
-    fn get_path(&self) -> &str {
-        "/ledgers"
-    }
-
-    fn get_query_parameters(&self) -> String {
-        let mut query_parameters = vec![];
-
-        if let Some(cursor) = &self.cursor {
-            query_parameters.push(format!("cursor={}", cursor));
-        }
-
-        if let Some(limit) = &self.limit {
-            query_parameters.push(format!("limit={}", limit));
-        }
-
-        if let Some(order) = &self.order {
-            query_parameters.push(format!("order={}", order));
-        }
-
-        query_parameters.join("&")
-    }
-
-    fn build_url(&self, base_url: &str) -> String {
-        format!(
-            "{}/{}{}",
-            base_url,
-            super::LEDGERS_PATH,
-            self.get_query_parameters()
-        )
-    }
-}
-
-impl LedgersRequest {
     /// Sets the cursor
     /// # Arguments
     /// * `cursor` - The cursor
@@ -106,6 +71,27 @@ impl LedgersRequest {
         }
     }
 }
+
+
+impl Request for LedgersRequest {
+    fn get_query_parameters(&self) -> String {
+        vec![
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+        ].build_query_parameters()
+    }
+
+    fn build_url(&self, base_url: &str) -> String {
+        format!(
+            "{}/{}{}",
+            base_url,
+            super::LEDGERS_PATH,
+            self.get_query_parameters()
+        )
+    }
+}
+
 
 #[cfg(test)]
 mod tests {

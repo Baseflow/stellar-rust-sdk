@@ -243,7 +243,7 @@ mod tests {
         // call the get_account_list method to retrieve the account list response
         let _accounts_response: Result<AccountsResponse, String> =
             horizon_client.get_account_list(&accounts_request).await;
-
+        
         assert!(_accounts_response.is_ok());
 
         assert_eq!(
@@ -390,10 +390,11 @@ mod tests {
         let single_account_request = SingleAccountRequest::new()
             .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
             .unwrap();
-
+        
         let _single_account_response = horizon_client
             .get_single_account(&single_account_request)
             .await;
+
 
         assert!(_single_account_response.is_ok());
 
