@@ -883,7 +883,7 @@ mod tests {
 
         assert_eq!(
             decoded_xdr_header.scp_value.close_time,
-            stellar_xdr::TimePoint(1686734388)
+            stellar_xdr::curr::TimePoint(1686734388)
         );
     }
 
@@ -1013,7 +1013,7 @@ mod tests {
         assert_eq!(_decoded_header_xdr.base_fee, 100);
         assert_eq!(_decoded_header_xdr.base_reserve, 100000000);
         assert_eq!(_decoded_header_xdr.max_tx_set_size, 100);
-        assert_eq!(_decoded_header_xdr.ext, stellar_xdr::LedgerHeaderExt::V0);
+        assert_eq!(_decoded_header_xdr.ext, stellar_xdr::curr::LedgerHeaderExt::V0);
         for decoded in _decoded_header_xdr.skip_list {
             assert_eq!(
                 decoded.to_string(),
