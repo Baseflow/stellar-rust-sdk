@@ -12,10 +12,14 @@ jobs:
         with:
           toolchain: stable
       - uses: actions-rs/cargo@v1
+        name: cargo update
+        with:
+          command: update
+      - uses: actions-rs/cargo@v1
         name: cargo test
         with:
           command: test
-          
+
       # - uses: actions-rs/cargo@v1
       #   with:
       #     command: build
