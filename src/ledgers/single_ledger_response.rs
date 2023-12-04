@@ -1,6 +1,6 @@
 use derive_getters::Getters;
 use serde::Deserialize;
-use stellar_xdr::{LedgerHeader, ReadXdr};
+use stellar_xdr::curr::{LedgerHeader, ReadXdr, Limits};
 
 use crate::models::Response;
 
@@ -56,7 +56,7 @@ impl Response for SingleLedgerResponse {
 impl SingleLedgerResponse {
     pub fn decoded_header_xdr(&self) -> Result<LedgerHeader, String> {
         let encoded = self.header_xdr.as_bytes();
-        let decoded = stellar_xdr::LedgerHeader::from_xdr_base64(encoded).unwrap();
+        let decoded = LedgerHeader::from_xdr_base64(encoded, Limits::none()).unwrap();
         Ok(decoded)
     }
 }
