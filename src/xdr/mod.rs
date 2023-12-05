@@ -1,8 +1,7 @@
 #[cfg(test)]
 mod tests {
 
-    use ::stellar_xdr::ReadXdr;
-    use stellar_xdr::curr as stellar_xdr;
+    use stellar_xdr::curr::{LedgerHeader, ReadXdr, Limits, StellarValueExt, LedgerHeaderExt};
 
     // TODO, add vice versa.
     // https://developers.stellar.org/docs/encyclopedia/xdr#parsing-xdr
@@ -13,7 +12,7 @@ mod tests {
         // Decode online at : https://stellar.github.io/xdr-viewer/?type=LedgerHeader&network=public
         let encoded: &[u8] = "AAAAAGPZj1Nu5o0bJ7W4nyOvUxG3Vpok+vFAOtC1K2M7B76ZuZRHr9UdXKbTKiclfOjy72YZFJUkJPVcKT5htvorm1QAAAAAZImGNAAAAAAAAAABAAAAAKgkzRi8nXUGTSmaW1uspDvDqi8yaTgVPYwvm7XLbfAzAAAAQLuRQK8ocAjytwfQelkpwZQa5+jReIO0pbr/9BbUbIffRxQN4Z76J3qDIn5lSJpn0OkYL8ZLPGP0W/S1vlTj5w/fP2GYBKkv20BXGS3EPddI6neK3FK8SYzoBSTAFLgRGXNSJ+05hGEpEjdoewhEaqLJsJbgyYpGLa3aVp8F3SSEAAAAAg3gtrOnZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkBfXhAAAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=".as_bytes();
 
-        let decoded = stellar_xdr::LedgerHeader::from_xdr_base64(encoded).unwrap();
+        let decoded = LedgerHeader::from_xdr_base64(encoded, Limits::none()).unwrap();
 
         assert_eq!(decoded.ledger_version, 0);
         assert_eq!(
@@ -32,7 +31,7 @@ mod tests {
         );
 
         match decoded.scp_value.ext {
-            ::stellar_xdr::StellarValueExt::Signed(signed) => {
+            StellarValueExt::Signed(signed) => {
                 assert_eq!(
                     signed.node_id.0.discriminant().to_string(),
                     "PublicKeyTypeEd25519"
@@ -56,7 +55,7 @@ mod tests {
         assert_eq!(decoded.base_fee, 100);
         assert_eq!(decoded.base_reserve, 100000000);
         assert_eq!(decoded.max_tx_set_size, 100);
-        assert_eq!(decoded.ext, stellar_xdr::LedgerHeaderExt::V0);
+        assert_eq!(decoded.ext, LedgerHeaderExt::V0);
         for decoded in decoded.skip_list {
             assert_eq!(
                 decoded.to_string(),

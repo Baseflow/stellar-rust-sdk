@@ -34,54 +34,32 @@
 //!     Ok(())
 //! }
 //! ```
-//! ## Features
-//!
-//! All the enpoints in the Horizon Api and wether or not they are supported by this library:
-//!
-//! - [x] `Accounts` - List all accounts endpoint
-//! - [x] `Single Account` - Get a single account endpoint
-//! - [x] `All Assets` - List all assets endpoint
-//! - [x] `All Claimable Balances` - List all claimable balances endpoint
-//! - [x] `Single Claimable Balance` - Get a single claimable balance endpoint
-//! - [ ] `All Effects` - List all effects endpoint
-//! - [ ] `Effects for Account` - List all effects for an account endpoint`
-//! - [ ] `Effects for Ledger` - List all effects for a ledger endpoint
-//! - [ ] `Effects for Operation` - List all effects for an operation endpoint
-//! - [ ] `Effects for Transaction` - List all effects for a transaction endpoint
-//! - [ ] `All Fee Stats` - List all fee stats endpoint
-//! - [x] `All Ledgers` - List all ledgers endpoint
-//! - [x] `Single Ledgers` - Get a single ledger endpoint
-//! - [ ] `All Liquidity Pools` - List all liquidity pools endpoint
-//! - [ ] `Single Liquidity Pool` - Get a single liquidity pool endpoint
-//! - [ ] `All Offers` - List all offers endpoint
-//! - [ ] `Single Offer` - Get a single offer endpoint
-//! - [ ] `Offers for Account` - List all offers for an account endpoint
-//! - [ ] `All Operations` - List all operations endpoint
-//! - [ ] `Single Operation` - Get a single operation endpoint
-//! - [ ] `Operations for Account` - List all operations for an account endpoint
-//! - [ ] `Operations for Ledger` - List all operations for a ledger endpoint
-//! - [ ] `Operations for Liquidity Pool` - List all operations for a liquidity pool endpoint
-//! - [ ] `Operations for Transaction` - List all operations for a transaction endpoint
-//! - [ ] `All Order Book Details` - List all order book endpoint
-//! - [ ] `Find payments Paths` - Find payment paths endpoint
-//! - [ ] `Find Strict Receive Payment Paths` - Find strict receive payment paths endpoint
-//! - [ ] `Find Strict Send Payment Paths` - Find strict send payment paths endpoint
-//! - [ ] `All Payments` - List all payments endpoint
-//! - [ ] `Payments for Account` - List all payments for an account endpoint
-//! - [ ] `Payments for Ledger` - List all payments for a ledger endpoint
-//! - [ ] `Payments for Transaction` - List all payments for a transaction endpoint
-//! - [ ] `Trade Aggregations` - List trade aggregations endpoint
-//! - [ ] `All Trades` - List all trades endpoint
-//! - [ ] `Trades for Account` - List all trades for an account endpoint
-//! - [ ] `Trades for Liquidity Pool` - List all trades for a liquidity pool endpoint
-//! - [ ] `Trades for Offer` - List all trades for an offer endpoint
-//! - [ ] `All Transactions` - List all transactions endpoint
-//! - [ ] `Single Transaction` - Get a single transaction endpoint
-//! - [ ] `Post Transaction` - Post transaction endpoint
-//! - [ ] `Transactions for Account` - List all transactions for an account endpoint
-//! - [ ] `Transactions for Ledger` - List all transactions for a ledger endpoint
-//! - [ ] `Transactions for Liquidity Pool` - List all transactions for a liquidity pool endpoint
-
+//! 
+//! ## Implementation Progress
+//! ![25%](https://progress-bar.dev/25/?width=200)
+//! 
+//! This SDK is under active development so expect more and more supported [Horizon API endpoints](https://laboratory.stellar.org/#explorer?network=test)!
+//! 
+//! #### Supported endpoints:
+//! * Accounts
+//! * Assets
+//! * Claimable balance
+//! * Ledgers
+//! 
+//! #### Endpoints on the roadmap:
+//! * Effects
+//! * Fee stats
+//! * Liquidity pools
+//! * Offers
+//! * Operations
+//! * Orderbook
+//! * Paths
+//! * Payments
+//! * Trade aggregations
+//! * Trades
+//! * Transactions
+//! 
+//! 
 /// The accounts module
 pub mod accounts;
 /// The assets module
