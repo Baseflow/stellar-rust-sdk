@@ -10,27 +10,27 @@
 //!
 //! ```rust
 //!
-//! use stellar_rust_sdk::horizon_client::horizon_client::HorizonClient;
+//! use stellar_rust_sdk::horizon_client::HorizonClient;
 //! use stellar_rust_sdk::accounts::prelude::AccountsRequest;
 //! use stellar_rust_sdk::accounts::prelude::AccountsResponse;
 //! use crate::stellar_rust_sdk::models::Request;
 //! 
 //! async fn example() -> Result<(), Box<dyn std::error::Error>> {
-//! // Initialize horizon client
-//! let horizon_client =
-//!     HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
-//!
-//! // construct request
-//! let mut accounts_request = AccountsRequest::new();
-//! accounts_request
-//!     .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
-//!     .set_limit(10);
-//!
-//! // call the get_account_list method to retrieve the account list response
-//! let _accounts_response: Result<AccountsResponse, String> =
-//!     horizon_client.get_account_list(&accounts_request).await;
-//!
-//! assert!(_accounts_response.is_ok());
+//!     // Initialize horizon client
+//!     let horizon_client =
+//!         HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+//! 
+//!     // construct request
+//!     let mut accounts_request = AccountsRequest::new();
+//!     accounts_request
+//!         .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
+//!         .set_limit(10);
+//! 
+//!     // call the get_account_list method to retrieve the account list response
+//!     let _accounts_response: Result<AccountsResponse, String> =
+//!         horizon_client.get_account_list(&accounts_request).await;
+//! 
+//!     assert!(_accounts_response.is_ok());
 //!     Ok(())
 //! }
 //! ```
@@ -66,8 +66,13 @@ pub mod accounts;
 pub mod assets;
 /// The claimable balances module
 pub mod claimable_balances;
+
 /// The horizon client module
+/// ## Constructing a `HorizonClient`
+/// 
+/// A blalbaets
 pub mod horizon_client;
+
 /// The ledgers module
 pub mod ledgers;
 /// The models module, here the Request and Response traits are defined
