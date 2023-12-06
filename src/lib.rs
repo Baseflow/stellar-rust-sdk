@@ -68,12 +68,16 @@ pub mod assets;
 pub mod claimable_balances;
 
 /// Client for calling the Stellar Horizon API 
+/// 
 /// # Constructing a `HorizonClient`
 /// A string containing the base URL for the Horizon API is required to contruct a client.
 /// For example, to construct a client for the Horizon API testnet:
 /// ```rust
+/// use stellar_rust_sdk::horizon_client::HorizonClient;
+/// 
 /// let base_url = "https://horizon-testnet.stellar.org".to_string();
-/// let horizon_client = HorizonClient::new(base_url).unwrap();
+/// let horizon_client = HorizonClient::new(base_url)
+///     .expect("Failed to create Horizon Client");;
 /// ```
 /// 
 /// # Using the `HorizonClient`
@@ -81,13 +85,20 @@ pub mod claimable_balances;
 /// by the Horizon API. For example, it has a [`HorizonClient::get_account_list`](crate::horizon_client::HorizonClient::get_account_list) 
 /// function, which returns an async future that contains a result, as illustrated below:
 /// ```rust
-/// let mut accounts_request = AccountsRequest::new();
-/// accounts_request
-///     .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
-///     .set_limit(10); 
+/// # use stellar_rust_sdk::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
+/// # use stellar_rust_sdk::models::Request;
+/// # use stellar_rust_sdk::horizon_client::HorizonClient;
 /// 
-/// let accounts_response: Result<AccountsResponse, String> =
-///     horizon_client.get_account_list(&accounts_request).await;
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let horizon_client = HorizonClient::new(base_url)
+/// #    .expect("Failed to create Horizon Client");;
+/// let all_assets_request = AllAssetsRequest::new();
+/// let accounts_response: Result<AllAssetsResponse, String> = horizon_client
+///     .get_all_assets(&all_assets_request)
+///     .await;
+/// # Ok({})
+/// # }
 /// ```
 pub mod horizon_client;
 
