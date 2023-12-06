@@ -67,10 +67,28 @@ pub mod assets;
 /// The claimable balances module
 pub mod claimable_balances;
 
-/// The horizon client module
-/// ## Constructing a `HorizonClient`
+/// Client for calling the Stellar Horizon API 
+/// # Constructing a `HorizonClient`
+/// A string containing the base URL for the Horizon API is required to contruct a client.
+/// For example, to construct a client for the Horizon API testnet:
+/// ```rust
+/// let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// let horizon_client = HorizonClient::new(base_url).unwrap();
+/// ```
 /// 
-/// A blalbaets
+/// # Using the `HorizonClient`
+/// The HorizonClient has a function that can be called for each endpoind provided
+/// by the Horizon API. For example, it has a [`HorizonClient::get_account_list`](crate::horizon_client::HorizonClient::get_account_list) 
+/// function, which returns an async future that contains a result, as illustrated below:
+/// ```rust
+/// let mut accounts_request = AccountsRequest::new();
+/// accounts_request
+///     .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
+///     .set_limit(10); 
+/// 
+/// let accounts_response: Result<AccountsResponse, String> =
+///     horizon_client.get_account_list(&accounts_request).await;
+/// ```
 pub mod horizon_client;
 
 /// The ledgers module
