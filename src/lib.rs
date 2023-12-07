@@ -59,11 +59,50 @@
 //! * Trades
 //! * Transactions
 //! 
-//! 
-/// The accounts module
+
+/// Requests and Response for `accounts`.
+///
+/// This module provides a set of specialized request and response structures designed for 
+/// interacting with the accounts-related endpoints of the Horizon server. These structures
+/// facilitate the construction of requests to query account data and the interpretation of
+/// the corresponding responses.
+/// 
+/// # Usage
+///
+/// This module is intended to be used in conjunction with the [`HorizonClient`](crate::horizon_client::HorizonClient) 
+/// for making specific account-related API calls to the Horizon server. The request 
+/// structures are designed to be passed to the client's methods, which handle the 
+/// communication with the server and return the corresponding response structures.
+///
+/// # Example
+/// An example of retrieving a list of accounts, filtering by signer:
+/// ```rust
+/// # use stellar_rust_sdk::accounts::prelude::{AccountsRequest, AccountsResponse};
+/// # use stellar_rust_sdk::models::Request;
+/// # use stellar_rust_sdk::horizon_client::HorizonClient;
+/// # 
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let horizon_client = HorizonClient::new(base_url)
+/// #    .expect("Failed to create Horizon Client");;
+/// let mut request = AccountsRequest::new();
+/// request
+///     .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
+///     .set_limit(10);
+/// 
+/// let response: Result<AccountsResponse, String> = horizon_client
+///     .get_account_list(&request)
+///     .await;
+/// # Ok({})
+/// # }
+/// 
 pub mod accounts;
+
+
 /// The assets module
 pub mod assets;
+
+
 /// The claimable balances module
 pub mod claimable_balances;
 
@@ -88,7 +127,7 @@ pub mod claimable_balances;
 /// # use stellar_rust_sdk::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
 /// # use stellar_rust_sdk::models::Request;
 /// # use stellar_rust_sdk::horizon_client::HorizonClient;
-/// 
+/// # 
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
 /// # let horizon_client = HorizonClient::new(base_url)
@@ -106,7 +145,8 @@ pub mod horizon_client;
 pub mod ledgers;
 /// The models module, here the Request and Response traits are defined
 pub mod models;
-pub mod xdr;
+
+mod xdr;
 
 /// The asset type
 /// Native - The native asset

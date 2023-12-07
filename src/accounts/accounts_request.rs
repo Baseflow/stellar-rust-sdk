@@ -3,30 +3,53 @@ use crate::{BuildQueryParametersExt, models::*};
 use super::super::AssetType;
 use super::super::Order;
 
-/// AccountsRequest is the request object for the /accounts endpoint
-/// [More Details](https://www.stellar.org/developers/horizon/reference/endpoints/accounts.html "Accounts")
+/// Represents a request to fetch multiple accounts from the Horizon API with a specific filter.
+///
+/// `AccountsRequest` is a struct used to query a list of accounts on the Horizon API, allowing
+/// filtering based on various criteria such as sponsor, signer, asset or liquidity pool. 
+/// This struct is designed to be used in conjunction with the [`HorizonClient::get_account_list`](crate::horizon_client::HorizonClient::get_account_list) method.
+/// 
+/// The struct matches the parameters necessary to construct a request for the
+/// <a href="https://developers.stellar.org/api/horizon/resources/list-all-accounts">List All Accounts endpoint</a>
+/// of the Horizon API.
+/// 
+/// # Filters
+///
+/// At least one of the following filters is required:
+/// - `sponsor`: Account ID of the sponsor. Filters for accounts sponsored by the account ID or have a subentry (trustline, offer, or data entry) which is sponsored by the given account ID.
+/// - `signer`: Account ID of the signer. Filters for accounts that have the given account ID as a signer.
+/// - `asset`: An issued asset in the format “Code:IssuerAccountID”. Filters for accounts with a trustline for the specified asset.
+/// - `liquidity_pool`: The liquidity pool ID. Filters for accounts associated with the specified liquidity pool.
+///
+/// # Optional Parameters
+///
+/// - `cursor`: A number that points to a specific location in a collection of responses and is pulled from the paging_token value of a record.
+/// - `limit`: The maximum number of records to return, with a permissible range from 1 to 200. 
+///   Defaults to 10 if not specified.
+/// - `order`: The [`Order`] of the returned records, either ascending ([`Order::Asc`]) or descending ([`Order::Desc`]). 
+///   Defaults to ascending if not set.
+///
+/// # Usage
+///
+/// Instances of `AccountsRequest` are created and configured using setter methods for each 
+/// parameter.
+/// ```
+/// # use stellar_rust_sdk::accounts::accounts_request::AccountsRequest;
+/// # use crate::stellar_rust_sdk::models::Request;
+/// let mut request = AccountsRequest::new();
+/// request
+///     .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
+///     .set_limit(10);
+/// // Use with HorizonClient::get_account_list
+/// ```
+///
 pub struct AccountsRequest {
-    /// Account ID of the sponsor. Every account in the response will either be sponsored by the
-    /// given account ID or have a subentry (trustline, offer, or data entry) which is sponsored by
-    /// the given account ID.
     sponsor: Option<String>,
-    /// Account ID of the signer. Every account in the response will have the given account ID as a
-    /// signer.
     signer: Option<String>,
-    /// An issued asset represented as “Code:IssuerAccountID”. Every account in the response will
-    /// have a trustline for the given asset.
     asset: Option<AssetType>,
-    /// Account ID of the signer. Every account in the response will have the given account ID as a
-    /// signer.
     cursor: Option<u32>,
-    /// The maximum number of records returned. The limit can range from 1 to 200 - an upper limit
-    /// that is hardcoded in Horizon for performance reasons. If this argument isn’t designated, it
-    /// defaults to 10.
-    limit: Option<u32>,
-    /// A designation of the order in which records should appear. Options include asc (ascending)
-    /// or desc (descending). If this argument isn’t set, it defaults to asc.
+    limit: Option<u8>,
     order: Option<Order>,
-    /// The liquidity pool ID. Every account in the response will have a trustline for the given
     liquidity_pool: Option<String>,
 }
 
@@ -96,7 +119,7 @@ impl Request for AccountsRequest {
             }
         }
 
-        if self.signer.is_none() && self.sponsor.is_none() && self.asset.is_none() {
+        if self.signer.is_none() && self.sponsor.is_none() && self.asset.is_none() && self.liquidity_pool.is_none() {
             return Err("Exactly one filter is required. Please ensure that you are including a signer, sponsor, asset, or liquidity pool filter.".to_string());
         }
 
@@ -105,71 +128,70 @@ impl Request for AccountsRequest {
 }
 
 impl AccountsRequest {
-    /// Sets the public key of the sponsor
+    /// Sets the sponsor account ID filter.
+    ///
     /// # Arguments
-    /// * `sponsor` - The public key of the sponsor
-    /// # Returns
-    /// The request object
-    /// [AccountsRequest](struct.AccountsRequest.html)
+    /// * `sponsor` - A `String` specifying the sponsor account ID. Filters for accounts 
+    /// sponsored by this ID or having a subentry sponsored by this ID.
+    ///
     pub fn set_sponsor(&mut self, sponsor: impl Into<String>) -> &mut Self {
         self.sponsor = Some(sponsor.into());
         self
     }
 
-    /// Sets the public key of the signer
+    /// Sets the signer account ID filter.
+    ///
     /// # Arguments
-    /// * `signer` - The public key of the signer
-    /// # Returns
-    /// The request object
-    /// [AccountsRequest](struct.AccountsRequest.html)
+    /// * `signer` - A `String` specifying the signer account ID. Filters for accounts 
+    /// having this ID as a signer.
+    ///
     pub fn set_signer(&mut self, signer: &str) -> &mut Self {
         self.signer = Some(signer.to_owned());
         self
     }
 
-    /// Sets the asset type
+    /// Sets the asset filter.
+    ///
     /// # Arguments
-    /// * `asset` - The asset type
-    /// # Returns
-    /// [AccountsRequest](struct.AccountsRequest.html)
+    /// * `asset` - An [`AssetType`] specifying the asset. Filters for accounts with a 
+    /// trustline for this asset.
+    ///
     pub fn set_asset(&mut self, asset: AssetType) -> &mut Self {
         self.asset = Some(asset);
         self
     }
 
-    /// Sets the cursor for the page
+    /// Sets the cursor for pagination.
+    ///
     /// # Arguments
-    /// * `cursor` - The cursor for the page
-    /// # Returns
-    /// The request object
-    /// [AccountsRequest](struct.AccountsRequest.html)
+    /// * `cursor` - A `u32` value pointing to a specific location in a collection of responses.
+    /// 
     pub fn set_cursor(&mut self, cursor: u32) -> &mut Self {
         self.cursor = Some(cursor);
         self
     }
 
-    /// Sets the maximum number of records to return
+    /// Sets the maximum number of records to return.
+    ///
     /// # Arguments
-    /// * `limit` - The maximum number of records to return
-    /// # Returns
-    /// The request object
-    /// [AccountsRequest](struct.AccountsRequest.html)
-    pub fn set_limit(&mut self, limit: u32) -> &mut Self {
+    /// * `limit` - A `u8` value specifying the maximum number of records. Range: 1 to 200. Defaults to 10.
+    ///
+    pub fn set_limit(&mut self, limit: u8) -> &mut Self {
         self.limit = Some(limit);
         self
     }
 
-    /// Sets the order of the records
+    /// Sets the order of the returned records.
+    ///
     /// # Arguments
-    /// * `order` - The order of the records
-    /// # Returns
-    /// The request object
-    /// [AccountsRequest](struct.AccountsRequest.html)
+    /// * `order` - An [`Order`] enum value specifying the order (ascending or descending).
+    ///
     pub fn set_order(&mut self, order: Order) -> &mut Self {
         self.order = Some(order);
         self
     }
 }
+
 
 #[cfg(test)]
 mod tests {

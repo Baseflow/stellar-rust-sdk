@@ -97,7 +97,7 @@ impl HorizonClient {
     }
 
 
-    /// Retrieves a list of all assets from the Horizon server.
+    /// Retrieves a list of all assets.
     ///
     /// This asynchronous method fetches a complete list of assets. 
     /// It requires a [`AllAssetsRequest`] to specify query parameters for the assets retrieval
@@ -173,7 +173,7 @@ impl HorizonClient {
         self.get::<SingleClaimableBalanceResponse>(request).await
     }
 
-    /// Retrieves a list of all ledgers from the Horizon server.
+    /// Retrieves a list of all ledgers.
     ///
     /// This asynchronous method is designed to fetch list of ledgers 
     /// from the Horizon server. It requires a [`LedgersRequest`] to specify the parameters 
