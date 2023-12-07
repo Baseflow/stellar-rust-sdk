@@ -148,9 +148,26 @@ pub mod models;
 
 mod xdr;
 
-/// The asset type
-/// Native - The native asset
-/// Issued - An issued asset
+/// Represents the types of assets in the Stellar network.
+///
+/// `AssetType` is an enumeration used to specify the type of an asset in Stellar-related requests.
+/// It differentiates between native assets and issued assets within the Stellar ecosystem.
+///
+/// # Variants
+///
+/// * `Native` - Represents the native asset of the Stellar network (often referred to as XLM).
+///
+/// * `Issued` - Represents an asset that is issued by an account on the Stellar network.
+///   In its current implementation, it does not hold the asset code and issuer account ID, 
+///   but future enhancements are intended to include these details for complete asset specification.
+///
+/// # Note
+///
+/// The `Issued` variant is currently a placeholder and does not encapsulate the complete 
+/// information required for an issued asset (i.e., Asset Code and Issuer Account ID). 
+/// This is a known limitation and should be addressed in future versions to ensure full 
+/// functionality.
+/// 
 pub enum AssetType {
     Native,
     Issued,
@@ -165,9 +182,17 @@ impl std::fmt::Display for AssetType {
     }
 }
 
-/// The order of the records
-/// Asc - Ascending order
-/// Desc - Descending order
+/// Represents the ordering of records in queries to the Horizon API.
+///
+/// `Order` is an enumeration used in various requests to specify the desired order of the returned
+/// records.
+///
+/// # Variants
+///
+/// * `Asc` - Indicates ascending order.
+///
+/// * `Desc` - Indicates descending order.
+/// 
 pub enum Order {
     Asc,
     Desc,
@@ -182,18 +207,48 @@ impl std::fmt::Display for Order {
     }
 }
 
+
+/// Extension trait for building query parameter strings from a vector of optional values.
+///
+/// This trait provides a method to construct a query string from a vector of optional 
+/// values (`Option<T>`). It is designed to be used for generating query parameters in 
+/// URL construction, where each parameter is only included if it has a value (`Some`).
+///
+/// # Method
+///
+/// * `build_query_parameters`: Processes the vector of optional values and converts it
+///   into a query string. `None` values are filtered out, and `Some` values are 
+///   converted to their string representations and concatenated with '&' as a separator.
+///
+/// # Usage
+///
+/// This method is typically used internally in constructing URLs with query parameters. 
+/// It enables a convenient and efficient way to handle optional parameters in a URL query string.
+///
 trait BuildQueryParametersExt<T> {
     fn build_query_parameters(self) -> String;
 }
 
 impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
+    /// Constructs a query string from a vector of optional values.
     fn build_query_parameters(self) -> String {
         let params = self.into_iter()
-            // The filter_map function filters out the None values, leaving only the Some values with formatted strings.
-            .filter_map(|x| x.map(|val| val.to_string()))
-            .collect::<Vec<String>>().join("&");
+            // Iterate over each element in the vector.
+            .filter_map(|x| 
+                // Use filter_map to process each Option<T>.
+                // If the element is Some, it's transformed to its string representation.
+                // If the element is None, it's filtered out.
+                x.map(|val| val.to_string()))
+            // Collect the transformed values into a Vec<String>.
+            .collect::<Vec<String>>()
+            // Join the Vec<String> elements with '&' to create the query string.
+            .join("&");
+
+        // Check if the resulting params string is empty.
         match params.is_empty() {
+            // If params is empty, return an empty string.
             true => "".to_string(),
+            // If params is not empty, prepend a '?' to the params string.
             false => format!("?{}", params),
         }
     }

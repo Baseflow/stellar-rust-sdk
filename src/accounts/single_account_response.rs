@@ -6,11 +6,26 @@ use serde::Deserialize;
 
 use crate::models::Response;
 
-/// Struct defining the self link in the list all accounts response.
+/// Represents the navigational links in a single account response from the Horizon API.
+///
+/// This struct includes various hyperlinks such as links to the account itself, transactions,
+/// operations, payments, effects, offers, trades, and data, providing quick access to related resources.
+///
+/// # Fields
+///
+/// * `operations`: Link to the account's operations.
+/// * `payments`: Link to the account's payments.
+/// * `effects`: Link to the effects concerning the account.
+/// * `offers`: Link to the account's offers.
+/// * `trades`: Link to the trades involving the account.
+/// * `data`: Link to the account's additional data.
+///
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct Links {
+    /// The link to the account itself.
     #[serde(rename = "self")]
     self_link: SelfLink,
+    /// Link to the account's transactions.
     transactions: Link,
     operations: Link,
     payments: Link,
@@ -20,9 +35,14 @@ pub struct Links {
     data: Link,
 }
 
-/// Struct defining the self link in the list all accounts response.
+/// Represents the self-link in the list of all accounts response.
+///
+/// This struct defines the structure of the self-link (`href`) found in the accounts response
+/// from the Horizon API. It contains the URL to the current resource or query.
+///
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct SelfLink {
+    /// A `String` representing the hyperlink reference to the current resource or query.
     href: String,
 }
 
