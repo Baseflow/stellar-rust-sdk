@@ -139,7 +139,7 @@ pub mod single_account_request;
 ///   .await;
 /// 
 /// // Access the account details
-/// println!("Account ID: {}", account_response.account_id());
+/// println!("Account ID: {}", _single_account_response?.account_id());
 /// # Ok({})
 /// # }
 /// ```

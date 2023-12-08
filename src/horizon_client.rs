@@ -1,7 +1,7 @@
 
 use crate::{
     accounts::prelude::{
-        AccountsRequest, AccountsResponse, SingleAccountRequest, SingleAccountsResponse,
+        AccountsRequest, AccountsResponse, SingleAccountRequest, SingleAccountResponse,
     },
     assets::prelude::{AllAssetsRequest, AllAssetsResponse},
     claimable_balances::prelude::{
@@ -85,15 +85,15 @@ impl HorizonClient {
     ///
     /// # Returns
     ///
-    /// On success, returns a `Result` wrapping a [`SingleAccountsResponse`], which includes the 
+    /// On success, returns a `Result` wrapping a [`SingleAccountResponse`], which includes the 
     /// detailed information of the requested account. If the request fails, it returns an error 
     /// encapsulated within `Result`.
     /// 
     pub async fn get_single_account(
         &self,
         request: &SingleAccountRequest,
-    ) -> Result<SingleAccountsResponse, String> {
-        self.get::<SingleAccountsResponse>(request).await
+    ) -> Result<SingleAccountResponse, String> {
+        self.get::<SingleAccountResponse>(request).await
     }
 
 
