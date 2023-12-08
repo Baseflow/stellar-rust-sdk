@@ -148,7 +148,37 @@ pub mod single_account_response;
 
 static ACCOUNTS_PATH: &str = "accounts";
 
-
+/// The `prelude` module of the Horizon Client Library.
+///
+/// This module serves as a convenience for users of the Horizon Rust SDK, allowing for easy and 
+/// ergonomic import of the most commonly used items across various modules. It re-exports 
+/// key structs and traits from the sibling modules, simplifying access to these components 
+/// when using the library.
+///
+/// By importing the contents of `prelude`, users can conveniently access the primary 
+/// functionalities of the accounts-related modules without needing to import each item 
+/// individually.
+///
+/// # Contents
+///
+/// The `prelude` includes the following re-exports:
+///
+/// * From `accounts_request`: All items (e.g., `AccountsRequest`).
+/// * From `accounts_response`: All items (e.g., `AccountsResponse`, `Record`, etc.).
+/// * From `single_account_request`: All items (e.g., `SingleAccountRequest`).
+/// * From `single_account_response`: All items (e.g., `SingleAccountResponse`, `Balance`, etc.).
+///
+/// # Example
+///
+/// ```
+/// # use crate::stellar_rust_sdk::models::*;
+/// // Import the contents of the account prelude
+/// use stellar_rust_sdk::accounts::prelude::*;
+///
+/// // Now you can directly use AccountsRequest, SingleAccountResponse, etc.
+/// let account_request = AccountsRequest::new();
+/// ```
+///
 pub mod prelude {
     pub use super::accounts_request::*;
     pub use super::accounts_response::*;
