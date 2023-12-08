@@ -1,56 +1,59 @@
 use crate::models::{is_public_key, Request};
 
-/// SingleAccountRequest is the request for the /accounts enpoint to get a single account.
-/// [More Details](https://www.stellar.org/developers/horizon/reference/endpoints/accounts.html "Accounts")
-pub struct SingleAccountRequest {
+#[derive(Default, Clone)]
+pub struct AccountId(String);
+#[derive(Default, Clone)]
+pub struct NoAccountId;
+
+/// SingleAccountRequest is the request for the /accounts endpoint to get a single account.
+/// [More Details](https://developers.stellar.org/api/horizon/resources/retrieve-an-account "Accounts")
+#[derive(Default)]
+pub struct SingleAccountRequest<I> {
     /// Account ID of the sponsor. Every account in the response will either be sponsored by the given account ID or have a subentry (trustline, offer, or data entry) which is sponsored by the given account ID.
-    account_id: Option<String>,
+    account_id: I,
 }
 
-impl Request for SingleAccountRequest {
-    fn new() -> Self {
-        SingleAccountRequest { account_id: None }
+impl SingleAccountRequest<NoAccountId> {
+    pub fn new() -> Self {
+        SingleAccountRequest::default()
     }
 
-    fn get_query_parameters(&self) -> String {
-        let mut query = String::new();
-        if let Some(account_id) = &self.account_id {
-            query.push_str(&format!("{}", account_id));
-        }
-
-        query.trim_end_matches('&').to_string()
-    }
-
-    fn build_url(&self, base_url: &str) -> String {
-        format!(
-            "{}/{}/{}",
-            base_url,
-            super::ACCOUNTS_PATH,
-            self.get_query_parameters()
-        )
-    }
-
-    fn validate(&self) -> Result<(), String> {
-        if let Some(account_id) = &self.account_id {
-            let is_valid = is_public_key(account_id);
-            if is_valid.is_err() {
-                return Err(is_valid.unwrap_err());
-            }
-        }
-
-        Ok(())
-    }
-}
-
-impl SingleAccountRequest {
     /// Sets the account ID of the account to get.
     /// # Arguments
     /// * `account_id` - The account ID of the account to get.
     /// # Returns
     /// The request object
     /// [SingleAccountRequest](struct.SingleAccountRequest.html)
-    pub fn set_account_id(&mut self, account_id: String) -> &mut Self {
-        self.account_id = Some(account_id);
-        self
+    pub fn set_account_id(
+        self,
+        account_id: String,
+    ) -> Result<SingleAccountRequest<AccountId>, String> {
+        if let Err(e) = is_public_key(&account_id) {
+            return Err(e.to_string());
+        }
+
+        Ok(SingleAccountRequest {
+            account_id: AccountId(account_id),
+        })
+    }
+}
+
+impl Request for SingleAccountRequest<AccountId> {
+    fn get_query_parameters(&self) -> String {
+        let mut query = String::new();
+        query.push_str(&format!("{}", self.account_id.0));
+
+        query.trim_end_matches('&').to_string()
+    }
+
+    fn build_url(&self, base_url: &str) -> String {
+        // This URL is not built with query paramaters, but with the AccountID as addition to the path.
+        // therefore there is no `?` but a `/` in the formatted string.
+        format!(
+            "{}/{}/{}",
+            base_url,
+            super::ACCOUNTS_PATH,
+            self.get_query_parameters()
+        )
     }
 }

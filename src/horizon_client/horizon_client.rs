@@ -1,15 +1,16 @@
 use crate::{
     accounts::prelude::{
-        AccountsRequest, AccountsResponse, SingleAccountRequest, SingleAccountsResponse,
+        ValidAccountsRequest, AccountsResponse, SingleAccountRequest, SingleAccountsResponse,
+        AccountId
     },
     assets::prelude::{AllAssetsRequest, AllAssetsResponse},
     claimable_balances::prelude::{
         AllClaimableBalancesRequest, AllClaimableBalancesResponse, SingleClaimableBalanceRequest,
-        SingleClaimableBalanceResponse,
+        SingleClaimableBalanceResponse, ClaimableBalanceId,
     },
-    ledgers::prelude::{
+    ledgers::{prelude::{
         LedgersRequest, LedgersResponse, SingleLedgerRequest, SingleLedgerResponse,
-    },
+    }, single_ledger_request::Sequence},
     models::{Request, Response},
 };
 use reqwest;
@@ -42,7 +43,7 @@ impl HorizonClient {
     /// [GET /accounts](https://www.stellar.org/developers/horizon/reference/endpoints/accounts.html)
     pub async fn get_account_list(
         &self,
-        request: &AccountsRequest,
+        request: &impl ValidAccountsRequest,
     ) -> Result<AccountsResponse, String> {
         self.get::<AccountsResponse>(request).await
     }
@@ -58,7 +59,7 @@ impl HorizonClient {
     /// [GET /accounts/{account_id}](https://www.stellar.org/developers/horizon/reference/endpoints/accounts-single.html)
     pub async fn get_single_account(
         &self,
-        request: &SingleAccountRequest,
+        request: &SingleAccountRequest<AccountId>,
     ) -> Result<SingleAccountsResponse, String> {
         self.get::<SingleAccountsResponse>(request).await
     }
@@ -106,7 +107,7 @@ impl HorizonClient {
     /// [GET /claimable_balances/{claimable_balance_id}](https://www.stellar.org/developers/horizon/reference/endpoints/claimable_balances-single.html)
     pub async fn get_single_claimable_balance(
         &self,
-        request: &SingleClaimableBalanceRequest,
+        request: &SingleClaimableBalanceRequest<ClaimableBalanceId>,
     ) -> Result<SingleClaimableBalanceResponse, String> {
         self.get::<SingleClaimableBalanceResponse>(request).await
     }
@@ -138,7 +139,7 @@ impl HorizonClient {
     /// [GET /ledgers/{ledger_id}](https://www.stellar.org/developers/horizon/reference/endpoints/ledgers-single.html)
     pub async fn get_single_ledger(
         &self,
-        request: &SingleLedgerRequest,
+        request: &SingleLedgerRequest<Sequence>,
     ) -> Result<SingleLedgerResponse, String> {
         self.get::<SingleLedgerResponse>(request).await
     }
@@ -154,13 +155,6 @@ impl HorizonClient {
         &self,
         request: &impl Request,
     ) -> Result<TResponse, String> {
-        // Validate the request.
-        request.validate()?;
-
-        //match request by SingleAccountRequest or AccountsRequest
-        // Determine the url
-        // TODO: construct with query parameters
-
         let url = request.build_url(&self.base_url);
         let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
         // println!("\n\nREQWEST RESPONSE: {:?}", response);
@@ -212,6 +206,7 @@ mod tests {
 
     use crate::{
         assets::prelude::AllAssetsRequest,
+        accounts::prelude::AccountsRequest,
         claimable_balances::prelude::SingleClaimableBalanceRequest,
         ledgers::prelude::SingleLedgerRequest,
     };
@@ -241,15 +236,14 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let mut accounts_request = AccountsRequest::new();
-        accounts_request
-            .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
-            .set_limit(10);
+        let accounts_request = AccountsRequest::new()
+            .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap()
+            .set_limit(10).unwrap();
 
         // call the get_account_list method to retrieve the account list response
         let _accounts_response: Result<AccountsResponse, String> =
             horizon_client.get_account_list(&accounts_request).await;
-
+        
         assert!(_accounts_response.is_ok());
 
         assert_eq!(
@@ -393,13 +387,14 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let mut single_account_request = SingleAccountRequest::new();
-        single_account_request
-            .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string());
-
+        let single_account_request = SingleAccountRequest::new()
+            .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
+            .unwrap();
+        
         let _single_account_response = horizon_client
             .get_single_account(&single_account_request)
             .await;
+
 
         assert!(_single_account_response.is_ok());
 
@@ -561,16 +556,14 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_get_all_assests() {
+    async fn test_get_all_assets() {
         // Initialize horizon client
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let mut all_assets_request: AllAssetsRequest = AllAssetsRequest::new();
-        all_assets_request
-            // .set_asset_issuer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
-            .set_limit(1);
+        let all_assets_request: AllAssetsRequest = AllAssetsRequest::new()
+            .set_limit(1).unwrap();
 
         let _all_assets_response = horizon_client.get_all_assets(&all_assets_request).await;
 
@@ -707,13 +700,12 @@ mod tests {
     #[tokio::test]
     async fn test_get_all_ledgers() {
         // Initialize horizon client
-
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let mut all_ledgers_request = LedgersRequest::new();
-        all_ledgers_request.set_limit(2);
+        let all_ledgers_request = LedgersRequest::new()
+                .set_limit(2).unwrap();
 
         let _all_ledgers_response = horizon_client.get_all_ledgers(&all_ledgers_request).await;
 
@@ -753,8 +745,8 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let mut single_ledger_request = SingleLedgerRequest::new();
-        single_ledger_request.set_sequence(2);
+        let single_ledger_request = SingleLedgerRequest::new()
+            .set_sequence(2).unwrap();
 
         let _single_ledger_response = horizon_client
             .get_single_ledger(&single_ledger_request)
@@ -891,7 +883,7 @@ mod tests {
 
         assert_eq!(
             decoded_xdr_header.scp_value.close_time,
-            stellar_xdr::TimePoint(1686734388)
+            stellar_xdr::curr::TimePoint(1686734388)
         );
     }
 
@@ -902,8 +894,8 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let mut single_ledger_request = SingleLedgerRequest::new();
-        single_ledger_request.set_sequence(2);
+        let single_ledger_request = SingleLedgerRequest::new()
+            .set_sequence(2).unwrap();
 
         let _single_ledger_response = horizon_client
             .get_single_ledger(&single_ledger_request)
@@ -1021,7 +1013,7 @@ mod tests {
         assert_eq!(_decoded_header_xdr.base_fee, 100);
         assert_eq!(_decoded_header_xdr.base_reserve, 100000000);
         assert_eq!(_decoded_header_xdr.max_tx_set_size, 100);
-        assert_eq!(_decoded_header_xdr.ext, stellar_xdr::LedgerHeaderExt::V0);
+        assert_eq!(_decoded_header_xdr.ext, stellar_xdr::curr::LedgerHeaderExt::V0);
         for decoded in _decoded_header_xdr.skip_list {
             assert_eq!(
                 decoded.to_string(),
@@ -1037,8 +1029,8 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let mut all_claimable_balances_request = AllClaimableBalancesRequest::new();
-        all_claimable_balances_request.set_limit(2);
+        let all_claimable_balances_request = AllClaimableBalancesRequest::new()
+            .set_limit(2).unwrap();
 
         let _all_claimable_balances_response = horizon_client
             .get_all_claimable_balances(&all_claimable_balances_request)
@@ -1135,11 +1127,8 @@ mod tests {
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
-        // construct request
-        let mut single_claimable_balance_request = SingleClaimableBalanceRequest::new();
-        single_claimable_balance_request.set_claimable_balance_id(
-            "000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string(),
-        );
+        let single_claimable_balance_request = SingleClaimableBalanceRequest::new()
+            .set_claimable_balance_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string());
 
         let single_claimable_balance_response = horizon_client
             .get_single_claimable_balance(&single_claimable_balance_request)

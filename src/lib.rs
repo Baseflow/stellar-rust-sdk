@@ -14,17 +14,16 @@
 //! use stellar_rust_sdk::accounts::prelude::AccountsRequest;
 //! use stellar_rust_sdk::accounts::prelude::AccountsResponse;
 //! use crate::stellar_rust_sdk::models::Request;
-//! 
+//!
 //! async fn example() -> Result<(), Box<dyn std::error::Error>> {
 //! // Initialize horizon client
 //! let horizon_client =
 //!     HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 //!
 //! // construct request
-//! let mut accounts_request = AccountsRequest::new();
-//! accounts_request
-//!     .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
-//!     .set_limit(10);
+//! let mut accounts_request = AccountsRequest::new()
+//!     .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap()
+//!     .set_limit(10).unwrap();
 //!
 //! // call the get_account_list method to retrieve the account list response
 //! let _accounts_response: Result<AccountsResponse, String> =
@@ -36,7 +35,7 @@
 //! ```
 //! ## Features
 //!
-//! All the enpoints in the Horizon Api and wether or not they are supported by this library:
+//! All the endpoints in the Horizon Api and wether or not they are supported by this library:
 //!
 //! - [x] `Accounts` - List all accounts endpoint
 //! - [x] `Single Account` - Get a single account endpoint
@@ -99,6 +98,7 @@ pub mod xdr;
 /// The asset type
 /// Native - The native asset
 /// Issued - An issued asset
+#[derive(Clone)]
 pub enum AssetType {
     Native,
     Issued,
@@ -113,33 +113,18 @@ impl std::fmt::Display for AssetType {
     }
 }
 
-/// The order of the records
-/// Asc - Ascending order
-/// Desc - Descending order
-pub enum Order {
-    Asc,
-    Desc,
-}
-
-impl std::fmt::Display for Order {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Order::Asc => write!(f, "asc"),
-            Order::Desc => write!(f, "desc"),
-        }
-    }
-}
-
 trait BuildQueryParametersExt<T> {
     fn build_query_parameters(self) -> String;
 }
 
 impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
     fn build_query_parameters(self) -> String {
-        let params = self.into_iter()
+        let params = self
+            .into_iter()
             // The filter_map function filters out the None values, leaving only the Some values with formatted strings.
             .filter_map(|x| x.map(|val| val.to_string()))
-            .collect::<Vec<String>>().join("&");
+            .collect::<Vec<String>>()
+            .join("&");
         match params.is_empty() {
             true => "".to_string(),
             false => format!("?{}", params),

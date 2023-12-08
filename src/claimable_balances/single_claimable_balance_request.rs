@@ -1,53 +1,45 @@
 use crate::models::*;
 
+#[derive(Default, Clone)]
+pub struct ClaimableBalanceId(String);
+#[derive(Default, Clone)]
+pub struct NoClaimableBalanceId;
+
 /// SingleClaimableBalanceRequest is the struct that implements the type for the /claimable_balances endpoint to get a single claimable balance
-/// [More Details](https://laboratory.stellar.org/#explorer?resource=claimable_balances&endpoint=single&network=test "Single Claimable Balance")
-#[derive(Debug)]
-pub struct SingleClaimableBalanceRequest {
-    /// Claimable Balance ID
-    /// [Stellar Documentation](https://developers.stellar.org/api/resources/claimablebalances/single/ "Claimable Balance ID")
-    claimable_balance_id: Option<String>,
+/// [More Details](https://developers.stellar.org/api/horizon/resources/retrieve-a-claimable-balance) "Single Claimable Balance")
+#[derive(Default)]
+pub struct SingleClaimableBalanceRequest<I> {
+    claimable_balance_id: I,
 }
 
-impl Request for SingleClaimableBalanceRequest {
-    fn new() -> Self {
-        SingleClaimableBalanceRequest {
-            claimable_balance_id: None,
-        }
+impl SingleClaimableBalanceRequest<NoClaimableBalanceId> {
+    pub fn new() -> Self {
+        SingleClaimableBalanceRequest::default()
     }
 
+    pub fn set_claimable_balance_id(
+        self,
+        claimable_balance_id: String,
+    ) -> SingleClaimableBalanceRequest<ClaimableBalanceId> {
+        SingleClaimableBalanceRequest {
+            claimable_balance_id: ClaimableBalanceId(claimable_balance_id),
+        }
+    }
+}
+
+impl Request for SingleClaimableBalanceRequest<ClaimableBalanceId> {
     fn get_query_parameters(&self) -> String {
         let mut query = String::new();
-        if let Some(claimable_balance_id) = &self.claimable_balance_id {
-            query.push_str(&format!("{}", claimable_balance_id));
-        }
-        format!("/{}", query)
+        query.push_str(&format!("{}", self.claimable_balance_id.0));
+        query
     }
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}/{}{}",
+            "{}/{}/{}",
             base_url,
-            super::CLAIMABLE_BALANCES_PATH,            
+            super::CLAIMABLE_BALANCES_PATH,
             self.get_query_parameters()
         )
-    }
-
-    fn validate(&self) -> Result<(), String> {
-        // TODO: Validate claimable_balance_id
-
-        Ok(())
-    }
-}
-
-/// Returns the claimable balance ID
-/// # Arguments
-/// * `self` - The request object
-/// # Returns
-/// The claimable balance ID
-impl SingleClaimableBalanceRequest {
-    pub fn set_claimable_balance_id(&mut self, claimable_balance_id: String) -> &mut Self {
-        self.claimable_balance_id = Some(claimable_balance_id);
-        self
     }
 }

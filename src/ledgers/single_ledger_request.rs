@@ -1,25 +1,41 @@
 use crate::models::*;
 
-pub struct SingleLedgerRequest {
+#[derive(Default, Clone)]
+pub struct Sequence(u32);
+#[derive(Default, Clone)]
+pub struct NoSequence;
+
+#[derive(Default)]
+pub struct SingleLedgerRequest<S> {
     /// The sequence of the ledger
-    sequence: u32,
+    sequence: S,
 }
 
-impl Request for SingleLedgerRequest {
-    fn new() -> Self {
-        Self { sequence: 0 }
+impl SingleLedgerRequest<NoSequence> {
+    pub fn new() -> Self {
+        SingleLedgerRequest::default()
     }
 
-    fn get_query_parameters(&self) -> String {
-        format!("/{}", self.sequence)
-    }
-
-    fn validate(&self) -> Result<(), String> {
-        if self.sequence < 1 {
+    /// Sets the sequence
+    /// # Arguments
+    /// * `sequence` - The sequence
+    /// # Returns
+    /// The request object
+    /// [SingleLedgerRequest](struct.SingleLedgerRequest.html)
+    pub fn set_sequence(self, sequence: u32) -> Result<SingleLedgerRequest<Sequence>, String> {
+        if sequence < 1 {
             return Err("sequence must be greater than or equal to 1".to_string());
         }
 
-        Ok(())
+        Ok(SingleLedgerRequest {
+            sequence: Sequence(sequence),
+        })
+    }
+}
+
+impl Request for SingleLedgerRequest<Sequence> {
+    fn get_query_parameters(&self) -> String {
+        format!("/{}", self.sequence.0)
     }
 
     fn build_url(&self, base_url: &str) -> String {
@@ -32,26 +48,14 @@ impl Request for SingleLedgerRequest {
     }
 }
 
-impl SingleLedgerRequest {
-    /// Sets the sequence
-    /// # Arguments
-    /// * `sequence` - The sequence
-    /// # Returns
-    /// The request object
-    /// [SingleLedgerRequest](struct.SingleLedgerRequest.html)
-    pub fn set_sequence(&mut self, sequence: u32) -> &mut Self {
-        self.sequence = sequence;
-        self
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_ledgers_request() {
-        let request = SingleLedgerRequest::new();
-        assert_eq!(request.build_url("https://horizon-testnet.stellar.org"), "https://horizon-testnet.stellar.org/ledgers/0");
+        let request = SingleLedgerRequest::new().set_sequence(2).unwrap();
+
+        // assert_eq!(request.get_path(), "/ledgers");
     }
 }

@@ -1,25 +1,12 @@
 /// The request module contains the request object
 /// which is used to send requests to the server
 pub trait Request {
-    /// Creates a new request object
-    /// # Returns
-    /// A new request object
-    /// [Request](trait.Request.html)
-    fn new() -> Self;
-
     /// Gets the query parameters for the request
     /// # Arguments
     /// * `self` - The request object
     /// # Returns
     /// The query parameters for the request
     fn get_query_parameters(&self) -> String;
-
-    /// Validate the request
-    /// Returns an error if the request is invalid
-    /// Returns Ok(()) if the request is valid
-    /// This method is called before the request is sent
-    /// to the server
-    fn validate(&self) -> Result<(), String>;
 
     /// Build the URL for the request
     /// # Arguments
@@ -52,6 +39,22 @@ pub fn is_public_key(public_key: &str) -> Result<(), String> {
     }
 
     Ok(())
+}
+/// The order of the records
+/// Asc - Ascending order
+/// Desc - Descending order
+pub enum Order {
+    Asc,
+    Desc,
+}
+
+impl std::fmt::Display for Order {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Order::Asc => write!(f, "asc"),
+            Order::Desc => write!(f, "desc"),
+        }
+    }
 }
 
 // TODO: All responses are wrapped in a pagination object
