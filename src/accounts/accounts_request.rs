@@ -1,4 +1,31 @@
-use crate::{BuildQueryParametersExt, models::*, AssetType, Order};
+use crate::{models::*, AssetType, BuildQueryParametersExt, Order};
+
+macro_rules! valid_account_request_impl {
+    ($type:ty, $field:ident) => {
+        impl Request for $type {
+            fn get_query_parameters(&self) -> String {
+                let mut params = vec![
+                    self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+                    self.limit.as_ref().map(|l| format!("limit={}", l)),
+                    self.order.as_ref().map(|o| format!("order={}", o)),
+                ];
+
+                params.push(Some(format!("{}={}", stringify!($field), self.$field.0)));
+
+                params.build_query_parameters()
+            }
+
+            fn build_url(&self, base_url: &str) -> String {
+                format!(
+                    "{}/{}{}",
+                    base_url,
+                    super::ACCOUNTS_PATH,
+                    self.get_query_parameters()
+                )
+            }
+        }
+    };
+}
 
 // region: States
 #[derive(Default, Clone)]
@@ -24,9 +51,13 @@ pub struct NoLiquidityPool;
 
 pub trait ValidAccountsRequest: Request {}
 impl ValidAccountsRequest for AccountsRequest<Sponsor, NoSigner, NoAsset, NoLiquidityPool> {}
+valid_account_request_impl!(AccountsRequest<Sponsor, NoSigner, NoAsset, NoLiquidityPool>, sponsor);
 impl ValidAccountsRequest for AccountsRequest<NoSponsor, Signer, NoAsset, NoLiquidityPool> {}
+valid_account_request_impl!(AccountsRequest<NoSponsor, Signer, NoAsset, NoLiquidityPool>, signer);
 impl ValidAccountsRequest for AccountsRequest<NoSponsor, NoSigner, Asset, NoLiquidityPool> {}
+valid_account_request_impl!(AccountsRequest<NoSponsor, NoSigner, Asset, NoLiquidityPool>, asset);
 impl ValidAccountsRequest for AccountsRequest<NoSponsor, NoSigner, NoAsset, LiquidityPool> {}
+valid_account_request_impl!(AccountsRequest<NoSponsor, NoSigner, NoAsset, LiquidityPool>, liquidity_pool);
 
 /// AccountsRequest is the request object for the /accounts endpoint
 /// [More Details](https://www.stellar.org/developers/horizon/reference/endpoints/accounts.html "Accounts")
@@ -54,7 +85,6 @@ pub struct AccountsRequest<Sp, Si, A, L> {
     /// A designation of the order in which records should appear. Options include asc (ascending)
     /// or desc (descending). If this argument isn’t set, it defaults to asc.
     order: Option<Order>,
-
 }
 
 impl<Sp, Si, A, L> AccountsRequest<Sp, Si, A, L> {
@@ -64,17 +94,15 @@ impl<Sp, Si, A, L> AccountsRequest<Sp, Si, A, L> {
     /// # Returns
     /// The request object
     /// [AllAccountsRequest](struct.AllAccountsRequest.html)
-    pub fn set_cursor(self, cursor: u32) -> Result<AccountsRequest<Sp, Si, A, L>, String>{
+    pub fn set_cursor(self, cursor: u32) -> Result<AccountsRequest<Sp, Si, A, L>, String> {
         if cursor < 1 {
             return Err("cursor must be greater than or equal to 1".to_string());
         }
 
-        Ok(
-            AccountsRequest {
-                cursor: Some(cursor),
-                ..self
-            }
-        )
+        Ok(AccountsRequest {
+            cursor: Some(cursor),
+            ..self
+        })
     }
 
     /// Sets the limit
@@ -88,12 +116,10 @@ impl<Sp, Si, A, L> AccountsRequest<Sp, Si, A, L> {
             return Err("limit must be between 1 and 200".to_string());
         }
 
-        Ok(
-            AccountsRequest {
-                limit: Some(limit),
-                ..self
-            }
-        )
+        Ok(AccountsRequest {
+            limit: Some(limit),
+            ..self
+        })
     }
 
     /// Sets the order
@@ -110,30 +136,33 @@ impl<Sp, Si, A, L> AccountsRequest<Sp, Si, A, L> {
     }
 }
 
+/// Since the Horizon API only ollows for one of the following parameters to be set, we need to
+/// create an implementation, for a combination of generics which are all unset.
 impl AccountsRequest<NoSponsor, NoSigner, NoAsset, NoLiquidityPool> {
     pub fn new() -> Self {
         AccountsRequest::default()
     }
-    
+
     /// Sets the public key of the sponsor
     /// # Arguments
     /// * `sponsor` - The public key of the sponsor
     /// # Returns
     /// The request object
     /// [AccountsRequest](struct.AccountsRequest.html)
-    pub fn set_sponsor(self, sponsor: String) -> Result<AccountsRequest<Sponsor, NoSigner, NoAsset, NoLiquidityPool>, String> {
+    pub fn set_sponsor(
+        self,
+        sponsor: String,
+    ) -> Result<AccountsRequest<Sponsor, NoSigner, NoAsset, NoLiquidityPool>, String> {
         if let Err(e) = is_public_key(&sponsor) {
             return Err(e.to_string());
         }
 
         Ok(AccountsRequest {
             sponsor: Sponsor(sponsor.into()),
-            signer: self.signer,
-            asset: self.asset,
-            liquidity_pool: self.liquidity_pool,
             cursor: self.cursor,
             limit: self.limit,
             order: self.order,
+            ..Default::default()
         })
     }
 
@@ -143,19 +172,20 @@ impl AccountsRequest<NoSponsor, NoSigner, NoAsset, NoLiquidityPool> {
     /// # Returns
     /// The request object
     /// [AccountsRequest](struct.AccountsRequest.html)
-    pub fn set_signer(self, signer: &str) -> Result<AccountsRequest<NoSponsor, Signer, NoAsset, NoLiquidityPool>, String> {
+    pub fn set_signer(
+        self,
+        signer: &str,
+    ) -> Result<AccountsRequest<NoSponsor, Signer, NoAsset, NoLiquidityPool>, String> {
         if let Err(e) = is_public_key(&signer) {
             return Err(e.to_string());
         }
 
         Ok(AccountsRequest {
-            sponsor: self.sponsor,
             signer: Signer(signer.to_string()),
-            asset: self.asset,
-            liquidity_pool: self.liquidity_pool,
             cursor: self.cursor,
             limit: self.limit,
             order: self.order,
+            ..Default::default()
         })
     }
 
@@ -164,7 +194,10 @@ impl AccountsRequest<NoSponsor, NoSigner, NoAsset, NoLiquidityPool> {
     /// * `asset` - The asset type
     /// # Returns
     /// [AccountsRequest](struct.AccountsRequest.html)
-    pub fn set_asset(self, asset: AssetType) -> AccountsRequest<NoSponsor, NoSigner, Asset, NoLiquidityPool> {
+    pub fn set_asset(
+        self,
+        asset: AssetType,
+    ) -> AccountsRequest<NoSponsor, NoSigner, Asset, NoLiquidityPool> {
         AccountsRequest {
             sponsor: self.sponsor,
             signer: self.signer,
@@ -182,99 +215,19 @@ impl AccountsRequest<NoSponsor, NoSigner, NoAsset, NoLiquidityPool> {
     /// # Returns
     /// The request object
     /// [AccountsRequest](struct.AccountsRequest.html)
-    pub fn set_liquidity_pool(self, liquidity_pool: impl Into<String>) -> AccountsRequest<NoSponsor, NoSigner, NoAsset, LiquidityPool> {
+    pub fn set_liquidity_pool(
+        self,
+        liquidity_pool: impl Into<String>,
+    ) -> AccountsRequest<NoSponsor, NoSigner, NoAsset, LiquidityPool> {
         AccountsRequest {
-            sponsor: self.sponsor,
-            signer: self.signer,
-            asset: self.asset,
             liquidity_pool: LiquidityPool(liquidity_pool.into()),
             cursor: self.cursor,
             limit: self.limit,
             order: self.order,
+            ..Default::default()
         }
     }
 }
-
-impl Request for AccountsRequest<Sponsor, NoSigner, NoAsset, NoLiquidityPool> {
-    fn get_query_parameters(&self) -> String {
-        vec![
-            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
-            self.limit.as_ref().map(|l| format!("limit={}", l)),
-            self.order.as_ref().map(|o| format!("order={}", o)),
-            Some(format!("sponsor={}", self.sponsor.0))
-        ].build_query_parameters()
-    }
-
-    fn build_url(&self, base_url: &str) -> String {
-        format!(
-            "{}/{}{}",
-            base_url,
-            super::ACCOUNTS_PATH,
-            self.get_query_parameters()
-        )
-    }
-}
-
-impl Request for AccountsRequest<NoSponsor, Signer, NoAsset, NoLiquidityPool> {
-    fn get_query_parameters(&self) -> String {
-        vec![
-            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
-            self.limit.as_ref().map(|l| format!("limit={}", l)),
-            self.order.as_ref().map(|o| format!("order={}", o)),
-            Some(format!("signer={}", self.signer.0))
-        ].build_query_parameters()
-    }
-
-    fn build_url(&self, base_url: &str) -> String {
-        format!(
-            "{}/{}{}",
-            base_url,
-            super::ACCOUNTS_PATH,
-            self.get_query_parameters()
-        )
-    }
-}
-
-impl Request for AccountsRequest<NoSponsor, NoSigner, Asset, NoLiquidityPool> {
-    fn get_query_parameters(&self) -> String {
-        vec![
-            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
-            self.limit.as_ref().map(|l| format!("limit={}", l)),
-            self.order.as_ref().map(|o| format!("order={}", o)),
-            Some(format!("asset={}", self.asset.0))
-        ].build_query_parameters()
-    }
-
-    fn build_url(&self, base_url: &str) -> String {
-        format!(
-            "{}/{}{}",
-            base_url,
-            super::ACCOUNTS_PATH,
-            self.get_query_parameters()
-        )
-    }
-}
-
-impl Request for AccountsRequest<NoSponsor, NoSigner, NoAsset, LiquidityPool> {
-    fn get_query_parameters(&self) -> String {
-        vec![
-            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
-            self.limit.as_ref().map(|l| format!("limit={}", l)),
-            self.order.as_ref().map(|o| format!("order={}", o)),
-            Some(format!("liquidity_pool={}", self.liquidity_pool.0))
-        ].build_query_parameters()
-    }
-
-    fn build_url(&self, base_url: &str) -> String {
-        format!(
-            "{}/{}{}",
-            base_url,
-            super::ACCOUNTS_PATH,
-            self.get_query_parameters()
-        )
-    }
-}
-
 
 #[cfg(test)]
 mod tests {
@@ -289,8 +242,7 @@ mod tests {
 
     #[test]
     fn test_accounts_request_set_sponsor() {
-        let request = AccountsRequest::new()
-            .set_sponsor("sponsor".to_string());
+        let request = AccountsRequest::new().set_sponsor("sponsor".to_string());
 
         assert!(request.is_err());
         // assert_eq!(request.unwrap_err(), "Public key must be 56 characters long");
