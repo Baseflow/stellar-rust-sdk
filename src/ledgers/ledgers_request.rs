@@ -1,4 +1,4 @@
-use crate::{BuildQueryParametersExt, models::*, Order};
+use crate::{models::*, BuildQueryParametersExt};
 
 #[derive(Default)]
 pub struct LedgersRequest {
@@ -21,18 +21,16 @@ impl LedgersRequest {
     /// # Returns
     /// The request object
     /// [AllLedgersRequest](struct.AllLedgersRequest.html)
-    pub fn set_cursor(self, cursor: u32) -> Result<LedgersRequest, String>{
+    pub fn set_cursor(self, cursor: u32) -> Result<LedgersRequest, String> {
         if cursor < 1 {
             return Err("cursor must be greater than or equal to 1".to_string());
         }
 
-        Ok(
-            LedgersRequest {
-                cursor: Some(cursor),
-                limit: self.limit,
-                order: self.order
-            }
-        )
+        Ok(LedgersRequest {
+            cursor: Some(cursor),
+            limit: self.limit,
+            order: self.order,
+        })
     }
 
     /// Sets the limit
@@ -46,13 +44,11 @@ impl LedgersRequest {
             return Err("limit must be between 1 and 200".to_string());
         }
 
-        Ok(
-            LedgersRequest {
-                cursor: self.cursor,
-                limit: Some(limit),
-                order: self.order
-            }
-        )
+        Ok(LedgersRequest {
+            cursor: self.cursor,
+            limit: Some(limit),
+            order: self.order,
+        })
     }
 
     /// Sets the order
@@ -65,11 +61,10 @@ impl LedgersRequest {
         LedgersRequest {
             cursor: self.cursor,
             limit: self.limit,
-            order: Some(order)
+            order: Some(order),
         }
     }
 }
-
 
 impl Request for LedgersRequest {
     fn get_query_parameters(&self) -> String {
@@ -77,7 +72,8 @@ impl Request for LedgersRequest {
             self.cursor.as_ref().map(|c| format!("cursor={}", c)),
             self.limit.as_ref().map(|l| format!("limit={}", l)),
             self.order.as_ref().map(|o| format!("order={}", o)),
-        ].build_query_parameters()
+        ]
+        .build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {
@@ -89,7 +85,6 @@ impl Request for LedgersRequest {
         )
     }
 }
-
 
 #[cfg(test)]
 mod tests {

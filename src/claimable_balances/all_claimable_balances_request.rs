@@ -1,4 +1,4 @@
-use crate::{BuildQueryParametersExt, models::*, Order, AssetType};
+use crate::{models::*, AssetType, BuildQueryParametersExt};
 
 /// AllClaimableBalancesRequest is the request type for the /claimable_balances/all endpoint
 /// [More Details] (https://www.stellar.org/developers/horizon/reference/endpoints/claimable_balances-all.html) "All Claimable Balances")
@@ -11,7 +11,7 @@ pub struct AllClaimableBalancesRequest {
     /// Account ID of the signer. Every account in the response will have the given account ID as a
     /// signer.
     asset: Option<AssetType>,
-    /// An object that holds both the destination account that can claim the ClaimableBalanceEntry 
+    /// An object that holds both the destination account that can claim the ClaimableBalanceEntry
     /// and a ClaimPredicate that must evaluate to true for the claim to succeed.
     claimant: Option<String>,
     /// Account ID of the signer. Every account in the response will have the given account ID as a
@@ -35,14 +35,15 @@ impl Request for AllClaimableBalancesRequest {
             self.cursor.as_ref().map(|c| format!("cursor={}", c)),
             self.limit.as_ref().map(|l| format!("limit={}", l)),
             self.order.as_ref().map(|o| format!("order={}", o)),
-        ].build_query_parameters()
+        ]
+        .build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
             "{}/{}/{}",
             base_url,
-            super::CLAIMABLE_BALANCES_PATH,            
+            super::CLAIMABLE_BALANCES_PATH,
             self.get_query_parameters()
         )
     }
@@ -82,7 +83,7 @@ impl AllClaimableBalancesRequest {
         AllClaimableBalancesRequest {
             asset: Some(asset),
             ..self
-        }        
+        }
     }
 
     /// Sets the claimant for the request
@@ -153,3 +154,4 @@ impl AllClaimableBalancesRequest {
         }
     }
 }
+

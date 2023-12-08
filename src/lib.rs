@@ -14,7 +14,7 @@
 //! use stellar_rust_sdk::accounts::prelude::AccountsRequest;
 //! use stellar_rust_sdk::accounts::prelude::AccountsResponse;
 //! use crate::stellar_rust_sdk::models::Request;
-//! 
+//!
 //! async fn example() -> Result<(), Box<dyn std::error::Error>> {
 //! // Initialize horizon client
 //! let horizon_client =
@@ -113,33 +113,18 @@ impl std::fmt::Display for AssetType {
     }
 }
 
-/// The order of the records
-/// Asc - Ascending order
-/// Desc - Descending order
-pub enum Order {
-    Asc,
-    Desc,
-}
-
-impl std::fmt::Display for Order {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Order::Asc => write!(f, "asc"),
-            Order::Desc => write!(f, "desc"),
-        }
-    }
-}
-
 trait BuildQueryParametersExt<T> {
     fn build_query_parameters(self) -> String;
 }
 
 impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
     fn build_query_parameters(self) -> String {
-        let params = self.into_iter()
+        let params = self
+            .into_iter()
             // The filter_map function filters out the None values, leaving only the Some values with formatted strings.
             .filter_map(|x| x.map(|val| val.to_string()))
-            .collect::<Vec<String>>().join("&");
+            .collect::<Vec<String>>()
+            .join("&");
         match params.is_empty() {
             true => "".to_string(),
             false => format!("?{}", params),

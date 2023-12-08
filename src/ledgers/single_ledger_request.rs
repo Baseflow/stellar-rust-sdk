@@ -11,7 +11,6 @@ pub struct SingleLedgerRequest<S> {
     sequence: S,
 }
 
-
 impl SingleLedgerRequest<NoSequence> {
     pub fn new() -> Self {
         SingleLedgerRequest::default()
@@ -23,19 +22,14 @@ impl SingleLedgerRequest<NoSequence> {
     /// # Returns
     /// The request object
     /// [SingleLedgerRequest](struct.SingleLedgerRequest.html)
-    pub fn set_sequence(
-        self,
-        sequence: u32,
-    ) -> Result<SingleLedgerRequest<Sequence>, String> {
+    pub fn set_sequence(self, sequence: u32) -> Result<SingleLedgerRequest<Sequence>, String> {
         if sequence < 1 {
             return Err("sequence must be greater than or equal to 1".to_string());
         }
 
-        Ok(
-            SingleLedgerRequest {    
-                sequence: Sequence(sequence),
-            }
-        )
+        Ok(SingleLedgerRequest {
+            sequence: Sequence(sequence),
+        })
     }
 }
 
@@ -54,16 +48,13 @@ impl Request for SingleLedgerRequest<Sequence> {
     }
 }
 
-
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_ledgers_request() {
-        let request = SingleLedgerRequest::new()
-            .set_sequence(2).unwrap();
+        let request = SingleLedgerRequest::new().set_sequence(2).unwrap();
 
         // assert_eq!(request.get_path(), "/ledgers");
     }

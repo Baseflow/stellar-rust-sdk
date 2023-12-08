@@ -24,13 +24,16 @@ impl SingleAccountRequest<NoAccountId> {
     /// # Returns
     /// The request object
     /// [SingleAccountRequest](struct.SingleAccountRequest.html)
-    pub fn set_account_id(self, account_id: String) -> Result<SingleAccountRequest<AccountId>, String> {
+    pub fn set_account_id(
+        self,
+        account_id: String,
+    ) -> Result<SingleAccountRequest<AccountId>, String> {
         if let Err(e) = is_public_key(&account_id) {
             return Err(e.to_string());
         }
 
         Ok(SingleAccountRequest {
-            account_id: AccountId(account_id)
+            account_id: AccountId(account_id),
         })
     }
 }

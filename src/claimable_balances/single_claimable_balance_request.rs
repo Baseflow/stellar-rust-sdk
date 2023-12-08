@@ -1,6 +1,5 @@
 use crate::models::*;
 
-
 #[derive(Default, Clone)]
 pub struct ClaimableBalanceId(String);
 #[derive(Default, Clone)]
@@ -22,8 +21,8 @@ impl SingleClaimableBalanceRequest<NoClaimableBalanceId> {
         self,
         claimable_balance_id: String,
     ) -> SingleClaimableBalanceRequest<ClaimableBalanceId> {
-        SingleClaimableBalanceRequest { 
-            claimable_balance_id: ClaimableBalanceId(claimable_balance_id) 
+        SingleClaimableBalanceRequest {
+            claimable_balance_id: ClaimableBalanceId(claimable_balance_id),
         }
     }
 }
@@ -39,9 +38,8 @@ impl Request for SingleClaimableBalanceRequest<ClaimableBalanceId> {
         format!(
             "{}/{}/{}",
             base_url,
-            super::CLAIMABLE_BALANCES_PATH,            
+            super::CLAIMABLE_BALANCES_PATH,
             self.get_query_parameters()
         )
     }
 }
-

@@ -1,4 +1,4 @@
-use crate::{models::*, AssetType, BuildQueryParametersExt, Order};
+use crate::{models::*, AssetType, BuildQueryParametersExt};
 
 macro_rules! valid_account_request_impl {
     ($type:ty, $field:ident) => {
@@ -94,12 +94,12 @@ impl<Sp, Si, A, L> AccountsRequest<Sp, Si, A, L> {
     /// # Returns
     /// The request object
     /// [AllAccountsRequest](struct.AllAccountsRequest.html)
-    pub fn set_cursor(self, cursor: u32) -> Result<AccountsRequest<Sp, Si, A, L>, String> {
+    pub fn set_cursor(self, cursor: u32) -> Result<Self, String> {
         if cursor < 1 {
             return Err("cursor must be greater than or equal to 1".to_string());
         }
 
-        Ok(AccountsRequest {
+        Ok(Self {
             cursor: Some(cursor),
             ..self
         })
@@ -111,12 +111,12 @@ impl<Sp, Si, A, L> AccountsRequest<Sp, Si, A, L> {
     /// # Returns
     /// The request object
     /// [AllAssetsRequest](struct.AllAssetsRequest.html)
-    pub fn set_limit(self, limit: u32) -> Result<AccountsRequest<Sp, Si, A, L>, String> {
+    pub fn set_limit(self, limit: u32) -> Result<Self, String> {
         if limit < 1 || limit > 200 {
             return Err("limit must be between 1 and 200".to_string());
         }
 
-        Ok(AccountsRequest {
+        Ok(Self {
             limit: Some(limit),
             ..self
         })
@@ -128,8 +128,8 @@ impl<Sp, Si, A, L> AccountsRequest<Sp, Si, A, L> {
     /// # Returns
     /// The request object
     /// [AllAssetsRequest](struct.AllAssetsRequest.html)
-    pub fn set_order(self, order: Order) -> AccountsRequest<Sp, Si, A, L> {
-        AccountsRequest {
+    pub fn set_order(self, order: Order) -> Self {
+        Self {
             order: Some(order),
             ..self
         }

@@ -40,6 +40,22 @@ pub fn is_public_key(public_key: &str) -> Result<(), String> {
 
     Ok(())
 }
+/// The order of the records
+/// Asc - Ascending order
+/// Desc - Descending order
+pub enum Order {
+    Asc,
+    Desc,
+}
+
+impl std::fmt::Display for Order {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Order::Asc => write!(f, "asc"),
+            Order::Desc => write!(f, "desc"),
+        }
+    }
+}
 
 // TODO: All responses are wrapped in a pagination object
 // {

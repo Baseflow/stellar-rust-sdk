@@ -1,4 +1,4 @@
-use crate::{models::Request, BuildQueryParametersExt, Order};
+use crate::{models::*, BuildQueryParametersExt};
 
 // AllAssetsRequest is the request for the /assets endpoint
 // [More Details] https://developers.stellar.org/api/horizon/resources/list-all-assets "Assets"
@@ -28,9 +28,14 @@ impl Request for AllAssetsRequest {
             self.cursor.as_ref().map(|c| format!("cursor={}", c)),
             self.limit.as_ref().map(|l| format!("limit={}", l)),
             self.order.as_ref().map(|o| format!("order={}", o)),
-            self.asset_code.as_ref().map(|ac| format!("asset_code={}", ac)),
-            self.asset_issuer.as_ref().map(|ac| format!("asset_issuer={}", ac))
-        ].build_query_parameters()
+            self.asset_code
+                .as_ref()
+                .map(|ac| format!("asset_code={}", ac)),
+            self.asset_issuer
+                .as_ref()
+                .map(|ac| format!("asset_issuer={}", ac)),
+        ]
+        .build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {
