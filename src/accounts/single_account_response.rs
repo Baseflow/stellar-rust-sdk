@@ -74,7 +74,7 @@ pub struct Data {}
 
 /// Struct defining a record of a single account in the list all accounts response.
 #[derive(Debug, Deserialize, Clone, Getters)]
-pub struct SingleAccountsResponse {
+pub struct SingleAccountResponse {
     _links: Links,
     id: String,
     account_id: String,
@@ -92,7 +92,7 @@ pub struct SingleAccountsResponse {
     paging_token: String,
 }
 
-impl Response for SingleAccountsResponse {
+impl Response for SingleAccountResponse {
     fn from_json(json: String) -> Result<Self, String> {
         serde_json::from_str(&json).map_err(|e| e.to_string())
     }
