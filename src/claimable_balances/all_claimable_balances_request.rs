@@ -1,4 +1,4 @@
-use crate::{models::*, AssetType, BuildQueryParametersExt};
+use crate::{models::*, BuildQueryParametersExt};
 
 /// AllClaimableBalancesRequest is the request type for the /claimable_balances/all endpoint
 /// [More Details] (https://www.stellar.org/developers/horizon/reference/endpoints/claimable_balances-all.html) "All Claimable Balances")

@@ -52,7 +52,7 @@
 //!
 //!     // Create a request to fetch accounts with a specific signer
 //!     let accounts_request = AccountsRequest::new()
-//!         .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")?
+//!         .set_signer_filter("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")?
 //!         .set_limit(10)?;
 //!
 //!     // Perform the request using the Horizon client
@@ -82,7 +82,7 @@
 //! types for more examples and detailed usage instructions.
 
 
-/// Requests and Response for retrieving accounts.
+/// Provides `Request`s and `Response`s for retrieving accounts.
 ///
 /// This module provides a set of specialized request and response structures designed for
 /// interacting with the accounts-related endpoints of the Horizon server. These structures
@@ -108,7 +108,7 @@
 /// # let horizon_client = HorizonClient::new(base_url)
 /// #    .expect("Failed to create Horizon Client");
 /// let request = AccountsRequest::new()
-///     .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap()
+///     .set_signer_filter("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap()
 ///     .set_limit(10).unwrap();
 ///
 /// let response: Result<AccountsResponse, String> = horizon_client
