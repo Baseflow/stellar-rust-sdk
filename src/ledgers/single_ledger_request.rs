@@ -47,15 +47,3 @@ impl Request for SingleLedgerRequest<Sequence> {
         )
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_ledgers_request() {
-        let request = SingleLedgerRequest::new().set_sequence(2).unwrap();
-
-        // assert_eq!(request.get_path(), "/ledgers");
-    }
-}

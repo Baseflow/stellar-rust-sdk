@@ -1,15 +1,41 @@
 use crate::models::{is_public_key, Request};
 
+/// Represents a query parameter for the account's public key
 #[derive(Default, Clone)]
 pub struct AccountId(String);
+/// Represents the absence of a query parameter for the account's public key
 #[derive(Default, Clone)]
 pub struct NoAccountId;
 
-/// SingleAccountRequest is the request for the /accounts endpoint to get a single account.
-/// [More Details](https://developers.stellar.org/api/horizon/resources/retrieve-an-account "Accounts")
+/// Represents a request to fetch details of a single account from the Horizon API.
+///
+/// `SingleAccountRequest` is a struct tailored to querying details of a specific account
+/// on the Horizon API. This struct is designed to be used in conjunction with the
+/// [`HorizonClient::get_single_account`](crate::horizon_client::HorizonClient::get_single_account) method.
+///
+/// The struct matches the parameters necessary to construct a request for the
+/// <a href="https://developers.stellar.org/api/horizon/resources/retrieve-an-account">Retrieve An Account endpoint</a>
+/// of the Horizon API.
+///
+/// # Fields
+/// Required:
+/// * `account_id` - The account's public key.
+///
+/// ## Usage
+/// Instances of `SingleAccountRequest` are created and configured using setter methods for each
+/// parameter.
+/// ```
+/// # use stellar_rust_sdk::accounts::prelude::SingleAccountRequest;
+/// # use crate::stellar_rust_sdk::models::Request;
+/// let request = SingleAccountRequest::new()
+///     .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
+///     .unwrap();
+/// // Use with HorizonClient::get_single_account
+/// ```
+///
 #[derive(Default)]
 pub struct SingleAccountRequest<I> {
-    /// Account ID of the sponsor. Every account in the response will either be sponsored by the given account ID or have a subentry (trustline, offer, or data entry) which is sponsored by the given account ID.
+    /// The account's public key.
     account_id: I,
 }
 
@@ -18,12 +44,11 @@ impl SingleAccountRequest<NoAccountId> {
         SingleAccountRequest::default()
     }
 
-    /// Sets the account ID of the account to get.
+    /// Sets the account ID for the request.
+    ///
     /// # Arguments
-    /// * `account_id` - The account ID of the account to get.
-    /// # Returns
-    /// The request object
-    /// [SingleAccountRequest](struct.SingleAccountRequest.html)
+    /// * `account_id` - A `String` specifying the account's public key.
+    ///
     pub fn set_account_id(
         self,
         account_id: String,
