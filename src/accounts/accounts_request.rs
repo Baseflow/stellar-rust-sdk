@@ -218,7 +218,7 @@ pub struct AccountsRequest<Sp, Si, A, L> {
     cursor: Option<u32>,
 
     /// The maximum number of records to return, with a permissible range from 1 to 200.
-    /// Defaults to 10 if not specified.
+    ///   Defaults to 10 if not specified.
     limit: Option<u32>,
 
     /// The [`Order`] of the returned records, either ascending ([`Order::Asc`]) or descending ([`Order::Desc`]).

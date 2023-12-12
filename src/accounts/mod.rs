@@ -153,7 +153,7 @@ pub mod single_account_response;
 ///
 static ACCOUNTS_PATH: &str = "accounts";
 
-/// The `prelude` module of the Horizon Client Library.
+/// The `prelude` module of the `accounts` module.
 ///
 /// This module serves as a convenience for users of the Horizon Rust SDK, allowing for easy and 
 /// ergonomic import of the most commonly used items across various modules. It re-exports 

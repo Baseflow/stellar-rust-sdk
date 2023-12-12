@@ -96,13 +96,13 @@ pub struct Flags {
 ///
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct Balance {
-    /// * `balance`: The total balance of the asset.
+    /// The total balance of the asset.
     balance: String,
-    /// * `buying_liabilities`: Buying liabilities associated with the asset.
+    /// Buying liabilities associated with the asset.
     buying_liabilities: String,
-    /// * `selling_liabilities`: Selling liabilities associated with the asset.
+    /// Selling liabilities associated with the asset.
     selling_liabilities: String,
-    /// * `asset_type`: The type of the asset (e.g., native, credit_alphanum4, credit_alphanum12).
+    /// The type of the asset (e.g., native, credit_alphanum4, credit_alphanum12).
     asset_type: String,
 }
 
@@ -110,9 +110,6 @@ pub struct Balance {
 ///
 /// This struct details information about a signer for an account, including their key, 
 /// weight in authorization decisions, and type.
-///
-/// # Fields
-///
 ///
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct Signer {

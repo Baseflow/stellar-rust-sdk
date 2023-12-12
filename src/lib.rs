@@ -82,7 +82,7 @@
 //! types for more examples and detailed usage instructions.
 
 
-/// Provides `Request`s and `Response`s for retrieving accounts.
+/// Provides `Request` and `Response` structs for retrieving accounts.
 ///
 /// This module provides a set of specialized request and response structures designed for
 /// interacting with the accounts-related endpoints of the Horizon server. These structures
@@ -119,6 +119,39 @@
 ///
 pub mod accounts;
 
+
+/// Provides `Request` and `Response` structs for retrieving assets.
+///
+/// This module provides the structures and functionalities necessary to interact with asset-related
+/// endpoints of the Stellar Horizon API. It defines the request and response handlers for querying
+/// information about assets on the Stellar network as described in the Stellar Horizon API documentation
+/// on [Assets](https://developers.stellar.org/api/horizon/resources/assets). It is intended to be used in
+/// conjunction with the is intended to be used in conjunction with the [`HorizonClient`](crate::horizon_client::HorizonClient)
+/// struct.
+///
+/// # Example
+///
+/// The `assets` module simplifies the process of constructing queries about assets and interpreting the results. For example:
+/// 
+/// ```rust
+/// # use stellar_rust_sdk::assets::prelude::*;
+/// # use stellar_rust_sdk::models::Request;
+/// # use stellar_rust_sdk::horizon_client::HorizonClient;
+/// #
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let horizon_client = HorizonClient::new(base_url)
+/// #    .expect("Failed to create Horizon Client");
+/// let request = AllAssetsRequest::new()
+///     .set_asset_code("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap();
+///
+/// let response: Result<AllAssetsResponse, String> = horizon_client
+///     .get_all_assets(&request)
+///     .await;
+/// # Ok({})
+/// # }
+/// ```
+///
 pub mod assets;
 
 pub mod claimable_balances;
