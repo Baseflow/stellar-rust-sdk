@@ -21,17 +21,17 @@ pub struct HorizonClient {
 impl HorizonClient {
     /// Creates a new instance of the `HorizonClient`.
     ///
-    /// This constructor method initializes a new `HorizonClient` with the specified base URL 
-    /// for the Horizon API server. It performs validation on the provided URL to ensure it is 
+    /// This constructor method initializes a new `HorizonClient` with the specified base URL
+    /// for the Horizon API server. It performs validation on the provided URL to ensure it is
     /// well-formed and appropriate for establishing a connection.
-    /// 
+    ///
     /// # Arguments
     /// * `base_url` - A `String` representing the base URL of the Horizon server.
-    /// 
+    ///
     /// # Returns
-    /// If successful, this method returns a `Result` containing the initialized `HorizonClient` 
+    /// If successful, this method returns a `Result` containing the initialized `HorizonClient`
     /// instance. If the URL validation fails, it returns an error encapsulated within `Result`.
-    /// 
+    ///
     /// # Example
     /// ```rust
     /// # use stellar_rust_sdk::horizon_client::HorizonClient;
@@ -44,32 +44,31 @@ impl HorizonClient {
     }
 
     /// Retrieves a list of accounts filtered by specific criteria.
-    /// 
-    /// This method retrieves a list of accounts from the Horizon server, filtering the results 
+    ///
+    /// This method retrieves a list of accounts from the Horizon server, filtering the results
     /// based on one of four categories: sponsor, signer, asset, or liquidity pool.
-    /// 
+    ///
     /// Adheres to the <a href="https://developers.stellar.org/api/horizon/resources/list-all-accounts">List All Accounts</a>
     /// endpoint.
-    /// 
+    ///
     /// # Arguments
-    /// * `request` - A reference to an implementation of the [`ValidAccountsRequest`] trait, 
+    /// * `request` - A reference to an implementation of the [`ValidAccountsRequest`] trait,
     /// which specifies the filter criteria for the account list request.
     ///
     /// # Returns
-    /// If successful, this method returns a `Result` containing an [`AccountsResponse`], 
-    /// which encapsulates the list of accounts retrieved from the server. 
+    /// If successful, this method returns a `Result` containing an [`AccountsResponse`],
+    /// which encapsulates the list of accounts retrieved from the server.
     /// In case of a failure in the request, it returns an error encapsulated within `Result`.
     ///
     /// # Example
     /// To use this method, create an instance of [`AccountsRequest`] and set at least
     /// one of the four filter options. For example, filtering by signer:
-    /// 
+    ///
     /// ```rust
     /// # use stellar_rust_sdk::accounts::prelude::*;
-    /// # use stellar_rust_sdk::accounts::accounts_request::Signer;
     /// # use stellar_rust_sdk::models::Request;
     /// # use stellar_rust_sdk::horizon_client::HorizonClient;
-    /// # 
+    /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
     /// # let horizon_client = HorizonClient::new(base_url)
@@ -77,7 +76,7 @@ impl HorizonClient {
     /// let request = AccountsRequest::new()
     ///     .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
     ///     .unwrap();
-    /// 
+    ///
     /// let response: Result<AccountsResponse, String> = horizon_client
     ///     .get_account_list(&request)
     ///     .await;
@@ -93,39 +92,38 @@ impl HorizonClient {
     /// Retrieves detailed information for a specific account from the Horizon server.
     ///
     /// This asynchronous method is designed to fetch information for a single account on the Horizon server.
-    /// It requires a [`SingleAccountRequest`] with the account ID to be queried. 
-    /// 
+    /// It requires a [`SingleAccountRequest`] with the account ID to be queried.
+    ///
     /// Adheres to the <a href="https://developers.stellar.org/api/horizon/resources/retrieve-an-account">Retrieve an Account</a>
     /// endpoint.
     ///
     /// # Arguments
-    /// * `request` - A reference to a [`SingleAccountRequest`] instance, containing the 
+    /// * `request` - A reference to a [`SingleAccountRequest`] instance, containing the
     /// account ID for which details are to be fetched.
     ///
     /// # Returns
     ///
-    /// On success, returns a `Result` wrapping a [`SingleAccountResponse`], which includes the 
-    /// detailed information of the requested account. If the request fails, it returns an error 
+    /// On success, returns a `Result` wrapping a [`SingleAccountResponse`], which includes the
+    /// detailed information of the requested account. If the request fails, it returns an error
     /// encapsulated within `Result`.
     ///
     /// # Usage
-    /// To use this method, create an instance of [`SingleAccountRequest`] and set the 
+    /// To use this method, create an instance of [`SingleAccountRequest`] and set the
     /// account ID of the target account.
     ///
     /// ```
     /// # use stellar_rust_sdk::accounts::prelude::*;
-    /// # use stellar_rust_sdk::accounts::accounts_request::Signer;
     /// # use stellar_rust_sdk::models::Request;
     /// # use stellar_rust_sdk::horizon_client::HorizonClient;
-    /// # 
+    /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
-    /// let request: SingleAccountRequest<AccountId> = SingleAccountRequest::new()
+    /// let request = SingleAccountRequest::new()
     ///     .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
     ///     .unwrap();
-    /// 
+    ///
     /// let response = horizon_client.get_single_account(&request).await;
     /// # Ok({})
     /// # }
@@ -140,23 +138,45 @@ impl HorizonClient {
 
     /// Retrieves a list of all assets.
     ///
-    /// This asynchronous method fetches a complete list of assets. 
-    /// It requires a [`AllAssetsRequest`] to specify  optional query parameters 
-    /// such as filters by `asset_code` or `asset_issuer`. 
-    /// 
+    /// This asynchronous method fetches a complete list of assets.
+    /// It requires a [`AllAssetsRequest`] to specify  optional query parameters
+    /// such as filters by `asset_code` or `asset_issuer`.
+    ///
     /// Adheres to the <a href="https://developers.stellar.org/api/horizon/resources/list-all-assets">List all Assets</a>
     /// endpoint.
-    /// 
+    ///
     /// # Arguments
-    /// * `request` - A reference to an [`AllAssetsRequest`] instance, containing the 
+    /// * `request` - A reference to an [`AllAssetsRequest`] instance, containing the
     /// parameters for the assets list request.
     ///
     /// # Returns
     ///
-    /// On success, this method returns a `Result` wrapping an [`AllAssetsResponse`], which includes 
-    /// the comprehensive list of assets retrieved from the Horizon server. If the request 
+    /// On success, this method returns a `Result` wrapping an [`AllAssetsResponse`], which includes
+    /// the comprehensive list of assets retrieved from the Horizon server. If the request
     /// encounters an issue, an error is returned within `Result`.
-    /// 
+    ///
+    /// # Example
+    /// To use this method, create an instance of [`AllAssetsRequest`], set any desired
+    /// filters or parameters and pass
+    ///
+    /// ```
+    /// # use stellar_rust_sdk::assets::prelude::*;
+    /// # use stellar_rust_sdk::models::Request;
+    /// # use stellar_rust_sdk::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = AllAssetsRequest::new()
+    ///     .set_asset_code("USD")
+    ///     .unwrap();
+    ///
+    /// let response = horizon_client.get_all_assets(&request).await;
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_all_assets(
         &self,
         request: &AllAssetsRequest,
@@ -166,20 +186,42 @@ impl HorizonClient {
 
     /// Retrieves all claimable balances.
     ///
-    /// This asynchronous method queries the Horizon server for all claimable balances. It 
+    /// This asynchronous method queries the Horizon server for all claimable balances. It
     /// requires a [`AllClaimableBalancesRequest`] to specify the query parameters.
-    /// 
+    ///
     /// Adheres to the <a href="https://developers.stellar.org/api/horizon/resources/list-all-claimable-balances">List All Claimable Balances</a>
     /// endpoint.
-    /// 
+    ///
     /// # Arguments
-    /// * `request` - A reference to an [`AllClaimableBalancesRequest`] instance, which contains 
+    /// * `request` - A reference to an [`AllClaimableBalancesRequest`] instance, which contains
     /// the parameters for the claimable balances request.
     ///
     /// # Returns
     ///
-    /// Returns a `Result` containing an [`AllClaimableBalancesResponse`] with the list of all 
+    /// Returns a `Result` containing an [`AllClaimableBalancesResponse`] with the list of all
     /// claimable balances if successful. In case of a failure, it returns an error within `Result`.
+    ///
+    /// # Example
+    /// To use this method, create an instance of [`AllClaimableBalancesRequest`], set any desired
+    /// filters or parameters and pass
+    ///
+    /// ```
+    /// # use stellar_rust_sdk::claimable_balances::prelude::*;
+    /// # use stellar_rust_sdk::models::Request;
+    /// # use stellar_rust_sdk::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = AllClaimableBalancesRequest::new()
+    ///     .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
+    ///     .unwrap();
+    ///
+    /// let response = horizon_client.get_all_claimable_balances(&request).await;
+    /// # Ok({})
+    /// # }
+    /// ```
     ///
     pub async fn get_all_claimable_balances(
         &self,
@@ -190,39 +232,39 @@ impl HorizonClient {
 
     /// Retrieves detailed information about a specific claimable balance from the Horizon server.
     ///
-    /// This asynchronous method is used to fetch detailed information about a single claimable 
-    /// balance from the Horizon server. It requires a [`SingleClaimableBalanceRequest`] that 
+    /// This asynchronous method is used to fetch detailed information about a single claimable
+    /// balance from the Horizon server. It requires a [`SingleClaimableBalanceRequest`] that
     /// includes the unique identifier of the claimable balance to be retrieved.
-    /// 
+    ///
     /// Adheres to the <a href="https://developers.stellar.org/api/horizon/resources/retrieve-a-claimable-balance">Retrieve a Claimable Balance</a>
     /// endpoint.
-    /// 
+    ///
     /// # Arguments
-    /// * `request` - A reference to a [`SingleClaimableBalanceRequest`] instance containing the 
+    /// * `request` - A reference to a [`SingleClaimableBalanceRequest`] instance containing the
     /// unique ID of the claimable balance to be fetched.
     ///
     /// # Returns
     ///
-    /// On successful execution, returns a `Result` containing a [`SingleClaimableBalanceResponse`], 
-    /// which includes detailed information about the requested claimable balance. If the request 
+    /// On successful execution, returns a `Result` containing a [`SingleClaimableBalanceResponse`],
+    /// which includes detailed information about the requested claimable balance. If the request
     /// fails, it returns an error within `Result`.
     ///
-    /// # Usage
-    /// To use this method, create an instance of [`SingleClaimableBalanceRequest`] 
+    /// # Example
+    /// To use this method, create an instance of [`SingleClaimableBalanceRequest`]
     /// with the specific claimable balance ID.
     ///
     /// ```
     /// # use stellar_rust_sdk::claimable_balances::prelude::*;
     /// # use stellar_rust_sdk::models::Request;
     /// # use stellar_rust_sdk::horizon_client::HorizonClient;
-    /// # 
+    /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
-    ///  let request: SingleClaimableBalanceRequest<ClaimableBalanceId> = SingleClaimableBalanceRequest::new()
+    ///  let request = SingleClaimableBalanceRequest::new()
     ///    .set_claimable_balance_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string());
-    /// 
+    ///
     /// let response = horizon_client.get_single_claimable_balance(&request).await;
     /// # Ok({})
     /// # }
@@ -237,22 +279,44 @@ impl HorizonClient {
 
     /// Retrieves a list of all ledgers.
     ///
-    /// This asynchronous method is designed to fetch list of ledgers 
-    /// from the Horizon server. It requires a [`LedgersRequest`] to specify the parameters 
+    /// This asynchronous method is designed to fetch list of ledgers
+    /// from the Horizon server. It requires a [`LedgersRequest`] to specify the parameters
     /// for the ledger retrieval.
-    /// 
+    ///
     /// Adheres to the <a href="https://developers.stellar.org/api/horizon/resources/list-all-ledgers">List All Ledgers</a>
     /// endpoint.
     ///
     /// # Arguments
-    /// * `request` - A reference to a [`LedgersRequest`] instance, specifying the query 
+    /// * `request` - A reference to a [`LedgersRequest`] instance, specifying the query
     /// parameters for retrieving the ledgers.
     ///
     /// # Returns
     ///
-    /// On successful execution, returns a `Result` containing a [`LedgersResponse`], 
-    /// which includes the list of all ledgers obtained from the Horizon server. If the request 
+    /// On successful execution, returns a `Result` containing a [`LedgersResponse`],
+    /// which includes the list of all ledgers obtained from the Horizon server. If the request
     /// fails, it returns an error within `Result`.
+    /// 
+    /// # Example
+    /// To use this method, create an instance of [`LedgersRequest`], set any 
+    /// desired pagination parameters.
+    ///
+    /// ```
+    /// # use stellar_rust_sdk::ledgers::prelude::*;
+    /// # use stellar_rust_sdk::models::Request;
+    /// # use stellar_rust_sdk::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = LedgersRequest::new()
+    ///     .set_limit(2)
+    ///     .unwrap();
+    ///
+    /// let response = horizon_client.get_all_ledgers(&request).await;
+    /// # Ok({})
+    /// # }
+    /// ```
     ///
     pub async fn get_all_ledgers(
         &self,
@@ -263,39 +327,39 @@ impl HorizonClient {
 
     /// Retrieves detailed information for a specific ledger from the Horizon server.
     ///
-    /// This asynchronous method fetches details of a single ledger from the Horizon server. 
-    /// It requires a [`SingleLedgerRequest`] parameterized with `Sequence`, which includes the sequence number 
-    /// of the ledger to be retrieved. 
-    /// 
+    /// This asynchronous method fetches details of a single ledger from the Horizon server.
+    /// It requires a [`SingleLedgerRequest`] parameterized with `Sequence`, which includes the sequence number
+    /// of the ledger to be retrieved.
+    ///
     /// Adheres to the <a href="https://developers.stellar.org/api/horizon/resources/retrieve-a-ledger">Retrieve a Ledger</a>
     /// endpoint.
-    /// 
+    ///
     /// # Arguments
-    /// * `request` - A reference to a [`SingleLedgerRequest<Sequence>`] instance, containing the 
+    /// * `request` - A reference to a [`SingleLedgerRequest<Sequence>`] instance, containing the
     ///   sequence number of the ledger for which details are to be fetched.
     ///
     /// # Returns
     ///
-    /// Returns a `Result` containing a [`SingleLedgerResponse`], which includes detailed 
-    /// information about the requested ledger. If the request fails, it returns an error 
+    /// Returns a `Result` containing a [`SingleLedgerResponse`], which includes detailed
+    /// information about the requested ledger. If the request fails, it returns an error
     /// encapsulated within `Result`.
-    /// 
+    ///
     /// # Usage
-    /// To use this method, create an instance of [`SingleLedgerRequest`] and set the 
+    /// To use this method, create an instance of [`SingleLedgerRequest`] and set the
     /// sequence number of the ledger to be queried.
     ///
     /// ```
     /// # use stellar_rust_sdk::ledgers::prelude::*;
     /// # use stellar_rust_sdk::models::Request;
     /// # use stellar_rust_sdk::horizon_client::HorizonClient;
-    /// # 
+    /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleLedgerRequest::new()
     ///     .set_sequence(2).unwrap();
-    /// 
+    ///
     /// let response = horizon_client.get_single_ledger(&request).await;
     /// # Ok({})
     /// # }
@@ -313,7 +377,7 @@ impl HorizonClient {
     /// This internal asynchronous method is designed to handle various GET requests to the
     /// Horizon server. It is generic over the response type, allowing for flexibility in
     /// handling different types of responses as dictated by the caller. This method performs
-    /// key tasks such as request validation, URL construction, sending the request, and 
+    /// key tasks such as request validation, URL construction, sending the request, and
     /// processing the received response.
     ///
     /// # Type Parameters
@@ -328,8 +392,8 @@ impl HorizonClient {
     ///
     /// # Returns
     ///
-    /// Returns a `Result` containing the response of type [`Response`] if the request is 
-    /// successful. In case of failure (e.g., network issues, server errors), it returns an 
+    /// Returns a `Result` containing the response of type [`Response`] if the request is
+    /// successful. In case of failure (e.g., network issues, server errors), it returns an
     /// error encapsulated as a `String`.
     ///
     /// # Example Usage
@@ -363,11 +427,11 @@ impl HorizonClient {
 
 /// Handles the response received from an HTTP request made to the Horizon server.
 ///
-/// This asynchronous internal function processes the [`reqwest::Response`] obtained from a 
-/// GET request. It is generic over the type `Response` which must implement the 
-/// [`Response`] trait. The function primarily checks the HTTP status code of the 
-/// response. If the status is `OK`, it attempts to deserialize the response body into 
-/// the specified `Response` type. For other status codes, it treats the response as an 
+/// This asynchronous internal function processes the [`reqwest::Response`] obtained from a
+/// GET request. It is generic over the type `Response` which must implement the
+/// [`Response`] trait. The function primarily checks the HTTP status code of the
+/// response. If the status is `OK`, it attempts to deserialize the response body into
+/// the specified `Response` type. For other status codes, it treats the response as an
 /// error message.
 ///
 /// # Type Parameters
@@ -381,10 +445,10 @@ impl HorizonClient {
 ///
 /// # Returns
 ///
-/// On success (HTTP status `OK`), returns a `Result` containing the deserialized 
-/// `Response`. If deserialization fails, or if the HTTP status is not `OK`, it returns 
+/// On success (HTTP status `OK`), returns a `Result` containing the deserialized
+/// `Response`. If deserialization fails, or if the HTTP status is not `OK`, it returns
 /// an error encapsulated as a `String`.
-/// 
+///
 /// # Example Usage
 /// This function is not intended to be called directly. It is designed to be called
 /// exclusively by the [`HorizonClient::get`](crate::horizon_client::HorizonClient::get) function.
@@ -414,9 +478,9 @@ async fn handle_response<R: Response>(
 /// Validates the format of a given URL.
 ///
 /// This function is an internal utility for validating the format of a URL.
-/// It is typically invoked by [`HorizonClient::new`](crate::horizon_client::HorizonClient::new) to ensure that the URL 
-/// provided for initializing the client is correctly formatted. The function checks if 
-/// the URL begins with "http://" or "https://", and attempts to parse it using the `Url` 
+/// It is typically invoked by [`HorizonClient::new`](crate::horizon_client::HorizonClient::new) to ensure that the URL
+/// provided for initializing the client is correctly formatted. The function checks if
+/// the URL begins with "http://" or "https://", and attempts to parse it using the `Url`
 /// type from the `url` crate.
 ///
 /// # Arguments
@@ -425,14 +489,14 @@ async fn handle_response<R: Response>(
 ///
 /// # Returns
 ///
-/// Returns `Ok(())` if the URL is valid, indicating that the URL has the correct format 
-/// and scheme. If the URL is invalid, it returns an `Err` with a message describing 
+/// Returns `Ok(())` if the URL is valid, indicating that the URL has the correct format
+/// and scheme. If the URL is invalid, it returns an `Err` with a message describing
 /// the issue.
 ///
 /// # Example Usage
 ///
 /// While this function is primarily used internally by [`HorizonClient::new`](crate::horizon_client::HorizonClient::new),
-/// it can also be utilized in scenarios where URL validation is necessary before further 
+/// it can also be utilized in scenarios where URL validation is necessary before further
 /// processing or usage.
 ///
 fn url_validate(url: &str) -> Result<(), String> {
@@ -491,7 +555,7 @@ mod tests {
         // call the get_account_list method to retrieve the account list response
         let _accounts_response: Result<AccountsResponse, String> =
             horizon_client.get_account_list(&accounts_request).await;
-        
+
         assert!(_accounts_response.is_ok());
 
         assert_eq!(
@@ -638,7 +702,7 @@ mod tests {
         let single_account_request = SingleAccountRequest::new()
             .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
             .unwrap();
-        
+
         let _single_account_response = horizon_client
             .get_single_account(&single_account_request)
             .await;
