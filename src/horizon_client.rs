@@ -74,7 +74,7 @@ impl HorizonClient {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
-    /// let request: AccountsRequest<NoSponsor, Signer, NoAsset, NoLiquidityPool> = AccountsRequest::new()
+    /// let request = AccountsRequest::new()
     ///     .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
     ///     .unwrap();
     /// 
