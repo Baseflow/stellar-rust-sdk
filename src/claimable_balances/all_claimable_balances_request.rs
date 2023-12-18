@@ -4,7 +4,9 @@ use crate::{models::*, BuildQueryParametersExt};
 ///
 /// This structure is used to construct a query to retrieve a comprehensive list of claimable balances, which
 /// can be filtered by sponsor, asset, or claimant. Claimable balances are a feature of the Stellar network
-/// that allows users to create a balance of assets that can be claimed by another account.
+/// that allows users to create a balance of assets that can be claimed by another account. It adheres to the structure and parameters required 
+/// by the Horizon API for retrieving a 
+/// <a href="https://developers.stellar.org/api/horizon/resources/list-all-claimable-balances">list of claimable balances</a>.
 /// 
 /// # Usage
 ///
