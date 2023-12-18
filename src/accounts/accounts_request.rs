@@ -275,6 +275,7 @@ impl<Sp, Si, A, L> AccountsRequest<Sp, Si, A, L> {
 /// Since the Horizon API only allows for one of the following parameters to be set, we need to
 /// create an implementation for a combination of generics which are all unset.
 impl AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidityPoolFilter> {
+    /// Creates a new `AccountsRequest` with default parameters.
     pub fn new() -> Self {
         AccountsRequest::default()
     }

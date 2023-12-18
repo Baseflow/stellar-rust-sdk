@@ -74,7 +74,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AccountsRequest::new()
-    ///     .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
+    ///     .set_signer_filter("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
     ///     .unwrap();
     ///
     /// let response: Result<AccountsResponse, String> = horizon_client

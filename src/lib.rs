@@ -56,8 +56,9 @@
 //!         .set_limit(10)?;
 //!
 //!     // Perform the request using the Horizon client
-//!     let accounts_response: Result<AccountsResponse, String> =
-//!         horizon_client.get_account_list(&accounts_request).await;
+//!     let accounts_response =
+//!         horizon_client.get_account_list(&accounts_request)
+//!         .await;
 //!
 //!     // Check for success and handle the response or error
 //!     match accounts_response {
@@ -111,9 +112,9 @@
 ///     .set_signer_filter("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap()
 ///     .set_limit(10).unwrap();
 ///
-/// let response: Result<AccountsResponse, String> = horizon_client
+/// let response = horizon_client
 ///     .get_account_list(&request)
-///     .await;
+///     .await?;
 /// # Ok({})
 /// # }
 ///
@@ -145,15 +146,53 @@ pub mod accounts;
 /// let request = AllAssetsRequest::new()
 ///     .set_asset_code("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap();
 ///
-/// let response: Result<AllAssetsResponse, String> = horizon_client
+/// let response = horizon_client
 ///     .get_all_assets(&request)
-///     .await;
+///     .await?;
 /// # Ok({})
 /// # }
 /// ```
 ///
 pub mod assets;
 
+/// Provides `Request` and `Response` structs for retrieving claimable balances.
+///
+/// This module provides structures and functionalities related to claimable balances within the Stellar network.
+/// Claimable balances are a feature of the Stellar network that allows for the creation of balances that are 
+/// claimable by a designated party. They are used to facilitate payments to accounts that may not yet exist 
+/// or to provide an assurance that funds can be claimed by the rightful recipient.
+///
+/// The module comprises request and response structs for both single and batched operations involving 
+/// claimable balances. These are designed to interface with the Horizon API's endpoints for creating, 
+/// retrieving, and claiming such balances.
+///
+/// # Usage
+///
+/// To utilize the functionalities for claimable balances, import the necessary structs from this module
+/// and use them to interact with the Horizon API. The `HorizonClient` methods, such as `get_claimable_balances`
+/// and `get_claimable_balance`, will typically return the response structs provided here.
+///
+/// # Example
+/// ```rust
+/// # use stellar_rust_sdk::claimable_balances::prelude::*;
+/// # use stellar_rust_sdk::models::Request;
+/// # use stellar_rust_sdk::horizon_client::HorizonClient;
+/// #
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let horizon_client = HorizonClient::new(base_url)
+/// #    .expect("Failed to create Horizon Client");
+/// let request = AllClaimableBalancesRequest::new();
+///
+/// let response = horizon_client
+///     .get_all_claimable_balances(&request)
+///     .await?;
+/// 
+/// // Process the response
+/// # Ok({})
+/// # }
+/// ```
+/// 
 pub mod claimable_balances;
 
 /// Client for calling the Stellar Horizon API
@@ -183,9 +222,9 @@ pub mod claimable_balances;
 /// # let horizon_client = HorizonClient::new(base_url)
 /// #    .expect("Failed to create Horizon Client");;
 /// let all_assets_request = AllAssetsRequest::new();
-/// let accounts_response: Result<AllAssetsResponse, String> = horizon_client
+/// let accounts_response = horizon_client
 ///     .get_all_assets(&all_assets_request)
-///     .await;
+///     .await?;
 /// # Ok({})
 /// # }
 /// ```

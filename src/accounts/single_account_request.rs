@@ -40,6 +40,7 @@ pub struct SingleAccountRequest<I> {
 }
 
 impl SingleAccountRequest<NoAccountId> {
+    /// Creates a new `SingleAccountRequest` with default parameters.
     pub fn new() -> Self {
         SingleAccountRequest::default()
     }

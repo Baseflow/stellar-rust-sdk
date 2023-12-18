@@ -85,6 +85,7 @@ impl Request for AllAssetsRequest {
 }
 
 impl AllAssetsRequest {
+    /// Creates a new `AllAssetsRequest` with default parameters.
     pub fn new() -> AllAssetsRequest {
         AllAssetsRequest::default()
     }
