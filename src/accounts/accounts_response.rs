@@ -62,7 +62,7 @@ pub struct Record {
     account_id: String,
     sequence: String,
     subentry_count: i32,
-    last_modified_ledger: i64,
+    last_modified_ledger: u64,
     last_modified_time: String,
     thresholds: AccountsResponseThresholds,
     flags: AccountsResponseFlags,

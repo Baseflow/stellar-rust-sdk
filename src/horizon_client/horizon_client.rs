@@ -213,6 +213,11 @@ mod tests {
 
     use super::*;
 
+    static ACCOUNT_ID: &str = "GABFPU6S5XAJZAIWW3LGWLWCVXICIR7OXLSTZ23KRW73GDV3VDDW5PVF";
+    static SEQUENCE: &str = "58682138165248";
+    static LAST_MODIFIED_TIME: &str = "2023-12-19T13:19:10Z";
+    static LAST_MODIFIED_LEDGER: u64 = 13663;
+
     #[test]
     fn test_url_validate_invalid_url() {
         let result = url_validate("horizon-testnet.stellar.org");
@@ -237,7 +242,7 @@ mod tests {
 
         // construct request
         let accounts_request = AccountsRequest::new()
-            .set_signer("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap()
+            .set_signer(ACCOUNT_ID).unwrap()
             .set_limit(10).unwrap();
 
         // call the get_account_list method to retrieve the account list response
@@ -248,17 +253,17 @@ mod tests {
 
         assert_eq!(
             _accounts_response.clone().unwrap()._embedded().records()[0].account_id(),
-            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7"
+            ACCOUNT_ID
         );
 
         assert_eq!(
             _accounts_response.clone().unwrap()._embedded().records()[0].id(),
-            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7"
+            ACCOUNT_ID
         );
 
         assert_eq!(
             _accounts_response.clone().unwrap()._embedded().records()[0].sequence(),
-            "4380492979765248"
+            SEQUENCE
         );
 
         assert_eq!(
@@ -268,12 +273,12 @@ mod tests {
 
         assert_eq!(
             *_accounts_response.clone().unwrap()._embedded().records()[0].last_modified_ledger(),
-            1019913
+            LAST_MODIFIED_LEDGER
         );
 
         assert_eq!(
             _accounts_response.clone().unwrap()._embedded().records()[0].last_modified_time(),
-            "2023-08-15T09:46:25Z"
+            LAST_MODIFIED_TIME
         );
 
         assert_eq!(
@@ -350,7 +355,7 @@ mod tests {
 
         assert_eq!(
             *_accounts_response.clone().unwrap()._embedded().records()[0].signers()[0].key(),
-            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()
+            ACCOUNT_ID.to_string()
         );
 
         assert_eq!(
@@ -376,7 +381,7 @@ mod tests {
 
         assert_eq!(
             *_accounts_response.clone().unwrap()._embedded().records()[0].paging_token(),
-            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()
+            ACCOUNT_ID.to_string()
         );
     }
 
@@ -388,13 +393,12 @@ mod tests {
 
         // construct request
         let single_account_request = SingleAccountRequest::new()
-            .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
+            .set_account_id(ACCOUNT_ID.to_string())
             .unwrap();
         
         let _single_account_response = horizon_client
             .get_single_account(&single_account_request)
             .await;
-
 
         assert!(_single_account_response.is_ok());
 
@@ -404,7 +408,7 @@ mod tests {
                 .unwrap()
                 .account_id()
                 .to_string(),
-            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7"
+            ACCOUNT_ID
         );
 
         assert_eq!(
@@ -413,7 +417,7 @@ mod tests {
                 .unwrap()
                 .sequence()
                 .to_string(),
-            "4380492979765248"
+            SEQUENCE
         );
 
         assert_eq!(
@@ -430,7 +434,7 @@ mod tests {
                 .as_ref()
                 .unwrap()
                 .last_modified_ledger(),
-            1019913
+            LAST_MODIFIED_LEDGER
         );
 
         assert_eq!(
@@ -438,7 +442,7 @@ mod tests {
                 .as_ref()
                 .unwrap()
                 .last_modified_time(),
-            "2023-08-15T09:46:25Z"
+            LAST_MODIFIED_TIME
         );
 
         assert_eq!(
@@ -526,7 +530,7 @@ mod tests {
 
         assert_eq!(
             _single_account_response.as_ref().unwrap().signers()[0].key(),
-            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7"
+            ACCOUNT_ID
         );
 
         assert_eq!(
@@ -551,12 +555,22 @@ mod tests {
 
         assert_eq!(
             _single_account_response.as_ref().unwrap().paging_token(),
-            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7"
+            ACCOUNT_ID
         );
     }
 
     #[tokio::test]
     async fn test_get_all_assets() {
+        let asset_type = "credit_alphanum4";
+        let asset_code = "001";
+        let asset_issuer = "GBGABLAGRBBYV3G32RNPSMCC7AFUTLBC23DOD7UPBV45ADVIUPDQWHDA";
+        let num_accounts = 2;
+        let amount = "9999.0000000";
+        let num_authorized = 2;
+        let num_unauthorized = 0;
+        let balances_authorized = "9999.0000000";
+        let balances_unauthorized = "0.0000000";
+
         // Initialize horizon client
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
@@ -565,33 +579,34 @@ mod tests {
         let all_assets_request: AllAssetsRequest = AllAssetsRequest::new()
             .set_limit(1).unwrap();
 
-        let _all_assets_response = horizon_client.get_all_assets(&all_assets_request).await;
+        let _all_assets_response = horizon_client
+            .get_all_assets(&all_assets_request).await;
 
         assert!(_all_assets_response.is_ok());
 
         assert_eq!(
             _all_assets_response.clone().unwrap()._embedded().records()[0].asset_type(),
-            "credit_alphanum4"
+            asset_type
         );
 
         assert_eq!(
             _all_assets_response.clone().unwrap()._embedded().records()[0].asset_code(),
-            "0"
+            asset_code
         );
 
         assert_eq!(
             _all_assets_response.clone().unwrap()._embedded().records()[0].asset_issuer(),
-            "GCINFW5NLMVSE7KWH5BOVL2NTRP2HN6LSXTIL76GOVIORLFM6YN5ZTRS"
+            asset_issuer
         );
 
         assert_eq!(
             _all_assets_response.clone().unwrap()._embedded().records()[0].paging_token(),
-            "0_GCINFW5NLMVSE7KWH5BOVL2NTRP2HN6LSXTIL76GOVIORLFM6YN5ZTRS_credit_alphanum4"
+            &format!("{}_{}_{}", asset_code, asset_issuer, asset_type)
         );
 
         assert_eq!(
             *_all_assets_response.clone().unwrap()._embedded().records()[0].num_accounts(),
-            0
+            num_accounts
         );
 
         assert_eq!(
@@ -607,14 +622,14 @@ mod tests {
 
         assert_eq!(
             _all_assets_response.clone().unwrap()._embedded().records()[0].amount(),
-            "0.0000000"
+            amount
         );
 
         assert_eq!(
             *_all_assets_response.clone().unwrap()._embedded().records()[0]
                 .accounts()
                 .authorized(),
-            0
+            num_authorized
         );
 
         assert_eq!(
@@ -628,7 +643,7 @@ mod tests {
             *_all_assets_response.clone().unwrap()._embedded().records()[0]
                 .accounts()
                 .unauthorized(),
-            1
+            num_unauthorized
         );
 
         assert_eq!(
@@ -651,7 +666,7 @@ mod tests {
             _all_assets_response.clone().unwrap()._embedded().records()[0]
                 .balances()
                 .authorized(),
-            "0.0000000"
+            balances_authorized
         );
 
         assert_eq!(
@@ -665,14 +680,15 @@ mod tests {
             _all_assets_response.clone().unwrap()._embedded().records()[0]
                 .balances()
                 .unauthorized(),
-            "1.0000000"
+            balances_unauthorized
         );
 
+        let auth_required = false;
         assert_eq!(
             *_all_assets_response.clone().unwrap()._embedded().records()[0]
                 .flags()
                 .auth_required(),
-            true
+            auth_required
         );
 
         assert_eq!(
@@ -699,6 +715,9 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_all_ledgers() {
+        let hash = "a30d9bd7ee1570f15faeb097334ba7045d301ed36a3eed3e74d94eac25b525b5";
+        let prev_hash = "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99";
+
         // Initialize horizon client
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
@@ -713,12 +732,12 @@ mod tests {
 
         assert_eq!(
             _all_ledgers_response.clone().unwrap()._embedded().records()[0].hash(),
-            "eca856e0073dc2087249dc929ed31c09c3babfef2e687b685d0513dbe6489a18"
+            hash
         );
 
         assert_eq!(
             _all_ledgers_response.clone().unwrap()._embedded().records()[0].prev_hash(),
-            "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99"
+            prev_hash
         );
 
         assert_eq!(
@@ -740,6 +759,12 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_single_ledger() {
+        let id = "a30d9bd7ee1570f15faeb097334ba7045d301ed36a3eed3e74d94eac25b525b5";
+        let hash = "a30d9bd7ee1570f15faeb097334ba7045d301ed36a3eed3e74d94eac25b525b5";
+        let prev_hash = "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99";
+        let closed_at = "2023-12-18T17:20:31Z";
+        let closed_at_timepoint = 1702920031;
+
         // Initialize horizon client
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
@@ -756,7 +781,7 @@ mod tests {
 
         assert_eq!(
             _single_ledger_response.clone().unwrap().id(),
-            "eca856e0073dc2087249dc929ed31c09c3babfef2e687b685d0513dbe6489a18"
+            id
         );
 
         assert_eq!(
@@ -766,12 +791,12 @@ mod tests {
 
         assert_eq!(
             _single_ledger_response.clone().unwrap().hash(),
-            "eca856e0073dc2087249dc929ed31c09c3babfef2e687b685d0513dbe6489a18"
+            hash
         );
 
         assert_eq!(
             _single_ledger_response.clone().unwrap().prev_hash(),
-            "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99"
+            prev_hash
         );
 
         assert_eq!(*_single_ledger_response.clone().unwrap().sequence(), 2);
@@ -807,7 +832,7 @@ mod tests {
 
         assert_eq!(
             _single_ledger_response.clone().unwrap().closed_at(),
-            "2023-06-14T09:19:48Z"
+            closed_at
         );
 
         assert_eq!(
@@ -857,19 +882,12 @@ mod tests {
         );
 
         assert_eq!(decoded_xdr_header.ledger_seq, 2);
-
         assert_eq!(decoded_xdr_header.total_coins, 1000000000000000000);
-
         assert_eq!(decoded_xdr_header.fee_pool, 0);
-
         assert_eq!(decoded_xdr_header.inflation_seq, 0);
-
         assert_eq!(decoded_xdr_header.id_pool, 0);
-
         assert_eq!(decoded_xdr_header.base_fee, 100);
-
         assert_eq!(decoded_xdr_header.base_reserve, 100000000);
-
         assert_eq!(decoded_xdr_header.max_tx_set_size, 100);
 
         let tx_set_hash = decoded_xdr_header.scp_value.tx_set_hash.to_string();
@@ -883,144 +901,18 @@ mod tests {
 
         assert_eq!(
             decoded_xdr_header.scp_value.close_time,
-            stellar_xdr::curr::TimePoint(1686734388)
-        );
-    }
-
-    #[tokio::test]
-    async fn test_get_decoded_single_ledger() {
-        // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
-
-        // construct request
-        let single_ledger_request = SingleLedgerRequest::new()
-            .set_sequence(2).unwrap();
-
-        let _single_ledger_response = horizon_client
-            .get_single_ledger(&single_ledger_request)
-            .await;
-
-        assert!(_single_ledger_response.is_ok());
-
-        assert_eq!(
-            _single_ledger_response.clone().unwrap().id(),
-            "eca856e0073dc2087249dc929ed31c09c3babfef2e687b685d0513dbe6489a18"
+            stellar_xdr::curr::TimePoint(closed_at_timepoint)
         );
 
-        assert_eq!(
-            _single_ledger_response.clone().unwrap().paging_token(),
-            "8589934592"
-        );
-
-        assert_eq!(
-            _single_ledger_response.clone().unwrap().hash().to_string(),
-            "eca856e0073dc2087249dc929ed31c09c3babfef2e687b685d0513dbe6489a18"
-        );
-
-        assert_eq!(
-            _single_ledger_response.clone().unwrap().prev_hash(),
-            "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99"
-        );
-
-        assert_eq!(*_single_ledger_response.clone().unwrap().sequence(), 2);
-
-        assert_eq!(
-            *_single_ledger_response
-                .clone()
-                .unwrap()
-                .successful_transaction_count(),
-            0
-        );
-
-        assert_eq!(
-            *_single_ledger_response
-                .clone()
-                .unwrap()
-                .failed_transaction_count(),
-            0
-        );
-
-        assert_eq!(
-            *_single_ledger_response.clone().unwrap().operation_count(),
-            0
-        );
-
-        assert_eq!(
-            *_single_ledger_response
-                .clone()
-                .unwrap()
-                .tx_set_operation_count(),
-            0
-        );
-
-        assert_eq!(
-            _single_ledger_response.clone().unwrap().closed_at(),
-            "2023-06-14T09:19:48Z"
-        );
-
-        assert_eq!(
-            _single_ledger_response.clone().unwrap().total_coins(),
-            "100000000000.0000000"
-        );
-
-        assert_eq!(
-            _single_ledger_response.clone().unwrap().fee_pool(),
-            "0.0000000"
-        );
-
-        assert_eq!(
-            *_single_ledger_response
-                .clone()
-                .unwrap()
-                .base_fee_in_stroops(),
-            100
-        );
-
-        assert_eq!(
-            *_single_ledger_response
-                .clone()
-                .unwrap()
-                .base_reserve_in_stroops(),
-            100000000
-        );
-
-        assert_eq!(
-            *_single_ledger_response.clone().unwrap().max_tx_set_size(),
-            100
-        );
-
-        assert_eq!(
-            *_single_ledger_response.clone().unwrap().protocol_version(),
-            0
-        );
-
-        let _decoded_header_xdr = _single_ledger_response
-            .unwrap()
-            .decoded_header_xdr()
-            .unwrap();
-
-        assert_eq!(
-            _decoded_header_xdr.bucket_list_hash.to_string(),
-            "735227ed398461291237687b08446aa2c9b096e0c98a462dadda569f05dd2484"
-        );
-
-        assert_eq!(_decoded_header_xdr.ledger_seq, 2);
-        assert_eq!(_decoded_header_xdr.total_coins, 1000000000000000000);
-        assert_eq!(_decoded_header_xdr.fee_pool, 0);
-        assert_eq!(_decoded_header_xdr.inflation_seq, 0);
-        assert_eq!(_decoded_header_xdr.id_pool, 0);
-        assert_eq!(_decoded_header_xdr.base_fee, 100);
-        assert_eq!(_decoded_header_xdr.base_reserve, 100000000);
-        assert_eq!(_decoded_header_xdr.max_tx_set_size, 100);
-        assert_eq!(_decoded_header_xdr.ext, stellar_xdr::curr::LedgerHeaderExt::V0);
-        for decoded in _decoded_header_xdr.skip_list {
+        assert_eq!(decoded_xdr_header.ext, stellar_xdr::curr::LedgerHeaderExt::V0);
+        for decoded in decoded_xdr_header.skip_list {
             assert_eq!(
                 decoded.to_string(),
                 "0000000000000000000000000000000000000000000000000000000000000000"
             );
         }
     }
+
 
     #[tokio::test]
     async fn test_get_all_claimable_balances() {
@@ -1039,7 +931,7 @@ mod tests {
         assert!(_all_claimable_balances_response.clone().is_ok());
 
         let binding = _all_claimable_balances_response.clone().unwrap();
-        let predicate = binding.embedded().records()[1].claimants()[1].predicate();
+        let predicate = binding.embedded().records()[0].claimants()[1].predicate();
 
         let now = Utc::now();
 
@@ -1056,7 +948,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .id(),
-            "000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca"
+            "0000000001ca4989c85c10a07b451c61c517c4af41ced7ce67c04174dc02a0bb995a718e"
         );
 
         assert_eq!(
@@ -1066,7 +958,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .asset(),
-            "native"
+            "IOM:GDGZK7LIT46HSODNAWIIP7OQCSTSCRGTKHA5STPVL2YMVTGXA3NKPK2A"
         );
 
         assert_eq!(
@@ -1076,7 +968,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .amount(),
-            "12.3300000"
+            "2.0000000"
         );
 
         assert_eq!(
@@ -1086,7 +978,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .sponsor(),
-            "GD7TMSN67PCPZ4SXQHNG4GFO4KEMGTAT6MGWQGKBPOFDY7TP2IYDYFVI"
+            "GBW3XHMSK7JWBS4JOHX6ZKND252C3JUN34HK24MOYDHHXJDL2FSAPYE4"
         );
 
         assert_eq!(
@@ -1096,7 +988,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .last_modified_ledger(),
-            1560
+            746
         );
 
         assert_eq!(
@@ -1106,7 +998,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .last_modified_time(),
-            "2023-06-14T11:38:24Z"
+            "2023-12-18T18:27:45Z"
         );
 
         assert_eq!(
@@ -1128,7 +1020,7 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let single_claimable_balance_request = SingleClaimableBalanceRequest::new()
-            .set_claimable_balance_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string());
+            .set_claimable_balance_id("0000000001ca4989c85c10a07b451c61c517c4af41ced7ce67c04174dc02a0bb995a718e".to_string());
 
         let single_claimable_balance_response = horizon_client
             .get_single_claimable_balance(&single_claimable_balance_request)
@@ -1154,7 +1046,7 @@ mod tests {
                 .unwrap()
                 .id()
                 .to_string(),
-            "000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca"
+            "0000000001ca4989c85c10a07b451c61c517c4af41ced7ce67c04174dc02a0bb995a718e"
         );
 
         assert_eq!(
@@ -1163,7 +1055,7 @@ mod tests {
                 .unwrap()
                 .asset()
                 .to_string(),
-            "native"
+            "IOM:GDGZK7LIT46HSODNAWIIP7OQCSTSCRGTKHA5STPVL2YMVTGXA3NKPK2A"
         );
 
         assert_eq!(
@@ -1172,7 +1064,7 @@ mod tests {
                 .unwrap()
                 .amount()
                 .to_string(),
-            "12.3300000"
+            "2.0000000"
         );
 
         assert_eq!(
@@ -1181,7 +1073,7 @@ mod tests {
                 .unwrap()
                 .sponsor()
                 .to_string(),
-            "GD7TMSN67PCPZ4SXQHNG4GFO4KEMGTAT6MGWQGKBPOFDY7TP2IYDYFVI"
+            "GBW3XHMSK7JWBS4JOHX6ZKND252C3JUN34HK24MOYDHHXJDL2FSAPYE4"
         );
 
         assert_eq!(
@@ -1189,7 +1081,7 @@ mod tests {
                 .clone()
                 .unwrap()
                 .last_modified_ledger(),
-            1560
+            746
         );
 
         assert_eq!(
@@ -1198,7 +1090,7 @@ mod tests {
                 .unwrap()
                 .last_modified_time()
                 .to_string(),
-            "2023-06-14T11:38:24Z"
+            "2023-12-18T18:27:45Z"
         );
 
         assert_eq!(
@@ -1216,7 +1108,7 @@ mod tests {
                 .unwrap()
                 .paging_token()
                 .to_string(),
-            "1560-000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca"
+            "746-0000000001ca4989c85c10a07b451c61c517c4af41ced7ce67c04174dc02a0bb995a718e"
         );
     }
 }
