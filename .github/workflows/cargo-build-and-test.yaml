@@ -27,9 +27,10 @@ jobs:
           command: test
 
   publish_to_crates_io:
+    name: "Publish to crates.io"
+    runs-on: ubuntu-latest
     needs: build_and_test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push' 
-    name: "Publish to crates.io"
     steps:
     - uses: actions/checkout@v3
     - uses: actions-rs/toolchain@v1
