@@ -554,7 +554,7 @@ mod tests {
 
         // construct request
         let accounts_request = AccountsRequest::new()
-            .set_signer(ACCOUNT_ID).unwrap()
+            .set_signer_filter(ACCOUNT_ID).unwrap()
             .set_limit(10).unwrap();
 
         // call the get_account_list method to retrieve the account list response

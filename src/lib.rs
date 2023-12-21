@@ -230,7 +230,47 @@ pub mod claimable_balances;
 /// ```
 pub mod horizon_client;
 
+/// Provides `Request` and `Response` structs for retrieving ledgers.
+/// 
+/// The `ledgers` module in the Stellar Horizon SDK includes structures and methods that facilitate
+/// querying ledger data from the Horizon server.
+///
+/// # Usage
+///
+/// This module is used to construct requests for ledger-related data and to parse the responses
+/// received from the Horizon server. It includes request and response structures for both
+/// individual ledger queries and queries for a collection of ledgers.
+///
+/// # Example
+///
+/// To use this module, you can create an instance of a request struct, such as `SingleLedgerRequest`
+/// or `AllLedgersRequest`, set any desired query parameters, and pass the request to the
+/// `HorizonClient`. The client will then execute the request and return the corresponding
+/// response struct, like `SingleLedgerResponse` or `AllLedgersResponse`.
+///
+/// ```rust
+/// use stellar_rust_sdk::horizon_client::HorizonClient;
+/// use stellar_rust_sdk::ledgers::prelude::*;
+/// use stellar_rust_sdk::models::Request;
+///
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+///
+/// // Example: Fetching a single ledger by sequence number
+/// let single_ledger_request = SingleLedgerRequest::new().set_sequence(123456)?;
+/// let ledger_response = horizon_client.get_single_ledger(&single_ledger_request).await?;
+///
+/// // Example: Fetching all ledgers
+/// let all_ledgers_request = LedgersRequest::new().set_limit(10)?;
+/// let ledgers_response = horizon_client.get_all_ledgers(&all_ledgers_request).await?;
+///
+/// // Process the responses...
+/// # Ok(())
+/// # }
+/// ```
+///
 pub mod ledgers;
+
 
 /// Contains core data structures and traits.
 ///

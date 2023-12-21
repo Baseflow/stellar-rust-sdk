@@ -26,7 +26,7 @@ pub struct NoAccountId;
 /// parameter.
 /// ```
 /// # use stellar_rust_sdk::accounts::prelude::SingleAccountRequest;
-/// # use crate::stellar_rust_sdk::models::Request;
+/// # use stellar_rust_sdk::models::Request;
 /// let request = SingleAccountRequest::new()
 ///     .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
 ///     .unwrap();

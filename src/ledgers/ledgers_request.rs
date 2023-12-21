@@ -1,26 +1,56 @@
 use crate::{models::*, BuildQueryParametersExt};
 
+/// Represents a request to fetch ledger data from the Stellar Horizon API.
+///
+/// `LedgersRequest` is a struct used to construct queries for retrieving information about ledgers
+/// from the Horizon server. It includes parameters that allow for pagination control and sorting
+/// of the ledger records.
+///
+/// # Usage
+/// Instances of `LedgersRequest` are created and optionally configured using the builder pattern.
+/// Once the desired parameters are set, the request can be passed to the Horizon client to fetch
+/// ledger data.
+///
+/// # Example
+/// ```rust
+/// use stellar_rust_sdk::ledgers::ledgers_request::LedgersRequest;
+/// use stellar_rust_sdk::models::*;
+///
+/// let request = LedgersRequest::new()
+///     .set_cursor(1234).unwrap()
+///     .set_limit(20).unwrap()
+///     .set_order(Order::Desc);
+///
+/// // The request can now be used with a Horizon client to fetch ledgers.
+/// ```
+///
 #[derive(Default)]
 pub struct LedgersRequest {
-    /// The cursor for the page
+    /// A pointer to a specific location in a collection of responses, derived from the
+    ///   `paging_token` value of a record. Used for pagination control in the API response.
     cursor: Option<u32>,
-    /// The maximum number of records to return
-    limit: Option<u32>,
-    /// The order of the records
+    
+    /// Specifies the maximum number of records to be returned in a single response.
+    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
+    limit: Option<u8>,
+    
+    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
+    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
     order: Option<Order>,
 }
 
+
 impl LedgersRequest {
+    /// Creates a new `LedgersRequest` with default parameters.
     pub fn new() -> Self {
         LedgersRequest::default()
     }
 
-    /// Sets the cursor
+    /// Sets the cursor for pagination.
+    ///
     /// # Arguments
-    /// * `cursor` - The cursor
-    /// # Returns
-    /// The request object
-    /// [AllLedgersRequest](struct.AllLedgersRequest.html)
+    /// * `cursor` - A `u32` value pointing to a specific location in a collection of responses.
+    ///
     pub fn set_cursor(self, cursor: u32) -> Result<LedgersRequest, String> {
         if cursor < 1 {
             return Err("cursor must be greater than or equal to 1".to_string());
@@ -28,40 +58,35 @@ impl LedgersRequest {
 
         Ok(LedgersRequest {
             cursor: Some(cursor),
-            limit: self.limit,
-            order: self.order,
+            ..self
         })
     }
 
-    /// Sets the limit
+    /// Sets the maximum number of records to return.
+    ///
     /// # Arguments
-    /// * `limit` - The limit
-    /// # Returns
-    /// The request object
-    /// [AllAssetsRequest](struct.AllAssetsRequest.html)
-    pub fn set_limit(self, limit: u32) -> Result<LedgersRequest, String> {
+    /// * `limit` - A `u8` value specifying the maximum number of records. Range: 1 to 200. Defaults to 10.
+    ///
+    pub fn set_limit(self, limit: u8) -> Result<LedgersRequest, String> {
         if limit < 1 || limit > 200 {
             return Err("limit must be between 1 and 200".to_string());
         }
 
         Ok(LedgersRequest {
-            cursor: self.cursor,
             limit: Some(limit),
-            order: self.order,
+            ..self
         })
     }
 
-    /// Sets the order
+    /// Sets the order of the returned records.
+    ///
     /// # Arguments
-    /// * `order` - The order
-    /// # Returns
-    /// The request object
-    /// [AllAssetsRequest](struct.AllAssetsRequest.html)
-    pub fn set_order(&mut self, order: Order) -> LedgersRequest {
+    /// * `order` - An [`Order`] enum value specifying the order (ascending or descending).
+    ///
+    pub fn set_order(self, order: Order) -> LedgersRequest {
         LedgersRequest {
-            cursor: self.cursor,
-            limit: self.limit,
             order: Some(order),
+            ..self
         }
     }
 }
