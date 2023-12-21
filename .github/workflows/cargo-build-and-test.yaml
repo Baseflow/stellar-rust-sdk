@@ -2,9 +2,9 @@ name: Cargo build and test
 
 on:
   push:
-    branches: [ develop, master, release/**, hotfix/** ]
+    branches: [ develop, main, release/**, hotfix/** ]
   pull_request:
-    branches: [ develop, master, release/**, hotfix/** ]
+    branches: [ develop, main, release/**, hotfix/** ]
 
 
 jobs:
