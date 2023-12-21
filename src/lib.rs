@@ -41,9 +41,9 @@
 //! of accounts with a specific signer:
 //!
 //! ```rust
-//! use stellar_rust_sdk::horizon_client::HorizonClient;
-//! use stellar_rust_sdk::accounts::prelude::{AccountsRequest, AccountsResponse};
-//! use stellar_rust_sdk::models::{Request, Response};
+//! use stellar_sdk::horizon_client::HorizonClient;
+//! use stellar_sdk::accounts::prelude::{AccountsRequest, AccountsResponse};
+//! use stellar_sdk::models::{Request, Response};
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -82,7 +82,6 @@
 //! Visit the documentation for `HorizonClient` and endpoint-specific request and response
 //! types for more examples and detailed usage instructions.
 
-
 /// Provides `Request` and `Response` structs for retrieving accounts.
 ///
 /// This module provides a set of specialized request and response structures designed for
@@ -100,9 +99,9 @@
 /// # Example
 /// An example of retrieving a list of accounts, filtering by signer:
 /// ```rust
-/// # use stellar_rust_sdk::accounts::prelude::{AccountsRequest, AccountsResponse};
-/// # use stellar_rust_sdk::models::Request;
-/// # use stellar_rust_sdk::horizon_client::HorizonClient;
+/// # use stellar_sdk::accounts::prelude::{AccountsRequest, AccountsResponse};
+/// # use stellar_sdk::models::Request;
+/// # use stellar_sdk::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -120,7 +119,6 @@
 ///
 pub mod accounts;
 
-
 /// Provides `Request` and `Response` structs for retrieving assets.
 ///
 /// This module provides the structures and functionalities necessary to interact with asset-related
@@ -133,11 +131,11 @@ pub mod accounts;
 /// # Example
 ///
 /// The `assets` module simplifies the process of constructing queries about assets and interpreting the results. For example:
-/// 
+///
 /// ```rust
-/// # use stellar_rust_sdk::assets::prelude::*;
-/// # use stellar_rust_sdk::models::Request;
-/// # use stellar_rust_sdk::horizon_client::HorizonClient;
+/// # use stellar_sdk::assets::prelude::*;
+/// # use stellar_sdk::models::Request;
+/// # use stellar_sdk::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -158,12 +156,12 @@ pub mod assets;
 /// Provides `Request` and `Response` structs for retrieving claimable balances.
 ///
 /// This module provides structures and functionalities related to claimable balances within the Stellar network.
-/// Claimable balances are a feature of the Stellar network that allows for the creation of balances that are 
-/// claimable by a designated party. They are used to facilitate payments to accounts that may not yet exist 
+/// Claimable balances are a feature of the Stellar network that allows for the creation of balances that are
+/// claimable by a designated party. They are used to facilitate payments to accounts that may not yet exist
 /// or to provide an assurance that funds can be claimed by the rightful recipient.
 ///
-/// The module comprises request and response structs for both single and batched operations involving 
-/// claimable balances. These are designed to interface with the Horizon API's endpoints for creating, 
+/// The module comprises request and response structs for both single and batched operations involving
+/// claimable balances. These are designed to interface with the Horizon API's endpoints for creating,
 /// retrieving, and claiming such balances.
 ///
 /// # Usage
@@ -174,9 +172,9 @@ pub mod assets;
 ///
 /// # Example
 /// ```rust
-/// # use stellar_rust_sdk::claimable_balances::prelude::*;
-/// # use stellar_rust_sdk::models::Request;
-/// # use stellar_rust_sdk::horizon_client::HorizonClient;
+/// # use stellar_sdk::claimable_balances::prelude::*;
+/// # use stellar_sdk::models::Request;
+/// # use stellar_sdk::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -187,12 +185,12 @@ pub mod assets;
 /// let response = horizon_client
 ///     .get_all_claimable_balances(&request)
 ///     .await?;
-/// 
+///
 /// // Process the response
 /// # Ok({})
 /// # }
 /// ```
-/// 
+///
 pub mod claimable_balances;
 
 /// Client for calling the Stellar Horizon API
@@ -201,7 +199,7 @@ pub mod claimable_balances;
 /// A string containing the base URL for the Horizon API is required to contruct a client.
 /// For example, to construct a client for the Horizon API testnet:
 /// ```rust
-/// use stellar_rust_sdk::horizon_client::HorizonClient;
+/// use stellar_sdk::horizon_client::HorizonClient;
 ///
 /// let base_url = "https://horizon-testnet.stellar.org".to_string();
 /// let horizon_client = HorizonClient::new(base_url)
@@ -213,9 +211,9 @@ pub mod claimable_balances;
 /// by the Horizon API. For example, it has a [`HorizonClient::get_account_list`](crate::horizon_client::HorizonClient::get_account_list)
 /// function, which returns an async future that contains a result, as illustrated below:
 /// ```rust
-/// # use stellar_rust_sdk::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
-/// # use stellar_rust_sdk::models::Request;
-/// # use stellar_rust_sdk::horizon_client::HorizonClient;
+/// # use stellar_sdk::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
+/// # use stellar_sdk::models::Request;
+/// # use stellar_sdk::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -231,7 +229,7 @@ pub mod claimable_balances;
 pub mod horizon_client;
 
 /// Provides `Request` and `Response` structs for retrieving ledgers.
-/// 
+///
 /// The `ledgers` module in the Stellar Horizon SDK includes structures and methods that facilitate
 /// querying ledger data from the Horizon server.
 ///
@@ -249,9 +247,9 @@ pub mod horizon_client;
 /// response struct, like `SingleLedgerResponse` or `AllLedgersResponse`.
 ///
 /// ```rust
-/// use stellar_rust_sdk::horizon_client::HorizonClient;
-/// use stellar_rust_sdk::ledgers::prelude::*;
-/// use stellar_rust_sdk::models::Request;
+/// use stellar_sdk::horizon_client::HorizonClient;
+/// use stellar_sdk::ledgers::prelude::*;
+/// use stellar_sdk::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
@@ -271,7 +269,6 @@ pub mod horizon_client;
 ///
 pub mod ledgers;
 
-
 /// Contains core data structures and traits.
 ///
 /// This module is used by the Stellar Rust SDK to interact with the Horizon API.
@@ -283,7 +280,6 @@ pub mod ledgers;
 /// of the Horizon API, allowing developers to work with high-level Rust constructs
 /// instead of raw HTTP requests and JSON responses.
 pub mod models;
-
 
 /// Represents the types of assets in the Stellar network.
 ///
@@ -319,7 +315,6 @@ impl std::fmt::Display for AssetType {
     }
 }
 
-
 /// Extension trait for building query parameter strings from a vector of optional values.
 ///
 /// This trait provides a method to construct a query string from a vector of optional
@@ -344,14 +339,15 @@ trait BuildQueryParametersExt<T> {
 impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
     /// # Implementation for `Vec<Option<T>>`
     /// Converts each property to a key-value pair, and concatenates pairs with '&'.
-    /// Properties that are `None` are omitted from the string. 
-    /// 
-    /// ## Returns 
-    /// A `String` representing the query parameters of the HTTP request. If there 
+    /// Properties that are `None` are omitted from the string.
+    ///
+    /// ## Returns
+    /// A `String` representing the query parameters of the HTTP request. If there
     /// are no parameters, or all properties are `None`, an empty string is returned.
-    /// 
+    ///
     fn build_query_parameters(self) -> String {
-        let params = self.into_iter()
+        let params = self
+            .into_iter()
             // Iterate over each element in the vector.
             .filter_map(|x|
                 // Use filter_map to process each Option<T>.
@@ -372,3 +368,4 @@ impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
         }
     }
 }
+

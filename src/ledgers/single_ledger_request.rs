@@ -16,14 +16,14 @@ pub struct NoSequence;
 /// # Fields
 /// Required:
 /// * `sequence`: The sequence number of the ledger to be retrieved.
-/// 
+///
 /// ## Usage
 /// ```
-/// # use stellar_rust_sdk::ledgers::prelude::SingleLedgerRequest;
-/// # use stellar_rust_sdk::models::Request;
+/// # use stellar_sdk::ledgers::prelude::SingleLedgerRequest;
+/// # use stellar_sdk::models::Request;
 /// let request = SingleLedgerRequest::new()
 ///     .set_sequence(12345); // Example sequence
-/// 
+///
 /// // Use with HorizonClient::get_single_ledger
 /// ```
 ///
@@ -72,3 +72,4 @@ impl Request for SingleLedgerRequest<Sequence> {
         )
     }
 }
+

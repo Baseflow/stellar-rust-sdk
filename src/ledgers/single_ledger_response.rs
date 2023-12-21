@@ -1,12 +1,12 @@
 use derive_getters::Getters;
 use serde::Deserialize;
-use stellar_xdr::curr::{LedgerHeader, ReadXdr, Limits};
+use stellar_xdr::curr::{LedgerHeader, Limits, ReadXdr};
 
 use crate::models::Response;
 
 /// Represents the response for a single ledger query from the Stellar Horizon API.
 ///
-/// This struct encapsulates all the details of a single ledger, including its transactions, 
+/// This struct encapsulates all the details of a single ledger, including its transactions,
 /// operations, and various ledger attributes.
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct SingleLedgerResponse {

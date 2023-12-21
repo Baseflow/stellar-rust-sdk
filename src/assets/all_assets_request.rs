@@ -14,9 +14,9 @@ use crate::{models::*, BuildQueryParametersExt};
 ///
 /// # Example
 /// ```
-/// # use stellar_rust_sdk::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
-/// # use stellar_rust_sdk::models::*;
-/// # use stellar_rust_sdk::horizon_client::HorizonClient;
+/// # use stellar_sdk::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
+/// # use stellar_sdk::models::*;
+/// # use stellar_sdk::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -96,7 +96,7 @@ impl AllAssetsRequest {
     /// refers to the identifier assigned to assets on the Stellar network.
     ///
     /// # Arguments
-    /// * `asset_code` - A string slice representing the asset code. The asset code must be 12 characters 
+    /// * `asset_code` - A string slice representing the asset code. The asset code must be 12 characters
     ///   or fewer in length. It typically corresponds to custom asset identifiers on the Stellar network.
     ///
     pub fn set_asset_code(self, asset_code: &str) -> Result<AllAssetsRequest, String> {
@@ -115,10 +115,10 @@ impl AllAssetsRequest {
     /// This method specifies the Stellar address of the issuer to filter by in the assets query.
     ///
     /// # Arguments
-    /// * `asset_issuer` - A string slice representing the Stellar address of the asset issuer. 
-    ///   The address must be exactly 56 characters long, conforming to the standard Stellar public 
+    /// * `asset_issuer` - A string slice representing the Stellar address of the asset issuer.
+    ///   The address must be exactly 56 characters long, conforming to the standard Stellar public
     ///   key format.
-    /// 
+    ///
     pub fn set_asset_issuer(self, asset_issuer: &str) -> Result<AllAssetsRequest, String> {
         if asset_issuer.len() != 56 {
             return Err("asset_issuer must be 56 characters".to_string());

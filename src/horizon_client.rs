@@ -2,12 +2,13 @@ use crate::{
     accounts::prelude::*,
     assets::prelude::{AllAssetsRequest, AllAssetsResponse},
     claimable_balances::prelude::{
-        AllClaimableBalancesRequest, AllClaimableBalancesResponse, SingleClaimableBalanceRequest,
-        SingleClaimableBalanceResponse, ClaimableBalanceId,
+        AllClaimableBalancesRequest, AllClaimableBalancesResponse, ClaimableBalanceId,
+        SingleClaimableBalanceRequest, SingleClaimableBalanceResponse,
     },
-    ledgers::{prelude::{
-        LedgersRequest, LedgersResponse, SingleLedgerRequest, SingleLedgerResponse,
-    }, single_ledger_request::Sequence},
+    ledgers::{
+        prelude::{LedgersRequest, LedgersResponse, SingleLedgerRequest, SingleLedgerResponse},
+        single_ledger_request::Sequence,
+    },
     models::{Request, Response},
 };
 use reqwest;
@@ -34,7 +35,7 @@ impl HorizonClient {
     ///
     /// # Example
     /// ```rust
-    /// # use stellar_rust_sdk::horizon_client::HorizonClient;
+    /// # use stellar_sdk::horizon_client::HorizonClient;
     /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())
     ///     .expect("Failed to create HorizonClient");
     /// ```
@@ -65,9 +66,9 @@ impl HorizonClient {
     /// one of the four filter options. For example, filtering by signer:
     ///
     /// ```rust
-    /// # use stellar_rust_sdk::accounts::prelude::*;
-    /// # use stellar_rust_sdk::models::Request;
-    /// # use stellar_rust_sdk::horizon_client::HorizonClient;
+    /// # use stellar_sdk::accounts::prelude::*;
+    /// # use stellar_sdk::models::Request;
+    /// # use stellar_sdk::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -80,13 +81,13 @@ impl HorizonClient {
     /// let response: Result<AccountsResponse, String> = horizon_client
     ///     .get_account_list(&request)
     ///     .await;
-    /// 
+    ///
     /// // Access the account details
     /// for record in response?._embedded().records() {
     ///     println!("Account ID: {}", record.account_id());
     ///     // Further processing...
     ///  }
-    /// 
+    ///
     /// # Ok({})
     /// # }
     pub async fn get_account_list(
@@ -119,9 +120,9 @@ impl HorizonClient {
     /// account ID of the target account.
     ///
     /// ```
-    /// # use stellar_rust_sdk::accounts::prelude::*;
-    /// # use stellar_rust_sdk::models::Request;
-    /// # use stellar_rust_sdk::horizon_client::HorizonClient;
+    /// # use stellar_sdk::accounts::prelude::*;
+    /// # use stellar_sdk::models::Request;
+    /// # use stellar_sdk::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -132,7 +133,7 @@ impl HorizonClient {
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_single_account(&request).await;
-    /// 
+    ///
     /// // Access the account details
     /// println!("Account ID: {}", response?.account_id());
     /// # Ok({})
@@ -170,9 +171,9 @@ impl HorizonClient {
     /// filters or parameters and pass
     ///
     /// ```
-    /// # use stellar_rust_sdk::assets::prelude::*;
-    /// # use stellar_rust_sdk::models::Request;
-    /// # use stellar_rust_sdk::horizon_client::HorizonClient;
+    /// # use stellar_sdk::assets::prelude::*;
+    /// # use stellar_sdk::models::Request;
+    /// # use stellar_sdk::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -183,7 +184,7 @@ impl HorizonClient {
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_all_assets(&request).await;
-    /// 
+    ///
     /// // Access asset details
     /// for asset in response?._embedded().records() {
     ///     println!("Asset Code: {}", asset.asset_code());
@@ -222,9 +223,9 @@ impl HorizonClient {
     /// filters or parameters and pass
     ///
     /// ```
-    /// # use stellar_rust_sdk::claimable_balances::prelude::*;
-    /// # use stellar_rust_sdk::models::Request;
-    /// # use stellar_rust_sdk::horizon_client::HorizonClient;
+    /// # use stellar_sdk::claimable_balances::prelude::*;
+    /// # use stellar_sdk::models::Request;
+    /// # use stellar_sdk::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -235,7 +236,7 @@ impl HorizonClient {
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_all_claimable_balances(&request).await;
-    /// 
+    ///
     /// match response {
     ///     Ok(all_balances) => {
     ///         for balance in all_balances.embedded().records() {
@@ -280,9 +281,9 @@ impl HorizonClient {
     /// with the specific claimable balance ID.
     ///
     /// ```
-    /// # use stellar_rust_sdk::claimable_balances::prelude::*;
-    /// # use stellar_rust_sdk::models::Request;
-    /// # use stellar_rust_sdk::horizon_client::HorizonClient;
+    /// # use stellar_sdk::claimable_balances::prelude::*;
+    /// # use stellar_sdk::models::Request;
+    /// # use stellar_sdk::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -292,13 +293,13 @@ impl HorizonClient {
     ///    .set_claimable_balance_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string());
     ///
     /// let response = horizon_client.get_single_claimable_balance(&request).await;
-    /// 
+    ///
     /// // Access the details of the claimable balance
     /// if let Ok(balance_response) = response {
     ///     println!("Balance Amount: {}", balance_response.amount());
     ///     // Further processing...
     /// }
-    /// 
+    ///
     /// # Ok({})
     /// # }
     /// ```
@@ -328,15 +329,15 @@ impl HorizonClient {
     /// On successful execution, returns a `Result` containing a [`LedgersResponse`],
     /// which includes the list of all ledgers obtained from the Horizon server. If the request
     /// fails, it returns an error within `Result`.
-    /// 
+    ///
     /// # Example
-    /// To use this method, create an instance of [`LedgersRequest`], set any 
+    /// To use this method, create an instance of [`LedgersRequest`], set any
     /// desired pagination parameters.
     ///
     /// ```
-    /// # use stellar_rust_sdk::ledgers::prelude::*;
-    /// # use stellar_rust_sdk::models::Request;
-    /// # use stellar_rust_sdk::horizon_client::HorizonClient;
+    /// # use stellar_sdk::ledgers::prelude::*;
+    /// # use stellar_sdk::models::Request;
+    /// # use stellar_sdk::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -392,9 +393,9 @@ impl HorizonClient {
     /// sequence number of the ledger to be queried.
     ///
     /// ```
-    /// # use stellar_rust_sdk::ledgers::prelude::*;
-    /// # use stellar_rust_sdk::models::Request;
-    /// # use stellar_rust_sdk::horizon_client::HorizonClient;
+    /// # use stellar_sdk::ledgers::prelude::*;
+    /// # use stellar_sdk::models::Request;
+    /// # use stellar_sdk::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -404,7 +405,7 @@ impl HorizonClient {
     ///     .set_sequence(2).unwrap();
     ///
     /// let response = horizon_client.get_single_ledger(&request).await;
-    /// 
+    ///
     /// if let Ok(ledger) = response {
     ///     println!("Ledger ID: {}", ledger.id());
     ///     // Additional processing...
@@ -456,10 +457,7 @@ impl HorizonClient {
     /// response handling logic should be implemented here to maintain consistency across the
     /// client's interface.
     ///
-    async fn get<R: Response>(
-        &self,
-        request: &impl Request,
-    ) -> Result<R, String> {
+    async fn get<R: Response>(&self, request: &impl Request) -> Result<R, String> {
         // Construct the URL with potential query parameters.
         let url = request.build_url(&self.base_url);
 
@@ -471,7 +469,6 @@ impl HorizonClient {
         Ok(result)
     }
 }
-
 
 /// Handles the response received from an HTTP request made to the Horizon server.
 ///
@@ -508,9 +505,7 @@ impl HorizonClient {
 /// - Failure in reading the response body.
 /// - Deserialization errors when converting the response body into the `Response` type.
 ///
-async fn handle_response<R: Response>(
-    response: reqwest::Response,
-) -> Result<R, String> {
+async fn handle_response<R: Response>(response: reqwest::Response) -> Result<R, String> {
     match response.status() {
         reqwest::StatusCode::OK => {
             let _response = response.text().await.map_err(|e| e.to_string())?;
@@ -561,12 +556,11 @@ fn url_validate(url: &str) -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
-    use base64::{Engine, engine::general_purpose};
-    use chrono::{ TimeZone, Utc};
+    use base64::{engine::general_purpose, Engine};
+    use chrono::{TimeZone, Utc};
 
     use crate::{
-        assets::prelude::AllAssetsRequest,
-        accounts::prelude::AccountsRequest,
+        accounts::prelude::AccountsRequest, assets::prelude::AllAssetsRequest,
         claimable_balances::prelude::SingleClaimableBalanceRequest,
         ledgers::prelude::SingleLedgerRequest,
     };
@@ -602,8 +596,10 @@ mod tests {
 
         // construct request
         let accounts_request = AccountsRequest::new()
-            .set_signer_filter(ACCOUNT_ID).unwrap()
-            .set_limit(10).unwrap();
+            .set_signer_filter(ACCOUNT_ID)
+            .unwrap()
+            .set_limit(10)
+            .unwrap();
 
         // call the get_account_list method to retrieve the account list response
         let _accounts_response: Result<AccountsResponse, String> =
@@ -936,11 +932,9 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let all_assets_request: AllAssetsRequest = AllAssetsRequest::new()
-            .set_limit(1).unwrap();
+        let all_assets_request: AllAssetsRequest = AllAssetsRequest::new().set_limit(1).unwrap();
 
-        let _all_assets_response = horizon_client
-            .get_all_assets(&all_assets_request).await;
+        let _all_assets_response = horizon_client.get_all_assets(&all_assets_request).await;
 
         assert!(_all_assets_response.is_ok());
 
@@ -1083,8 +1077,7 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let all_ledgers_request = LedgersRequest::new()
-                .set_limit(2).unwrap();
+        let all_ledgers_request = LedgersRequest::new().set_limit(2).unwrap();
 
         let _all_ledgers_response = horizon_client.get_all_ledgers(&all_ledgers_request).await;
 
@@ -1130,8 +1123,7 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let single_ledger_request = SingleLedgerRequest::new()
-            .set_sequence(2).unwrap();
+        let single_ledger_request = SingleLedgerRequest::new().set_sequence(2).unwrap();
 
         let _single_ledger_response = horizon_client
             .get_single_ledger(&single_ledger_request)
@@ -1139,20 +1131,14 @@ mod tests {
 
         assert!(_single_ledger_response.clone().is_ok());
 
-        assert_eq!(
-            _single_ledger_response.clone().unwrap().id(),
-            id
-        );
+        assert_eq!(_single_ledger_response.clone().unwrap().id(), id);
 
         assert_eq!(
             _single_ledger_response.clone().unwrap().paging_token(),
             "8589934592"
         );
 
-        assert_eq!(
-            _single_ledger_response.clone().unwrap().hash(),
-            hash
-        );
+        assert_eq!(_single_ledger_response.clone().unwrap().hash(), hash);
 
         assert_eq!(
             _single_ledger_response.clone().unwrap().prev_hash(),
@@ -1264,7 +1250,10 @@ mod tests {
             stellar_xdr::curr::TimePoint(closed_at_timepoint)
         );
 
-        assert_eq!(decoded_xdr_header.ext, stellar_xdr::curr::LedgerHeaderExt::V0);
+        assert_eq!(
+            decoded_xdr_header.ext,
+            stellar_xdr::curr::LedgerHeaderExt::V0
+        );
         for decoded in decoded_xdr_header.skip_list {
             assert_eq!(
                 decoded.to_string(),
@@ -1273,7 +1262,6 @@ mod tests {
         }
     }
 
-
     #[tokio::test]
     async fn test_get_all_claimable_balances() {
         // Initialize horizon client
@@ -1281,8 +1269,8 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // construct request
-        let all_claimable_balances_request = AllClaimableBalancesRequest::new()
-            .set_limit(2).unwrap();
+        let all_claimable_balances_request =
+            AllClaimableBalancesRequest::new().set_limit(2).unwrap();
 
         let _all_claimable_balances_response = horizon_client
             .get_all_claimable_balances(&all_claimable_balances_request)
@@ -1380,7 +1368,10 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let single_claimable_balance_request = SingleClaimableBalanceRequest::new()
-            .set_claimable_balance_id("0000000001ca4989c85c10a07b451c61c517c4af41ced7ce67c04174dc02a0bb995a718e".to_string());
+            .set_claimable_balance_id(
+                "0000000001ca4989c85c10a07b451c61c517c4af41ced7ce67c04174dc02a0bb995a718e"
+                    .to_string(),
+            );
 
         let single_claimable_balance_response = horizon_client
             .get_single_claimable_balance(&single_claimable_balance_request)

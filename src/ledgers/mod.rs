@@ -26,31 +26,31 @@ pub mod ledgers_response;
 /// Provides the `SingleLedgerRequest` struct.
 ///
 /// This module provides the `SingleLedgerRequest` struct, designed for constructing requests
-/// to retrieve detailed information about a specific ledger from the Stellar Horizon API. 
+/// to retrieve detailed information about a specific ledger from the Stellar Horizon API.
 /// The primary use of this struct is to specify the sequence number of the desired ledger,
 /// which uniquely identifies it within the Stellar network.
 ///
-/// The `SingleLedgerRequest` struct is primarily used with the 
+/// The `SingleLedgerRequest` struct is primarily used with the
 /// [`HorizonClient::get_single_ledger`](crate::horizon_client::HorizonClient::get_single_ledger) method. This approach
-/// allows users to fetch specific ledger details, such as transactions, operations, and more, 
+/// allows users to fetch specific ledger details, such as transactions, operations, and more,
 /// based on the ledger sequence number.
 ///
 pub mod single_ledger_request;
 
 /// Provides the `SingleLedgerResponse` structure.
 ///
-/// This module contains the `SingleLedgerResponse` struct, which is designed to represent the response 
-/// received from the Stellar Horizon API when querying for a single ledger. It encapsulates all the 
+/// This module contains the `SingleLedgerResponse` struct, which is designed to represent the response
+/// received from the Stellar Horizon API when querying for a single ledger. It encapsulates all the
 /// details of a ledger, including its transactions, operations, and various attributes.
 ///
-/// The `SingleLedgerResponse` struct is particularly useful for applications that need to access specific 
+/// The `SingleLedgerResponse` struct is particularly useful for applications that need to access specific
 /// details about a single ledger, such as its transaction count, operation count, total coins, and so on.
 
 ///
 pub mod single_ledger_response;
 
 /// The base path for ledger-related endpoints in the Horizon API.
-/// 
+///
 /// # Usage
 /// This variable is intended to be used internally by the request-building logic
 /// to ensure consistent and accurate path construction for ledger-related API calls.
@@ -59,13 +59,13 @@ static LEDGERS_PATH: &str = "ledgers";
 
 /// The `prelude` module for the `ledgers` module in the Stellar Horizon Rust SDK.
 ///
-/// This module serves as a convenient gateway for importing frequently used items 
-/// related to ledger data and queries. By aggregating key structs and traits from 
-/// various submodules under `ledgers`, it simplifies the process of accessing these 
+/// This module serves as a convenient gateway for importing frequently used items
+/// related to ledger data and queries. By aggregating key structs and traits from
+/// various submodules under `ledgers`, it simplifies the process of accessing these
 /// elements within client applications.
 ///
-/// By importing from `prelude`, users can effortlessly integrate the primary functionalities 
-/// of the `ledgers` module into their code, reducing the need for individual imports and 
+/// By importing from `prelude`, users can effortlessly integrate the primary functionalities
+/// of the `ledgers` module into their code, reducing the need for individual imports and
 /// enhancing code readability.
 ///
 /// # Contents
@@ -81,7 +81,7 @@ static LEDGERS_PATH: &str = "ledgers";
 ///
 /// ```rust
 /// // Import the contents of the ledgers prelude
-/// use stellar_rust_sdk::ledgers::prelude::*;
+/// use stellar_sdk::ledgers::prelude::*;
 ///
 /// // This allows for direct usage of LedgersRequest, SingleLedgerResponse, etc.
 /// let ledger_request = LedgersRequest::new();
