@@ -1,11 +1,11 @@
 [package]
-name = "stellar-sdk"
+name = "stellar-rs"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/Baseflow/stellar-rust-sdk"
-documentation = "https://docs.rs/stellar-sdk"
+documentation = "https://docs.rs/stellar-rs"
 homepage = "https://github.com/Baseflow/stellar-rust-sdk"
 description = """
 A Rust SDK for the Stellar network.

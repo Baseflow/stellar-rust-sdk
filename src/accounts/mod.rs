@@ -73,9 +73,9 @@ static ACCOUNTS_PATH: &str = "accounts";
 ///
 /// # Example
 /// ```
-/// # use crate::stellar_sdk::models::*;
+/// # use crate::stellar_rs::models::*;
 /// // Import the contents of the account prelude
-/// use stellar_sdk::accounts::prelude::*;
+/// use stellar_rs::accounts::prelude::*;
 ///
 /// // Now you can directly use AccountsRequest, SingleAccountResponse, etc.
 /// let account_request = AccountsRequest::new();

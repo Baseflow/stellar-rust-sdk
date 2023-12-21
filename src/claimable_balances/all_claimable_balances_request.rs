@@ -16,8 +16,8 @@ use crate::{models::*, BuildQueryParametersExt};
 ///
 /// # Example
 /// ```
-/// use stellar_sdk::claimable_balances::all_claimable_balances_request::AllClaimableBalancesRequest;
-/// use stellar_sdk::models::{AssetType, Order};
+/// use stellar_rs::claimable_balances::all_claimable_balances_request::AllClaimableBalancesRequest;
+/// use stellar_rs::models::{AssetType, Order};
 ///
 /// let request = AllClaimableBalancesRequest::new()
 ///     .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()).unwrap() // Optional sponsor filter

@@ -101,7 +101,7 @@ pub trait Response: Sized {
 ///
 /// # Examples
 /// ```
-/// # use stellar_sdk::models::is_public_key;
+/// # use stellar_rs::models::is_public_key;
 /// assert!(is_public_key("GAVCBYUQSQA77EOOQMSDDXE6VSWDZRGOZOGMLWGFR6YR4TR243VWBDFO").is_ok());
 /// assert!(is_public_key("invalid_key").is_err());
 /// ```

@@ -26,9 +26,9 @@ pub struct NoClaimableBalanceId;
 ///
 /// # Example
 /// ```
-/// # use stellar_sdk::claimable_balances::single_claimable_balance_request::SingleClaimableBalanceRequest;
-/// # use stellar_sdk::horizon_client::HorizonClient;
-/// # use stellar_sdk::models::Request;
+/// # use stellar_rs::claimable_balances::single_claimable_balance_request::SingleClaimableBalanceRequest;
+/// # use stellar_rs::horizon_client::HorizonClient;
+/// # use stellar_rs::models::Request;
 /// #
 /// # async fn fetch_single_claimable_balance() -> Result<(), Box<dyn std::error::Error>> {
 /// #     let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;

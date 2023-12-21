@@ -13,8 +13,8 @@ use crate::{models::*, BuildQueryParametersExt};
 ///
 /// # Example
 /// ```rust
-/// use stellar_sdk::ledgers::ledgers_request::LedgersRequest;
-/// use stellar_sdk::models::*;
+/// use stellar_rs::ledgers::ledgers_request::LedgersRequest;
+/// use stellar_rs::models::*;
 ///
 /// let request = LedgersRequest::new()
 ///     .set_cursor(1234).unwrap()

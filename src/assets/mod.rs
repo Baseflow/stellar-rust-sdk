@@ -61,7 +61,7 @@ static ASSET_PATH: &str = "assets";
 /// # Example
 /// ```
 /// // Import the contents of the assets prelude
-/// use stellar_sdk::assets::prelude::*;
+/// use stellar_rs::assets::prelude::*;
 ///
 /// // This enables direct use of AllAssetsRequest, AllAssetsResponse, etc.
 /// let asset_request = AllAssetsRequest::new();

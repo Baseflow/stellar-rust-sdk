@@ -35,7 +35,7 @@ impl HorizonClient {
     ///
     /// # Example
     /// ```rust
-    /// # use stellar_sdk::horizon_client::HorizonClient;
+    /// # use stellar_rs::horizon_client::HorizonClient;
     /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())
     ///     .expect("Failed to create HorizonClient");
     /// ```
@@ -66,9 +66,9 @@ impl HorizonClient {
     /// one of the four filter options. For example, filtering by signer:
     ///
     /// ```rust
-    /// # use stellar_sdk::accounts::prelude::*;
-    /// # use stellar_sdk::models::Request;
-    /// # use stellar_sdk::horizon_client::HorizonClient;
+    /// # use stellar_rs::accounts::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -120,9 +120,9 @@ impl HorizonClient {
     /// account ID of the target account.
     ///
     /// ```
-    /// # use stellar_sdk::accounts::prelude::*;
-    /// # use stellar_sdk::models::Request;
-    /// # use stellar_sdk::horizon_client::HorizonClient;
+    /// # use stellar_rs::accounts::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -171,9 +171,9 @@ impl HorizonClient {
     /// filters or parameters and pass
     ///
     /// ```
-    /// # use stellar_sdk::assets::prelude::*;
-    /// # use stellar_sdk::models::Request;
-    /// # use stellar_sdk::horizon_client::HorizonClient;
+    /// # use stellar_rs::assets::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -223,9 +223,9 @@ impl HorizonClient {
     /// filters or parameters and pass
     ///
     /// ```
-    /// # use stellar_sdk::claimable_balances::prelude::*;
-    /// # use stellar_sdk::models::Request;
-    /// # use stellar_sdk::horizon_client::HorizonClient;
+    /// # use stellar_rs::claimable_balances::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -281,9 +281,9 @@ impl HorizonClient {
     /// with the specific claimable balance ID.
     ///
     /// ```
-    /// # use stellar_sdk::claimable_balances::prelude::*;
-    /// # use stellar_sdk::models::Request;
-    /// # use stellar_sdk::horizon_client::HorizonClient;
+    /// # use stellar_rs::claimable_balances::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -335,9 +335,9 @@ impl HorizonClient {
     /// desired pagination parameters.
     ///
     /// ```
-    /// # use stellar_sdk::ledgers::prelude::*;
-    /// # use stellar_sdk::models::Request;
-    /// # use stellar_sdk::horizon_client::HorizonClient;
+    /// # use stellar_rs::ledgers::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -393,9 +393,9 @@ impl HorizonClient {
     /// sequence number of the ledger to be queried.
     ///
     /// ```
-    /// # use stellar_sdk::ledgers::prelude::*;
-    /// # use stellar_sdk::models::Request;
-    /// # use stellar_sdk::horizon_client::HorizonClient;
+    /// # use stellar_rs::ledgers::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();

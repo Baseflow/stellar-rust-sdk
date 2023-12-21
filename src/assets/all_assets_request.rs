@@ -14,9 +14,9 @@ use crate::{models::*, BuildQueryParametersExt};
 ///
 /// # Example
 /// ```
-/// # use stellar_sdk::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
-/// # use stellar_sdk::models::*;
-/// # use stellar_sdk::horizon_client::HorizonClient;
+/// # use stellar_rs::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
+/// # use stellar_rs::models::*;
+/// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();

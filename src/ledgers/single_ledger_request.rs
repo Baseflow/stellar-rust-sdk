@@ -19,8 +19,8 @@ pub struct NoSequence;
 ///
 /// ## Usage
 /// ```
-/// # use stellar_sdk::ledgers::prelude::SingleLedgerRequest;
-/// # use stellar_sdk::models::Request;
+/// # use stellar_rs::ledgers::prelude::SingleLedgerRequest;
+/// # use stellar_rs::models::Request;
 /// let request = SingleLedgerRequest::new()
 ///     .set_sequence(12345); // Example sequence
 ///

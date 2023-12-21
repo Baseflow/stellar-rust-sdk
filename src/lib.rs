@@ -41,9 +41,9 @@
 //! of accounts with a specific signer:
 //!
 //! ```rust
-//! use stellar_sdk::horizon_client::HorizonClient;
-//! use stellar_sdk::accounts::prelude::{AccountsRequest, AccountsResponse};
-//! use stellar_sdk::models::{Request, Response};
+//! use stellar_rs::horizon_client::HorizonClient;
+//! use stellar_rs::accounts::prelude::{AccountsRequest, AccountsResponse};
+//! use stellar_rs::models::{Request, Response};
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -99,9 +99,9 @@
 /// # Example
 /// An example of retrieving a list of accounts, filtering by signer:
 /// ```rust
-/// # use stellar_sdk::accounts::prelude::{AccountsRequest, AccountsResponse};
-/// # use stellar_sdk::models::Request;
-/// # use stellar_sdk::horizon_client::HorizonClient;
+/// # use stellar_rs::accounts::prelude::{AccountsRequest, AccountsResponse};
+/// # use stellar_rs::models::Request;
+/// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -133,9 +133,9 @@ pub mod accounts;
 /// The `assets` module simplifies the process of constructing queries about assets and interpreting the results. For example:
 ///
 /// ```rust
-/// # use stellar_sdk::assets::prelude::*;
-/// # use stellar_sdk::models::Request;
-/// # use stellar_sdk::horizon_client::HorizonClient;
+/// # use stellar_rs::assets::prelude::*;
+/// # use stellar_rs::models::Request;
+/// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -172,9 +172,9 @@ pub mod assets;
 ///
 /// # Example
 /// ```rust
-/// # use stellar_sdk::claimable_balances::prelude::*;
-/// # use stellar_sdk::models::Request;
-/// # use stellar_sdk::horizon_client::HorizonClient;
+/// # use stellar_rs::claimable_balances::prelude::*;
+/// # use stellar_rs::models::Request;
+/// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -199,7 +199,7 @@ pub mod claimable_balances;
 /// A string containing the base URL for the Horizon API is required to contruct a client.
 /// For example, to construct a client for the Horizon API testnet:
 /// ```rust
-/// use stellar_sdk::horizon_client::HorizonClient;
+/// use stellar_rs::horizon_client::HorizonClient;
 ///
 /// let base_url = "https://horizon-testnet.stellar.org".to_string();
 /// let horizon_client = HorizonClient::new(base_url)
@@ -211,9 +211,9 @@ pub mod claimable_balances;
 /// by the Horizon API. For example, it has a [`HorizonClient::get_account_list`](crate::horizon_client::HorizonClient::get_account_list)
 /// function, which returns an async future that contains a result, as illustrated below:
 /// ```rust
-/// # use stellar_sdk::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
-/// # use stellar_sdk::models::Request;
-/// # use stellar_sdk::horizon_client::HorizonClient;
+/// # use stellar_rs::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
+/// # use stellar_rs::models::Request;
+/// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -247,9 +247,9 @@ pub mod horizon_client;
 /// response struct, like `SingleLedgerResponse` or `AllLedgersResponse`.
 ///
 /// ```rust
-/// use stellar_sdk::horizon_client::HorizonClient;
-/// use stellar_sdk::ledgers::prelude::*;
-/// use stellar_sdk::models::Request;
+/// use stellar_rs::horizon_client::HorizonClient;
+/// use stellar_rs::ledgers::prelude::*;
+/// use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;

@@ -85,7 +85,7 @@ static CLAIMABLE_BALANCES_PATH: &str = "claimable_balances";
 /// # Example
 /// ```
 /// // Import the contents of the claimable_balances prelude
-/// use stellar_sdk::claimable_balances::prelude::*;
+/// use stellar_rs::claimable_balances::prelude::*;
 ///
 /// // This enables direct use of AllClaimableBalancesRequest, AllClaimableBalancesResponse, etc.
 /// let asset_request = AllClaimableBalancesRequest::new();

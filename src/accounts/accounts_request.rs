@@ -12,10 +12,10 @@ use crate::{models::*, BuildQueryParametersExt};
 /// and call one of its setter methods to set exactly one of the filters. The request can then be executed through the `HorizonClient`.
 ///
 /// ```rust
-/// # use stellar_sdk::accounts::prelude::*;
-/// # use stellar_sdk::accounts::accounts_request::filters::*;
-/// # use stellar_sdk::models::Request;
-/// # use stellar_sdk::horizon_client::HorizonClient;
+/// # use stellar_rs::accounts::prelude::*;
+/// # use stellar_rs::accounts::accounts_request::filters::*;
+/// # use stellar_rs::models::Request;
+/// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -138,9 +138,9 @@ macro_rules! valid_account_request_impl {
 /// [`HorizonClient::get_account_list`](crate::horizon_client::HorizonClient::get_account_list) method.
 ///
 /// ```rust
-/// # use stellar_sdk::accounts::prelude::AccountsRequest;
-/// # use stellar_sdk::horizon_client::HorizonClient;
-/// # use stellar_sdk::models::Request;
+/// # use stellar_rs::accounts::prelude::AccountsRequest;
+/// # use stellar_rs::horizon_client::HorizonClient;
+/// # use stellar_rs::models::Request;
 /// # let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 /// let request = AccountsRequest::new()
 ///     .set_sponsor_filter("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())

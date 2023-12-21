@@ -81,7 +81,7 @@ static LEDGERS_PATH: &str = "ledgers";
 ///
 /// ```rust
 /// // Import the contents of the ledgers prelude
-/// use stellar_sdk::ledgers::prelude::*;
+/// use stellar_rs::ledgers::prelude::*;
 ///
 /// // This allows for direct usage of LedgersRequest, SingleLedgerResponse, etc.
 /// let ledger_request = LedgersRequest::new();
