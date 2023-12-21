@@ -25,8 +25,8 @@ pub struct NoAccountId;
 /// Instances of `SingleAccountRequest` are created and configured using setter methods for each
 /// parameter.
 /// ```
-/// # use stellar_rust_sdk::accounts::prelude::SingleAccountRequest;
-/// # use stellar_rust_sdk::models::Request;
+/// # use stellar_rs::accounts::prelude::SingleAccountRequest;
+/// # use stellar_rs::models::Request;
 /// let request = SingleAccountRequest::new()
 ///     .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
 ///     .unwrap();

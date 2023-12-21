@@ -12,10 +12,10 @@ use crate::{models::*, BuildQueryParametersExt};
 /// and call one of its setter methods to set exactly one of the filters. The request can then be executed through the `HorizonClient`.
 ///
 /// ```rust
-/// # use stellar_rust_sdk::accounts::prelude::*;
-/// # use stellar_rust_sdk::accounts::accounts_request::filters::*;
-/// # use stellar_rust_sdk::models::Request;
-/// # use stellar_rust_sdk::horizon_client::HorizonClient;
+/// # use stellar_rs::accounts::prelude::*;
+/// # use stellar_rs::accounts::accounts_request::filters::*;
+/// # use stellar_rs::models::Request;
+/// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -138,9 +138,9 @@ macro_rules! valid_account_request_impl {
 /// [`HorizonClient::get_account_list`](crate::horizon_client::HorizonClient::get_account_list) method.
 ///
 /// ```rust
-/// # use stellar_rust_sdk::accounts::prelude::AccountsRequest;
-/// # use stellar_rust_sdk::horizon_client::HorizonClient;
-/// # use stellar_rust_sdk::models::Request;
+/// # use stellar_rs::accounts::prelude::AccountsRequest;
+/// # use stellar_rs::horizon_client::HorizonClient;
+/// # use stellar_rs::models::Request;
 /// # let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 /// let request = AccountsRequest::new()
 ///     .set_sponsor_filter("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
@@ -150,15 +150,26 @@ macro_rules! valid_account_request_impl {
 ///
 pub trait ValidAccountsRequest: Request {}
 
-impl ValidAccountsRequest for AccountsRequest<SponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidityPoolFilter> {}
+impl ValidAccountsRequest
+    for AccountsRequest<SponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidityPoolFilter>
+{
+}
 valid_account_request_impl!(AccountsRequest<SponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidityPoolFilter>, sponsor);
-impl ValidAccountsRequest for AccountsRequest<NoSponsorFilter, SignerFilter, NoAssetFilter, NoLiquidityPoolFilter> {}
+impl ValidAccountsRequest
+    for AccountsRequest<NoSponsorFilter, SignerFilter, NoAssetFilter, NoLiquidityPoolFilter>
+{
+}
 valid_account_request_impl!(AccountsRequest<NoSponsorFilter, SignerFilter, NoAssetFilter, NoLiquidityPoolFilter>, signer);
-impl ValidAccountsRequest for AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter, NoLiquidityPoolFilter> {}
+impl ValidAccountsRequest
+    for AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter, NoLiquidityPoolFilter>
+{
+}
 valid_account_request_impl!(AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter, NoLiquidityPoolFilter>, asset);
-impl ValidAccountsRequest for AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, LiquidityPoolFilter> {}
+impl ValidAccountsRequest
+    for AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, LiquidityPoolFilter>
+{
+}
 valid_account_request_impl!(AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, LiquidityPoolFilter>, liquidity_pool);
-
 
 /// Represents a request to fetch multiple accounts from the Horizon API with a specific filter.
 ///
@@ -245,7 +256,6 @@ impl<Sp, Si, A, L> AccountsRequest<Sp, Si, A, L> {
         })
     }
 
-
     /// Sets the order of the returned records.
     ///
     /// # Arguments
@@ -276,7 +286,10 @@ impl AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidity
     pub fn set_sponsor_filter(
         self,
         sponsor: String,
-    ) -> Result<AccountsRequest<SponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidityPoolFilter>, String> {
+    ) -> Result<
+        AccountsRequest<SponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidityPoolFilter>,
+        String,
+    > {
         if let Err(e) = is_public_key(&sponsor) {
             return Err(e.to_string());
         }
@@ -299,7 +312,10 @@ impl AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidity
     pub fn set_signer_filter(
         self,
         signer: &str,
-    ) -> Result<AccountsRequest<NoSponsorFilter, SignerFilter, NoAssetFilter, NoLiquidityPoolFilter>, String> {
+    ) -> Result<
+        AccountsRequest<NoSponsorFilter, SignerFilter, NoAssetFilter, NoLiquidityPoolFilter>,
+        String,
+    > {
         if let Err(e) = is_public_key(&signer) {
             return Err(e.to_string());
         }
@@ -360,9 +376,60 @@ mod tests {
 
     #[test]
     fn test_accounts_request_set_sponsor_filter() {
-        let request = AccountsRequest::new()
-            .set_sponsor_filter("sponsor".to_string());
+        let request = AccountsRequest::new().set_sponsor_filter("sponsor".to_string());
 
         assert!(request.is_err());
+    }
+
+    #[test]
+    fn test_accounts_set_sponsor_valid() {
+        let request = AccountsRequest::new()
+            .set_sponsor_filter(
+                "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string(),
+            )
+            .unwrap();
+        assert_eq!(
+            request.sponsor.0,
+            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7"
+        );
+    }
+
+    #[test]
+    fn test_set_cursor_valid() {
+        let request = AccountsRequest::new().set_cursor(12345).unwrap();
+        assert_eq!(request.cursor.unwrap(), 12345);
+    }
+
+    #[test]
+    fn test_set_cursor_invalid() {
+        let request = AccountsRequest::new().set_cursor(0);
+        assert_eq!(
+            request.err().unwrap(),
+            "cursor must be greater than or equal to 1".to_string()
+        );
+    }
+
+    #[test]
+    fn test_set_limit_valid() {
+        let request = AccountsRequest::new().set_limit(20).unwrap();
+        assert_eq!(request.limit.unwrap(), 20);
+    }
+
+    #[test]
+    fn test_set_limit_invalid_low() {
+        let request = AccountsRequest::new().set_limit(0);
+        assert_eq!(
+            request.err().unwrap(),
+            "limit must be between 1 and 200".to_string()
+        );
+    }
+
+    #[test]
+    fn test_set_limit_invalid_high() {
+        let request = AccountsRequest::new().set_limit(201);
+        assert_eq!(
+            request.err().unwrap(),
+            "limit must be between 1 and 200".to_string()
+        );
     }
 }

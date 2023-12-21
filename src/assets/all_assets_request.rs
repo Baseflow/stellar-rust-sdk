@@ -14,9 +14,9 @@ use crate::{models::*, BuildQueryParametersExt};
 ///
 /// # Example
 /// ```
-/// # use stellar_rust_sdk::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
-/// # use stellar_rust_sdk::models::*;
-/// # use stellar_rust_sdk::horizon_client::HorizonClient;
+/// # use stellar_rs::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
+/// # use stellar_rs::models::*;
+/// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -96,7 +96,7 @@ impl AllAssetsRequest {
     /// refers to the identifier assigned to assets on the Stellar network.
     ///
     /// # Arguments
-    /// * `asset_code` - A string slice representing the asset code. The asset code must be 12 characters 
+    /// * `asset_code` - A string slice representing the asset code. The asset code must be 12 characters
     ///   or fewer in length. It typically corresponds to custom asset identifiers on the Stellar network.
     ///
     pub fn set_asset_code(self, asset_code: &str) -> Result<AllAssetsRequest, String> {
@@ -115,10 +115,10 @@ impl AllAssetsRequest {
     /// This method specifies the Stellar address of the issuer to filter by in the assets query.
     ///
     /// # Arguments
-    /// * `asset_issuer` - A string slice representing the Stellar address of the asset issuer. 
-    ///   The address must be exactly 56 characters long, conforming to the standard Stellar public 
+    /// * `asset_issuer` - A string slice representing the Stellar address of the asset issuer.
+    ///   The address must be exactly 56 characters long, conforming to the standard Stellar public
     ///   key format.
-    /// 
+    ///
     pub fn set_asset_issuer(self, asset_issuer: &str) -> Result<AllAssetsRequest, String> {
         if asset_issuer.len() != 56 {
             return Err("asset_issuer must be 56 characters".to_string());
@@ -172,5 +172,85 @@ impl AllAssetsRequest {
             order: Some(order),
             ..self
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_set_asset_code_valid() {
+        let request = AllAssetsRequest::new().set_asset_code("XLM").unwrap();
+        assert_eq!(request.asset_code.unwrap(), "XLM");
+    }
+
+    #[test]
+    fn test_set_asset_code_invalid() {
+        let request = AllAssetsRequest::new().set_asset_code("XLM123456789012");
+        assert_eq!(
+            request.err().unwrap(),
+            "asset_code must be 12 characters or less"
+        );
+    }
+
+    #[test]
+    fn test_set_asset_issuer_valid() {
+        let request = AllAssetsRequest::new()
+            .set_asset_issuer("Baseflow_TechnologyInnovationAndSoftwareDevelopment_2023")
+            .unwrap();
+        assert_eq!(
+            request.asset_issuer.unwrap(),
+            "Baseflow_TechnologyInnovationAndSoftwareDevelopment_2023"
+        );
+    }
+
+    #[test]
+    fn test_set_asset_issuer_invalid() {
+        let request = AllAssetsRequest::new()
+            .set_asset_issuer("BaseflowSoftwareDevelopmentPowerhouse_InnovativeSolutions2023");
+        assert_eq!(
+            request.err().unwrap(),
+            "asset_issuer must be 56 characters".to_string()
+        );
+    }
+
+    #[test]
+    fn test_set_cursor_valid() {
+        let request = AllAssetsRequest::new().set_cursor(12345).unwrap();
+        assert_eq!(request.cursor.unwrap(), 12345);
+    }
+
+    #[test]
+    fn test_set_cursor_invalid() {
+        let request = AllAssetsRequest::new().set_cursor(0);
+        assert_eq!(
+            request.err().unwrap(),
+            "cursor must be greater than or equal to 1".to_string()
+        );
+    }
+
+    #[test]
+    fn test_set_limit_valid() {
+        let request = AllAssetsRequest::new().set_limit(20).unwrap();
+        assert_eq!(request.limit.unwrap(), 20);
+    }
+
+    #[test]
+    fn test_set_limit_invalid_low() {
+        let request = AllAssetsRequest::new().set_limit(0);
+        assert_eq!(
+            request.err().unwrap(),
+            "limit must be between 1 and 200".to_string()
+        );
+    }
+
+    #[test]
+    fn test_set_limit_invalid_high() {
+        let request = AllAssetsRequest::new().set_limit(201);
+        assert_eq!(
+            request.err().unwrap(),
+            "limit must be between 1 and 200".to_string()
+        );
     }
 }

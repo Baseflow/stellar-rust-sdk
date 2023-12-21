@@ -1,12 +1,12 @@
 /// Defines methods for creating HTTP requests to the Horizon server.
 ///
 /// Implementors of this trait represent different types of requests that can be made to the server.
-/// The trait provides methods for assembling the request's query parameters and building the 
+/// The trait provides methods for assembling the request's query parameters and building the
 /// full URL for the request.
 ///
-/// Implementors of this trait should provide the specific logic for these methods based on the 
+/// Implementors of this trait should provide the specific logic for these methods based on the
 /// type of request they represent.
-/// 
+///
 pub trait Request {
     /// Generates a query string from the request's parameters.
     ///
@@ -16,12 +16,12 @@ pub trait Request {
     /// adhering to the standard URL-encoded format (`key=value` pairs joined by `&`).
     ///
     /// # Returns
-    /// Returns a `String` representing the query parameters of the request. If the request does not 
+    /// Returns a `String` representing the query parameters of the request. If the request does not
     /// have any parameters, or if they are not applicable, this method may return an empty string.
     ///
     /// # Usage
     /// This method is typically used internally when building the full URL for the request, specifically
-    /// in the `build_url` method. It abstracts the complexity of query string construction, ensuring a 
+    /// in the `build_url` method. It abstracts the complexity of query string construction, ensuring a
     /// consistent and error-free process.
     ///
     /// Implementors should ensure that the query string is correctly encoded and formatted,
@@ -31,46 +31,45 @@ pub trait Request {
 
     /// Constructs the complete URL for the HTTP request.
     ///
-    /// This method combines the base URL of the Horizon server with the query parameters specific 
-    /// to the request. It is responsible for assembling the full URL used to make the HTTP request 
-    /// to the server. The method should appropriately format the URL, ensuring that the base URL 
+    /// This method combines the base URL of the Horizon server with the query parameters specific
+    /// to the request. It is responsible for assembling the full URL used to make the HTTP request
+    /// to the server. The method should appropriately format the URL, ensuring that the base URL
     /// and query parameters are correctly concatenated.
     ///
     /// # Arguments
-    /// * `base_url` - A string slice representing the base URL of the Horizon server. This URL 
+    /// * `base_url` - A string slice representing the base URL of the Horizon server. This URL
     ///   provides the foundational part of the request URL.
     ///
     /// # Returns
-    /// Returns a `String` representing the full URL for the request. This URL includes the base 
+    /// Returns a `String` representing the full URL for the request. This URL includes the base
     /// URL and any query parameters, correctly formatted for use in an HTTP request.
     ///
     /// # Usage
-    /// This method is typically called when an HTTP request is being prepared. The returned URL 
+    /// This method is typically called when an HTTP request is being prepared. The returned URL
     /// is used as the target for the request.
     ///
-    /// Implementors of this method should ensure that the full URL is correctly structured, 
-    /// particularly in cases where the base URL has specific path components or the request 
+    /// Implementors of this method should ensure that the full URL is correctly structured,
+    /// particularly in cases where the base URL has specific path components or the request
     /// includes complex query parameters.
     ///
     fn build_url(&self, base_url: &str) -> String;
 }
 
-
 /// Handles deserialization of HTTP responses from the Horizon server.
 ///
-/// Types implementing this trait represent various kinds of responses that can be received 
-/// from the server. The primary responsibility of this trait is to provide a way to convert 
+/// Types implementing this trait represent various kinds of responses that can be received
+/// from the server. The primary responsibility of this trait is to provide a way to convert
 /// a JSON string (the raw response from the server) into a Rust object.
-/// 
-/// Implementors of this trait are typically structs that mirror the JSON structure of responses 
+///
+/// Implementors of this trait are typically structs that mirror the JSON structure of responses
 /// from the Horizon API, providing a type-safe way to interact with the response data.
 ///
 pub trait Response: Sized {
     /// Deserializes a JSON string into a response object.
     ///
-    /// This method is responsible for converting a JSON string, typically received as a response 
-    /// from the Horizon server, into an instance of the implementing type. The method must handle any 
-    /// inconsistencies or errors in the JSON format, returning a `Result` that indicates either 
+    /// This method is responsible for converting a JSON string, typically received as a response
+    /// from the Horizon server, into an instance of the implementing type. The method must handle any
+    /// inconsistencies or errors in the JSON format, returning a `Result` that indicates either
     /// successful deserialization or an error.
     ///
     /// # Arguments
@@ -78,11 +77,11 @@ pub trait Response: Sized {
     ///
     /// # Returns
     /// Returns a `Result<Self, String>`, where `Self` is the type that implements the `Response` trait.
-    /// On successful deserialization, it returns `Ok(Self)`, containing the constructed object. If the 
+    /// On successful deserialization, it returns `Ok(Self)`, containing the constructed object. If the
     /// deserialization fails (due to invalid JSON format, missing fields, etc.), it returns an `Err(String)`,
     /// with an error message describing the issue.
     ///
-    /// Implementors of this method should ensure that the deserialization logic is robust and can handle 
+    /// Implementors of this method should ensure that the deserialization logic is robust and can handle
     /// various edge cases, especially considering the diverse and complex nature of responses from the Horizon API.
     ///
     fn from_json(json: String) -> Result<Self, String>;
@@ -91,7 +90,7 @@ pub trait Response: Sized {
 /// Validates the format of a Stellar public key.
 ///
 /// This function checks whether the provided string is a valid Stellar public key. A valid
-/// public key must be 56 characters in length and start with the letter 'G'. 
+/// public key must be 56 characters in length and start with the letter 'G'.
 ///
 /// # Arguments
 /// * `public_key` - A string slice representing the public key to validate.
@@ -102,7 +101,7 @@ pub trait Response: Sized {
 ///
 /// # Examples
 /// ```
-/// # use stellar_rust_sdk::models::is_public_key;
+/// # use stellar_rs::models::is_public_key;
 /// assert!(is_public_key("GAVCBYUQSQA77EOOQMSDDXE6VSWDZRGOZOGMLWGFR6YR4TR243VWBDFO").is_ok());
 /// assert!(is_public_key("invalid_key").is_err());
 /// ```
@@ -121,7 +120,6 @@ pub fn is_public_key(public_key: &str) -> Result<(), String> {
     Ok(())
 }
 
-
 /// Represents the types of assets in the Stellar network.
 ///
 /// `AssetType` is an enumeration used to specify the type of an asset in Stellar-related requests.
@@ -131,16 +129,16 @@ pub fn is_public_key(public_key: &str) -> Result<(), String> {
 ///
 /// * `Native` - Represents the native asset of the Stellar network (often referred to as XLM).
 /// * `Issued` - Represents an asset that is issued by an account on the Stellar network.
-///   In its current implementation, it does not hold the asset code and issuer account ID, 
+///   In its current implementation, it does not hold the asset code and issuer account ID,
 ///   but future enhancements are intended to include these details for complete asset specification.
 ///
 /// # Note
 ///
-/// The `Issued` variant is currently a placeholder and does not encapsulate the complete 
-/// information required for an issued asset (i.e., Asset Code and Issuer Account ID). 
-/// This is a known limitation and should be addressed in future versions to ensure full 
+/// The `Issued` variant is currently a placeholder and does not encapsulate the complete
+/// information required for an issued asset (i.e., Asset Code and Issuer Account ID).
+/// This is a known limitation and should be addressed in future versions to ensure full
 /// functionality.
-/// 
+///
 #[derive(Clone)]
 pub enum AssetType {
     Native,
@@ -156,7 +154,6 @@ impl std::fmt::Display for AssetType {
     }
 }
 
-
 /// Represents the ordering of records in queries to the Horizon API.
 ///
 /// `Order` is an enumeration used in various requests to specify the desired order of the returned
@@ -165,7 +162,7 @@ impl std::fmt::Display for AssetType {
 /// # Variants
 /// * `Asc` - Indicates ascending order.
 /// * `Desc` - Indicates descending order.
-/// 
+///
 pub enum Order {
     Asc,
     Desc,
@@ -179,7 +176,6 @@ impl std::fmt::Display for Order {
         }
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -197,8 +193,8 @@ mod tests {
         assert!(result.is_err());
         assert_eq!(result.unwrap_err(), "Public key must start with G");
     }
-    
-    use stellar_xdr::curr::{LedgerHeader, ReadXdr, Limits, StellarValueExt, LedgerHeaderExt};
+
+    use stellar_xdr::curr::{LedgerHeader, LedgerHeaderExt, Limits, ReadXdr, StellarValueExt};
 
     // TODO, add vice versa.
     // https://developers.stellar.org/docs/encyclopedia/xdr#parsing-xdr
