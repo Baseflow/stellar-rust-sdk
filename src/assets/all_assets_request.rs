@@ -1,24 +1,60 @@
 use crate::{models::*, BuildQueryParametersExt};
 
-// AllAssetsRequest is the request for the /assets endpoint
-// [More Details] https://developers.stellar.org/api/horizon/resources/list-all-assets "Assets"
+/// Represents a request for listing all assets in the Stellar Horizon API.
+///
+/// This structure allows for specifying various parameters to filter and paginate the list of all assets
+/// known to the Stellar network.
+/// More details can be found in the Horizon API documentation on
+/// <a href="https://developers.stellar.org/api/horizon/resources/list-all-assets">Assets</a>.
+///
+/// # Usage
+///
+/// To use `AllAssetsRequest`, create an instance and set any desired filters. Then pass it to
+/// `HorizonClient::get_all_assets` to execute the query.
+///
+/// # Example
+/// ```
+/// # use stellar_rust_sdk::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
+/// # use stellar_rust_sdk::models::*;
+/// # use stellar_rust_sdk::horizon_client::HorizonClient;
+/// #
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let horizon_client = HorizonClient::new(base_url)
+/// #    .expect("Failed to create Horizon Client");
+/// #
+/// let request = AllAssetsRequest::default()
+///     .set_asset_code("USD")?
+///     .set_asset_issuer("GAXLYH...")?
+///     .set_limit(20)?
+///     .set_order(Order::Desc);
+///
+/// let response = horizon_client.get_all_assets(&request).await;
+/// # Ok({})
+/// # }
+///
+/// ```
+///
 #[derive(Default)]
 pub struct AllAssetsRequest {
-    /// The assets identifying code. For example, if the asset is a credit issued on the Stellar network,
-    /// the code will be the asset’s code. If the asset is a native asset, the code will be XLM.
+    /// The code of the asset to filter by. This is typically the identifier
+    ///   assigned to custom assets on the Stellar network.
     asset_code: Option<String>,
-    /// The account ID of the asset’s issuer. For example, if the asset is a credit issued on the Stellar
-    /// network, the issuer will be the account ID of the credit’s issuer.
+
+    /// The Stellar address of the issuer for the asset you want to filter by.
+    ///   It is relevant for assets that are custom issued on the Stellar network.
     asset_issuer: Option<String>,
-    /// The paging token of the next page of results. If this value is not provided, the results will
-    /// begin at the first page.
+
+    /// A pointer to a specific location in a collection of responses, derived from the
+    ///   `paging_token` value of a record. Used for pagination control in the API response.
     cursor: Option<u32>,
-    /// The maximum number of records returned. The limit can range from 1 to 200 - an upper limit that
-    /// is hardcoded in Horizon for performance reasons. If this argument isn’t designated, it defaults
-    /// to 10.
+
+    /// Specifies the maximum number of records to be returned in a single response.
+    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
     limit: Option<u32>,
-    /// A designation of the order in which records should appear. Options include asc (ascending) or
-    /// desc (descending). If this argument isn’t set, it defaults to asc.
+
+    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
+    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
     order: Option<Order>,
 }
 
@@ -49,16 +85,20 @@ impl Request for AllAssetsRequest {
 }
 
 impl AllAssetsRequest {
+    /// Creates a new `AllAssetsRequest` with default parameters.
     pub fn new() -> AllAssetsRequest {
         AllAssetsRequest::default()
     }
 
-    /// Sets the asset code
+    /// Sets the asset code filter for the `AllAssetsRequest`.
+    ///
+    /// This method specifies the code of the asset to filter by in the assets query. The asset code
+    /// refers to the identifier assigned to assets on the Stellar network.
+    ///
     /// # Arguments
-    /// * `asset_code` - The asset code
-    /// # Returns
-    /// The request object
-    /// [AllAssetsRequest](struct.AllAssetsRequest.html)
+    /// * `asset_code` - A string slice representing the asset code. The asset code must be 12 characters 
+    ///   or fewer in length. It typically corresponds to custom asset identifiers on the Stellar network.
+    ///
     pub fn set_asset_code(self, asset_code: &str) -> Result<AllAssetsRequest, String> {
         if asset_code.len() > 12 {
             return Err("asset_code must be 12 characters or less".to_string());
@@ -70,12 +110,15 @@ impl AllAssetsRequest {
         })
     }
 
-    /// Sets the asset issuer
+    /// Sets the asset issuer filter for the `AllAssetsRequest`.
+    ///
+    /// This method specifies the Stellar address of the issuer to filter by in the assets query.
+    ///
     /// # Arguments
-    /// * `asset_issuer` - The asset issuer
-    /// # Returns
-    /// The request object
-    /// [AllAssetsRequest](struct.AllAssetsRequest.html)
+    /// * `asset_issuer` - A string slice representing the Stellar address of the asset issuer. 
+    ///   The address must be exactly 56 characters long, conforming to the standard Stellar public 
+    ///   key format.
+    /// 
     pub fn set_asset_issuer(self, asset_issuer: &str) -> Result<AllAssetsRequest, String> {
         if asset_issuer.len() != 56 {
             return Err("asset_issuer must be 56 characters".to_string());
@@ -87,12 +130,11 @@ impl AllAssetsRequest {
         })
     }
 
-    /// Sets the cursor
+    /// Sets the cursor for pagination.
+    ///
     /// # Arguments
-    /// * `cursor` - The cursor
-    /// # Returns
-    /// The request object
-    /// [AllAssetsRequest](struct.AllAssetsRequest.html)
+    /// * `cursor` - A `u32` value pointing to a specific location in a collection of responses.
+    ///
     pub fn set_cursor(self, cursor: u32) -> Result<AllAssetsRequest, String> {
         if cursor < 1 {
             return Err("cursor must be greater than or equal to 1".to_string());
@@ -104,12 +146,11 @@ impl AllAssetsRequest {
         })
     }
 
-    /// Sets the limit
+    /// Sets the maximum number of records to return.
+    ///
     /// # Arguments
-    /// * `limit` - The limit
-    /// # Returns
-    /// The request object
-    /// [AllAssetsRequest](struct.AllAssetsRequest.html)
+    /// * `limit` - A `u8` value specifying the maximum number of records. Range: 1 to 200. Defaults to 10.
+    ///
     pub fn set_limit(self, limit: u32) -> Result<AllAssetsRequest, String> {
         if limit < 1 || limit > 200 {
             return Err("limit must be between 1 and 200".to_string());
@@ -121,12 +162,11 @@ impl AllAssetsRequest {
         })
     }
 
-    /// Sets the order
+    /// Sets the order of the returned records.
+    ///
     /// # Arguments
-    /// * `order` - The order
-    /// # Returns
-    /// The request object
-    /// [AllAssetsRequest](struct.AllAssetsRequest.html)
+    /// * `order` - An [`Order`] enum value specifying the order (ascending or descending).
+    ///
     pub fn set_order(self, order: Order) -> AllAssetsRequest {
         AllAssetsRequest {
             order: Some(order),

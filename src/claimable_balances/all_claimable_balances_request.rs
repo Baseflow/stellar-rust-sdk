@@ -1,28 +1,59 @@
-use crate::{models::*, AssetType, BuildQueryParametersExt};
+use crate::{models::*, BuildQueryParametersExt};
 
-/// AllClaimableBalancesRequest is the request type for the /claimable_balances/all endpoint
-/// [More Details] (https://www.stellar.org/developers/horizon/reference/endpoints/claimable_balances-all.html) "All Claimable Balances")
+/// Represents a request to list all claimable balances from the Stellar Horizon API.
+///
+/// This structure is used to construct a query to retrieve a comprehensive list of claimable balances, which
+/// can be filtered by sponsor, asset, or claimant. Claimable balances are a feature of the Stellar network
+/// that allows users to create a balance of assets that can be claimed by another account. It adheres to the structure and parameters required 
+/// by the Horizon API for retrieving a 
+/// <a href="https://developers.stellar.org/api/horizon/resources/list-all-claimable-balances">list of claimable balances</a>.
+/// 
+/// # Usage
+///
+/// Create an instance of this struct and set the desired query parameters to filter the list of claimable balances.
+/// Pass this request object to the [`HorizonClient::get_all_claimable_balances`](crate::horizon_client::HorizonClient::get_all_claimable_balances)
+/// method to fetch the corresponding data from the Horizon API.
+///
+/// # Example
+/// ```
+/// use stellar_rust_sdk::claimable_balances::all_claimable_balances_request::AllClaimableBalancesRequest;
+/// use stellar_rust_sdk::models::{AssetType, Order};
+///
+/// let request = AllClaimableBalancesRequest::new()
+///     .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()).unwrap() // Optional sponsor filter
+///     .set_asset(AssetType::Native) // Optional asset filter
+///     .set_claimant("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()).unwrap() // Optional claimant filter
+///     .set_cursor(123).unwrap() // Optional cursor for pagination
+///     .set_limit(100).unwrap() // Optional limit for response records
+///     .set_order(Order::Desc); // Optional order of records
+/// 
+/// // Use with HorizonClient::get_all_claimable_balances
+/// ```
+///
 #[derive(Default)]
 pub struct AllClaimableBalancesRequest {
-    /// Account ID of the sponsor. Every account in the response will either be sponsored by the
-    /// given account ID or have a subentry (trustline, offer, or data entry) which is sponsored by
-    /// the given account ID.
+    /// Optional. Representing the account ID of the sponsor. When set, the response will 
+    ///   only include claimable balances sponsored by the specified account.
     sponsor: Option<String>,
-    /// Account ID of the signer. Every account in the response will have the given account ID as a
-    /// signer.
+    
+    /// Optional. Indicates the type of asset for which claimable balances are being queried. 
+    ///   When set, the response will filter claimable balances that hold this specific asset.
     asset: Option<AssetType>,
-    /// An object that holds both the destination account that can claim the ClaimableBalanceEntry
-    /// and a ClaimPredicate that must evaluate to true for the claim to succeed.
+
+    /// Optional. Represents the account ID of the claimant. If provided, the response will 
+    ///   include only claimable balances that are claimable by the specified account.
     claimant: Option<String>,
-    /// Account ID of the signer. Every account in the response will have the given account ID as a
-    /// signer.
+    
+    /// A pointer to a specific location in a collection of responses, derived from the
+    ///   `paging_token` value of a record. Used for pagination control in the API response.
     cursor: Option<u32>,
-    /// The maximum number of records returned. The limit can range from 1 to 200 - an upper limit
-    /// that is hardcoded in Horizon for performance reasons. If this argument isn’t designated, it
-    /// defaults to 10.
+    
+    /// Specifies the maximum number of records to be returned in a single response.
+    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
     limit: Option<u32>,
-    /// A designation of the order in which records should appear. Options include asc (ascending)
-    /// or desc (descending). If this argument isn’t set, it defaults to asc.
+    
+    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
+    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
     order: Option<Order>,
 }
 
@@ -50,17 +81,16 @@ impl Request for AllClaimableBalancesRequest {
 }
 
 impl AllClaimableBalancesRequest {
+    /// Creates a new `AllClaimableBalancesRequest` with default parameters.
     pub fn new() -> Self {
         AllClaimableBalancesRequest::default()
     }
 
-    /// Sets the sponsor for the request
+    /// Specifies the sponsor's public key in the request.
+    ///
     /// # Arguments
-    /// * `self` - The request object
-    /// * `sponsor` - The sponsor for the request
-    /// # Returns
-    /// The request object
-    /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
+    /// * `sponsor` - A Stellar public key of the sponsor whose claimable balances are to be retrieved.
+    /// 
     pub fn set_sponsor(self, sponsor: String) -> Result<AllClaimableBalancesRequest, String> {
         if let Err(e) = is_public_key(&sponsor) {
             return Err(e.to_string());
@@ -72,13 +102,11 @@ impl AllClaimableBalancesRequest {
         })
     }
 
-    /// Sets the asset for the request
+    /// Specifies the asset in the request.
+    ///
     /// # Arguments
-    /// * `self` - The request object
-    /// * `asset` - The asset for the request
-    /// # Returns
-    /// The request object
-    /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
+    /// * `asset` - The `AssetType` to filter claimable balances by asset type.
+    /// 
     pub fn set_asset(self, asset: AssetType) -> AllClaimableBalancesRequest {
         AllClaimableBalancesRequest {
             asset: Some(asset),
@@ -86,13 +114,11 @@ impl AllClaimableBalancesRequest {
         }
     }
 
-    /// Sets the claimant for the request
+    /// Specifies the claimant's public key in the request.
+    ///
     /// # Arguments
-    /// * `self` - The request object
-    /// * `claimant` - The claimant for the request
-    /// # Returns
-    /// The request object
-    /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
+    /// * `claimant` - A Stellar public key of the claimant whose claimable balances are to be retrieved.
+    /// 
     pub fn set_claimant(self, claimant: String) -> Result<AllClaimableBalancesRequest, String> {
         if let Err(e) = is_public_key(&claimant) {
             return Err(e.to_string());
@@ -104,13 +130,11 @@ impl AllClaimableBalancesRequest {
         })
     }
 
-    /// Sets the cursor for the request
+    /// Sets the cursor for pagination.
+    ///
     /// # Arguments
-    /// * `self` - The request object
-    /// * `cursor` - The cursor for the request
-    /// # Returns
-    /// The request object
-    /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
+    /// * `cursor` - A `u32` value pointing to a specific location in a collection of responses.
+    ///
     pub fn set_cursor(self, cursor: u32) -> Result<AllClaimableBalancesRequest, String> {
         if cursor < 1 {
             return Err("cursor must be greater than or equal to 1".to_string());
@@ -122,13 +146,11 @@ impl AllClaimableBalancesRequest {
         })
     }
 
-    /// Sets the limit for the request
+    /// Sets the maximum number of records to return.
+    ///
     /// # Arguments
-    /// * `self` - The request object
-    /// * `limit` - The limit for the request
-    /// # Returns
-    /// The request object
-    /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
+    /// * `limit` - A `u8` value specifying the maximum number of records. Range: 1 to 200. Defaults to 10.
+    ///
     pub fn set_limit(self, limit: u32) -> Result<AllClaimableBalancesRequest, String> {
         if limit < 1 || limit > 200 {
             return Err("limit must be between 1 and 200".to_string());
@@ -140,13 +162,11 @@ impl AllClaimableBalancesRequest {
         })
     }
 
-    /// Sets the order for the request
+    /// Sets the order of the returned records.
+    ///
     /// # Arguments
-    /// * `self` - The request object
-    /// * `order` - The order for the request
-    /// # Returns
-    /// The request object
-    /// [AllClaimableBalancesRequest](struct.AllClaimableBalancesRequest.html)
+    /// * `order` - An [`Order`] enum value specifying the order (ascending or descending).
+    ///
     pub fn set_order(self, order: Order) -> AllClaimableBalancesRequest {
         AllClaimableBalancesRequest {
             order: Some(order),
