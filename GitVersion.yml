@@ -1,0 +1,77 @@
+next-version: 0.2.0
+assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-scheme: MajorMinorPatchTag
+assembly-informational-format: '{MajorMinorPatch}{PreReleaseTagWithDash}'
+commit-message-incrementing: Disabled
+legacy-semver-padding: 4
+build-metadata-padding: 4
+commits-since-version-source-padding: 4
+commit-date-format: yyyy-MM-dd
+continuous-delivery-fallback-tag: ''
+
+branches:
+  main:
+    regex: main
+    mode: ContinuousDeployment
+    tag: ''
+    increment: None
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: false
+  support:
+    regex: support?[/-]
+    mode: ContinuousDeployment
+    tag: support
+    increment: Patch
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false  
+    source-branches:
+    - main
+    tracks-release-branches: false
+    is-release-branch: false
+    is-mainline: true 
+  hotfix:
+    regex: hotfix(es)?[/-]
+    mode: ContinuousDeployment
+    tag: hotfix
+    increment: Patch
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    source-branches:
+    - main
+    tracks-release-branches: false
+    is-release-branch: false
+  develop:
+    regex: dev(elop)?(ment)?$
+    mode: ContinuousDeployment
+    tag: develop
+    increment: Minor
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: true
+    tracks-release-branches: true
+    is-release-branch: false
+  feature:
+    regex: feature(s)?[/-]
+    mode: ContinuousDeployment
+    tag: feature.{BranchName}
+    increment: Inherit
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: false
+    source-branches:
+    - develop
+    tracks-release-branches: false
+    is-release-branch: false
+  release:
+    regex: release(s)?[/-]
+    mode: ContinuousDeployment
+    tag: rc
+    increment: None
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
+    source-branches:
+    - develop
+    tracks-release-branches: false
+    is-release-branch: true  
+ignore:
+  sha: []
