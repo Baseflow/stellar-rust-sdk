@@ -81,7 +81,6 @@
 //! Visit the documentation for `HorizonClient` and endpoint-specific request and response
 //! types for more examples and detailed usage instructions.
 
-
 /// Requests and Response for retrieving accounts.
 ///
 /// This module provides a set of specialized request and response structures designed for
@@ -172,7 +171,6 @@ pub mod ledgers;
 /// instead of raw HTTP requests and JSON responses.
 pub mod models;
 
-
 /// Represents the types of assets in the Stellar network.
 ///
 /// `AssetType` is an enumeration used to specify the type of an asset in Stellar-related requests.
@@ -207,7 +205,6 @@ impl std::fmt::Display for AssetType {
     }
 }
 
-
 /// Extension trait for building query parameter strings from a vector of optional values.
 ///
 /// This trait provides a method to construct a query string from a vector of optional
@@ -225,20 +222,19 @@ trait BuildQueryParametersExt<T> {
     ///
     /// This method transforms the properties of the implementing object into a URL-encoded query
     /// string.
-    ///
-    /// # Implementation for `Vec<Option<T>>`
-    /// Converts each property to a key-value pair, and concatenates pairs with '&'.
-    /// Properties that are `None` are omitted from the string. 
-    /// ## Returns 
-    /// A `String` representing the query parameters of the HTTP request. If there 
-    /// are no parameters, or all properties are `None`, an empty string is returned.
     fn build_query_parameters(self) -> String;
 }
 
 impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
-    /// Constructs a query string from a vector of optional values.
+    /// # Implementation for `Vec<Option<T>>`
+    /// Converts each property to a key-value pair, and concatenates pairs with '&'.
+    /// Properties that are `None` are omitted from the string.
+    /// ## Returns
+    /// A `String` representing the query parameters of the HTTP request. If there
+    /// are no parameters, or all properties are `None`, an empty string is returned.
     fn build_query_parameters(self) -> String {
-        let params = self.into_iter()
+        let params = self
+            .into_iter()
             // Iterate over each element in the vector.
             .filter_map(|x|
                 // Use filter_map to process each Option<T>.
@@ -259,3 +255,4 @@ impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
         }
     }
 }
+
