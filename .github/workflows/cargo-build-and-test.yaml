@@ -57,7 +57,7 @@ jobs:
       with:
         useConfigFile: true
     - name: "Overwrite version numbers"
-      run:  awk 'NR==1,/version = "0.1.0"/{sub(/version = "0.1.0"/, "version = \"'$GitVersion_SemVer'\"")} 1' Cargo.toml    
+      run:  awk 'NR==1,/version = "0.1.0"/{sub(/version = "0.1.0"/, "version = \"'$GitVersion_SemVer'\"")} 1' Cargo.toml > Cargo.tmp && mv Cargo.tmp Cargo.toml
     - uses: actions-rs/toolchain@v1
       with:
           toolchain: stable
