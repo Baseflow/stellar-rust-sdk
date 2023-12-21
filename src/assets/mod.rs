@@ -8,30 +8,6 @@
 /// to perform the actual API calls and fetch asset data. It adheres to the structure
 /// and requirements of the Horizon API for asset queries.
 ///
-/// # Usage
-///
-/// To use this module, create an instance of `AllAssetsRequest` and optionally set the desired
-/// query parameters. Then, pass the request object to `HorizonClient::get_all_assets` method to
-/// execute the query. The method returns an `AllAssetsResponse` containing the information about
-/// the requested assets.
-///
-/// # Example
-/// ```
-/// # use stellar_rust_sdk::assets::all_assets_request::AllAssetsRequest;
-/// # use stellar_rust_sdk::horizon_client::HorizonClient;
-/// # use stellar_rust_sdk::models::Request;
-/// # 
-/// # async fn fetch_assets() -> Result<(), Box<dyn std::error::Error>> {
-/// #     let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
-/// let request = AllAssetsRequest::new()
-///     .set_asset_code("USD").unwrap();         // Example asset code
-///
-/// let response = horizon_client.get_all_assets(&request).await?;
-/// // Process the response
-/// #     Ok(())
-/// # }
-/// ```
-///
 pub mod all_assets_request;
 
 /// Provides the `AllAssetsResponse`.
@@ -46,35 +22,6 @@ pub mod all_assets_request;
 /// The provided structures include serialization and deserialization capabilities for dealing
 /// with the JSON format of the Horizon server's response. They also leverage the `Getters` derive macro 
 /// to furnish convenient getter methods for accessing their fields.
-///
-/// # Usage
-///
-/// These response structures are predominantly used internally by the `HorizonClient` to parse responses
-/// from asset-related API calls. The `AllAssetsResponse` struct, in particular, plays a crucial role, as it
-/// is returned by the [`HorizonClient::get_all_assets`](crate::horizon_client::HorizonClient::get_all_assets) method, offering a user-friendly interface
-/// to asset data.
-///
-/// # Example
-///
-/// ```
-/// # use stellar_rust_sdk::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
-/// # use stellar_rust_sdk::horizon_client::HorizonClient;
-/// # use stellar_rust_sdk::models::Response;
-/// # 
-/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// #    let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
-/// #    let request = AllAssetsRequest::new()
-/// #        .set_asset_code("USD").unwrap();         // Example asset code
-/// let all_assets_response: Result<AllAssetsResponse, String> = horizon_client.get_all_assets(&request).await;
-/// 
-/// // Access asset details
-/// for asset in all_assets_response?._embedded().records() {
-///     println!("Asset Code: {}", asset.asset_code());
-///     // Further processing...
-/// }
-/// #     Ok(())
-/// # }
-/// ```
 ///
 pub mod all_assets_response;
 

@@ -21,7 +21,7 @@ use crate::{models::*, BuildQueryParametersExt};
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
 /// # let horizon_client = HorizonClient::new(base_url)
 /// #    .expect("Failed to create Horizon Client");
-/// let request: AccountsRequest<NoSponsorFilter, SignerFilter, NoAssetFilter, NoLiquidityPoolFilter> = AccountsRequest::new()
+/// let request = AccountsRequest::new()
 ///     .set_signer_filter("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
 ///     .unwrap();
 ///
@@ -185,19 +185,6 @@ valid_account_request_impl!(AccountsRequest<NoSponsorFilter, NoSignerFilter, NoA
 ///   Defaults to 10 if not specified.
 /// - `order`: The [`Order`] of the returned records, either ascending ([`Order::Asc`]) or descending ([`Order::Desc`]).
 ///   Defaults to ascending if not set.
-///
-/// # Usage
-///
-/// Instances of `AccountsRequest` are created and configured using setter methods for each
-/// parameter.
-/// ```
-/// # use stellar_rust_sdk::accounts::accounts_request::AccountsRequest;
-/// # use crate::stellar_rust_sdk::models::Request;
-/// let request = AccountsRequest::new()
-///     .set_signer_filter("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap()
-///     .set_limit(10).unwrap();
-/// // Use with HorizonClient::get_account_list
-/// ```
 ///
 #[derive(Default)]
 pub struct AccountsRequest<Sp, Si, A, L> {
@@ -377,6 +364,5 @@ mod tests {
             .set_sponsor_filter("sponsor".to_string());
 
         assert!(request.is_err());
-        // assert_eq!(request.unwrap_err(), "Public key must be 56 characters long");
     }
 }

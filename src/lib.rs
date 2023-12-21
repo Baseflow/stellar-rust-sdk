@@ -338,17 +338,18 @@ trait BuildQueryParametersExt<T> {
     /// This method transforms the properties of the implementing object into a URL-encoded query
     /// string.
     ///
-    /// # Implementation for `Vec<Option<T>>`
-    /// Converts each property to a key-value pair, and concatenates pairs with '&'.
-    /// Properties that are `None` are omitted from the string. 
-    /// ## Returns 
-    /// A `String` representing the query parameters of the HTTP request. If there 
-    /// are no parameters, or all properties are `None`, an empty string is returned.
     fn build_query_parameters(self) -> String;
 }
 
 impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
-    /// Constructs a query string from a vector of optional values.
+    /// # Implementation for `Vec<Option<T>>`
+    /// Converts each property to a key-value pair, and concatenates pairs with '&'.
+    /// Properties that are `None` are omitted from the string. 
+    /// 
+    /// ## Returns 
+    /// A `String` representing the query parameters of the HTTP request. If there 
+    /// are no parameters, or all properties are `None`, an empty string is returned.
+    /// 
     fn build_query_parameters(self) -> String {
         let params = self.into_iter()
             // Iterate over each element in the vector.

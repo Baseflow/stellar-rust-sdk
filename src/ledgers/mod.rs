@@ -10,34 +10,6 @@
 /// information about the ledgers in the Stellar network, including transactions, operations,
 /// and effects within each ledger.
 ///
-/// # Usage
-///
-/// To use this module, create an instance of `LedgersRequest` and set any desired pagination
-/// options. Then, pass the request object to the appropriate method of `HorizonClient`
-/// to execute the query. The client will return a response containing the ledger data.
-///
-/// # Example
-/// ```rust
-/// use stellar_rust_sdk::horizon_client::HorizonClient;
-/// use stellar_rust_sdk::ledgers::ledgers_request::LedgersRequest;
-/// use stellar_rust_sdk::models::*;
-///
-/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
-///
-/// // Constructing a request to fetch ledgers
-/// let ledgers_request = LedgersRequest::new()
-///     .set_limit(10)? // Setting the number of ledgers to retrieve
-///     .set_order(Order::Desc); // Setting the order of ledgers
-///
-/// // Fetching the ledgers from Horizon
-/// let ledgers_response = horizon_client.get_all_ledgers(&ledgers_request).await?;
-///
-/// // Processing the response...
-/// # Ok(())
-/// # }
-/// ```
-///
 pub mod ledgers_request;
 
 /// Provides the `LedgersResponse` struct.
@@ -48,37 +20,6 @@ pub mod ledgers_request;
 ///
 /// The primary structure in this module is `LedgersResponse`, which contains detailed information about
 /// each ledger, including its transactions, operations, and other related data.
-///
-/// # Usage
-/// The `LedgersResponse` and other related structures in this module are typically used internally by the
-/// `HorizonClient` when handling responses from ledger-related API calls. However, they can also be used directly
-/// in client applications for custom processing of ledger data.
-///
-/// # Example
-/// ```rust 
-/// # use stellar_rust_sdk::horizon_client::HorizonClient;
-/// # use stellar_rust_sdk::ledgers::prelude::*;
-/// # use stellar_rust_sdk::models::Request;
-/// #
-/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// # let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
-/// #
-/// # let all_ledgers_request = LedgersRequest::new().set_limit(10)?;
-/// let ledgers_response = horizon_client.get_all_ledgers(&all_ledgers_request).await;
-///
-/// // Process the response
-/// match ledgers_response {
-///     Ok(response) => {
-///         for ledger in response._embedded().records() {
-///             println!("Ledger ID: {}", ledger.id());
-///             // Further processing...
-///         }
-///     }
-///     Err(e) => println!("Error parsing response: {}", e),
-/// }
-/// # Ok(())
-/// # }
-/// ```
 ///
 pub mod ledgers_response;
 
@@ -94,31 +35,6 @@ pub mod ledgers_response;
 /// allows users to fetch specific ledger details, such as transactions, operations, and more, 
 /// based on the ledger sequence number.
 ///
-/// # Usage
-///
-/// To utilize this module, create an instance of `SingleLedgerRequest`, set the ledger sequence 
-/// number using the `set_sequence` method, and pass it to the `HorizonClient::get_single_ledger` 
-/// method. This method will return a `SingleLedgerResponse`, which contains the detailed 
-/// information of the specified ledger.
-///
-/// # Example
-///
-/// ```
-/// # use stellar_rust_sdk::ledgers::single_ledger_request::SingleLedgerRequest;
-/// # use stellar_rust_sdk::horizon_client::HorizonClient;
-/// # use stellar_rust_sdk::models::Request;
-/// # 
-/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// #     let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
-/// let ledger_sequence = 1234567; // Replace with the desired ledger sequence number
-/// let request = SingleLedgerRequest::new().set_sequence(ledger_sequence)?;
-///
-/// let ledger_response = horizon_client.get_single_ledger(&request).await?;
-/// // Process the ledger response here
-/// #     Ok(())
-/// # }
-/// ```
-///
 pub mod single_ledger_request;
 
 /// Provides the `SingleLedgerResponse` structure.
@@ -129,35 +45,7 @@ pub mod single_ledger_request;
 ///
 /// The `SingleLedgerResponse` struct is particularly useful for applications that need to access specific 
 /// details about a single ledger, such as its transaction count, operation count, total coins, and so on.
-///
-/// # Usage
-///
-/// This structure is primarily used internally by the `HorizonClient` to process responses from 
-/// single ledger-related API calls. After making a request for a specific ledger using the 
-/// `SingleLedgerRequest`, the response from the Horizon server is deserialized into an instance of 
-/// `SingleLedgerResponse`.
-///
-/// # Example
-///
-/// Assuming you have already made a request using `SingleLedgerRequest` and have a valid `HorizonClient`:
-/// ```
-/// # use stellar_rust_sdk::ledgers::single_ledger_request::{SingleLedgerRequest, Sequence};
-/// # use stellar_rust_sdk::ledgers::single_ledger_response::SingleLedgerResponse;
-/// # use stellar_rust_sdk::horizon_client::HorizonClient;
-/// # use stellar_rust_sdk::models::Request;
-/// # 
-/// # async fn fetch_ledger_details() -> Result<(), Box<dyn std::error::Error>> {
-/// #     let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
-/// # let request = SingleLedgerRequest::new().set_sequence(123456)?;
-/// let ledger_response: Result<SingleLedgerResponse, String> = horizon_client.get_single_ledger(&request).await;
-///
-/// if let Ok(ledger) = ledger_response {
-///     println!("Ledger ID: {}", ledger.id());
-///     // Additional processing...
-/// }
-/// #     Ok(())
-/// # }
-/// ```
+
 ///
 pub mod single_ledger_response;
 

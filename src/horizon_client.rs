@@ -80,6 +80,13 @@ impl HorizonClient {
     /// let response: Result<AccountsResponse, String> = horizon_client
     ///     .get_account_list(&request)
     ///     .await;
+    /// 
+    /// // Access the account details
+    /// for record in response?._embedded().records() {
+    ///     println!("Account ID: {}", record.account_id());
+    ///     // Further processing...
+    ///  }
+    /// 
     /// # Ok({})
     /// # }
     pub async fn get_account_list(
@@ -125,6 +132,9 @@ impl HorizonClient {
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_single_account(&request).await;
+    /// 
+    /// // Access the account details
+    /// println!("Account ID: {}", response?.account_id());
     /// # Ok({})
     /// # }
     /// ```
@@ -173,6 +183,12 @@ impl HorizonClient {
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_all_assets(&request).await;
+    /// 
+    /// // Access asset details
+    /// for asset in response?._embedded().records() {
+    ///     println!("Asset Code: {}", asset.asset_code());
+    ///     // Further processing...
+    /// }
     /// # Ok({})
     /// # }
     /// ```
@@ -219,6 +235,16 @@ impl HorizonClient {
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_all_claimable_balances(&request).await;
+    /// 
+    /// match response {
+    ///     Ok(all_balances) => {
+    ///         for balance in all_balances.embedded().records() {
+    ///             println!("Balance ID: {}", balance.id());
+    ///             // Further processing...
+    ///         }
+    ///     },
+    ///     Err(e) => eprintln!("Error fetching claimable balances: {}", e),
+    /// }
     /// # Ok({})
     /// # }
     /// ```
@@ -266,6 +292,13 @@ impl HorizonClient {
     ///    .set_claimable_balance_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string());
     ///
     /// let response = horizon_client.get_single_claimable_balance(&request).await;
+    /// 
+    /// // Access the details of the claimable balance
+    /// if let Ok(balance_response) = response {
+    ///     println!("Balance Amount: {}", balance_response.amount());
+    ///     // Further processing...
+    /// }
+    /// 
     /// # Ok({})
     /// # }
     /// ```
@@ -314,6 +347,16 @@ impl HorizonClient {
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_all_ledgers(&request).await;
+    /// // Process the response
+    /// match response {
+    ///     Ok(ledgers_response) => {
+    ///         for ledger in ledgers_response._embedded().records() {
+    ///             println!("Ledger ID: {}", ledger.id());
+    ///             // Further processing...
+    ///         }
+    ///     }
+    ///     Err(e) => println!("Error parsing response: {}", e),
+    /// }
     /// # Ok({})
     /// # }
     /// ```
@@ -361,6 +404,11 @@ impl HorizonClient {
     ///     .set_sequence(2).unwrap();
     ///
     /// let response = horizon_client.get_single_ledger(&request).await;
+    /// 
+    /// if let Ok(ledger) = response {
+    ///     println!("Ledger ID: {}", ledger.id());
+    ///     // Additional processing...
+    /// }
     /// # Ok({})
     /// # }
     /// ```
