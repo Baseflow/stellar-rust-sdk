@@ -1,6 +1,11 @@
-on: [push]
-
 name: Cargo build and test
+
+on:
+  push:
+    branches: [ develop, master, release/**, hotfix/** ]
+  pull_request:
+    branches: [ develop, master, release/**, hotfix/** ]
+
 
 jobs:
   build_and_test:
@@ -11,9 +16,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          target: x86_64-unknown-linux-musl
           override: true
-          components: llvm-tools-preview
       - uses: actions-rs/cargo@v1
         name: cargo update
         with:
@@ -23,7 +26,16 @@ jobs:
         with:
           command: test
 
-      # - uses: actions-rs/cargo@v1
-      #   with:
-      #     command: build
-      #     args: --release --all-features
+  publish_to_crates_io:
+    needs: build_and_test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' 
+    name: "Publish to crates.io"
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions-rs/toolchain@v1
+      with:
+          toolchain: stable
+          override: true
+    - uses: katyo/publish-crates@v2
+      with:
+          registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
