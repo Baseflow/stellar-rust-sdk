@@ -174,3 +174,83 @@ impl AllAssetsRequest {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_set_asset_code_valid() {
+        let request = AllAssetsRequest::new().set_asset_code("XLM").unwrap();
+        assert_eq!(request.asset_code.unwrap(), "XLM");
+    }
+
+    #[test]
+    fn test_set_asset_code_invalid() {
+        let request = AllAssetsRequest::new().set_asset_code("XLM123456789012");
+        assert_eq!(
+            request.err().unwrap(),
+            "asset_code must be 12 characters or less"
+        );
+    }
+
+    #[test]
+    fn test_set_asset_issuer_valid() {
+        let request = AllAssetsRequest::new()
+            .set_asset_issuer("Baseflow_TechnologyInnovationAndSoftwareDevelopment_2023")
+            .unwrap();
+        assert_eq!(
+            request.asset_issuer.unwrap(),
+            "Baseflow_TechnologyInnovationAndSoftwareDevelopment_2023"
+        );
+    }
+
+    #[test]
+    fn test_set_asset_issuer_invalid() {
+        let request = AllAssetsRequest::new()
+            .set_asset_issuer("BaseflowSoftwareDevelopmentPowerhouse_InnovativeSolutions2023");
+        assert_eq!(
+            request.err().unwrap(),
+            "asset_issuer must be 56 characters".to_string()
+        );
+    }
+
+    #[test]
+    fn test_set_cursor_valid() {
+        let request = AllAssetsRequest::new().set_cursor(12345).unwrap();
+        assert_eq!(request.cursor.unwrap(), 12345);
+    }
+
+    #[test]
+    fn test_set_cursor_invalid() {
+        let request = AllAssetsRequest::new().set_cursor(0);
+        assert_eq!(
+            request.err().unwrap(),
+            "cursor must be greater than or equal to 1".to_string()
+        );
+    }
+
+    #[test]
+    fn test_set_limit_valid() {
+        let request = AllAssetsRequest::new().set_limit(20).unwrap();
+        assert_eq!(request.limit.unwrap(), 20);
+    }
+
+    #[test]
+    fn test_set_limit_invalid_low() {
+        let request = AllAssetsRequest::new().set_limit(0);
+        assert_eq!(
+            request.err().unwrap(),
+            "limit must be between 1 and 200".to_string()
+        );
+    }
+
+    #[test]
+    fn test_set_limit_invalid_high() {
+        let request = AllAssetsRequest::new().set_limit(201);
+        assert_eq!(
+            request.err().unwrap(),
+            "limit must be between 1 and 200".to_string()
+        );
+    }
+}

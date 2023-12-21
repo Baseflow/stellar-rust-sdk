@@ -174,3 +174,49 @@ impl AllClaimableBalancesRequest {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_set_cursor_valid() {
+        let request = AllClaimableBalancesRequest::new()
+            .set_cursor(12345)
+            .unwrap();
+        assert_eq!(request.cursor.unwrap(), 12345);
+    }
+
+    #[test]
+    fn test_set_cursor_invalid() {
+        let request = AllClaimableBalancesRequest::new().set_cursor(0);
+        assert_eq!(
+            request.err().unwrap(),
+            "cursor must be greater than or equal to 1".to_string()
+        );
+    }
+
+    #[test]
+    fn test_set_limit_valid() {
+        let request = AllClaimableBalancesRequest::new().set_limit(20).unwrap();
+        assert_eq!(request.limit.unwrap(), 20);
+    }
+
+    #[test]
+    fn test_set_limit_invalid_low() {
+        let request = AllClaimableBalancesRequest::new().set_limit(0);
+        assert_eq!(
+            request.err().unwrap(),
+            "limit must be between 1 and 200".to_string()
+        );
+    }
+
+    #[test]
+    fn test_set_limit_invalid_high() {
+        let request = AllClaimableBalancesRequest::new().set_limit(201);
+        assert_eq!(
+            request.err().unwrap(),
+            "limit must be between 1 and 200".to_string()
+        );
+    }
+}
