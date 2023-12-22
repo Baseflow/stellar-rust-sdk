@@ -1,5 +1,17 @@
 # Rust Stellar SDK - Empowering Stellar Developers with Rust's Performance and Security
 
+## Badges
+
+![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/Baseflow/stellar-rust-sdk/.github%2Fworkflows%2Fcargo-build-and-test.yaml)
+[![Crates.io](https://img.shields.io/crates/v/stellar-sdk.svg)](https://crates.io/crates/stellar-sdk)
+[![Documentation](https://img.shields.io/badge/documentation-1)](https://docs.rs/stellar-rs/latest/stellar_rs/index.html)
+[![GitHub issues](https://img.shields.io/github/issues/Baseflow/stellar-rust-sdk)]()
+[![GitHub stars](https://img.shields.io/github/stars/Baseflow/stellar-rust-sdk)]()
+[![GitHub license](https://img.shields.io/github/license/Baseflow/stellar-rust-sdk)]()
+
+
+
+
 ## Description:
 
 Welcome to the Rust Stellar SDK repository, where we are pioneering a new era of development on the Stellar cryptocurrency network. With the aim of unlocking the full potential of Stellar and embracing the exceptional features of Rust, we present an innovative and robust Rust SDK for the Stellar ecosystem.
