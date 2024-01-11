@@ -36,9 +36,9 @@ pub struct AllClaimableBalancesRequest {
     ///   only include claimable balances sponsored by the specified account.
     sponsor: Option<String>,
 
-    /// Optional. Indicates the type of asset for which claimable balances are being queried.
+    /// Optional. Indicates issued asset for which claimable balances are being queried.
     ///   When set, the response will filter claimable balances that hold this specific asset.
-    asset: Option<AssetType>,
+    asset: Option<Asset<IssuedAsset>>,
 
     /// Optional. Represents the account ID of the claimant. If provided, the response will
     ///   include only claimable balances that are claimable by the specified account.
@@ -105,9 +105,9 @@ impl AllClaimableBalancesRequest {
     /// Specifies the asset in the request.
     ///
     /// # Arguments
-    /// * `asset` - The `AssetType` to filter claimable balances by asset type.
+    /// * `asset` - The issued asset to filter claimable balances by asset type.
     ///
-    pub fn set_asset(self, asset: AssetType) -> AllClaimableBalancesRequest {
+    pub fn set_asset(self, asset: Asset<IssuedAsset>) -> AllClaimableBalancesRequest {
         AllClaimableBalancesRequest {
             asset: Some(asset),
             ..self

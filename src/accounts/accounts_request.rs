@@ -34,7 +34,7 @@ use crate::{models::*, BuildQueryParametersExt};
 /// for direct use in API calls.
 ///
 pub mod filters {
-    use crate::models::AssetType;
+    use crate::models::Asset;
 
     /// Represents a filter for accounts sponsored by the given account ID.
     #[derive(Default, Clone)]
@@ -52,7 +52,7 @@ pub mod filters {
 
     /// Represents a filter for accounts holding a trustline for the specified asset.
     #[derive(Clone)]
-    pub struct AssetFilter(pub AssetType);
+    pub struct AssetFilter<T>(pub Asset<T>);
     /// Indicates the absence of an asset filter in the request.
     #[derive(Default, Clone)]
     pub struct NoAssetFilter;
@@ -150,25 +150,16 @@ macro_rules! valid_account_request_impl {
 ///
 pub trait ValidAccountsRequest: Request {}
 
-impl ValidAccountsRequest
-    for AccountsRequest<SponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidityPoolFilter>
-{
-}
+impl ValidAccountsRequest for AccountsRequest<SponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidityPoolFilter>{}
 valid_account_request_impl!(AccountsRequest<SponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidityPoolFilter>, sponsor);
-impl ValidAccountsRequest
-    for AccountsRequest<NoSponsorFilter, SignerFilter, NoAssetFilter, NoLiquidityPoolFilter>
-{
-}
+
+impl ValidAccountsRequest for AccountsRequest<NoSponsorFilter, SignerFilter, NoAssetFilter, NoLiquidityPoolFilter>{}
 valid_account_request_impl!(AccountsRequest<NoSponsorFilter, SignerFilter, NoAssetFilter, NoLiquidityPoolFilter>, signer);
-impl ValidAccountsRequest
-    for AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter, NoLiquidityPoolFilter>
-{
-}
-valid_account_request_impl!(AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter, NoLiquidityPoolFilter>, asset);
-impl ValidAccountsRequest
-    for AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, LiquidityPoolFilter>
-{
-}
+
+impl<T> ValidAccountsRequest for AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter<T>, NoLiquidityPoolFilter>{}
+valid_account_request_impl!(AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter<T>, NoLiquidityPoolFilter>, asset);
+
+impl ValidAccountsRequest for AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, LiquidityPoolFilter> {}
 valid_account_request_impl!(AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, LiquidityPoolFilter>, liquidity_pool);
 
 /// Represents a request to fetch multiple accounts from the Horizon API with a specific filter.
@@ -332,13 +323,13 @@ impl AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidity
     /// Sets the asset filter.
     ///
     /// # Arguments
-    /// * `asset` - An [`AssetType`] specifying the asset. Filters for accounts with a
+    /// * `asset` - An [`Asset`] specifying the asset. Filters for accounts with a
     /// trustline for this asset.
     ///
-    pub fn set_asset_filter(
+    pub fn set_asset_filter<T>(
         self,
-        asset: AssetType,
-    ) -> AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter, NoLiquidityPoolFilter> {
+        asset: Asset<T>,
+    ) -> AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter<T>, NoLiquidityPoolFilter> {
         AccountsRequest {
             sponsor: self.sponsor,
             signer: self.signer,
