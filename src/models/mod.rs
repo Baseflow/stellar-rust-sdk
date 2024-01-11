@@ -120,39 +120,81 @@ pub fn is_public_key(public_key: &str) -> Result<(), String> {
     Ok(())
 }
 
-/// Represents the types of assets in the Stellar network.
+/// Represents an issued asset. Contains both the asset code and the issuer account ID,
+///   formatted as "asset_code:issuer_account_id".
+#[derive(Default, Clone)]
+pub struct IssuedAsset(String);
+
+/// A marker type to represent the native asset (XLM) without additional data.
+#[derive(Default, Clone)]
+pub struct NativeAsset;
+
+/// Represents the variants of assets in the Stellar network.
 ///
-/// `AssetType` is an enumeration used to specify the type of an asset in Stellar-related requests.
-/// It differentiates between native assets and issued assets within the Stellar ecosystem.
+/// `Asset` is a generic struct used to specify the variant of an asset in Stellar-related requests,
+/// allowing for differentiation between native assets and issued assets within the Stellar ecosystem.
+/// It encapsulates the details of issued assets, including their code and issuer account ID.
 ///
-/// # Variants
+/// # Examples
 ///
-/// * `Native` - Represents the native asset of the Stellar network (often referred to as XLM).
-/// * `Issued` - Represents an asset that is issued by an account on the Stellar network.
-///   In its current implementation, it does not hold the asset code and issuer account ID,
-///   but future enhancements are intended to include these details for complete asset specification.
+/// ```
+/// // Creating a native asset
+/// let native_asset = Asset::new();
 ///
-/// # Note
+/// // Creating an issued asset with a valid asset code and issuer account ID
+/// let issued_asset = native_asset.set_issued("USD", "GAT3H3...ACSBLP").unwrap();
+/// ```
 ///
-/// The `Issued` variant is currently a placeholder and does not encapsulate the complete
-/// information required for an issued asset (i.e., Asset Code and Issuer Account ID).
-/// This is a known limitation and should be addressed in future versions to ensure full
-/// functionality.
-///
-#[derive(Clone)]
-pub enum AssetType {
-    Native,
-    Issued,
+#[derive(Default)]
+pub struct Asset<T> {
+    asset: T,
 }
 
-impl std::fmt::Display for AssetType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            AssetType::Native => write!(f, "native"),
-            AssetType::Issued => write!(f, "issued"),
+impl Asset<NativeAsset> {
+    /// Creates a new instance of `Asset` representing the native asset (XLM).
+    pub fn new() -> Self {
+        Asset::default()
+    }
+
+    /// Transforms the `Asset` into an `IssuedAsset` with a specified asset code and issuer account ID.
+    ///
+    /// # Arguments
+    ///
+    /// * `asset_code` - The asset code string slice, should not exceed 12 characters.
+    /// * `issuer_account_id` - The Stellar public key string slice of the asset issuer, should be a valid public key.
+    ///
+    /// # Returns
+    ///
+    /// A result that, on success, contains the `Asset<IssuedAsset>` with the specified code and issuer.
+    /// On failure, it contains an error message indicating the reason for failure.
+    /// 
+    pub fn set_issued(self, asset_code: &str, issuer_account_id: &str) -> Result<Asset<IssuedAsset>, String> {
+        if asset_code.len() > 12 {
+            return Err("asset_code must be 12 characters or less".to_string());
         }
+        
+        if let Err(e) = is_public_key(&issuer_account_id) {
+            return Err(e.to_string());
+        }
+        
+        Ok(Asset {
+            asset: IssuedAsset(format!("{}:{}", asset_code, issuer_account_id))
+        })
     }
 }
+
+impl std::fmt::Display for Asset<NativeAsset> {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "native")
+    }
+}
+
+impl std::fmt::Display for Asset<IssuedAsset> {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}", self.asset.0)
+    }
+}
+
 
 /// Represents the ordering of records in queries to the Horizon API.
 ///
