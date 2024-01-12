@@ -118,6 +118,36 @@ macro_rules! valid_account_request_impl {
     };
 }
 
+macro_rules! valid_generic_account_request_impl {
+    ($type:ty, $field:ident, $generic:ident) => {
+        impl<$generic> Request for $type
+        where
+            Asset<T>: std::fmt::Display,
+        {
+            fn get_query_parameters(&self) -> String {
+                let mut params = vec![
+                    self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+                    self.limit.as_ref().map(|l| format!("limit={}", l)),
+                    self.order.as_ref().map(|o| format!("order={}", o)),
+                ];
+
+                params.push(Some(format!("{}={}", stringify!($field), self.$field.0)));
+
+                params.build_query_parameters()
+            }
+
+            fn build_url(&self, base_url: &str) -> String {
+                format!(
+                    "{}/{}{}",
+                    base_url,
+                    super::ACCOUNTS_PATH,
+                    self.get_query_parameters()
+                )
+            }
+        }
+    };
+}
+
 /// Specifies the requirements for a valid account request.
 ///
 /// This trait ensures that any request structure intended to fetch account data from the
@@ -150,16 +180,30 @@ macro_rules! valid_account_request_impl {
 ///
 pub trait ValidAccountsRequest: Request {}
 
-impl ValidAccountsRequest for AccountsRequest<SponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidityPoolFilter>{}
+impl ValidAccountsRequest
+    for AccountsRequest<SponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidityPoolFilter>
+{
+}
 valid_account_request_impl!(AccountsRequest<SponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidityPoolFilter>, sponsor);
 
-impl ValidAccountsRequest for AccountsRequest<NoSponsorFilter, SignerFilter, NoAssetFilter, NoLiquidityPoolFilter>{}
+impl ValidAccountsRequest
+    for AccountsRequest<NoSponsorFilter, SignerFilter, NoAssetFilter, NoLiquidityPoolFilter>
+{
+}
 valid_account_request_impl!(AccountsRequest<NoSponsorFilter, SignerFilter, NoAssetFilter, NoLiquidityPoolFilter>, signer);
 
-impl<T> ValidAccountsRequest for AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter<T>, NoLiquidityPoolFilter>{}
-valid_account_request_impl!(AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter<T>, NoLiquidityPoolFilter>, asset);
+impl<T> ValidAccountsRequest
+    for AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter<T>, NoLiquidityPoolFilter>
+where
+    Asset<T>: std::fmt::Display,
+{
+}
+valid_generic_account_request_impl!(AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter<T>, NoLiquidityPoolFilter>, asset, T);
 
-impl ValidAccountsRequest for AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, LiquidityPoolFilter> {}
+impl ValidAccountsRequest
+    for AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, LiquidityPoolFilter>
+{
+}
 valid_account_request_impl!(AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, LiquidityPoolFilter>, liquidity_pool);
 
 /// Represents a request to fetch multiple accounts from the Horizon API with a specific filter.
@@ -329,7 +373,8 @@ impl AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidity
     pub fn set_asset_filter<T>(
         self,
         asset: Asset<T>,
-    ) -> AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter<T>, NoLiquidityPoolFilter> {
+    ) -> AccountsRequest<NoSponsorFilter, NoSignerFilter, AssetFilter<T>, NoLiquidityPoolFilter>
+    {
         AccountsRequest {
             sponsor: self.sponsor,
             signer: self.signer,
