@@ -145,7 +145,7 @@ pub struct NativeAsset;
 /// let issued_asset = native_asset.set_issued("USD", "GAT3H3...ACSBLP").unwrap();
 /// ```
 ///
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct Asset<T> {
     asset: T,
 }
@@ -167,18 +167,22 @@ impl Asset<NativeAsset> {
     ///
     /// A result that, on success, contains the `Asset<IssuedAsset>` with the specified code and issuer.
     /// On failure, it contains an error message indicating the reason for failure.
-    /// 
-    pub fn set_issued(self, asset_code: &str, issuer_account_id: &str) -> Result<Asset<IssuedAsset>, String> {
+    ///
+    pub fn set_issued(
+        self,
+        asset_code: &str,
+        issuer_account_id: &str,
+    ) -> Result<Asset<IssuedAsset>, String> {
         if asset_code.len() > 12 {
             return Err("asset_code must be 12 characters or less".to_string());
         }
-        
+
         if let Err(e) = is_public_key(&issuer_account_id) {
             return Err(e.to_string());
         }
-        
+
         Ok(Asset {
-            asset: IssuedAsset(format!("{}:{}", asset_code, issuer_account_id))
+            asset: IssuedAsset(format!("{}:{}", asset_code, issuer_account_id)),
         })
     }
 }
@@ -194,7 +198,6 @@ impl std::fmt::Display for Asset<IssuedAsset> {
         write!(f, "{}", self.asset.0)
     }
 }
-
 
 /// Represents the ordering of records in queries to the Horizon API.
 ///
