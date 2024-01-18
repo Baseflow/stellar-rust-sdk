@@ -1270,7 +1270,7 @@ mod tests {
 
         // construct request
         let all_claimable_balances_request =
-            AllClaimableBalancesRequest::new().set_limit(2).unwrap();
+            AllClaimableBalancesRequest::new().set_limit(4).unwrap();
 
         let _all_claimable_balances_response = horizon_client
             .get_all_claimable_balances(&all_claimable_balances_request)
@@ -1279,15 +1279,16 @@ mod tests {
         assert!(_all_claimable_balances_response.clone().is_ok());
 
         let binding = _all_claimable_balances_response.clone().unwrap();
-        let predicate = binding.embedded().records()[0].claimants()[1].predicate();
+        let predicate = binding.embedded().records()[3].claimants()[0].predicate();
 
-        let now = Utc::now();
+        let jan_first_2024 = Utc::with_ymd_and_hms(&Utc, 2024, 1, 1, 0, 0, 0).unwrap();
+        let valid_date = Utc::with_ymd_and_hms(&Utc, 2024, 1, 20, 0, 0, 0).unwrap();
 
-        let jan_first_2022 = Utc::with_ymd_and_hms(&Utc, 2022, 1, 1, 0, 0, 0).unwrap();
+        // assert_eq!(predicate.is_valid_claim(jan_first_2024), false);
+        // assert_eq!(predicate.is_valid_claim(valid_date), true);
 
-        assert_eq!(predicate.is_valid_claim(now), true);
-
-        assert_eq!(predicate.is_valid_claim(jan_first_2022), false);
+        assert_eq!(predicate.is_valid_claim(jan_first_2024), false);
+        assert_eq!(predicate.is_valid_claim(valid_date), true);
 
         assert_eq!(
             _all_claimable_balances_response
