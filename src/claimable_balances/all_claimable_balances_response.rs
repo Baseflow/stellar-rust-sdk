@@ -31,7 +31,6 @@ pub struct AllClaimableBalancesLinks {
     prev: Prev,
 }
 
-
 /// Represents a navigational link in the response.
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
@@ -39,7 +38,6 @@ pub struct AllClaimableAssetsReponseSelfField {
     /// The URL for the current response page.
     href: String,
 }
-
 
 /// Represents a navigational link to the next response page.
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
@@ -56,7 +54,6 @@ pub struct Prev {
     /// The URL for the previous response page.
     href: String,
 }
-
 
 /// Encapsulates the embedded data in the response.
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
@@ -149,7 +146,6 @@ pub struct AllClaimableAssetsResponseClaimant {
     predicate: AllClaimableAssetsResponsePredicate,
 }
 
-
 /// Defines the claim predicate structure, including conditional and unconditional claims.
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
@@ -158,6 +154,8 @@ pub struct AllClaimableAssetsResponsePredicate {
     unconditional: Option<bool>,
     /// Contains a list of 'or' predicates providing alternative conditions for claiming the balance.
     or: Option<Vec<AllClaimableAssetsOr>>,
+    /// contains a list of 'and' predicates providing additional conditions for claiming the balance.
+    and: Option<Vec<AllClaimableAssetsResponseAnd>>
 }
 
 /// Represents the logical 'OR' condition within a claimable balance's claim predicate.
@@ -232,11 +230,15 @@ impl AllClaimableAssetsResponsePredicate {
         // If the predicate is marked as unconditional, the claim is always valid.
         if let Some(true) = self.unconditional {
             true
-        } 
+        }
         // If there are 'or' conditions, check if any of these conditions validate the claim.
         else if let Some(or_conditions) = &self.or {
             or_conditions.iter().any(|or| or.is_valid(datetime))
-        } 
+        }
+        // If there are 'and' conditions, check if all of these conditions validate the claim.
+        else if let Some(and_conditions) = &self.and {
+            and_conditions.iter().all(|and| and.is_valid(datetime))
+        }
         // If there are no conditions, the claim is valid.
         else {
             true
@@ -244,14 +246,13 @@ impl AllClaimableAssetsResponsePredicate {
     }
 }
 
-
 impl AllClaimableAssetsOr {
     // This method checks if any condition under 'or' validates the claim.
     fn is_valid(&self, datetime: DateTime<Utc>) -> bool {
         // If there are 'and' conditions, check if any combination of these conditions is valid.
         if let Some(and_conditions) = &self.and {
             and_conditions.iter().any(|and| and.is_valid(datetime))
-        } 
+        }
         // If there is an 'abs_before' condition, check if the datetime is before this date.
         else if let Some(abs_before) = &self.abs_before {
             if let Ok(abs_before_date) = DateTime::parse_from_rfc3339(abs_before) {
@@ -259,7 +260,7 @@ impl AllClaimableAssetsOr {
             } else {
                 false
             }
-        } 
+        }
         // If no specific condition is found, the claim is valid.
         else {
             true
