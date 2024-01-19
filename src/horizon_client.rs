@@ -1291,9 +1291,6 @@ mod tests {
         let jan_first_2024 = Utc::with_ymd_and_hms(&Utc, 2024, 1, 1, 0, 0, 0).unwrap();
         let valid_date = Utc::with_ymd_and_hms(&Utc, 2024, 2, 10, 0, 0, 0).unwrap();
 
-        // assert_eq!(predicate.is_valid_claim(jan_first_2024), false);
-        // assert_eq!(predicate.is_valid_claim(valid_date), true);
-
         assert_eq!(predicate.is_valid(jan_first_2024), false);
         assert_eq!(predicate.is_valid(valid_date), true);
 
@@ -1377,7 +1374,7 @@ mod tests {
 
         let single_claimable_balance_request = SingleClaimableBalanceRequest::new()
             .set_claimable_balance_id(
-                "00000000eaef2ed4fdbd8b012c457e093c3e2c85a5bf13ef95c6346b54c16f8c7351b045"
+                "00000000e1ebe8e8023938b053bebf317c5cd2906427294e88503f9eb06eb75fa4afab1d"
                     .to_string(),
             );
 
@@ -1388,16 +1385,13 @@ mod tests {
         assert!(single_claimable_balance_response.is_ok());
 
         let binding = single_claimable_balance_response.clone().unwrap();
-
         let predicate = binding.claimants()[0].predicate();
 
-        let now = Utc::now();
+        let jan_first_2024 = Utc::with_ymd_and_hms(&Utc, 2024, 1, 1, 0, 0, 0).unwrap();
+        let valid_date = Utc::with_ymd_and_hms(&Utc, 2024, 2, 10, 0, 0, 0).unwrap();
 
-        // let jan_first_2022 = Utc::with_ymd_and_hms(&Utc, 2022, 1, 1, 0, 0, 0).unwrap();
-
-        assert_eq!(predicate.is_valid(now), true);
-
-        // assert_eq!(predicate.is_valid_claim(jan_first_2022), false);
+        assert_eq!(predicate.is_valid(jan_first_2024), false);
+        assert_eq!(predicate.is_valid(valid_date), true);
 
         assert_eq!(
             single_claimable_balance_response
@@ -1405,7 +1399,7 @@ mod tests {
                 .unwrap()
                 .id()
                 .to_string(),
-            "00000000eaef2ed4fdbd8b012c457e093c3e2c85a5bf13ef95c6346b54c16f8c7351b045"
+            "00000000e1ebe8e8023938b053bebf317c5cd2906427294e88503f9eb06eb75fa4afab1d"
         );
 
         assert_eq!(
@@ -1414,7 +1408,7 @@ mod tests {
                 .unwrap()
                 .asset()
                 .to_string(),
-            "RBY:GCGQ2CU5VI2P44RLABN24ES3VLLTL4C7WYRVIPSZDMTMJQOIZPZH5DUP"
+            "XXX:GD5IAHIADCHCS5SUGCYJUVH7CSOUYJZ3OAMOAFAU7HTZVYDG367HXMIO"
         );
 
         assert_eq!(
@@ -1423,7 +1417,7 @@ mod tests {
                 .unwrap()
                 .amount()
                 .to_string(),
-            "100.0000000"
+            "10.0000000"
         );
 
         assert_eq!(
@@ -1432,7 +1426,7 @@ mod tests {
                 .unwrap()
                 .sponsor()
                 .to_string(),
-            "GDO6H2UPTNWUTENE4NKSCVHVBHGKX5I3I2CTFLPJHRL6HO2OHPZSHVJR"
+            "GDQIEVXABRUMMCN74EMDDMMGNDLDKJ5VJIROEB6VEYOLLLF7HKJXHSCV"
         );
 
         assert_eq!(
@@ -1440,7 +1434,7 @@ mod tests {
                 .clone()
                 .unwrap()
                 .last_modified_ledger(),
-            2225
+                12078
         );
 
         assert_eq!(
@@ -1449,7 +1443,7 @@ mod tests {
                 .unwrap()
                 .last_modified_time()
                 .to_string(),
-            "2024-01-11T20:32:26Z"
+            "2024-01-12T10:56:14Z"
         );
 
         assert_eq!(
@@ -1467,7 +1461,7 @@ mod tests {
                 .unwrap()
                 .paging_token()
                 .to_string(),
-            "2225-00000000eaef2ed4fdbd8b012c457e093c3e2c85a5bf13ef95c6346b54c16f8c7351b045"
+            "12078-00000000e1ebe8e8023938b053bebf317c5cd2906427294e88503f9eb06eb75fa4afab1d"
         );
     }
 }
