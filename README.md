@@ -3,7 +3,7 @@
 ## Badges
 
 ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/Baseflow/stellar-rust-sdk/.github%2Fworkflows%2Fcargo-build-and-test.yaml)
-[![Crates.io](https://img.shields.io/crates/v/stellar-sdk.svg)](https://crates.io/crates/stellar-sdk)
+[![Crates.io](https://img.shields.io/crates/v/stellar-sdk.svg)](https://crates.io/crates/stellar-rs)
 [![Documentation](https://img.shields.io/badge/documentation-1)](https://docs.rs/stellar-rs/latest/stellar_rs/index.html)
 [![GitHub issues](https://img.shields.io/github/issues/Baseflow/stellar-rust-sdk)]()
 [![GitHub stars](https://img.shields.io/github/stars/Baseflow/stellar-rust-sdk)]()
