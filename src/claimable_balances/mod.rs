@@ -1,3 +1,9 @@
+use chrono::DateTime;
+use chrono::NaiveDateTime;
+use chrono::Utc;
+use derive_getters::Getters;
+
+use serde::{Deserialize, Serialize};
 /// Provides the `AllClaimableBalancesRequest` struct.
 ///
 /// This module contains the `AllClaimableBalancesRequest` struct, which is designed to create requests
@@ -92,6 +98,192 @@ static CLAIMABLE_BALANCES_PATH: &str = "claimable_balances";
 /// // Further usage...
 /// ```
 ///
+///
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Flags {
+    #[serde(rename = "clawback_enabled")]
+    pub clawback_enabled: bool,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase", rename(serialize = "self_field"))]
+pub struct SelfField {
+    pub href: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Next {
+    pub href: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Prev {
+    pub href: String,
+}
+
+/// Represents a link to the transactions of a claimable balance.
+#[derive(Default, Debug, Clone, Serialize, PartialEq, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Transactions {
+    /// The URL of the transactions link.
+    pub href: String,
+
+    /// Indicates if the link is templated.
+    pub templated: bool,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct NavigationLinks {
+    #[serde(rename = "self")]
+    pub self_field: SelfField,
+    pub next: Next,
+    pub prev: Prev,
+}
+
+/// Contains navigational links related to the single claimable balance response.
+#[derive(Default, Debug, Clone, Serialize, PartialEq, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Links {
+    /// The link to the current claimable balance resource.
+    #[serde(rename = "self")]
+    pub self_field: SelfField,
+
+    /// Link to transactions related to the claimable balance.
+    pub transactions: Transactions,
+
+    /// Link to operations related to the claimable balance.
+    pub operations: Operations,
+}
+
+/// Represents a link to the operations of a claimable balance.
+#[derive(Default, Debug, Clone, Serialize, Deserialize, PartialEq, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Operations {
+    /// The URL of the operations link.
+    pub href: String,
+
+    /// Indicates if the link is templated.
+    pub templated: bool,
+}
+
+/// Represents a claimant of a claimable balance.
+#[derive(Default, Debug, Clone, Serialize, PartialEq, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Claimant {
+    /// The account ID of the claimant.
+    pub destination: String,
+
+    /// Conditions that need to be met for the claimant to claim the balance.
+    pub predicate: Predicate,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Predicate {
+    pub unconditional: Option<bool>,
+    pub and: Option<Vec<And>>,
+    pub or: Option<Vec<Or>>,
+    pub not: Option<Not>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct And {
+    pub not: Option<Not>,
+    #[serde(rename = "abs_before")]
+    pub abs_before: Option<String>,
+    #[serde(rename = "abs_before_epoch")]
+    pub abs_before_epoch: Option<String>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Not {
+    #[serde(rename = "abs_before")]
+    pub abs_before: String,
+    #[serde(rename = "abs_before_epoch")]
+    pub abs_before_epoch: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct Or {
+    #[serde(rename = "abs_before")]
+    pub abs_before: Option<String>,
+    #[serde(rename = "abs_before_epoch")]
+    pub abs_before_epoch: Option<String>,
+    pub not: Option<Not>,
+}
+
+impl Predicate {
+    pub fn is_valid(&self, date: DateTime<Utc>) -> bool {
+        match self {
+            Predicate {
+                unconditional: Some(true),
+                ..
+            } => true,
+            Predicate {
+                and: Some(ands), ..
+            } => ands.iter().all(|cond| cond.is_valid(date)),
+            Predicate { or: Some(ors), .. } => ors.iter().any(|cond| cond.is_valid(date)),
+            Predicate { not: Some(not), .. } => !not.is_valid(date),
+            _ => false,
+        }
+    }
+}
+
+impl And {
+    fn is_valid(&self, date: DateTime<Utc>) -> bool {
+        if let Some(not) = &self.not {
+            if not.is_valid(date) {
+                return false;
+            }
+        }
+        self.abs_before_epoch
+            .as_ref()
+            .map(|d| date < parse_epoch(d))
+            .unwrap_or(true)
+    }
+}
+
+impl Or {
+    fn is_valid(&self, date: DateTime<Utc>) -> bool {
+        if let Some(not) = &self.not {
+            if not.is_valid(date) {
+                return true;
+            }
+        }
+        self.abs_before_epoch
+            .as_ref()
+            .map(|d| date < parse_epoch(d))
+            .unwrap_or(false)
+    }
+}
+
+impl Not {
+    fn is_valid(&self, date: DateTime<Utc>) -> bool {
+        date <= parse_epoch(&self.abs_before_epoch)
+    }
+}
+
+fn parse_epoch(epoch_str: &str) -> DateTime<Utc> {
+    // Convert the timestamp string into an i64
+    let timestamp = epoch_str.parse::<i64>().unwrap();
+
+    // Create a NaiveDateTime from the timestamp
+    let naive = NaiveDateTime::from_timestamp_opt(timestamp, 0).unwrap();
+
+    // Create a normal DateTime from the NaiveDateTime
+    let datetime: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
+
+    return datetime;
+}
+
 pub mod prelude {
     pub use super::all_claimable_balances_request::*;
     pub use super::all_claimable_balances_response::*;
