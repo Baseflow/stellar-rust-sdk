@@ -281,40 +281,6 @@ pub mod ledgers;
 /// instead of raw HTTP requests and JSON responses.
 pub mod models;
 
-/// Represents the types of assets in the Stellar network.
-///
-/// `AssetType` is an enumeration used to specify the type of an asset in Stellar-related requests.
-/// It differentiates between native assets and issued assets within the Stellar ecosystem.
-///
-/// # Variants
-///
-/// * `Native` - Represents the native asset of the Stellar network (often referred to as XLM).
-/// * `Issued` - Represents an asset that is issued by an account on the Stellar network.
-///   In its current implementation, it does not hold the asset code and issuer account ID,
-///   but future enhancements are intended to include these details for complete asset specification.
-///
-/// # Note
-///
-/// The `Issued` variant is currently a placeholder and does not encapsulate the complete
-/// information required for an issued asset (i.e., Asset Code and Issuer Account ID).
-/// This is a known limitation and should be addressed in future versions to ensure full
-/// functionality.
-///
-#[derive(Clone)]
-pub enum AssetType {
-    Native,
-    Issued,
-}
-
-impl std::fmt::Display for AssetType {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            AssetType::Native => write!(f, "native"),
-            AssetType::Issued => write!(f, "issued"),
-        }
-    }
-}
-
 /// Extension trait for building query parameter strings from a vector of optional values.
 ///
 /// This trait provides a method to construct a query string from a vector of optional
@@ -368,4 +334,3 @@ impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
         }
     }
 }
-
