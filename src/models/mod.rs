@@ -138,11 +138,12 @@ pub struct NativeAsset;
 /// # Examples
 ///
 /// ```
+/// use stellar_rs::models::Asset;
 /// // Creating a native asset
 /// let native_asset = Asset::new();
 ///
 /// // Creating an issued asset with a valid asset code and issuer account ID
-/// let issued_asset = native_asset.set_issued("USD", "GAT3H3...ACSBLP").unwrap();
+/// let issued_asset = native_asset.set_issued("USD", "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap();
 /// ```
 ///
 #[derive(Default, Clone)]
