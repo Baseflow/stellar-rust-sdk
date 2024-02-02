@@ -17,11 +17,11 @@ use crate::{models::*, BuildQueryParametersExt};
 /// # Example
 /// ```
 /// use stellar_rs::claimable_balances::all_claimable_balances_request::AllClaimableBalancesRequest;
-/// use stellar_rs::models::{AssetType, Order};
+/// use stellar_rs::models::{Asset, Order, IssuedAsset};
 ///
 /// let request = AllClaimableBalancesRequest::new()
 ///     .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()).unwrap() // Optional sponsor filter
-///     .set_asset(AssetType::Native) // Optional asset filter
+///     .set_asset(Asset::new().set_issued("USD", "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap()) // Optional asset filter
 ///     .set_claimant("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()).unwrap() // Optional claimant filter
 ///     .set_cursor(123).unwrap() // Optional cursor for pagination
 ///     .set_limit(100).unwrap() // Optional limit for response records
