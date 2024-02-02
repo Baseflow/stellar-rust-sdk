@@ -118,6 +118,31 @@ macro_rules! valid_account_request_impl {
     };
 }
 
+/// Macro to implement the `Request` trait for generic `AccountsRequest` variants.
+///
+/// This macro generates an implementation of the [`Request`] trait for a specified [`AccountsRequest`] type.
+/// It's utilized to create specific request handlers for different account query filters such as by sponsor,
+/// signer, asset, or liquidity pool.
+///
+/// # Parameters
+/// - `$type`: The type of [`AccountsRequest`] for which to implement the [`Request`] trait. This type must already
+///   conform to the structure expected by the Horizon API for account requests.
+/// - `$field`: The field within the `$type` that is being used as a filter for the account request. This field
+///   is included as a mandatory parameter in the query.
+/// - `$generic` : The generic type used for the [`AssetFilter`] when querying accounts. 
+///
+/// # Provided Methods
+/// - `get_query_parameters`: Constructs the query string from the fields of the `$type`, including cursor, limit,
+///   order, and the specified `$field` as a filter parameter.
+/// - `build_url`: Assembles the complete URL for the account request using the base URL and the constructed query
+///   parameters.
+///
+/// # Note
+/// - The macro is intended for internal SDK use and contributes to the modularity of the account request system.
+/// - The `.$field.0` syntax assumes that the filter field within the [`AccountsRequest`] type is a tuple struct with
+///   the actual filter value as its first item.
+/// - The macro includes error handling to ensure that only the appropriate fields are included in the query parameters.
+///
 macro_rules! valid_generic_account_request_impl {
     ($type:ty, $field:ident, $generic:ident) => {
         impl<$generic> Request for $type
