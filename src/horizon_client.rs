@@ -918,16 +918,16 @@ mod tests {
     #[tokio::test]
     async fn test_get_all_assets() {
         let asset_type = "credit_alphanum4";
-        let asset_code = "0001";
-        let asset_issuer = "GD2RCRAM3IWXQVMQFKKXKFE24EQHR6XT7XPVSO4HRKKQJ23HINPFBYX4";
+        let asset_code = "0";
+        let asset_issuer = "GCHMUKWOBND4H6U5XNAHAFUDVSQP4AKPYNKEB5GTZFHTXWTNKRCOMM7P";
         let paging_token =
-            "0001_GD2RCRAM3IWXQVMQFKKXKFE24EQHR6XT7XPVSO4HRKKQJ23HINPFBYX4_credit_alphanum4";
-        let num_accounts = 2;
-        let amount = "10000.0000000";
-        let num_authorized = 2;
-        let num_unauthorized = 0;
-        let balances_authorized = "10000.0000000";
-        let balances_unauthorized = "0.0000000";
+            "0_GCHMUKWOBND4H6U5XNAHAFUDVSQP4AKPYNKEB5GTZFHTXWTNKRCOMM7P_credit_alphanum4";
+        let num_accounts = 0;
+        let amount = "0.0000000";
+        let num_authorized = 0;
+        let num_unauthorized = 1;
+        let balances_authorized = "0.0000000";
+        let balances_unauthorized = "1.0000000";
 
         // Initialize horizon client
         let horizon_client =
@@ -1044,7 +1044,7 @@ mod tests {
             balances_unauthorized
         );
 
-        let auth_required = false;
+        let auth_required = true;
         assert_eq!(
             *_all_assets_response.clone().unwrap()._embedded().records()[0]
                 .flags()
@@ -1434,7 +1434,7 @@ mod tests {
                 .clone()
                 .unwrap()
                 .last_modified_ledger(),
-                12078
+            12078
         );
 
         assert_eq!(
