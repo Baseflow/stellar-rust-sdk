@@ -567,10 +567,10 @@ mod tests {
 
     use super::*;
 
-    static ACCOUNT_ID: &str = "GABFPU6S5XAJZAIWW3LGWLWCVXICIR7OXLSTZ23KRW73GDV3VDDW5PVF";
-    static SEQUENCE: &str = "545924703059968";
-    static LAST_MODIFIED_TIME: &str = "2024-01-19T10:50:00Z";
-    static LAST_MODIFIED_LEDGER: u64 = 127108;
+    static ACCOUNT_ID: &str = "GCAHCEGRUI7FFAQE3DBQWV7ULMQHFBUIVRZC4R2VISREAY6D52Z2NODN";
+    static SEQUENCE: &str = "131988639973376";
+    static LAST_MODIFIED_TIME: &str = "2024-02-08T14:25:14Z";
+    static LAST_MODIFIED_LEDGER: u64 = 30731;
 
     #[test]
     fn test_url_validate_invalid_url() {
@@ -919,15 +919,15 @@ mod tests {
     async fn test_get_all_assets() {
         let asset_type = "credit_alphanum4";
         let asset_code = "0";
-        let asset_issuer = "GCHMUKWOBND4H6U5XNAHAFUDVSQP4AKPYNKEB5GTZFHTXWTNKRCOMM7P";
+        let asset_issuer = "GD63TVEPI5CV67GVWGPDTP3ZDNA4VH3VCH6XEPMEMRZSWYHMYNW5GKM2";
         let paging_token =
-            "0_GCHMUKWOBND4H6U5XNAHAFUDVSQP4AKPYNKEB5GTZFHTXWTNKRCOMM7P_credit_alphanum4";
+            "0_GD63TVEPI5CV67GVWGPDTP3ZDNA4VH3VCH6XEPMEMRZSWYHMYNW5GKM2_credit_alphanum4";
         let num_accounts = 0;
         let amount = "0.0000000";
         let num_authorized = 0;
-        let num_unauthorized = 1;
+        let num_unauthorized = 0;
         let balances_authorized = "0.0000000";
-        let balances_unauthorized = "1.0000000";
+        let balances_unauthorized = "0.0000000";
 
         // Initialize horizon client
         let horizon_client =
@@ -997,7 +997,7 @@ mod tests {
             *_all_assets_response.clone().unwrap()._embedded().records()[0]
                 .accounts()
                 .authorized_to_maintain_liabilities(),
-            0
+            1
         );
 
         assert_eq!(
@@ -1034,7 +1034,7 @@ mod tests {
             _all_assets_response.clone().unwrap()._embedded().records()[0]
                 .balances()
                 .authorized_to_maintain_liabilities(),
-            "0.0000000"
+            "1.0000000"
         );
 
         assert_eq!(
@@ -1076,7 +1076,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_all_ledgers() {
-        let hash = "bae89990bba5bd499d401787b5646157ca3b36834fb215f5bf8986c59fb494b8";
+        let hash = "f96c4021adc1ae496c662f4f97143e499a9548f541c64bb2401a1b1701de5150";
         let prev_hash = "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99";
 
         // Initialize horizon client
@@ -1119,11 +1119,11 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_single_ledger() {
-        let id = "bae89990bba5bd499d401787b5646157ca3b36834fb215f5bf8986c59fb494b8";
-        let hash = "bae89990bba5bd499d401787b5646157ca3b36834fb215f5bf8986c59fb494b8";
+        let id = "f96c4021adc1ae496c662f4f97143e499a9548f541c64bb2401a1b1701de5150";
+        let hash = "f96c4021adc1ae496c662f4f97143e499a9548f541c64bb2401a1b1701de5150";
         let prev_hash = "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99";
-        let closed_at = "2024-01-11T17:17:07Z";
-        let closed_at_timepoint = 1704993427;
+        let closed_at = "2024-02-06T17:32:26Z";
+        let closed_at_timepoint = 1707240746;
 
         // Initialize horizon client
         let horizon_client =
@@ -1291,7 +1291,7 @@ mod tests {
         let jan_first_2024 = Utc::with_ymd_and_hms(&Utc, 2024, 1, 1, 0, 0, 0).unwrap();
         let valid_date = Utc::with_ymd_and_hms(&Utc, 2024, 2, 10, 0, 0, 0).unwrap();
 
-        assert_eq!(predicate.is_valid(jan_first_2024), false);
+        assert_eq!(predicate.is_valid(jan_first_2024), true);
         assert_eq!(predicate.is_valid(valid_date), true);
 
         assert_eq!(
@@ -1301,7 +1301,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .id(),
-            "00000000eaef2ed4fdbd8b012c457e093c3e2c85a5bf13ef95c6346b54c16f8c7351b045"
+            "000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
         );
 
         assert_eq!(
@@ -1311,7 +1311,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .asset(),
-            "RBY:GCGQ2CU5VI2P44RLABN24ES3VLLTL4C7WYRVIPSZDMTMJQOIZPZH5DUP"
+            "USDC:GAKNDFRRWA3RPWNLTI3G4EBSD3RGNZZOY5WKWYMQ6CQTG3KIEKPYWAYC"
         );
 
         assert_eq!(
@@ -1321,7 +1321,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .amount(),
-            "100.0000000"
+            "0.0010000"
         );
 
         assert_eq!(
@@ -1331,7 +1331,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .sponsor(),
-            "GDO6H2UPTNWUTENE4NKSCVHVBHGKX5I3I2CTFLPJHRL6HO2OHPZSHVJR"
+            "GCENYNAX2UCY5RFUKA7AYEXKDIFITPRAB7UYSISCHVBTIAKPU2YO57OA"
         );
 
         assert_eq!(
@@ -1341,7 +1341,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .last_modified_ledger(),
-            2225
+            591
         );
 
         assert_eq!(
@@ -1351,7 +1351,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .last_modified_time(),
-            "2024-01-11T20:32:26Z"
+            "2024-02-06T18:25:07Z"
         );
 
         assert_eq!(
@@ -1374,7 +1374,7 @@ mod tests {
 
         let single_claimable_balance_request = SingleClaimableBalanceRequest::new()
             .set_claimable_balance_id(
-                "00000000e1ebe8e8023938b053bebf317c5cd2906427294e88503f9eb06eb75fa4afab1d"
+                "000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
                     .to_string(),
             );
 
@@ -1390,7 +1390,7 @@ mod tests {
         let jan_first_2024 = Utc::with_ymd_and_hms(&Utc, 2024, 1, 1, 0, 0, 0).unwrap();
         let valid_date = Utc::with_ymd_and_hms(&Utc, 2024, 2, 10, 0, 0, 0).unwrap();
 
-        assert_eq!(predicate.is_valid(jan_first_2024), false);
+        assert_eq!(predicate.is_valid(jan_first_2024), true);
         assert_eq!(predicate.is_valid(valid_date), true);
 
         assert_eq!(
@@ -1399,7 +1399,7 @@ mod tests {
                 .unwrap()
                 .id()
                 .to_string(),
-            "00000000e1ebe8e8023938b053bebf317c5cd2906427294e88503f9eb06eb75fa4afab1d"
+            "000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
         );
 
         assert_eq!(
@@ -1408,7 +1408,7 @@ mod tests {
                 .unwrap()
                 .asset()
                 .to_string(),
-            "XXX:GD5IAHIADCHCS5SUGCYJUVH7CSOUYJZ3OAMOAFAU7HTZVYDG367HXMIO"
+            "USDC:GAKNDFRRWA3RPWNLTI3G4EBSD3RGNZZOY5WKWYMQ6CQTG3KIEKPYWAYC"
         );
 
         assert_eq!(
@@ -1417,7 +1417,7 @@ mod tests {
                 .unwrap()
                 .amount()
                 .to_string(),
-            "10.0000000"
+            "0.0010000"
         );
 
         assert_eq!(
@@ -1426,7 +1426,7 @@ mod tests {
                 .unwrap()
                 .sponsor()
                 .to_string(),
-            "GDQIEVXABRUMMCN74EMDDMMGNDLDKJ5VJIROEB6VEYOLLLF7HKJXHSCV"
+            "GCENYNAX2UCY5RFUKA7AYEXKDIFITPRAB7UYSISCHVBTIAKPU2YO57OA"
         );
 
         assert_eq!(
@@ -1434,7 +1434,7 @@ mod tests {
                 .clone()
                 .unwrap()
                 .last_modified_ledger(),
-            12078
+            591
         );
 
         assert_eq!(
@@ -1443,7 +1443,7 @@ mod tests {
                 .unwrap()
                 .last_modified_time()
                 .to_string(),
-            "2024-01-12T10:56:14Z"
+            "2024-02-06T18:25:07Z"
         );
 
         assert_eq!(
@@ -1461,7 +1461,7 @@ mod tests {
                 .unwrap()
                 .paging_token()
                 .to_string(),
-            "12078-00000000e1ebe8e8023938b053bebf317c5cd2906427294e88503f9eb06eb75fa4afab1d"
+            "591-000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
         );
     }
 }
