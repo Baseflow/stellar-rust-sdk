@@ -1,15 +1,11 @@
+pub mod all_effects_request;
+
+pub mod all_effects_response;
+
+
 static EFFECTS_PATH: &str = "effects";
 
 pub mod prelude {
-
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn dummy_test() {
-        assert_eq!(EFFECTS_PATH, "effects");
-    }
+    pub use super::all_effects_request::*;
+    pub use super::all_effects_response::*;
 }
