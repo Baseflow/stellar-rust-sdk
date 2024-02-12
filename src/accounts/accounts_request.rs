@@ -129,7 +129,7 @@ macro_rules! valid_account_request_impl {
 ///   conform to the structure expected by the Horizon API for account requests.
 /// - `$field`: The field within the `$type` that is being used as a filter for the account request. This field
 ///   is included as a mandatory parameter in the query.
-/// - `$generic` : The generic type used for the [`AssetFilter`] when querying accounts. 
+/// - `$generic` : The generic type used for the [`AssetFilter`] when querying accounts.
 ///
 /// # Provided Methods
 /// - `get_query_parameters`: Constructs the query string from the fields of the `$type`, including cursor, limit,

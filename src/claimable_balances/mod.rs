@@ -290,3 +290,57 @@ pub mod prelude {
     pub use super::single_claimable_balance_request::*;
     pub use super::single_claimable_balance_response::*;
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use chrono::{TimeZone, Utc};
+
+    #[test]
+    fn test_and_is_valid() {
+        let and = And {
+            not: Some(Not {
+                abs_before: "1633027200".to_string(),
+                abs_before_epoch: "1633027200".to_string(),
+            }),
+            abs_before: None,
+            abs_before_epoch: None,
+        };
+        let date = Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 0).unwrap();
+        assert_eq!(and.is_valid(date), false);
+    }
+
+    #[test]
+    fn test_or_is_valid() {
+        let or = Or {
+            not: Some(Not {
+                abs_before: "1633027200".to_string(),
+                abs_before_epoch: "1633027200".to_string(),
+            }),
+            abs_before: None,
+            abs_before_epoch: None,
+        };
+        let date = Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 0).unwrap();
+
+        assert_eq!(or.is_valid(date), true);
+    }
+
+    #[test]
+    fn test_not_is_valid() {
+        let not = Not {
+            abs_before: "1633027200".to_string(),
+            abs_before_epoch: "1633027200".to_string(),
+        };
+        let date = Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 1).unwrap();
+
+        assert_eq!(not.is_valid(date), false);
+    }
+
+    #[test]
+    fn test_parse_epoch() {
+        let epoch_str = "1633027200";
+        let expected_date = Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 0).unwrap();
+
+        assert_eq!(parse_epoch(epoch_str), expected_date);
+    }
+}
