@@ -295,7 +295,13 @@ pub mod prelude {
 mod tests {
     use super::*;
     use chrono::{TimeZone, Utc};
-
+    use lazy_static::lazy_static;
+    
+    lazy_static! {
+        static ref DATE: DateTime<Utc> = Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 0).unwrap();
+        static ref DATE_AND_ONE_SECOND: chrono::DateTime<Utc> = Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 1).unwrap();
+    }
+    
     #[test]
     fn test_and_is_valid() {
         let and = And {
@@ -306,8 +312,7 @@ mod tests {
             abs_before: None,
             abs_before_epoch: None,
         };
-        let date = Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 0).unwrap();
-        assert_eq!(and.is_valid(date), false);
+        assert_eq!(and.is_valid(*DATE), false);
     }
 
     #[test]
@@ -320,9 +325,7 @@ mod tests {
             abs_before: None,
             abs_before_epoch: None,
         };
-        let date = Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 0).unwrap();
-
-        assert_eq!(or.is_valid(date), true);
+        assert_eq!(or.is_valid(*DATE), true);
     }
 
     #[test]
@@ -331,16 +334,12 @@ mod tests {
             abs_before: "1633027200".to_string(),
             abs_before_epoch: "1633027200".to_string(),
         };
-        let date = Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 1).unwrap();
-
-        assert_eq!(not.is_valid(date), false);
+        assert_eq!(not.is_valid(*DATE_AND_ONE_SECOND), false);
     }
 
     #[test]
     fn test_parse_epoch() {
         let epoch_str = "1633027200";
-        let expected_date = Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 0).unwrap();
-
-        assert_eq!(parse_epoch(epoch_str), expected_date);
+        assert_eq!(parse_epoch(epoch_str), *DATE);
     }
 }
