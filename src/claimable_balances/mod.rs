@@ -300,14 +300,15 @@ mod tests {
     lazy_static! {
         static ref DATE: DateTime<Utc> = Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 0).unwrap();
         static ref DATE_AND_ONE_SECOND: chrono::DateTime<Utc> = Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 1).unwrap();
+        static ref EPOCH_STR: String = "1633027200".to_string();
     }
     
     #[test]
     fn test_and_is_valid() {
         let and = And {
             not: Some(Not {
-                abs_before: "1633027200".to_string(),
-                abs_before_epoch: "1633027200".to_string(),
+                abs_before: EPOCH_STR.to_string(),
+                abs_before_epoch: EPOCH_STR.to_string(),
             }),
             abs_before: None,
             abs_before_epoch: None,
@@ -319,8 +320,8 @@ mod tests {
     fn test_or_is_valid() {
         let or = Or {
             not: Some(Not {
-                abs_before: "1633027200".to_string(),
-                abs_before_epoch: "1633027200".to_string(),
+                abs_before: EPOCH_STR.to_string(),
+                abs_before_epoch: EPOCH_STR.to_string(),
             }),
             abs_before: None,
             abs_before_epoch: None,
@@ -331,15 +332,14 @@ mod tests {
     #[test]
     fn test_not_is_valid() {
         let not = Not {
-            abs_before: "1633027200".to_string(),
-            abs_before_epoch: "1633027200".to_string(),
+            abs_before: EPOCH_STR.to_string(),
+            abs_before_epoch: EPOCH_STR.to_string(),
         };
         assert_eq!(not.is_valid(*DATE_AND_ONE_SECOND), false);
     }
 
     #[test]
     fn test_parse_epoch() {
-        let epoch_str = "1633027200";
-        assert_eq!(parse_epoch(epoch_str), *DATE);
+        assert_eq!(parse_epoch(&EPOCH_STR.to_string()), *DATE);
     }
 }
