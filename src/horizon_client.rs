@@ -1,15 +1,11 @@
 use crate::{
-    accounts::prelude::*,
-    assets::prelude::{AllAssetsRequest, AllAssetsResponse},
-    claimable_balances::prelude::{
+    accounts::prelude::*, assets::prelude::{AllAssetsRequest, AllAssetsResponse}, claimable_balances::prelude::{
         AllClaimableBalancesRequest, AllClaimableBalancesResponse, ClaimableBalanceId,
         SingleClaimableBalanceRequest, SingleClaimableBalanceResponse,
-    },
-    ledgers::{
+    }, effects::prelude::*, ledgers::{
         prelude::{LedgersRequest, LedgersResponse, SingleLedgerRequest, SingleLedgerResponse},
         single_ledger_request::Sequence,
-    },
-    models::{Request, Response},
+    }, models::{Request, Response}
 };
 use reqwest;
 use url::Url;
@@ -419,6 +415,13 @@ impl HorizonClient {
         request: &SingleLedgerRequest<Sequence>,
     ) -> Result<SingleLedgerResponse, String> {
         self.get::<SingleLedgerResponse>(request).await
+    }
+
+    pub async fn get_all_effects(
+        &self,
+        request: &AllEffectsRequest,
+    ) -> Result<AllEffectsResponse, String> {
+        self.get::<AllEffectsResponse>(request).await
     }
 
     /// Sends a GET request to the Horizon server and retrieves a specified response type.
@@ -1462,6 +1465,36 @@ mod tests {
                 .paging_token()
                 .to_string(),
             "591-000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
+        );
+    }
+
+    #[tokio::test]
+    async fn test_get_all_effects() {
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        let num_records_to_fetch = 2;
+
+        let all_effects_request = AllEffectsRequest::new().set_limit(num_records_to_fetch).unwrap();
+        let _all_effects_response = horizon_client.get_all_effects(&all_effects_request).await;
+
+        assert!(_all_effects_response.clone().is_ok());
+
+        // make sure there are actually 2 records
+        assert_eq!(
+            _all_effects_response.clone().unwrap()._embedded().records().len() as u8,
+            num_records_to_fetch
+        );
+
+        // test first record retrieved
+        assert_eq!(
+            _all_effects_response.clone().unwrap()._embedded().records()[0].type_i,
+            0
+        );
+
+        // test second record retrieved
+        assert_eq!(
+            _all_effects_response.clone().unwrap()._embedded().records()[1].type_i,
+            3
         );
     }
 }
