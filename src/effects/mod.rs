@@ -4,6 +4,8 @@ pub mod effects_for_account_request;
 pub mod effects_for_account_response;
 pub mod effects_for_liquidity_pools_request;
 pub mod effects_for_liquidity_pools_response;
+pub mod effects_for_transaction_request;
+pub mod effects_for_transaction_response;
 
 static EFFECTS_PATH: &str = "effects";
 
@@ -14,6 +16,8 @@ pub mod prelude {
     pub use super::effects_for_account_response::*;
     pub use super::effects_for_liquidity_pools_request::*;
     pub use super::effects_for_liquidity_pools_response::*;
+    pub use super::effects_for_transaction_request::*;
+    pub use super::effects_for_transaction_response::*;
 }
 
 #[cfg(test)]
