@@ -111,3 +111,29 @@ impl Request for AllEffectsRequest {
         )
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_all_effects_request_set_limit() {
+        let invalid_limit: u8 = 255;
+
+        let request = AllEffectsRequest::new()
+            .set_limit(invalid_limit);
+
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn test_all_effects_request_set_cursor() {
+        let invalid_cursor = 0;
+
+        let request = AllEffectsRequest::new()
+            .set_cursor(invalid_cursor);
+
+        assert!(request.is_err());
+    }
+}

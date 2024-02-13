@@ -9,7 +9,7 @@ use crate::models::Response;
 /// providing quick navigation across different pages of the effect response.
 ///
 #[derive(Debug, Deserialize, Clone, Getters)]
-pub struct AllEffectsResponseLink {
+pub struct EffectsResponseLink {
     /// The link to the current page of the effect response.
     #[serde(rename = "self")]
     self_link: SelfLink,
@@ -38,7 +38,7 @@ pub struct SelfLink {
 /// providing quick navigation across operational sequence belonging to the effect.
 ///
 #[derive(Debug, Deserialize, Clone, Getters)]
-pub struct AllEffectsResponseRecordLink {
+pub struct EffectsResponseRecordLink {
     /// The link to the current operation of the effect.
     operation: SelfLink,
     /// The link to the effect succeeding the current operation of the effect.
@@ -55,7 +55,7 @@ pub struct AllEffectsResponseRecordLink {
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct Record {
     /// Navigational links related to the operation of the effect.
-    pub _links: AllEffectsResponseRecordLink,
+    pub _links: EffectsResponseRecordLink,
     /// The unique identifier of the account.
     pub id: String,
     /// A token used for paging through results.
@@ -95,14 +95,14 @@ pub struct Embedded {
 /// navigational links and a collection of effect records, each with comprehensive details about the effect.
 ///
 #[derive(Debug, Deserialize, Clone, Getters)]
-pub struct AllEffectsResponse {
+pub struct EffectsResponse {
     /// Navigational links for the current, next, and previous pages of the response.
-    _links: AllEffectsResponseLink,
+    _links: EffectsResponseLink,
     /// Contains the actual list of effect records in the `records` field.
     _embedded: Embedded,
 }
 
-impl Response for AllEffectsResponse {
+impl Response for EffectsResponse {
     fn from_json(json: String) -> Result<Self, String> {
         serde_json::from_str(&json).map_err(|e| e.to_string())
     }
