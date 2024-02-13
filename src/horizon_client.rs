@@ -1,10 +1,7 @@
 use crate::{
     accounts::prelude::*,
     assets::prelude::{AllAssetsRequest, AllAssetsResponse},
-    claimable_balances::prelude::{
-        AllClaimableBalancesRequest, AllClaimableBalancesResponse, ClaimableBalanceId,
-        SingleClaimableBalanceRequest, SingleClaimableBalanceResponse,
-    },
+    claimable_balances::prelude::*,
     effects::prelude::*,
     ledgers::{
         prelude::{LedgersRequest, LedgersResponse, SingleLedgerRequest, SingleLedgerResponse},
@@ -346,7 +343,7 @@ impl HorizonClient {
     ///
     /// // Access the effects
     /// if let Ok(effects_response) = response {
-    ///    for effect in effects_response.embedded().records() {
+    ///    for effect in effects_response._embedded().records() {
     ///       println!("Effect ID: {}", effect.id());
     ///      // Further processing...
     ///   }
@@ -359,8 +356,8 @@ impl HorizonClient {
     pub async fn get_effects_for_account(
         &self,
         request: &EffectsForAccountRequest,
-    ) -> Result<EffectsForAccountResponse, String> {
-        self.get::<EffectsForAccountResponse>(request).await
+    ) -> Result<EffectsResponse, String> {
+        self.get::<EffectsResponse>(request).await
     }
 
     /// Retrieves a list of effects for a specific account from the Horizon server.
@@ -397,7 +394,7 @@ impl HorizonClient {
     ///
     /// // Access the effects
     /// if let Ok(effects_response) = response {
-    ///    for effect in effects_response.embedded().records() {
+    ///    for effect in effects_response._embedded().records() {
     ///       println!("Effect ID: {}", effect.id());
     ///      // Further processing...
     ///   }
@@ -409,9 +406,9 @@ impl HorizonClient {
     ///
     pub async fn get_effects_for_liquidity_pools(
         &self,
-        request: &EffectsForLiquidityPoolsRequest,
-    ) -> Result<EffectsForLiquidityPoolResponse, String> {
-        self.get::<EffectsForLiquidityPoolResponse>(request).await
+        request: &EffectsForLiquidityPoolRequest,
+    ) -> Result<EffectsResponse, String> {
+        self.get::<EffectsResponse>(request).await
     }
 
     /// Retrieves a list of all ledgers.
@@ -577,13 +574,6 @@ impl HorizonClient {
         self.get::<EffectsResponse>(request).await
     }
 
-    pub async fn get_effects_for_account(
-        &self,
-        request: &EffectsForAccountRequest,
-    ) -> Result<EffectsForAccountResponse, String> {
-        self.get::<EffectsForAccountResponse>(request).await
-    }
-
     /// Fetches effects associated with a specific ledger from the Stellar Horizon API.
     ///
     /// This asynchronous method retrieves effects for a given ledger, facilitating detailed analysis
@@ -610,7 +600,7 @@ impl HorizonClient {
     /// # use stellar_rs::effects::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// 
+    ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
     /// # let horizon_client = HorizonClient::new(base_url)?;
@@ -773,7 +763,9 @@ mod tests {
         accounts::prelude::AccountsRequest,
         assets::prelude::AllAssetsRequest,
         claimable_balances::prelude::SingleClaimableBalanceRequest,
-        effects::{self, effects_for_account_response, effects_for_ledger_request::EffectsForLedgerRequest, prelude::EffectsForAccountRequest},
+        effects::{
+            effects_for_ledger_request::EffectsForLedgerRequest, prelude::EffectsForAccountRequest,
+        },
         ledgers::prelude::SingleLedgerRequest,
     };
 
@@ -1721,7 +1713,7 @@ mod tests {
         const PAGING_TOKEN: &str = "459561504769-1";
         const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
         const RECORD_TYPE: &str = "account_created";
-        const TYPE_I: i64 = 0;
+        const TYPE_I: u32 = 0;
         const CREATED_AT: &str = "2024-02-06T17:42:48Z";
         const STARTING_BALANCE: &str = "10000000000.0000000";
         // Initialize horizon client
@@ -1742,7 +1734,7 @@ mod tests {
             effects_for_account_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
                 .id(),
             ID
@@ -1751,7 +1743,7 @@ mod tests {
             effects_for_account_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
                 .paging_token(),
             PAGING_TOKEN
@@ -1760,7 +1752,7 @@ mod tests {
             effects_for_account_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
                 .account(),
             ACCOUNT
@@ -1769,16 +1761,16 @@ mod tests {
             effects_for_account_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
-                .type_field(),
+                .effect_type(),
             RECORD_TYPE
         );
         assert_eq!(
             effects_for_account_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
                 .type_i(),
             &TYPE_I
@@ -1787,7 +1779,7 @@ mod tests {
             effects_for_account_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
                 .created_at(),
             CREATED_AT
@@ -1796,7 +1788,7 @@ mod tests {
             effects_for_account_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
                 .starting_balance()
                 .as_ref()
@@ -1805,13 +1797,13 @@ mod tests {
         );
     }
 
-    #[tokio::test] 
+    #[tokio::test]
     async fn get_effects_for_liquidity_pools() {
         const ID: &str = "0000000459561504769-0000000001";
         const PAGING_TOKEN: &str = "459561504769-1";
         const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
         const RECORD_TYPE: &str = "account_created";
-        const TYPE_I: i64 = 0;
+        const TYPE_I: u32 = 0;
         const CREATED_AT: &str = "2024-02-06T17:42:48Z";
         const STARTING_BALANCE: &str = "10000000000.0000000";
 
@@ -1819,7 +1811,7 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let effects_for_liquidity_pools_request =
-            EffectsForLiquidityPoolsRequest::new().set_limit(2).unwrap();
+            EffectsForLiquidityPoolRequest::new().set_limit(2).unwrap();
         let effects_for_liquidity_pools_response = horizon_client
             .get_effects_for_liquidity_pools(&effects_for_liquidity_pools_request)
             .await;
@@ -1830,7 +1822,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
                 .id(),
             ID
@@ -1840,7 +1832,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
                 .paging_token(),
             PAGING_TOKEN
@@ -1850,7 +1842,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
                 .account(),
             ACCOUNT
@@ -1860,9 +1852,9 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
-                .type_field(),
+                .effect_type(),
             RECORD_TYPE
         );
 
@@ -1870,7 +1862,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
                 .type_i(),
             &TYPE_I
@@ -1880,7 +1872,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
                 .created_at(),
             CREATED_AT
@@ -1890,7 +1882,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
                 .starting_balance()
                 .as_ref()
@@ -1898,7 +1890,7 @@ mod tests {
             &STARTING_BALANCE
         );
 
-        let effects_for_liquidity_pools_request_with_id = EffectsForLiquidityPoolsRequest::new()
+        let effects_for_liquidity_pools_request_with_id = EffectsForLiquidityPoolRequest::new()
             .set_limit(2)
             .expect("REASON")
             .set_liquidity_pool_id("0000000459561504769-0000000001".to_string());
@@ -1911,7 +1903,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                .embedded()
+                ._embedded()
                 .records()[0]
                 .id(),
             ID
@@ -1920,54 +1912,39 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_effects_for_ledger() {
-
         // found by trial and error in the Stellar laboratory
         let ledger_sequence = 125;
 
-        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
-
-        let effects_for_ledger_request = EffectsForLedgerRequest::new().set_sequence(ledger_sequence);
-        let _effects_for_ledger_response = horizon_client.get_effects_for_ledger(&effects_for_ledger_request).await;
+        let effects_for_ledger_request =
+            EffectsForLedgerRequest::new().set_sequence(ledger_sequence);
+        let _effects_for_ledger_response = horizon_client
+            .get_effects_for_ledger(&effects_for_ledger_request)
+            .await;
 
         println!("{:#?}", _effects_for_ledger_response);
 
         assert!(_effects_for_ledger_response.clone().is_ok());
 
         assert_eq!(
-            _effects_for_ledger_response.clone().unwrap()._embedded().records()[0].id,
+            _effects_for_ledger_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .id,
             "0000000536870916097-0000000001"
         );
 
         assert_eq!(
-            _effects_for_ledger_response.clone().unwrap()._embedded().records()[1].effect_type,
-            "account_debited"
-        );
-    }
-
-    #[tokio::test]
-    async fn test_get_effects_for_ledger() {
-
-        // found by trial and error in the Stellar laboratory
-        let ledger_sequence = 125;
-
-        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
-
-
-        let effects_for_ledger_request = EffectsForLedgerRequest::new().set_sequence(ledger_sequence);
-        let _effects_for_ledger_response = horizon_client.get_effects_for_ledger(&effects_for_ledger_request).await;
-
-        println!("{:#?}", _effects_for_ledger_response);
-
-        assert!(_effects_for_ledger_response.clone().is_ok());
-
-        assert_eq!(
-            _effects_for_ledger_response.clone().unwrap()._embedded().records()[0].id,
-            "0000000536870916097-0000000001"
-        );
-
-        assert_eq!(
-            _effects_for_ledger_response.clone().unwrap()._embedded().records()[1].effect_type,
+            _effects_for_ledger_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[1]
+                .effect_type,
             "account_debited"
         );
     }
