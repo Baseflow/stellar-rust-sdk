@@ -1,11 +1,16 @@
 use crate::{
-    accounts::prelude::*, assets::prelude::{AllAssetsRequest, AllAssetsResponse}, claimable_balances::prelude::{
+    accounts::prelude::*,
+    assets::prelude::{AllAssetsRequest, AllAssetsResponse},
+    claimable_balances::prelude::{
         AllClaimableBalancesRequest, AllClaimableBalancesResponse, ClaimableBalanceId,
         SingleClaimableBalanceRequest, SingleClaimableBalanceResponse,
-    }, effects::prelude::*, ledgers::{
+    },
+    effects::prelude::*,
+    ledgers::{
         prelude::{LedgersRequest, LedgersResponse, SingleLedgerRequest, SingleLedgerResponse},
         single_ledger_request::Sequence,
-    }, models::{Request, Response}
+    },
+    models::{Request, Response},
 };
 use reqwest;
 use url::Url;
@@ -307,11 +312,106 @@ impl HorizonClient {
         self.get::<SingleClaimableBalanceResponse>(request).await
     }
 
+    /// Retrieves a list of effects for a specific account from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of effects for a specific account from the Horizon server.
+    /// It requires an [`EffectsForAccountRequest`] to specify the account ID and optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`EffectsForAccountRequest`] instance, containing the account ID
+    /// and optional query parameters for the effects request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`EffectsForAccountResponse`], which includes
+    /// the list of effects obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Example
+    /// To use this method, create an instance of [`EffectsForAccountRequest`] and set the account ID and any
+    /// desired query parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::effects::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = EffectsForAccountRequest::new()
+    ///    .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string());
+    ///
+    /// let response = horizon_client.get_effects_for_account(&request).await;
+    ///
+    /// // Access the effects
+    /// if let Ok(effects_response) = response {
+    ///    for effect in effects_response.embedded().records() {
+    ///       println!("Effect ID: {}", effect.id());
+    ///      // Further processing...
+    ///   }
+    /// }
+    ///
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_effects_for_account(
         &self,
         request: &EffectsForAccountRequest,
     ) -> Result<EffectsForAccountResponse, String> {
         self.get::<EffectsForAccountResponse>(request).await
+    }
+
+    /// Retrieves a list of effects for a specific account from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of effects for a specific account from the Horizon server.
+    /// It requires an [`EffectsForLiquidityPoolsRequest`] to specify the account ID and optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`EffectsForLiquidityPoolsRequest`] instance, containing the account ID
+    /// and optional query parameters for the effects request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`EffectsForLiquidityPoolResponse`], which includes
+    /// the list of effects obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Example
+    /// To use this method, create an instance of [`EffectsForLiquidityPoolsRequest`] and set the account ID and any
+    /// desired query parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::effects::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = EffectsForAccountRequest::new()
+    ///    .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string());
+    ///
+    /// let response = horizon_client.get_effects_for_account(&request).await;
+    ///
+    /// // Access the effects
+    /// if let Ok(effects_response) = response {
+    ///    for effect in effects_response.embedded().records() {
+    ///       println!("Effect ID: {}", effect.id());
+    ///      // Further processing...
+    ///   }
+    /// }
+    ///
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn get_effects_for_liquidity_pools(
+        &self,
+        request: &EffectsForLiquidityPoolsRequest,
+    ) -> Result<EffectsForLiquidityPoolResponse, String> {
+        self.get::<EffectsForLiquidityPoolResponse>(request).await
     }
 
     /// Retrieves a list of all ledgers.
@@ -423,6 +523,53 @@ impl HorizonClient {
         self.get::<SingleLedgerResponse>(request).await
     }
 
+    /// Retrieves a list of all effects from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all effects from the Horizon server.
+    /// It requires an [`AllEffectsRequest`] to specify the optional query parameters.
+    ///
+    /// Adheres to the <a href="https://developers.stellar.org/api/horizon/resources/list-all-effects">Retrieve a Ledger</a>
+    /// endpoint.
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - A reference to an [`AllEffectsRequest`] instance, containing the
+    /// parameters for the effects request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`AllEffectsResponse`], which includes
+    /// the list of all effects obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`AllEffectsRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::effects::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = AllEffectsRequest::new()
+    ///    .set_limit(2).unwrap();
+    ///
+    /// let response = horizon_client.get_all_effects(&request).await;
+    ///
+    /// // Access the effects
+    /// if let Ok(effects_response) = response {
+    ///   for effect in effects_response._embedded().records() {
+    ///     println!("Effect ID: {}", effect.id());
+    ///    // Further processing...
+    ///  }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_all_effects(
         &self,
         request: &AllEffectsRequest,
@@ -1478,18 +1625,26 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_all_effects() {
-        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let num_records_to_fetch = 2;
 
-        let all_effects_request = AllEffectsRequest::new().set_limit(num_records_to_fetch).unwrap();
+        let all_effects_request = AllEffectsRequest::new()
+            .set_limit(num_records_to_fetch)
+            .unwrap();
         let _all_effects_response = horizon_client.get_all_effects(&all_effects_request).await;
 
         assert!(_all_effects_response.clone().is_ok());
 
         // make sure there are actually 2 records
         assert_eq!(
-            _all_effects_response.clone().unwrap()._embedded().records().len() as u8,
+            _all_effects_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()
+                .len() as u8,
             num_records_to_fetch
         );
 
@@ -1508,13 +1663,13 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_effects_for_account() {
-        let id = "0000000459561504769-0000000001";
-        let paging_token = "459561504769-1";
-        let account = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
-        let record_type = "account_created";
-        let type_i = 0;
-        let created_at = "2024-02-06T17:42:48Z";
-        let starting_balance = "10000000000.0000000".to_string();
+        const ID: &str = "0000000459561504769-0000000001";
+        const PAGING_TOKEN: &str = "459561504769-1";
+        const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
+        const RECORD_TYPE: &str = "account_created";
+        const TYPE_I: i64 = 0;
+        const CREATED_AT: &str = "2024-02-06T17:42:48Z";
+        const STARTING_BALANCE: &str = "10000000000.0000000";
         // Initialize horizon client
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
@@ -1536,7 +1691,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .id(),
-            id
+            ID
         );
         assert_eq!(
             effects_for_account_response
@@ -1545,7 +1700,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .paging_token(),
-            paging_token
+            PAGING_TOKEN
         );
         assert_eq!(
             effects_for_account_response
@@ -1554,7 +1709,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .account(),
-            account
+            ACCOUNT
         );
         assert_eq!(
             effects_for_account_response
@@ -1563,7 +1718,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .type_field(),
-            record_type
+            RECORD_TYPE
         );
         assert_eq!(
             effects_for_account_response
@@ -1572,7 +1727,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .type_i(),
-            &type_i
+            &TYPE_I
         );
         assert_eq!(
             effects_for_account_response
@@ -1581,7 +1736,7 @@ mod tests {
                 .embedded()
                 .records()[0]
                 .created_at(),
-            created_at
+            CREATED_AT
         );
         assert_eq!(
             effects_for_account_response
@@ -1592,7 +1747,102 @@ mod tests {
                 .starting_balance()
                 .as_ref()
                 .unwrap(),
-            &starting_balance
+            &STARTING_BALANCE
+        );
+    }
+
+    #[tokio::test]
+    async fn get_effects_for_liquidity_pools() {
+        const ID: &str = "0000000459561504769-0000000001";
+        const PAGING_TOKEN: &str = "459561504769-1";
+        const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
+        const RECORD_TYPE: &str = "account_created";
+        const TYPE_I: i64 = 0;
+        const CREATED_AT: &str = "2024-02-06T17:42:48Z";
+        const STARTING_BALANCE: &str = "10000000000.0000000";
+
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        let effects_for_liquidity_pools_request =
+            EffectsForLiquidityPoolsRequest::new().set_limit(2).unwrap();
+
+        let effects_for_liquidity_pools_response = horizon_client
+            .get_effects_for_liquidity_pools(&effects_for_liquidity_pools_request)
+            .await;
+
+        assert!(effects_for_liquidity_pools_response.clone().is_ok());
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .id(),
+            ID
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .paging_token(),
+            PAGING_TOKEN
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .account(),
+            ACCOUNT
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .type_field(),
+            RECORD_TYPE
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .type_i(),
+            &TYPE_I
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .created_at(),
+            CREATED_AT
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .starting_balance()
+                .as_ref()
+                .unwrap(),
+            &STARTING_BALANCE
         );
     }
 }
