@@ -307,6 +307,13 @@ impl HorizonClient {
         self.get::<SingleClaimableBalanceResponse>(request).await
     }
 
+    pub async fn get_effects_for_account(
+        &self,
+        request: &EffectsForAccountRequest,
+    ) -> Result<EffectsForAccountResponse, String> {
+        self.get::<EffectsForAccountResponse>(request).await
+    }
+
     /// Retrieves a list of all ledgers.
     ///
     /// This asynchronous method is designed to fetch list of ledgers
@@ -357,7 +364,6 @@ impl HorizonClient {
     /// # Ok({})
     /// # }
     /// ```
-    ///
     pub async fn get_all_ledgers(
         &self,
         request: &LedgersRequest,
@@ -563,8 +569,10 @@ mod tests {
     use chrono::{TimeZone, Utc};
 
     use crate::{
-        accounts::prelude::AccountsRequest, assets::prelude::AllAssetsRequest,
+        accounts::prelude::AccountsRequest,
+        assets::prelude::AllAssetsRequest,
         claimable_balances::prelude::SingleClaimableBalanceRequest,
+        effects::{self, effects_for_account_response, prelude::EffectsForAccountRequest},
         ledgers::prelude::SingleLedgerRequest,
     };
 
@@ -1495,6 +1503,96 @@ mod tests {
         assert_eq!(
             _all_effects_response.clone().unwrap()._embedded().records()[1].type_i,
             3
+        );
+    }
+
+    #[tokio::test]
+    async fn test_get_effects_for_account() {
+        let id = "0000000459561504769-0000000001";
+        let paging_token = "459561504769-1";
+        let account = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
+        let record_type = "account_created";
+        let type_i = 0;
+        let created_at = "2024-02-06T17:42:48Z";
+        let starting_balance = "10000000000.0000000".to_string();
+        // Initialize horizon client
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        let effects_for_account_request = EffectsForAccountRequest::new().set_limit(2).unwrap();
+
+        let effects_for_account_response = horizon_client
+            .get_effects_for_account(&effects_for_account_request)
+            .await;
+
+        println!("{:?}", effects_for_account_response);
+
+        assert!(effects_for_account_response.clone().is_ok());
+
+        assert_eq!(
+            effects_for_account_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .id(),
+            id
+        );
+        assert_eq!(
+            effects_for_account_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .paging_token(),
+            paging_token
+        );
+        assert_eq!(
+            effects_for_account_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .account(),
+            account
+        );
+        assert_eq!(
+            effects_for_account_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .type_field(),
+            record_type
+        );
+        assert_eq!(
+            effects_for_account_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .type_i(),
+            &type_i
+        );
+        assert_eq!(
+            effects_for_account_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .created_at(),
+            created_at
+        );
+        assert_eq!(
+            effects_for_account_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .starting_balance()
+                .as_ref()
+                .unwrap(),
+            &starting_balance
         );
     }
 }
