@@ -2,7 +2,7 @@ use crate::models::{Order, Request};
 use crate::BuildQueryParametersExt;
 
 #[derive(Default)]
-pub struct EffectsForLiquidityPoolsRequest {
+pub struct EffectsForLiquidityPoolRequest {
     /// The liquidity pool id
     liquidity_pool_id: Option<String>,
 
@@ -19,10 +19,10 @@ pub struct EffectsForLiquidityPoolsRequest {
     order: Option<Order>,
 }
 
-impl EffectsForLiquidityPoolsRequest {
+impl EffectsForLiquidityPoolRequest {
     /// Creates a new `EffectsForLiquidityPoolsRequest` with default parameters.
     pub fn new() -> Self {
-        EffectsForLiquidityPoolsRequest::default()
+        EffectsForLiquidityPoolRequest::default()
     }
 
     /// Sets the liquidity pool id for the request.
@@ -33,8 +33,8 @@ impl EffectsForLiquidityPoolsRequest {
     pub fn set_liquidity_pool_id(
         self,
         liquidity_pool_id: String,
-    ) -> EffectsForLiquidityPoolsRequest {
-        EffectsForLiquidityPoolsRequest {
+    ) -> EffectsForLiquidityPoolRequest {
+        EffectsForLiquidityPoolRequest {
             liquidity_pool_id: Some(liquidity_pool_id),
             ..self
         }
@@ -45,12 +45,12 @@ impl EffectsForLiquidityPoolsRequest {
     /// # Arguments
     /// * `cursor` - A `u32` value pointing to a specific location in a collection of responses.
     ///
-    pub fn set_cursor(self, cursor: u32) -> Result<EffectsForLiquidityPoolsRequest, String> {
+    pub fn set_cursor(self, cursor: u32) -> Result<EffectsForLiquidityPoolRequest, String> {
         if cursor < 1 {
             return Err("cursor must be greater than or equal to 1".to_string());
         }
 
-        Ok(EffectsForLiquidityPoolsRequest {
+        Ok(EffectsForLiquidityPoolRequest {
             cursor: Some(cursor),
             ..self
         })
@@ -61,12 +61,12 @@ impl EffectsForLiquidityPoolsRequest {
     /// # Arguments
     /// * `limit` - A `u8` value specifying the maximum number of records. Range: 1 to 200. Defaults to 10.
     ///
-    pub fn set_limit(self, limit: u8) -> Result<EffectsForLiquidityPoolsRequest, String> {
+    pub fn set_limit(self, limit: u8) -> Result<EffectsForLiquidityPoolRequest, String> {
         if limit < 1 || limit > 200 {
             return Err("limit must be between 1 and 200".to_string());
         }
 
-        Ok(EffectsForLiquidityPoolsRequest {
+        Ok(EffectsForLiquidityPoolRequest {
             limit: Some(limit),
             ..self
         })
@@ -77,15 +77,15 @@ impl EffectsForLiquidityPoolsRequest {
     /// # Arguments
     /// * `order` - An [`Order`] enum value specifying the order (ascending or descending).
     ///
-    pub fn set_order(self, order: Order) -> EffectsForLiquidityPoolsRequest {
-        EffectsForLiquidityPoolsRequest {
+    pub fn set_order(self, order: Order) -> EffectsForLiquidityPoolRequest {
+        EffectsForLiquidityPoolRequest {
             order: Some(order),
             ..self
         }
     }
 }
 
-impl Request for EffectsForLiquidityPoolsRequest {
+impl Request for EffectsForLiquidityPoolRequest {
     fn get_query_parameters(&self) -> String {
         vec![
             self.liquidity_pool_id
@@ -115,7 +115,7 @@ mod tests {
 
     #[test]
     fn test_effects_for_liquidity_pools_request() {
-        let request = EffectsForLiquidityPoolsRequest::new()
+        let request = EffectsForLiquidityPoolRequest::new()
             .set_liquidity_pool_id("liquidity_pool_id".to_string())
             .set_cursor(1)
             .unwrap()
