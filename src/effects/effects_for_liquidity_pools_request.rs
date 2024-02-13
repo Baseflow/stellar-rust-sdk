@@ -1,9 +1,10 @@
-use crate::{models::{Order, Request}, BuildQueryParametersExt};
+use crate::models::{Order, Request};
+use crate::BuildQueryParametersExt;
 
 #[derive(Default)]
-pub struct EffectsForAccountRequest {
-    /// The accounts public id
-    account_id: Option<String>,
+pub struct EffectsForLiquidityPoolsRequest {
+    /// The liquidity pool id
+    liquidity_pool_id: Option<String>,
 
     /// A pointer to a specific location in a collection of responses, derived from the
     ///   `paging_token` value of a record. Used for pagination control in the API response.
@@ -12,26 +13,29 @@ pub struct EffectsForAccountRequest {
     /// Specifies the maximum number of records to be returned in a single response.
     ///   The range for this parameter is from 1 to 200. The default value is set to 10.
     limit: Option<u8>,
-
+    
     /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
     ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
     order: Option<Order>,
 }
 
-impl EffectsForAccountRequest {
-    /// Creates a new `EffectForAccountRequest` with default parameters.
+impl EffectsForLiquidityPoolsRequest {
+    /// Creates a new `EffectsForLiquidityPoolsRequest` with default parameters.
     pub fn new() -> Self {
-        EffectsForAccountRequest::default()
+        EffectsForLiquidityPoolsRequest::default()
     }
 
-    /// Sets the account id for the request.
-    /// 
+    /// Sets the liquidity pool id for the request.
+    ///
     /// # Arguments
-    /// * `account_id` - A `String` value representing the account id.
-    /// 
-    pub fn set_account_id(self, account_id: String) -> EffectsForAccountRequest {
-        EffectsForAccountRequest {
-            account_id: Some(account_id),
+    /// * `liquidity_pool_id` - A `String` value representing the liquidity pool id.
+    ///
+    pub fn set_liquidity_pool_id(
+        self,
+        liquidity_pool_id: String,
+    ) -> EffectsForLiquidityPoolsRequest {
+        EffectsForLiquidityPoolsRequest {
+            liquidity_pool_id: Some(liquidity_pool_id),
             ..self
         }
     }
@@ -41,12 +45,12 @@ impl EffectsForAccountRequest {
     /// # Arguments
     /// * `cursor` - A `u32` value pointing to a specific location in a collection of responses.
     ///
-    pub fn set_cursor(self, cursor: u32) -> Result<EffectsForAccountRequest, String> {
+    pub fn set_cursor(self, cursor: u32) -> Result<EffectsForLiquidityPoolsRequest, String> {
         if cursor < 1 {
             return Err("cursor must be greater than or equal to 1".to_string());
         }
 
-        Ok(EffectsForAccountRequest {
+        Ok(EffectsForLiquidityPoolsRequest {
             cursor: Some(cursor),
             ..self
         })
@@ -57,12 +61,12 @@ impl EffectsForAccountRequest {
     /// # Arguments
     /// * `limit` - A `u8` value specifying the maximum number of records. Range: 1 to 200. Defaults to 10.
     ///
-    pub fn set_limit(self, limit: u8) -> Result<EffectsForAccountRequest, String> {
+    pub fn set_limit(self, limit: u8) -> Result<EffectsForLiquidityPoolsRequest, String> {
         if limit < 1 || limit > 200 {
             return Err("limit must be between 1 and 200".to_string());
         }
 
-        Ok(EffectsForAccountRequest {
+        Ok(EffectsForLiquidityPoolsRequest {
             limit: Some(limit),
             ..self
         })
@@ -73,18 +77,20 @@ impl EffectsForAccountRequest {
     /// # Arguments
     /// * `order` - An [`Order`] enum value specifying the order (ascending or descending).
     ///
-    pub fn set_order(self, order: Order) -> EffectsForAccountRequest {
-        EffectsForAccountRequest {
+    pub fn set_order(self, order: Order) -> EffectsForLiquidityPoolsRequest {
+        EffectsForLiquidityPoolsRequest {
             order: Some(order),
             ..self
         }
     }
 }
 
-impl Request for EffectsForAccountRequest {
+impl Request for EffectsForLiquidityPoolsRequest {
     fn get_query_parameters(&self) -> String {
         vec![
-            self.account_id.as_ref().map(|a| format!("account={}", a)),
+            self.liquidity_pool_id
+                .as_ref()
+                .map(|l| format!("liquidity_pool_id={}", l)),
             self.cursor.as_ref().map(|c| format!("cursor={}", c)),
             self.limit.as_ref().map(|l| format!("limit={}", l)),
             self.order.as_ref().map(|o| format!("order={}", o)),
@@ -105,48 +111,31 @@ impl Request for EffectsForAccountRequest {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::BuildQueryParametersExt;
 
     #[test]
-    fn test_effects_for_account_request() {
-        let request = EffectsForAccountRequest::new();
-        assert_eq!(
-            request.build_url("https://horizon-testnet.stellar.org"),
-            "https://horizon-testnet.stellar.org/effects"
-        );
-    }
-
-    #[test]
-    fn test_effects_for_account_request_with_params() {
-        let request = EffectsForAccountRequest::new()
-            .set_account_id("GBL3QJ2MB3KJ7YV7YVXJ5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z".to_string())
+    fn test_effects_for_liquidity_pools_request() {
+        let request = EffectsForLiquidityPoolsRequest::new()
+            .set_liquidity_pool_id("liquidity_pool_id".to_string())
             .set_cursor(1)
             .unwrap()
             .set_limit(10)
             .unwrap()
-            .set_order(Order::Desc);
+            .set_order(Order::Asc);
+
+        let url = request.build_url("https://horizon-testnet.stellar.org");
+        let query_parameters = vec![
+            Some("liquidity_pool_id=liquidity_pool_id".to_string()),
+            Some("cursor=1".to_string()),
+            Some("limit=10".to_string()),
+            Some("order=asc".to_string()),
+        ]
+        .build_query_parameters();
+
         assert_eq!(
-            request.build_url("https://horizon-testnet.stellar.org"),
-            "https://horizon-testnet.stellar.org/effects?account=GBL3QJ2MB3KJ7YV7YVXJ5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z&cursor=1&limit=10&order=desc"
+            url,
+            "https://horizon-testnet.stellar.org/effects?liquidity_pool_id=liquidity_pool_id&cursor=1&limit=10&order=asc"
         );
-    }
-    
-    #[test]
-    fn test_effects_for_account_request_set_limit() {
-        let invalid_limit: u8 = 255;
-
-        let request = EffectsForAccountRequest::new()
-            .set_limit(invalid_limit);
-
-        assert!(request.is_err());
-    }
-
-    #[test]
-    fn test_effects_for_account_request_set_cursor() {
-        let invalid_cursor = 0;
-
-        let request = EffectsForAccountRequest::new()
-            .set_cursor(invalid_cursor);
-
-        assert!(request.is_err());
+        assert_eq!(query_parameters, "?liquidity_pool_id=liquidity_pool_id&cursor=1&limit=10&order=asc");
     }
 }
