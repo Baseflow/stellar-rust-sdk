@@ -2,7 +2,7 @@ use crate::{
     accounts::prelude::*, assets::prelude::{AllAssetsRequest, AllAssetsResponse}, claimable_balances::prelude::{
         AllClaimableBalancesRequest, AllClaimableBalancesResponse, ClaimableBalanceId,
         SingleClaimableBalanceRequest, SingleClaimableBalanceResponse,
-    }, effects::prelude::*, ledgers::{
+    }, effects::{effects_for_ledger_request::EffectsForLedgerRequest, prelude::*}, ledgers::{
         prelude::{LedgersRequest, LedgersResponse, SingleLedgerRequest, SingleLedgerResponse},
         single_ledger_request::Sequence,
     }, models::{Request, Response}
@@ -307,12 +307,7 @@ impl HorizonClient {
         self.get::<SingleClaimableBalanceResponse>(request).await
     }
 
-    pub async fn get_effects_for_account(
-        &self,
-        request: &EffectsForAccountRequest,
-    ) -> Result<EffectsForAccountResponse, String> {
-        self.get::<EffectsForAccountResponse>(request).await
-    }
+
 
     /// Retrieves a list of all ledgers.
     ///
@@ -426,8 +421,62 @@ impl HorizonClient {
     pub async fn get_all_effects(
         &self,
         request: &AllEffectsRequest,
-    ) -> Result<AllEffectsResponse, String> {
-        self.get::<AllEffectsResponse>(request).await
+    ) -> Result<EffectsResponse, String> {
+        self.get::<EffectsResponse>(request).await
+    }
+
+    pub async fn get_effects_for_account(
+        &self,
+        request: &EffectsForAccountRequest,
+    ) -> Result<EffectsForAccountResponse, String> {
+        self.get::<EffectsForAccountResponse>(request).await
+    }
+
+    /// Fetches effects associated with a specific ledger from the Stellar Horizon API.
+    ///
+    /// This asynchronous method retrieves effects for a given ledger, facilitating detailed analysis
+    /// and insight into the various operations and changes that occurred within that ledger. It requires
+    /// a [`EffectsForLedgerRequest`], which includes options  for pagination, record limits,
+    /// and sorting order, among others.
+    ///
+    /// Adheres to <a href="https://developers.stellar.org/api/horizon/resources/retrieve-a-ledgers-effects">Retrieve a Ledgers's Effects</a> endpoint.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`EffectsForLedgerRequest`] instance, specifying the ledger sequence
+    ///   and optional parameters such as cursor, limit, and order for the query.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing an [`AllEffectsResponse`], which encompasses a collection of effects
+    /// related to the requested ledger. If the operation fails, it returns an error message encapsulated
+    /// within `Result`.
+    ///
+    /// # Usage
+    /// To utilize this method, instantiate an `EffectsForLedgerRequest` with the desired parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::effects::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// 
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)?;
+    /// let mut request = EffectsForLedgerRequest::new()
+    ///     .set_sequence(125)
+    ///     .set_limit(2).unwrap();
+    ///
+    /// let response = horizon_client.get_effects_for_ledger(&request).await;
+    ///
+    /// # Ok(())
+    /// # }
+    /// ```
+    ///
+    pub async fn get_effects_for_ledger(
+        &self,
+        request: &EffectsForLedgerRequest,
+    ) -> Result<EffectsResponse, String> {
+        self.get::<EffectsResponse>(request).await
     }
 
     /// Sends a GET request to the Horizon server and retrieves a specified response type.
@@ -572,7 +621,7 @@ mod tests {
         accounts::prelude::AccountsRequest,
         assets::prelude::AllAssetsRequest,
         claimable_balances::prelude::SingleClaimableBalanceRequest,
-        effects::{self, effects_for_account_response, prelude::EffectsForAccountRequest},
+        effects::{self, effects_for_account_response, effects_for_ledger_request::EffectsForLedgerRequest, prelude::EffectsForAccountRequest},
         ledgers::prelude::SingleLedgerRequest,
     };
 
@@ -1593,6 +1642,33 @@ mod tests {
                 .as_ref()
                 .unwrap(),
             &starting_balance
+        );
+    }
+
+    #[tokio::test]
+    async fn test_get_effects_for_ledger() {
+
+        // found by trial and error in the Stellar laboratory
+        let ledger_sequence = 125;
+
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+
+        let effects_for_ledger_request = EffectsForLedgerRequest::new().set_sequence(ledger_sequence);
+        let _effects_for_ledger_response = horizon_client.get_effects_for_ledger(&effects_for_ledger_request).await;
+
+        println!("{:#?}", _effects_for_ledger_response);
+
+        assert!(_effects_for_ledger_response.clone().is_ok());
+
+        assert_eq!(
+            _effects_for_ledger_response.clone().unwrap()._embedded().records()[0].id,
+            "0000000536870916097-0000000001"
+        );
+
+        assert_eq!(
+            _effects_for_ledger_response.clone().unwrap()._embedded().records()[1].effect_type,
+            "account_debited"
         );
     }
 }
