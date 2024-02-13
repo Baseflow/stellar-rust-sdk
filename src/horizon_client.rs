@@ -1766,7 +1766,6 @@ mod tests {
 
         let effects_for_liquidity_pools_request =
             EffectsForLiquidityPoolsRequest::new().set_limit(2).unwrap();
-
         let effects_for_liquidity_pools_response = horizon_client
             .get_effects_for_liquidity_pools(&effects_for_liquidity_pools_request)
             .await;
@@ -1843,6 +1842,25 @@ mod tests {
                 .as_ref()
                 .unwrap(),
             &STARTING_BALANCE
+        );
+
+        let effects_for_liquidity_pools_request_with_id = EffectsForLiquidityPoolsRequest::new()
+            .set_limit(2)
+            .expect("REASON")
+            .set_liquidity_pool_id("0000000459561504769-0000000001".to_string());
+        let effects_for_liquidity_pools_response = horizon_client
+            .get_effects_for_liquidity_pools(&effects_for_liquidity_pools_request)
+            .await;
+
+        assert!(effects_for_liquidity_pools_response.clone().is_ok());
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                .embedded()
+                .records()[0]
+                .id(),
+            ID
         );
     }
 }

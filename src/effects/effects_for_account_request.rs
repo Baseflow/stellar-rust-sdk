@@ -19,7 +19,7 @@ pub struct EffectsForAccountRequest {
 }
 
 impl EffectsForAccountRequest {
-    /// Creates a new `LedgersRequest` with default parameters.
+    /// Creates a new `EffectForAccountRequest` with default parameters.
     pub fn new() -> Self {
         EffectsForAccountRequest::default()
     }
@@ -107,7 +107,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_ledgers_request() {
+    fn test_effects_for_account_request() {
         let request = EffectsForAccountRequest::new();
         assert_eq!(
             request.build_url("https://horizon-testnet.stellar.org"),
@@ -116,7 +116,7 @@ mod tests {
     }
 
     #[test]
-    fn test_ledgers_request_with_params() {
+    fn test_effects_for_account_request_with_params() {
         let request = EffectsForAccountRequest::new()
             .set_account_id("GBL3QJ2MB3KJ7YV7YVXJ5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z".to_string())
             .set_cursor(1)
