@@ -114,4 +114,19 @@ mod tests {
             "https://horizon-testnet.stellar.org/effects"
         );
     }
+
+    #[test]
+    fn test_ledgers_request_with_params() {
+        let request = EffectsForAccountRequest::new()
+            .set_account_id("GBL3QJ2MB3KJ7YV7YVXJ5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z".to_string())
+            .set_cursor(1)
+            .unwrap()
+            .set_limit(10)
+            .unwrap()
+            .set_order(Order::Desc);
+        assert_eq!(
+            request.build_url("https://horizon-testnet.stellar.org"),
+            "https://horizon-testnet.stellar.org/effects?account=GBL3QJ2MB3KJ7YV7YVXJ5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z&cursor=1&limit=10&order=desc"
+        );
+    }
 }

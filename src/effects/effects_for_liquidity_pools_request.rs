@@ -107,3 +107,35 @@ impl Request for EffectsForLiquidityPoolsRequest {
         )
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::BuildQueryParametersExt;
+
+    #[test]
+    fn test_effects_for_liquidity_pools_request() {
+        let request = EffectsForLiquidityPoolsRequest::new()
+            .set_liquidity_pool_id("liquidity_pool_id".to_string())
+            .set_cursor(1)
+            .unwrap()
+            .set_limit(10)
+            .unwrap()
+            .set_order(Order::Asc);
+
+        let url = request.build_url("https://horizon-testnet.stellar.org");
+        let query_parameters = vec![
+            Some("liquidity_pool_id=liquidity_pool_id".to_string()),
+            Some("cursor=1".to_string()),
+            Some("limit=10".to_string()),
+            Some("order=asc".to_string()),
+        ]
+        .build_query_parameters();
+
+        assert_eq!(
+            url,
+            "https://horizon-testnet.stellar.org/effects?liquidity_pool_id=liquidity_pool_id&cursor=1&limit=10&order=asc"
+        );
+        assert_eq!(query_parameters, "?liquidity_pool_id=liquidity_pool_id&cursor=1&limit=10&order=asc");
+    }
+}
