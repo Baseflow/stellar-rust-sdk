@@ -1123,9 +1123,9 @@ mod tests {
     async fn test_get_all_assets() {
         let asset_type = "credit_alphanum4";
         let asset_code = "0";
-        let asset_issuer = "GD63TVEPI5CV67GVWGPDTP3ZDNA4VH3VCH6XEPMEMRZSWYHMYNW5GKM2";
+        let asset_issuer = "GAGNEED7RUE6PNAB3AKXFU6QZF4EUSVTICHE7YRHB53KDOEHGKWBL6BE";
         let paging_token =
-            "0_GD63TVEPI5CV67GVWGPDTP3ZDNA4VH3VCH6XEPMEMRZSWYHMYNW5GKM2_credit_alphanum4";
+            "0_GAGNEED7RUE6PNAB3AKXFU6QZF4EUSVTICHE7YRHB53KDOEHGKWBL6BE_credit_alphanum4";
         let num_accounts = 0;
         let amount = "0.0000000";
         let num_authorized = 0;
@@ -1201,7 +1201,7 @@ mod tests {
             *_all_assets_response.clone().unwrap()._embedded().records()[0]
                 .accounts()
                 .authorized_to_maintain_liabilities(),
-            1
+            2
         );
 
         assert_eq!(
