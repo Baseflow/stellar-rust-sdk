@@ -1946,7 +1946,7 @@ mod tests {
             .expect("REASON")
             .set_liquidity_pool_id("0000000459561504769-0000000001".to_string());
         let effects_for_liquidity_pools_response = horizon_client
-            .get_effects_for_liquidity_pools(&effects_for_liquidity_pools_request)
+            .get_effects_for_liquidity_pools(&effects_for_liquidity_pools_request_with_id)
             .await;
 
         assert!(effects_for_liquidity_pools_response.clone().is_ok());
@@ -1977,14 +1977,14 @@ mod tests {
         let effects_for_liquidity_pools_request =
             EffectForTransactionRequest::new().set_limit(2).unwrap();
 
-        let effects_for_liquidity_pools_response = horizon_client
+        let effects_for_transaction_response = horizon_client
             .get_effects_for_transaction(&effects_for_liquidity_pools_request)
             .await;
 
-        assert!(effects_for_liquidity_pools_response.clone().is_ok());
+        assert!(effects_for_transaction_response.clone().is_ok());
 
         assert_eq!(
-            effects_for_liquidity_pools_response
+            effects_for_transaction_response
                 .clone()
                 .unwrap()
                 ._embedded()
@@ -1994,7 +1994,7 @@ mod tests {
         );
 
         assert_eq!(
-            effects_for_liquidity_pools_response
+            effects_for_transaction_response
                 .clone()
                 .unwrap()
                 ._embedded()
@@ -2004,7 +2004,7 @@ mod tests {
         );
 
         assert_eq!(
-            effects_for_liquidity_pools_response
+            effects_for_transaction_response
                 .clone()
                 .unwrap()
                 ._embedded()
@@ -2014,7 +2014,7 @@ mod tests {
         );
 
         assert_eq!(
-            effects_for_liquidity_pools_response
+            effects_for_transaction_response
                 .clone()
                 .unwrap()
                 ._embedded()
@@ -2024,7 +2024,7 @@ mod tests {
         );
 
         assert_eq!(
-            effects_for_liquidity_pools_response
+            effects_for_transaction_response
                 .clone()
                 .unwrap()
                 ._embedded()
@@ -2034,7 +2034,7 @@ mod tests {
         );
 
         assert_eq!(
-            effects_for_liquidity_pools_response
+            effects_for_transaction_response
                 .clone()
                 .unwrap()
                 ._embedded()
@@ -2044,7 +2044,7 @@ mod tests {
         );
 
         assert_eq!(
-            effects_for_liquidity_pools_response
+            effects_for_transaction_response
                 .clone()
                 .unwrap()
                 ._embedded()

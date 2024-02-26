@@ -1,5 +1,3 @@
-use stellar_xdr::curr::SurveyRequestMessage;
-
 use crate::{models::{Order, Request}, BuildQueryParametersExt};
 
 /// Represents a request to fetch effect data from the Stellar Horizon API.
