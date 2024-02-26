@@ -2,7 +2,7 @@ use crate::{
     accounts::prelude::*,
     assets::prelude::{AllAssetsRequest, AllAssetsResponse},
     claimable_balances::prelude::*,
-    effects::prelude::*,
+    effects::{effects_for_operations_requests::EffectsForOperationRequest, prelude::*},
     ledgers::{
         prelude::{LedgersRequest, LedgersResponse, SingleLedgerRequest, SingleLedgerResponse},
         single_ledger_request::Sequence,
@@ -574,14 +574,59 @@ impl HorizonClient {
         self.get::<EffectsResponse>(request).await
     }
 
+    /// Fetches effects associated with a specific operation from the Stellar Horizon API.
+    ///
+    /// This asynchronous method retrieves effects for a given operation, facilitating detailed analysis
+    /// and insight into the various changes that occurred as a result of that operation. It requires
+    /// an [`EffectsForOperationRequest`], which includes options for pagination, record limits,
+    /// and sorting order, among others.
+    ///
+    /// Adheres to <a href="https://developers.stellar.org/api/horizon/resources/retrieve-an-operations-effects">Retrieve an Operation's Effects</a> endpoint.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`EffectsForOperationRequest`] instance, specifying the operation ID
+    ///  and optional parameters such as cursor, limit, and order for the query.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing an [`EffectsResponse`], which encompasses a collection of effects
+    /// related to the requested operation. If the operation fails, it returns an error message encapsulated
+    /// within `Result`.
+    ///
+    /// # Usage
+    /// To utilize this method, instantiate an `EffectsForOperationRequest` with the desired parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::effects::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)?;
+    /// let mut request = EffectsForOperationRequest::new()
+    ///    .set_operation_id("0000000459561504769-0000000001".to_string())
+    ///   .set_limit(2).unwrap();
+    ///
+    /// let response = horizon_client.get_effects_for_operation(&request).await;
+    ///
+    /// # Ok(())
+    /// # }
+    /// ```
+    ///
+    pub async fn get_effects_for_operation(
+        &self,
+        request: &EffectsForOperationRequest,
+    ) -> Result<EffectsResponse, String> {
+        self.get::<EffectsResponse>(request).await
+    }
+
     /// Fetches effects associated with a specific ledger from the Stellar Horizon API.
     ///
     /// This asynchronous method retrieves effects for a given ledger, facilitating detailed analysis
     /// and insight into the various operations and changes that occurred within that ledger. It requires
     /// a [`EffectsForLedgerRequest`], which includes options  for pagination, record limits,
     /// and sorting order, among others.
-    ///
-    /// Adheres to <a href="https://developers.stellar.org/api/horizon/resources/retrieve-a-ledgers-effects">Retrieve a Ledgers's Effects</a> endpoint.
     ///
     /// # Arguments
     /// * `request` - A reference to an [`EffectsForLedgerRequest`] instance, specifying the ledger sequence
@@ -1123,9 +1168,9 @@ mod tests {
     async fn test_get_all_assets() {
         let asset_type = "credit_alphanum4";
         let asset_code = "0";
-        let asset_issuer = "GD63TVEPI5CV67GVWGPDTP3ZDNA4VH3VCH6XEPMEMRZSWYHMYNW5GKM2";
+        let asset_issuer = "GAGNEED7RUE6PNAB3AKXFU6QZF4EUSVTICHE7YRHB53KDOEHGKWBL6BE";
         let paging_token =
-            "0_GD63TVEPI5CV67GVWGPDTP3ZDNA4VH3VCH6XEPMEMRZSWYHMYNW5GKM2_credit_alphanum4";
+            "0_GAGNEED7RUE6PNAB3AKXFU6QZF4EUSVTICHE7YRHB53KDOEHGKWBL6BE_credit_alphanum4";
         let num_accounts = 0;
         let amount = "0.0000000";
         let num_authorized = 0;
@@ -1201,7 +1246,7 @@ mod tests {
             *_all_assets_response.clone().unwrap()._embedded().records()[0]
                 .accounts()
                 .authorized_to_maintain_liabilities(),
-            1
+            2
         );
 
         assert_eq!(
@@ -1893,12 +1938,14 @@ mod tests {
         let effects_for_liquidity_pools_request_with_id = EffectsForLiquidityPoolRequest::new()
             .set_limit(2)
             .expect("REASON")
-            .set_liquidity_pool_id("0000000459561504769-0000000001".to_string());
-        let effects_for_liquidity_pools_response = horizon_client
-            .get_effects_for_liquidity_pools(&effects_for_liquidity_pools_request)
+            .set_liquidity_pool_id("01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d".to_string());
+        let effects_for_liquidity_pools_response_with_id = horizon_client
+            .get_effects_for_liquidity_pools(&effects_for_liquidity_pools_request_with_id)
             .await;
 
-        assert!(effects_for_liquidity_pools_response.clone().is_ok());
+        println!("{:?}", effects_for_liquidity_pools_response_with_id);
+        
+        assert!(effects_for_liquidity_pools_response_with_id.clone().is_ok());
         assert_eq!(
             effects_for_liquidity_pools_response
                 .clone()
@@ -1946,6 +1993,100 @@ mod tests {
                 .records()[1]
                 .effect_type,
             "account_debited"
+        );
+    }
+
+    #[tokio::test]
+    async fn get_effects_for_operation() {
+        const ID: &str = "0000000459561504769-0000000001";
+        const PAGING_TOKEN: &str = "459561504769-1";
+        const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
+        const RECORD_TYPE: &str = "account_created";
+        const TYPE_I: u32 = 0;
+        const CREATED_AT: &str = "2024-02-06T17:42:48Z";
+        const STARTING_BALANCE: &str = "10000000000.0000000";
+
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        let effects_for_liquidity_pools_request =
+            EffectsForOperationRequest::new().set_limit(2).unwrap();
+        let effects_for_liquidity_pools_response = horizon_client
+            .get_effects_for_operation(&effects_for_liquidity_pools_request)
+            .await;
+
+        assert!(effects_for_liquidity_pools_response.clone().is_ok());
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .id(),
+            ID
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .paging_token(),
+            PAGING_TOKEN
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .account(),
+            ACCOUNT
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .effect_type(),
+            RECORD_TYPE
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .type_i(),
+            &TYPE_I
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .created_at(),
+            CREATED_AT
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .starting_balance()
+                .as_ref()
+                .unwrap(),
+            &STARTING_BALANCE
         );
     }
 }
