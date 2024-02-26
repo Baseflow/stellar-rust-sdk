@@ -411,6 +411,14 @@ impl HorizonClient {
         self.get::<EffectsResponse>(request).await
     }
 
+
+    pub async fn get_effects_for_operations(
+        &self,
+        request: &EffectsForOperationRequest,
+    ) -> Result<EffectsResponse, String> {
+        self.get::<EffectsResponse>(request).await
+    }
+
     /// Retrieves a list of all ledgers.
     ///
     /// This asynchronous method is designed to fetch list of ledgers
