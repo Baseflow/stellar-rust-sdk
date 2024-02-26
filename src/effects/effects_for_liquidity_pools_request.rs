@@ -1,6 +1,37 @@
 use crate::models::{Order, Request};
 use crate::BuildQueryParametersExt;
 
+/// Represents the request to fetch effects for a specific liquidity pool from the Horizon API.
+
+/// `EffectsForLiquidityPoolRequest` is a struct used to construct queries for retrieving information about effects
+/// from the Horizon server. It includes parameters that allow for pagination control and sorting
+/// of the effect records.
+
+/// # Usage
+/// Instances of `EffectsForLiquidityPoolRequest` are created and optionally configured using the builder pattern.
+/// Once the desired parameters are set, the request can be passed to the Horizon client to fetch
+/// effect data.
+/// 
+/// # Fields
+/// * `liquidity_pool_id` - The liquidity pool id.
+/// * `cursor` - A pointer to a specific location in a collection of responses, derived from the
+///   `paging_token` value of a record. Used for pagination control in the API response.
+/// * `limit` - Specifies the maximum number of records to be returned in a single response.
+///
+/// # Example
+/// ```rust
+/// use stellar_rs::effects::effects_for_liquidity_pools_request::EffectsForLiquidityPoolRequest;
+/// use stellar_rs::models::*;
+///
+/// let request = EffectsForLiquidityPoolRequest::new()
+///     .set_liquidity_pool_id("01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d".to_string())
+///     .set_cursor(1234).unwrap()
+///     .set_limit(20).unwrap()
+///     .set_order(Order::Desc);
+///
+/// // The request can now be used with a Horizon client to fetch effects.
+/// ```
+///
 #[derive(Default)]
 pub struct EffectsForLiquidityPoolRequest {
     /// The liquidity pool id

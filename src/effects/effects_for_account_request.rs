@@ -1,5 +1,38 @@
 use crate::{models::{Order, Request}, BuildQueryParametersExt};
 
+/// Represents the request to fetch effects for a specific account from the Horizon API.
+///
+/// `EffectsForAccountRequest` is a struct used to construct queries for retrieving information about effects
+/// from the Horizon server. It includes parameters that allow for pagination control and sorting
+/// of the effect records.
+///
+/// # Usage
+/// Instances of `EffectsForAccountRequest` are created and optionally configured using the builder pattern.
+/// Once the desired parameters are set, the request can be passed to the Horizon client to fetch
+/// effect data.
+///
+/// # Fields
+/// * `account_id` - The account's public id.
+/// * `cursor` - A pointer to a specific location in a collection of responses, derived from the
+/// * `limit` - Specifies the maximum number of records to be returned in a single response.
+/// * `order` - Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
+///
+/// # Example
+/// ```rust
+/// use stellar_rs::effects::effects_for_account_request::EffectsForAccountRequest;
+/// use stellar_rs::models::*;
+///
+/// let request = EffectsForAccountRequest::new()
+///     .set_account_id("GBL3QJ2MB3KJ7YV7YVXJ5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z".to_string())
+///     .unwrap()
+///     .set_cursor(1234).unwrap()
+///     .set_limit(20).unwrap()
+///     .set_order(Order::Desc);
+///
+/// // The request can now be used with a Horizon client to fetch effects.
+/// ```
+///
+
 #[derive(Default)]
 pub struct EffectsForAccountRequest {
     /// The accounts public id
