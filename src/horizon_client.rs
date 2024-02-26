@@ -411,8 +411,7 @@ impl HorizonClient {
         self.get::<EffectsResponse>(request).await
     }
 
-
-    pub async fn get_effects_for_operations(
+    pub async fn get_effects_for_operation(
         &self,
         request: &EffectsForOperationRequest,
     ) -> Result<EffectsResponse, String> {
@@ -668,7 +667,7 @@ impl HorizonClient {
     async fn get<R: Response>(&self, request: &impl Request) -> Result<R, String> {
         // Construct the URL with potential query parameters.
         let url = request.build_url(&self.base_url);
-
+        
         // Send the request and await the response.
         let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
 
@@ -1916,6 +1915,100 @@ mod tests {
                 .id(),
             ID
         );
+    }
+
+    #[tokio::test]
+    async fn get_effects_for_operation() {
+        const ID: &str = "0000000459561504769-0000000001";
+        const PAGING_TOKEN: &str = "459561504769-1";
+        const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
+        const RECORD_TYPE: &str = "account_created";
+        const TYPE_I: u32 = 0;
+        const CREATED_AT: &str = "2024-02-06T17:42:48Z";
+        const STARTING_BALANCE: &str = "10000000000.0000000";
+
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        let effects_for_operation_request = EffectsForOperationRequest::new().set_limit(2).unwrap();
+
+        let effects_for_operation_response = horizon_client
+            .get_effects_for_operation(&effects_for_operation_request)
+            .await;
+
+        assert!(effects_for_operation_response.clone().is_ok());
+
+        assert_eq!(
+            effects_for_operation_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .id(),
+            ID
+        );
+
+        assert_eq!(
+            effects_for_operation_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .paging_token(),
+            PAGING_TOKEN
+        );
+
+        assert_eq!(
+            effects_for_operation_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .account(),
+            ACCOUNT
+        );
+
+        assert_eq!(
+            effects_for_operation_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .effect_type(),
+            RECORD_TYPE
+        );
+
+        assert_eq!(
+            effects_for_operation_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .type_i(),
+            &TYPE_I
+        );
+
+        assert_eq!(
+            effects_for_operation_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .created_at(),
+            CREATED_AT
+        );
+
+        assert_eq!(
+            effects_for_operation_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .starting_balance().as_ref().unwrap(),
+            STARTING_BALANCE
+        );
+
+
     }
 
     #[tokio::test]
