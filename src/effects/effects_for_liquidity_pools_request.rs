@@ -85,6 +85,8 @@ impl EffectsForLiquidityPoolRequest {
     }
 }
 
+
+//TODO research different url buildig methods
 impl Request for EffectsForLiquidityPoolRequest {
     fn get_query_parameters(&self) -> String {
         vec![
