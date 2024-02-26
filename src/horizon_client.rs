@@ -411,6 +411,57 @@ impl HorizonClient {
         self.get::<EffectsResponse>(request).await
     }
 
+    /// Retrieves a list of effects for a specific transaction from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of effects for a specific transaction from the Horizon server.
+    /// It requires an [`EffectForTransactionRequest`] to specify the transaction hash and optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`EffectForTransactionRequest`] instance, containing the transaction hash
+    /// and optional query parameters for the effects request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`EffectsResponse`], which includes
+    /// the list of effects obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Example
+    /// To use this method, create an instance of [`EffectForTransactionRequest`] and set the transaction hash and any
+    /// desired query parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::effects::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = EffectForTransactionRequest::new()
+    ///    .set_transaction_hash("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string());
+    ///
+    /// let response = horizon_client.get_effects_for_transaction(&request).await;
+    ///
+    /// // Access the effects
+    /// if let Ok(effects_response) = response {
+    ///    for effect in effects_response._embedded().records() {
+    ///       println!("Effect ID: {}", effect.id());
+    ///      // Further processing...
+    ///   }
+    /// }
+    ///
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn get_effects_for_transaction(
+        &self,
+        request: &EffectForTransactionRequest,
+    ) -> Result<EffectsResponse, String> {
+        self.get::<EffectsResponse>(request).await
+    }
+
     /// Retrieves a list of all ledgers.
     ///
     /// This asynchronous method is designed to fetch list of ledgers
@@ -1911,41 +1962,135 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_get_effects_for_ledger() {
-        // found by trial and error in the Stellar laboratory
-        let ledger_sequence = 125;
+    async fn get_effects_for_transactions() {
+        const ID: &str = "0000000459561504769-0000000001";
+        const PAGING_TOKEN: &str = "459561504769-1";
+        const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
+        const RECORD_TYPE: &str = "account_created";
+        const TYPE_I: u32 = 0;
+        const CREATED_AT: &str = "2024-02-06T17:42:48Z";
+        const STARTING_BALANCE: &str = "10000000000.0000000";
 
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
-        let effects_for_ledger_request =
-            EffectsForLedgerRequest::new().set_sequence(ledger_sequence);
-        let _effects_for_ledger_response = horizon_client
-            .get_effects_for_ledger(&effects_for_ledger_request)
+        let effects_for_liquidity_pools_request =
+            EffectForTransactionRequest::new().set_limit(2).unwrap();
+
+        let effects_for_liquidity_pools_response = horizon_client
+            .get_effects_for_transaction(&effects_for_liquidity_pools_request)
             .await;
 
-        println!("{:#?}", _effects_for_ledger_response);
-
-        assert!(_effects_for_ledger_response.clone().is_ok());
+        assert!(effects_for_liquidity_pools_response.clone().is_ok());
 
         assert_eq!(
-            _effects_for_ledger_response
+            effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
                 ._embedded()
                 .records()[0]
-                .id,
-            "0000000536870916097-0000000001"
+                .id(),
+            ID
         );
 
         assert_eq!(
-            _effects_for_ledger_response
+            effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
                 ._embedded()
-                .records()[1]
-                .effect_type,
-            "account_debited"
+                .records()[0]
+                .paging_token(),
+            PAGING_TOKEN
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .account(),
+            ACCOUNT
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .effect_type(),
+            RECORD_TYPE
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .type_i(),
+            &TYPE_I
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .created_at(),
+            CREATED_AT
+        );
+
+        assert_eq!(
+            effects_for_liquidity_pools_response
+                .clone()
+                .unwrap()
+                ._embedded()
+                .records()[0]
+                .starting_balance()
+                .as_ref()
+                .unwrap(),
+            &STARTING_BALANCE
         );
     }
+}
+
+#[tokio::test]
+async fn test_get_effects_for_ledger() {
+    // found by trial and error in the Stellar laboratory
+    let ledger_sequence = 125;
+
+    let horizon_client =
+        HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+    let effects_for_ledger_request = EffectsForLedgerRequest::new().set_sequence(ledger_sequence);
+    let _effects_for_ledger_response = horizon_client
+        .get_effects_for_ledger(&effects_for_ledger_request)
+        .await;
+
+    println!("{:#?}", _effects_for_ledger_response);
+
+    assert!(_effects_for_ledger_response.clone().is_ok());
+
+    assert_eq!(
+        _effects_for_ledger_response
+            .clone()
+            .unwrap()
+            ._embedded()
+            .records()[0]
+            .id,
+        "0000000536870916097-0000000001"
+    );
+
+    assert_eq!(
+        _effects_for_ledger_response
+            .clone()
+            .unwrap()
+            ._embedded()
+            .records()[1]
+            .effect_type,
+        "account_debited"
+    );
 }
