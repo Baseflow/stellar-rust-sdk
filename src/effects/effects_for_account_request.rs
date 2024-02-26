@@ -23,8 +23,6 @@ use crate::{models::{Order, Request}, BuildQueryParametersExt};
 /// use stellar_rs::models::*;
 ///
 /// let request = EffectsForAccountRequest::new()
-///     .set_account_id("GBL3QJ2MB3KJ7YV7YVXJ5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z".to_string())
-///     .unwrap()
 ///     .set_cursor(1234).unwrap()
 ///     .set_limit(20).unwrap()
 ///     .set_order(Order::Desc);
