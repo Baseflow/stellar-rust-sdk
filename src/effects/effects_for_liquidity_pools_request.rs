@@ -13,7 +13,7 @@ pub struct EffectsForLiquidityPoolRequest {
     /// Specifies the maximum number of records to be returned in a single response.
     ///   The range for this parameter is from 1 to 200. The default value is set to 10.
     limit: Option<u8>,
-    
+
     /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
     ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
     order: Option<Order>,
@@ -85,9 +85,8 @@ impl EffectsForLiquidityPoolRequest {
     }
 }
 
-
-//TODO research different url buildig methods
 impl Request for EffectsForLiquidityPoolRequest {
+    //TODO research different url buildig methods
     fn get_query_parameters(&self) -> String {
         vec![
             self.liquidity_pool_id
@@ -138,6 +137,9 @@ mod tests {
             url,
             "https://horizon-testnet.stellar.org/effects?liquidity_pool_id=liquidity_pool_id&cursor=1&limit=10&order=asc"
         );
-        assert_eq!(query_parameters, "?liquidity_pool_id=liquidity_pool_id&cursor=1&limit=10&order=asc");
+        assert_eq!(
+            query_parameters,
+            "?liquidity_pool_id=liquidity_pool_id&cursor=1&limit=10&order=asc"
+        );
     }
 }

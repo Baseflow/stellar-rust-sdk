@@ -13,3 +13,13 @@ pub mod prelude {
     pub use super::effects_for_liquidity_pools_request::*;
     pub use super::effects_for_ledger_request::*;
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn dummy_test() {
+        assert_eq!(EFFECTS_PATH, "effects");
+    }
+}
