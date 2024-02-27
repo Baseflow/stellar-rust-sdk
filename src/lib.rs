@@ -271,6 +271,8 @@ pub mod ledgers;
 
 pub mod effects;
 
+pub mod fee_stats;
+
 /// Contains core data structures and traits.
 ///
 /// This module is used by the Stellar Rust SDK to interact with the Horizon API.
