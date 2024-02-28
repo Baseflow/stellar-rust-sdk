@@ -7,6 +7,9 @@ use crate::{
         prelude::{LedgersRequest, LedgersResponse, SingleLedgerRequest, SingleLedgerResponse},
         single_ledger_request::Sequence,
     },
+    liquidity_pools::{
+        all_liquidity_pools_request::AllLiquidityPoolsRequest, prelude::AllLiquidityPoolsResponse,
+    },
     models::{Request, Response},
 };
 use reqwest;
@@ -621,6 +624,13 @@ impl HorizonClient {
         self.get::<EffectsResponse>(request).await
     }
 
+    pub async fn get_all_liquidity_pools(
+        &self,
+        request: &AllLiquidityPoolsRequest,
+    ) -> Result<AllLiquidityPoolsResponse, String> {
+        self.get::<AllLiquidityPoolsResponse>(request).await
+    }
+
     /// Sends a GET request to the Horizon server and retrieves a specified response type.
     ///
     /// This internal asynchronous method is designed to handle various GET requests to the
@@ -767,6 +777,9 @@ mod tests {
             effects_for_ledger_request::EffectsForLedgerRequest, prelude::EffectsForAccountRequest,
         },
         ledgers::prelude::SingleLedgerRequest,
+        liquidity_pools::{
+            all_liquidity_pools_request::AllLiquidityPoolsRequest, all_liquidity_pools_response,
+        },
     };
 
     use super::*;
@@ -1726,7 +1739,7 @@ mod tests {
             .get_effects_for_account(&effects_for_account_request)
             .await;
 
-        println!("{:?}", effects_for_account_response);
+        // println!("{:?}", effects_for_account_response);
 
         assert!(effects_for_account_response.clone().is_ok());
 
@@ -1924,7 +1937,7 @@ mod tests {
             .get_effects_for_ledger(&effects_for_ledger_request)
             .await;
 
-        println!("{:#?}", _effects_for_ledger_response);
+        // println!("{:#?}", _effects_for_ledger_response);
 
         assert!(_effects_for_ledger_response.clone().is_ok());
 
@@ -1947,5 +1960,25 @@ mod tests {
                 .effect_type,
             "account_debited"
         );
+    }
+
+    #[tokio::test]
+    async fn test_get_all_liquidity_pools() {
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        let all_liquidity_pools_request = AllLiquidityPoolsRequest::new()
+            .add_native_reserve()
+            .add_alphanumeric4_reserve(
+                "USDC".to_string(),
+                "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string(),
+            )
+            .set_limit(2);
+
+        let all_liquidity_pools_response = horizon_client
+            .get_all_liquidity_pools(&all_liquidity_pools_request)
+            .await;
+
+        assert!(all_liquidity_pools_response.clone().is_ok());
     }
 }

@@ -282,6 +282,7 @@ pub mod effects;
 /// of the Horizon API, allowing developers to work with high-level Rust constructs
 /// instead of raw HTTP requests and JSON responses.
 pub mod models;
+pub mod liquidity_pools;
 
 /// Extension trait for building query parameter strings from a vector of optional values.
 ///
