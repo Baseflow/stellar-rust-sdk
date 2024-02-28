@@ -4,39 +4,9 @@ use crate::models::Response;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AllLiquidityPoolsResponse {
+pub struct SingleLiquidityPoolResponse {
     #[serde(rename = "_links")]
     pub links: Links,
-    #[serde(rename = "_embedded")]
-    pub embedded: Embedded,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Links {
-    #[serde(rename = "self")]
-    pub self_field: Option<ResponseLink>,
-    pub next: Option<ResponseLink>,
-    pub prev: Option<ResponseLink>,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ResponseLink {
-    pub href: String,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Embedded {
-    pub records: Vec<Record>,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Record {
-    #[serde(rename = "_links")]
-    pub links: RecordLink,
     pub id: String,
     #[serde(rename = "paging_token")]
     pub paging_token: String,
@@ -57,11 +27,17 @@ pub struct Record {
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct RecordLink {
+pub struct Links {
     #[serde(rename = "self")]
-    pub self_field: Option<ResponseLink>,
+    pub self_field: Self_field,
     pub transactions: Transactions,
     pub operations: Operations,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Self_field {
+    pub href: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -85,7 +61,7 @@ pub struct Reserve {
     pub amount: String,
 }
 
-impl Response for AllLiquidityPoolsResponse {
+impl Response for SingleLiquidityPoolResponse {
     fn from_json(json: String) -> Result<Self, String> {
         serde_json::from_str(&json).map_err(|e| e.to_string())
     }

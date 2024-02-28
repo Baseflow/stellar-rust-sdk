@@ -8,7 +8,7 @@ use crate::{
         single_ledger_request::Sequence,
     },
     liquidity_pools::{
-        all_liquidity_pools_request::AllLiquidityPoolsRequest, prelude::AllLiquidityPoolsResponse,
+        all_liquidity_pools_request::AllLiquidityPoolsRequest, prelude::{AllLiquidityPoolsResponse, LiquidityPoolId, SingleLiquidityPoolRequest, SingleLiquidityPoolResponse},
     },
     models::{Request, Response},
 };
@@ -629,6 +629,13 @@ impl HorizonClient {
         request: &AllLiquidityPoolsRequest,
     ) -> Result<AllLiquidityPoolsResponse, String> {
         self.get::<AllLiquidityPoolsResponse>(request).await
+    }
+
+    pub async fn get_single_liquidity_pool(
+        &self,
+        request: &SingleLiquidityPoolRequest<LiquidityPoolId>,
+    ) -> Result<SingleLiquidityPoolResponse, String> {
+        self.get::<SingleLiquidityPoolResponse>(request).await
     }
 
     /// Sends a GET request to the Horizon server and retrieves a specified response type.
@@ -1979,6 +1986,23 @@ mod tests {
             .get_all_liquidity_pools(&all_liquidity_pools_request)
             .await;
 
+        
+
         assert!(all_liquidity_pools_response.clone().is_ok());
+    }
+
+    #[tokio::test]
+    async fn test_get_single_liquidity_pool() {
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        let single_liquidity_pool_request = SingleLiquidityPoolRequest::new()
+            .set_liquidity_pool_id("01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d".to_string()).unwrap();
+
+        let single_liquidity_pool_response = horizon_client
+            .get_single_liquidity_pool(&single_liquidity_pool_request)
+            .await;
+
+        assert!(single_liquidity_pool_response.clone().is_ok());
     }
 }
