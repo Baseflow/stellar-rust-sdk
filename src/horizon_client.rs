@@ -624,6 +624,48 @@ impl HorizonClient {
         self.get::<EffectsResponse>(request).await
     }
 
+    /// Fetches all liquidity pools from the Stellar Horizon API.
+    ///
+    /// This asynchronous method retrieves a list of all liquidity pools from the Horizon server.
+    /// It requires an [`AllLiquidityPoolsRequest`] to specify optional query parameters such as
+    /// filters by `asset_code` or `asset_issuer`.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`AllLiquidityPoolsRequest`] instance, containing the
+    /// parameters for the liquidity pools request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`AllLiquidityPoolsResponse`], which includes
+    /// the comprehensive list of liquidity pools retrieved from the Horizon server. If the request
+    /// encounters an issue, an error is returned within `Result`.
+    ///
+    /// # Example
+    /// To use this method, create an instance of [`AllLiquidityPoolsRequest`], set any desired
+    /// filters or parameters and pass
+    ///
+    /// ```
+    /// # use stellar_rs::liquidity_pools::all_liquidity_pools_request::AllLiquidityPoolsRequest;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)?;
+    /// let request = AllLiquidityPoolsRequest::new()
+    ///     .set_asset_code("USD")
+    ///     .unwrap();
+    ///
+    /// let response = horizon_client.get_all_liquidity_pools(&request).await;
+    ///
+    /// // Access liquidity pool details
+    /// for pool in response?._embedded().records() {
+    ///     println!("Pool ID: {}", pool.id());
+    ///     // Further processing...
+    /// }
+    /// # Ok(())
+    /// # }
+    /// ```
+    ///
     pub async fn get_all_liquidity_pools(
         &self,
         request: &AllLiquidityPoolsRequest,
@@ -631,6 +673,48 @@ impl HorizonClient {
         self.get::<AllLiquidityPoolsResponse>(request).await
     }
 
+    /// Retrieves detailed information for a specific liquidity pool from the Horizon server.
+    ///
+    /// This asynchronous method is designed to fetch detailed information about a single liquidity
+    /// pool from the Horizon server. It requires a [`SingleLiquidityPoolRequest`] that includes the
+    /// unique identifier of the liquidity pool to be retrieved.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to a [`SingleLiquidityPoolRequest`] instance containing the
+    /// unique ID of the liquidity pool to be fetched.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing a [`SingleLiquidityPoolResponse`],
+    /// which includes detailed information about the requested liquidity pool. If the request fails,
+    /// it returns an error encapsulated within `Result`.
+    ///
+    /// # Example
+    /// To use this method, create an instance of [`SingleLiquidityPoolRequest`]
+    /// with the specific liquidity pool ID.
+    ///
+    /// ```
+    /// # use stellar_rs::liquidity_pools::single_liquidity_pool_request::SingleLiquidityPoolRequest;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)?;
+    /// let request = SingleLiquidityPoolRequest::new()
+    ///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string());
+    ///
+    /// let response = horizon_client.get_single_liquidity_pool(&request).await;
+    ///
+    /// // Access the details of the liquidity pool
+    /// if let Ok(pool_response) = response {
+    ///     println!("Pool ID: {}", pool_response.id());
+    ///     // Further processing...
+    /// }
+    ///
+    /// # Ok(())
+    /// # }
+    /// ```
+    ///
     pub async fn get_single_liquidity_pool(
         &self,
         request: &SingleLiquidityPoolRequest<LiquidityPoolId>,

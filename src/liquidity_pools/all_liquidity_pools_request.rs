@@ -1,24 +1,67 @@
 use crate::liquidity_pools::LIQUIDITY_POOLS_PATH;
 use crate::models::{Order, Request};
+
+/// Represents a reserve for a liquidity pool. This struct is used to specify the asset code and
 pub struct Reserve {
     pub asset_code: String,
     pub asset_issuer: String,
 }
 
+/// Represents a reserve type for a liquidity pool. This enum is used to specify the type of reserve
+/// to filter by when querying the Horizon server for liquidity pool records.
 pub enum ReserveType {
+    /// A native reserve type. It holds no Value
     Native,
+    /// An alphanumeric 4 reserve type. It holds a Reserve struct with asset code and asset issuer.
     Alphanumeric4(Reserve),
+    /// An alphanumeric 12 reserve type. It holds a Reserve struct with asset code and asset issuer.
     Alphanumeric12(Reserve),
 }
 
+/// Represents a request for listing all liquidity pools on the Stellar Horizon API.
+///
+/// `AllLiquidityPoolsRequest` is a struct used to construct queries for retrieving information about liquidity pools from the Horizon server. It includes parameters that allow for pagination control and sorting of the liquidity pool records.
+/// It includes parameters that allow for pagination control and sorting of the liquidity pool records.
+///
+/// # Usage
+/// Instances of `AllLiquidityPoolsRequest` are created and optionally configured using the builder pattern.
+/// Once the desired parameters are set, the request can be passed to the Horizon client to fetch liquidity pool data.
+///
+/// # Example
+/// ```rust
+/// use stellar_rs::liquidity_pools::all_liquidity_pools_request::AllLiquidityPoolsRequest;
+/// use stellar_rs::models::*;
+///
+/// let request = AllLiquidityPoolsRequest::new()
+///     .set_cursor(1234)
+///     .set_limit(20)
+///     .set_order(Order::Desc)
+///     .add_native_reserve()
+///     .add_alphanumeric4_reserve("USD".to_string(), "GAXLYH...".to_string());
+///
+/// // The request can now be used with a Horizon client to fetch liquidity pools.
+/// ```
+///
+#[derive(Default)]
 pub struct AllLiquidityPoolsRequest {
+    /// A pointer to a specific location in a collection of responses, derived from the
+    ///   `paging_token` value of a record. Used for pagination control in the API response.
     cursor: Option<u32>,
+
+    /// Specifies the maximum number of records to be returned in a single response.
+    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
     limit: Option<u8>,
+
+    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
+    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
     order: Option<Order>,
+
+    /// A list of reserves to filter by.
     reserves: Option<Vec<ReserveType>>,
 }
 
 impl AllLiquidityPoolsRequest {
+    /// Creates a new `AllLiquidityPoolsRequest` with default parameters.
     pub fn new() -> AllLiquidityPoolsRequest {
         AllLiquidityPoolsRequest {
             cursor: None,
@@ -28,6 +71,11 @@ impl AllLiquidityPoolsRequest {
         }
     }
 
+    /// Sets the cursor for pagination.
+    ///
+    /// # Arguments
+    /// * `cursor` - A `u32` value pointing to a specific location in a collection of responses.
+    ///
     pub fn set_cursor(self, cursor: u32) -> AllLiquidityPoolsRequest {
         AllLiquidityPoolsRequest {
             cursor: Some(cursor),
@@ -35,6 +83,11 @@ impl AllLiquidityPoolsRequest {
         }
     }
 
+    /// Sets the maximum number of records to return.
+    ///
+    /// # Arguments
+    /// * `limit` - A `u8` value specifying the maximum number of records. Range: 1 to 200. Defaults to 10.
+    ///
     pub fn set_limit(self, limit: u8) -> AllLiquidityPoolsRequest {
         AllLiquidityPoolsRequest {
             limit: Some(limit),
@@ -42,6 +95,11 @@ impl AllLiquidityPoolsRequest {
         }
     }
 
+    /// Sets the order of the returned records.
+    ///
+    /// # Arguments
+    /// * `order` - An [`Order`] enum value specifying the order (ascending or descending).
+    ///
     pub fn set_order(self, order: Order) -> AllLiquidityPoolsRequest {
         AllLiquidityPoolsRequest {
             order: Some(order),
@@ -49,6 +107,7 @@ impl AllLiquidityPoolsRequest {
         }
     }
 
+    /// Adds a native reserve to the request.
     pub fn add_native_reserve(mut self) -> AllLiquidityPoolsRequest {
         match self.reserves {
             Some(ref mut reserves) => reserves.push(ReserveType::Native),
@@ -57,6 +116,12 @@ impl AllLiquidityPoolsRequest {
         self
     }
 
+    /// Adds an alphanumeric 4 reserve to the request.
+    ///
+    /// # Arguments
+    /// * `asset_code` - A `String` value representing the asset code of the reserve.
+    /// * `asset_issuer` - A `String` value representing the asset issuer of the reserve.
+    ///
     pub fn add_alphanumeric4_reserve(
         mut self,
         asset_code: String,
@@ -77,6 +142,12 @@ impl AllLiquidityPoolsRequest {
         self
     }
 
+    /// Adds an alphanumeric 12 reserve to the request.
+    ///
+    /// # Arguments
+    /// * `asset_code` - A `String` value representing the asset code of the reserve.
+    /// * `asset_issuer` - A `String` value representing the asset issuer of the reserve.
+    ///
     pub fn add_alphanumeric12_reserve(
         mut self,
         asset_code: String,
@@ -178,40 +249,3 @@ impl Request for AllLiquidityPoolsRequest {
         )
     }
 }
-
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-
-//     #[test]
-//     fn test_all_liquidity_pools_request_build_url() {
-//         let cursor: u32 = 123;
-//         let limit: u8 = 10;
-//         let order = Order::Desc;
-//         let compare_order = Order::Desc;
-//         let asset_code = "USD".to_string();
-//         let asset_issuer = "G....".to_string();
-
-//         let request = AllLiquidityPoolsRequest::new()
-//             .set_cursor(cursor)
-//             .set_limit(limit)
-//             .set_order(order)
-//             .add_native_reserve()
-//             .add_alphanumeric4_reserve(asset_code.clone(), asset_issuer.clone());
-
-//         let url = request.build_url("https://horizon-testnet.stellar.org");
-
-//         assert_eq!(
-//             url,
-//             format!(
-//                 "https://horizon-testnet.stellar.org/{}?cursor={}&limit={}&order={}&reserves=native&reserves={}-{}",
-//                 super::LIQUIDITY_POOLS_PATH,
-//                 cursor,
-//                 limit,
-//                 compare_order,
-//                 asset_code,
-//                 asset_issuer
-//             )
-//         );
-//     }
-// }
