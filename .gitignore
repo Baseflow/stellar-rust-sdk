@@ -25,3 +25,6 @@ keys.txt
 
 # Ignore Visual Studio Code project files
 .vscode/
+
+# Ignore the tarpaulin code coverage report
+tarpaulin-report.html

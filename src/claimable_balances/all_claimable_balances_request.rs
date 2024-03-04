@@ -219,4 +219,54 @@ mod tests {
             "limit must be between 1 and 200".to_string()
         );
     }
+
+    #[test]
+    fn test_set_sponsor_valid() {
+        let request = AllClaimableBalancesRequest::new()
+            .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
+            .unwrap();
+        assert_eq!(
+            request.sponsor.unwrap(),
+            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7"
+        );
+    }
+
+    #[test]
+    fn test_set_sponsor_invalid() {
+        let request = AllClaimableBalancesRequest::new().set_sponsor("invalid_sponsor".to_string());
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn test_set_claimant_valid() {
+        let request = AllClaimableBalancesRequest::new()
+            .set_claimant("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
+            .unwrap();
+        assert_eq!(
+            request.claimant.unwrap(),
+            "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7"
+        );
+    }
+
+    #[test]
+    fn test_set_claimant_invalid() {
+        let request =
+            AllClaimableBalancesRequest::new().set_claimant("invalid_claimant".to_string());
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn test_build_url() {
+        let request = AllClaimableBalancesRequest::new()
+            .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
+            .unwrap()
+            .set_cursor(12345)
+            .unwrap()
+            .set_limit(20)
+            .unwrap()
+            .set_order(Order::Desc);
+        let base_url = "https://horizon.stellar.org";
+        let url = request.build_url(base_url);
+        assert_eq!(url, "https://horizon.stellar.org/claimable_balances/?sponsor=GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7&cursor=12345&limit=20&order=desc");
+    }
 }

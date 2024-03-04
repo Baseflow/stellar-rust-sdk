@@ -1944,20 +1944,21 @@ mod tests {
         let effects_for_liquidity_pools_request_with_id = EffectsForLiquidityPoolRequest::new()
             .set_limit(2)
             .expect("REASON")
-            .set_liquidity_pool_id("0000000459561504769-0000000001".to_string());
-        let effects_for_liquidity_pools_response = horizon_client
+            .set_liquidity_pool_id("01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d".to_string());
+        
+        let effects_for_liquidity_pools_response_with_id = horizon_client
             .get_effects_for_liquidity_pools(&effects_for_liquidity_pools_request_with_id)
             .await;
 
-        assert!(effects_for_liquidity_pools_response.clone().is_ok());
+        assert!(effects_for_liquidity_pools_response_with_id.clone().is_ok());
         assert_eq!(
-            effects_for_liquidity_pools_response
+            effects_for_liquidity_pools_response_with_id
                 .clone()
                 .unwrap()
                 ._embedded()
                 .records()[0]
                 .id(),
-            ID
+            "0001072977319841793-0000000001"
         );
     }
 
