@@ -156,7 +156,8 @@ pub struct AccountsResponse {
     /// Navigational links related to the response.
     _links: AccountsResponseLinks,
     /// The embedded object containing the actual account records.
-    _embedded: Embedded,
+    #[serde(rename = "_embedded")]
+    embedded: Embedded,
 }
 
 impl Response for AccountsResponse {

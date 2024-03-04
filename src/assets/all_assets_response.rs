@@ -177,7 +177,8 @@ pub struct AllAssetsResponse {
     /// An `Embedded` struct that contains the actual list of asset records. Each
     ///   record in this list provides detailed information about an individual asset, including
     ///   its type, issuer, and various statistics related to its distribution and usage.
-    _embedded: Embedded,
+    #[serde(rename = "_embedded")]
+    embedded: Embedded,
 }
 
 impl Response for AllAssetsResponse {

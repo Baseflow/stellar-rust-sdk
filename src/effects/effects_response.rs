@@ -5,7 +5,7 @@ use crate::models::Response;
 
 /// Represents the navigational links in a effect response from the Stellar Horizon API.
 ///
-/// This struct includes links such as the self-link (current page), next, and previous, 
+/// This struct includes links such as the self-link (current page), next, and previous,
 /// providing quick navigation across different pages of the effect response.
 ///
 #[derive(Debug, Deserialize, Clone, Getters)]
@@ -29,12 +29,12 @@ pub struct SelfLink {
     /// A `String` representing the hyperlink reference to the current resource or query.
     href: String,
     /// Optionally indicates if the link is templated
-    templated: Option<bool>
+    templated: Option<bool>,
 }
 
 /// Represents the navigational links belonging to an effect from the Stellar Horizon API.
 ///
-/// This struct includes links such as the operation (current effect), succeeds, and precedes, 
+/// This struct includes links such as the operation (current effect), succeeds, and precedes,
 /// providing quick navigation across operational sequence belonging to the effect.
 ///
 #[derive(Debug, Deserialize, Clone, Getters)]
@@ -88,7 +88,6 @@ pub struct Embedded {
     records: Vec<Record>,
 }
 
-
 /// Represents the response to a request for listing all effects from the Stellar Horizon API.
 ///
 /// This struct contains the overall structure of the response for querying all effects. It includes
@@ -99,7 +98,8 @@ pub struct EffectsResponse {
     /// Navigational links for the current, next, and previous pages of the response.
     _links: EffectsResponseLink,
     /// Contains the actual list of effect records in the `records` field.
-    _embedded: Embedded,
+    #[serde(rename = "_embedded")]
+    embedded: Embedded,
 }
 
 impl Response for EffectsResponse {
