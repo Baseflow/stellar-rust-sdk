@@ -1,8 +1,9 @@
+use derive_getters::Getters;
 use serde::{Deserialize, Serialize};
 
 use crate::models::Response;
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct SingleLiquidityPoolResponse {
     #[serde(rename = "_links")]
@@ -25,7 +26,7 @@ pub struct SingleLiquidityPoolResponse {
     pub last_modified_time: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Links {
     #[serde(rename = "self")]
@@ -34,27 +35,27 @@ pub struct Links {
     pub operations: Operations,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Self_field {
     pub href: String,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Transactions {
     pub href: String,
     pub templated: bool,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Operations {
     pub href: String,
     pub templated: bool,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Reserve {
     pub asset: String,

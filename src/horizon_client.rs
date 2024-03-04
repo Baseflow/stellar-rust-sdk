@@ -652,13 +652,12 @@ impl HorizonClient {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
     /// # let horizon_client = HorizonClient::new(base_url)?;
     /// let request = AllLiquidityPoolsRequest::new()
-    ///     .set_asset_code("USD")
-    ///     .unwrap();
+    ///     .add_alphanumeric4_reserve("USDC".to_string(), "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string());
     ///
     /// let response = horizon_client.get_all_liquidity_pools(&request).await;
     ///
     /// // Access liquidity pool details
-    /// for pool in response?._embedded().records() {
+    /// for pool in response?.embedded().records() {
     ///     println!("Pool ID: {}", pool.id());
     ///     // Further processing...
     /// }
@@ -701,7 +700,7 @@ impl HorizonClient {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
     /// # let horizon_client = HorizonClient::new(base_url)?;
     /// let request = SingleLiquidityPoolRequest::new()
-    ///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string());
+    ///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string()).unwrap();
     ///
     /// let response = horizon_client.get_single_liquidity_pool(&request).await;
     ///
@@ -2069,8 +2068,6 @@ mod tests {
         let all_liquidity_pools_response = horizon_client
             .get_all_liquidity_pools(&all_liquidity_pools_request)
             .await;
-
-        
 
         assert!(all_liquidity_pools_response.clone().is_ok());
     }

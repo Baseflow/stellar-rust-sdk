@@ -1,3 +1,4 @@
+use derive_getters::Getters;
 use serde::{Deserialize, Serialize};
 
 use crate::models::Response;
@@ -7,7 +8,7 @@ use crate::models::Response;
 /// This struct represents the response from the Horizon server when querying for all liquidity pools.
 /// It includes the links to the current, next, and previous pages of the response, as well as the
 /// embedded records of liquidity pools.
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct AllLiquidityPoolsResponse {
     /// The links to the current, next, and previous pages of the response.
@@ -22,7 +23,7 @@ pub struct AllLiquidityPoolsResponse {
 ///
 /// This struct includes links such as the self-link (current page), next, and previous,
 /// providing quick navigation across different pages of the liquidity pool response.
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Links {
     /// The link to the current page of the liquidity pool response.
@@ -35,7 +36,7 @@ pub struct Links {
 }
 
 /// Represents the navigational links in a liquidity pool response from the Stellar Horizon API.
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct ResponseLink {
     /// A `String` representing the hyperlink reference to the current resource or query.
@@ -43,7 +44,7 @@ pub struct ResponseLink {
 }
 
 /// Represents the embedded records of liquidity pools in the Horizon API response.
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Embedded {
     /// The list of liquidity pool records.
@@ -54,7 +55,7 @@ pub struct Embedded {
 ///
 /// This struct encapsulates detailed information about a single liquidity pool, including its ID,
 /// fee, type, reserves, and other relevant data.
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Record {
     /// Navigational links related to the operation of the effect.
@@ -91,7 +92,7 @@ pub struct Record {
 ///
 /// This struct includes links such as the self-link (current liquidity pool), transactions, and operations,
 /// providing quick navigation across different pages of the liquidity pool.
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct RecordLink {
     /// The link to the current liquidity pool.
@@ -107,7 +108,7 @@ pub struct RecordLink {
 ///
 /// This struct includes links such as the transactions, and operations,
 /// providing quick navigation across different pages of the liquidity pool.
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Transactions {
     /// The link to the transactions of the liquidity pool.
@@ -120,7 +121,7 @@ pub struct Transactions {
 ///
 /// This struct includes links such as the operations,
 /// providing quick navigation across different pages of the liquidity pool.
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Operations {
     /// The link to the operations of the liquidity pool.
@@ -131,7 +132,7 @@ pub struct Operations {
 
 /// Represents a reserve for a liquidity pool. This struct is used to specify the asset code and
 /// issuer of the reserve.
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Reserve {
     /// The asset code of the reserve.
