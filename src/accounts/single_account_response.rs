@@ -4,44 +4,9 @@ extern crate serde_json;
 use derive_getters::Getters;
 use serde::Deserialize;
 
-use crate::models::Response;
+use crate::{models::Response, Flags};
 
-/// Represents the navigational links in a single account response from the Horizon API.
-///
-/// This struct includes various hyperlinks such as links to the account itself, transactions,
-/// operations, payments, effects, offers, trades, and data, providing quick access to related resources.
-///
-#[derive(Debug, Deserialize, Clone, Getters)]
-pub struct Links {
-    /// The link to the account itself.
-    #[serde(rename = "self")]
-    self_link: SelfLink,
-    /// Link to the account's transactions.
-    transactions: Link,
-    /// Link to the account's operations.
-    operations: Link,
-    /// Link to the account's payments.
-    payments: Link,
-    /// Link to the effects concerning the account.
-    effects: Link,
-    /// Link to the account's offers.
-    offers: Link,
-    /// Link to the trades involving the account.
-    trades: Link,
-    /// Link to the account's additional data.
-    data: Link,
-}
-
-/// Represents the self-link in the list of single account response.
-///
-/// This struct defines the structure of the self-link (`href`) found in the accounts response
-/// from the Horizon API. It contains the URL to the current resource or query.
-///
-#[derive(Debug, Deserialize, Clone, Getters)]
-pub struct SelfLink {
-    /// A `String` representing the hyperlink reference to the current resource or query.
-    href: String,
-}
+use super::AccountResponseLinks;
 
 /// Represents a single hyperlink with a templating option.
 ///
@@ -70,24 +35,6 @@ pub struct Thresholds {
     /// The high threshold value for operations.
     high_threshold: u32,
 }
-
-/// Represents the authorization flags set on a single account.
-///
-/// This struct defines the various boolean flags that can be set on an account, 
-/// indicating specific permissions or settings.
-///
-#[derive(Debug, Deserialize, Clone, Getters)]
-pub struct Flags {
-    /// Indicates if authorization is required for transactions.
-    auth_required: bool,
-    /// Indicates if authorization can be revoked.
-    auth_revocable: bool,
-    /// Indicates if the account's authorization settings cannot be changed.
-    auth_immutable: bool,
-    /// Indicates if the clawback feature is enabled.
-    auth_clawback_enabled: bool,
-}
-
 
 /// Represents a single balance within a single account.
 ///
@@ -148,7 +95,7 @@ pub struct Data {
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct SingleAccountResponse {
     /// Navigational links related to the account.
-    _links: Links,
+    _links: AccountResponseLinks,
     /// The unique identifier of the account.
     id: String,
     /// The public key of the account.
