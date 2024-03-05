@@ -82,6 +82,9 @@
 //! Visit the documentation for `HorizonClient` and endpoint-specific request and response
 //! types for more examples and detailed usage instructions.
 
+use derive_getters::Getters;
+use serde::{Deserialize, Serialize};
+
 /// Provides `Request` and `Response` structs for retrieving accounts.
 ///
 /// This module provides a set of specialized request and response structures designed for
@@ -335,4 +338,36 @@ impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
             false => format!("?{}", params),
         }
     }
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
+pub struct ResponseLinks {
+    #[serde(rename = "self")]
+    pub self_link: SelfLink,
+    pub next_link: Option<SelfLink>,
+    pub prev_link: Option<SelfLink>,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
+pub struct SelfLink {
+    pub href: Option<String>,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
+pub struct Embedded<T> {
+    pub records: Vec<T>,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
+pub struct TemplateLink {
+    pub href: String,
+    pub templated: bool,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
+pub struct Flags {
+    pub auth_required: bool,
+    pub auth_revocable: bool,
+    pub auth_immutable: bool,
+    pub auth_clawback_enabled: bool,
 }

@@ -1,3 +1,8 @@
+use derive_getters::Getters;
+use serde::{Deserialize, Serialize};
+
+use crate::{SelfLink, TemplateLink};
+
 /// Provides the `AccountsRequest`.
 ///
 /// This module provides the `AccountsRequest` struct, which is specifically designed
@@ -86,4 +91,30 @@ pub mod prelude {
     pub use super::accounts_response::*;
     pub use super::single_account_request::*;
     pub use super::single_account_response::*;
+}
+
+/// Represents the navigational links in a single account response from the Horizon API.
+///
+/// This struct includes various hyperlinks such as links to the account itself, transactions,
+/// operations, payments, effects, offers, trades, and data, providing quick access to related resources.
+///
+#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
+pub struct AccountResponseLinks {
+    /// The link to the account itself.
+    #[serde(rename = "self")]
+    self_link: SelfLink,
+    /// Link to the account's transactions.
+    transactions: TemplateLink,
+    /// Link to the account's operations.
+    operations: TemplateLink,
+    /// Link to the account's payments.
+    payments: TemplateLink,
+    /// Link to the effects concerning the account.
+    effects: TemplateLink,
+    /// Link to the account's offers.
+    offers: TemplateLink,
+    /// Link to the trades involving the account.
+    trades: TemplateLink,
+    /// Link to the account's additional data.
+    data: TemplateLink,
 }
