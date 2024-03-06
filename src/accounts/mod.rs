@@ -1,7 +1,7 @@
 use derive_getters::Getters;
 use serde::{Deserialize, Serialize};
 
-use crate::{SelfLink, TemplateLink};
+use crate::{Flags, SelfLink, TemplateLink};
 
 /// Provides the `AccountsRequest`.
 ///
@@ -91,6 +91,87 @@ pub mod prelude {
     pub use super::accounts_response::*;
     pub use super::single_account_request::*;
     pub use super::single_account_response::*;
+}
+
+#[derive(Debug, Deserialize, Clone, Getters)]
+pub struct AccountRecord {
+    /// Links associated with this account record.
+    #[serde(rename = "_links")]
+    links: AccountResponseLinks,
+    /// The unique identifier of the account.
+    id: String,
+    /// The public key of the account.
+    account_id: String,
+    /// The sequence number of the account.
+    sequence: String,
+    /// The number of subentries in the account.
+    subentry_count: i32,
+    last_modified_ledger: u64,
+    last_modified_time: String,
+    /// The thresholds for different operations in the account.
+    thresholds: Thresholds,
+    /// The flags set on the account.
+    flags: Flags,
+    /// A list of balances for different assets held by the account.
+    balances: Vec<Balances>,
+    /// A list of signers associated with the account.
+    signers: Vec<Signer>,
+    /// Additional data associated with the account (in JSON format).
+    data: serde_json::Value,
+    /// The number of entries the account is sponsoring.
+    num_sponsoring: i32,
+    /// The number of entries the account is sponsored for.
+    num_sponsored: i32,
+    /// A token used for paging through results.
+    paging_token: String,
+}
+
+/// Represents the operational thresholds for a single account.
+///
+/// This struct defines the low, medium, and high thresholds for operations on an account, 
+/// determining the minimum level of authorization required for various types of transactions.
+///
+#[derive(Debug, Deserialize, Clone, Getters)]
+pub struct Thresholds {
+    /// The low threshold value for operations.
+    low_threshold: u32,
+    /// The medium threshold value for operations.
+    med_threshold: u32,
+    /// The high threshold value for operations.
+    high_threshold: u32,
+}
+
+/// Represents a single signer within a single account.
+///
+/// This struct details information about a signer for an account, including their key, 
+/// weight in authorization decisions, and type.
+///
+#[derive(Debug, Deserialize, Clone, Getters)]
+pub struct Signer {
+    /// The weight of the signer's vote in authorization decisions.
+    weight: u32,
+    /// The key associated with the signer.
+    key: String,
+    /// The type of the signer (e.g., 'ed25519_public_key').
+    #[serde(rename = "type")]
+    singer_type: String,
+}
+
+/// Represents a single balance within a single account.
+///
+/// This struct encapsulates the details of a single balance, including the amount, liabilities, 
+/// and the type of the asset.
+///
+#[derive(Debug, Deserialize, Clone, Getters)]
+pub struct Balances {
+    /// The total balance of the asset.
+    balance: String,
+    /// Buying liabilities associated with the asset.
+    buying_liabilities: String,
+    /// Selling liabilities associated with the asset.
+    selling_liabilities: String,
+    /// The type of the asset (e.g., native, credit_alphanum4, credit_alphanum12).
+    asset_type: String,
 }
 
 /// Represents the navigational links in a single account response from the Horizon API.

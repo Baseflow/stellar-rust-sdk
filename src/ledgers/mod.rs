@@ -1,3 +1,8 @@
+use derive_getters::Getters;
+use serde::{Deserialize, Serialize};
+
+use crate::{SelfLink, TemplateLink};
+
 /// Provides the `LedgersRequest` struct..
 ///
 /// This submodule contains the `LedgersRequest` struct, which is designed to create requests
@@ -92,5 +97,54 @@ pub mod prelude {
     pub use super::ledgers_request::*;
     pub use super::ledgers_response::*;
     pub use super::single_ledger_request::*;
-    pub use super::single_ledger_response::*;
+}
+
+#[derive(Debug, Deserialize, Clone, Getters)]
+pub struct LedgerRecordLinks {
+    #[serde(rename = "self")]
+    pub self_link: SelfLink,
+    pub transactions: TemplateLink,
+    pub operations: TemplateLink,
+    pub payments: TemplateLink,
+    pub effects: TemplateLink,
+}
+
+#[derive(Debug, Deserialize, Clone, Getters)]
+pub struct LedgerRecord {
+    /// Navigational links related to the ledger.
+    _links: LedgerRecordLinks,
+    /// The unique identifier of the ledger.
+    id: String,
+    /// A token used for paging through results.
+    paging_token: String,
+    /// The hash of the ledger.
+    hash: String,
+    /// The hash of the previous ledger.
+    prev_hash: String,
+    /// The sequence number of the ledger.
+    sequence: i32,
+    /// The number of successful transactions in the ledger.
+    successful_transaction_count: i32,
+    /// The number of failed transactions in the ledger.
+    failed_transaction_count: i32,
+    /// The total number of operations in the ledger.
+    operation_count: i32,
+    /// The number of operations in the transaction set.
+    tx_set_operation_count: i32,
+    /// The closing time of the ledger.
+    closed_at: String,
+    /// The total number of coins in the ledger.
+    total_coins: String,
+    /// The total fees in the ledger's fee pool.
+    fee_pool: String,
+    /// The base fee in stroops for transactions in the ledger.
+    base_fee_in_stroops: i32,
+    /// The base reserve in stroops required for an account in the ledger.
+    base_reserve_in_stroops: i32,
+    /// The maximum size of a transaction set in the ledger.
+    max_tx_set_size: i32,
+    /// The protocol version used in the ledger.
+    protocol_version: i32,
+    /// The XDR-encoded header of the ledger.
+    header_xdr: String,
 }
