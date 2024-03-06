@@ -2,7 +2,7 @@ use super::*;
 use derive_getters::Getters;
 use serde::{Deserialize, Serialize};
 
-use crate::models::Response;
+use crate::{models::Response, Embedded, Flags, ResponseLinks};
 
 impl Response for AllClaimableBalancesResponse {
     fn from_json(json: String) -> Result<Self, String> {
@@ -12,24 +12,18 @@ impl Response for AllClaimableBalancesResponse {
     }
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
+#[derive(Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct AllClaimableBalancesResponse {
     #[serde(rename = "_links")]
-    pub links: NavigationLinks,
+    pub links: ResponseLinks,
     #[serde(rename = "_embedded")]
-    pub embedded: Embedded,
+    pub embedded: Embedded<ClaimableAssetRecord>,
 }
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct Embedded {
-    pub records: Vec<Record>,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
-pub struct Record {
+pub struct ClaimableAssetRecord {
     #[serde(rename = "_links")]
     pub links: Links,
     pub id: String,
@@ -41,7 +35,7 @@ pub struct Record {
     #[serde(rename = "last_modified_time")]
     pub last_modified_time: String,
     pub claimants: Vec<Claimant>,
-    pub flags: Flags,
+    pub flags: ClaimableBalanceFlag,
     #[serde(rename = "paging_token")]
     pub paging_token: String,
 }

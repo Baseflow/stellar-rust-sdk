@@ -340,31 +340,31 @@ impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
+#[derive(Default, Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct ResponseLinks {
     #[serde(rename = "self")]
     pub self_link: SelfLink,
-    pub next_link: Option<SelfLink>,
-    pub prev_link: Option<SelfLink>,
+    pub next: Option<SelfLink>,
+    pub prev: Option<SelfLink>,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
+#[derive(Default, Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct SelfLink {
     pub href: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
+#[derive(Default, Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct Embedded<T> {
     pub records: Vec<T>,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
+#[derive(Default, Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct TemplateLink {
-    pub href: String,
-    pub templated: bool,
+    pub href: Option<String>,
+    pub templated: Option<bool>,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
+#[derive(Default, Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct Flags {
     pub auth_required: bool,
     pub auth_revocable: bool,

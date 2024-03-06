@@ -4,6 +4,9 @@ use chrono::Utc;
 use derive_getters::Getters;
 
 use serde::{Deserialize, Serialize};
+
+use crate::SelfLink;
+use crate::TemplateLink;
 /// Provides the `AllClaimableBalancesRequest` struct.
 ///
 /// This module contains the `AllClaimableBalancesRequest` struct, which is designed to create requests
@@ -97,78 +100,59 @@ static CLAIMABLE_BALANCES_PATH: &str = "claimable_balances";
 /// let asset_request = AllClaimableBalancesRequest::new();
 /// // Further usage...
 /// ```
-///
-///
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
+/// Represents the response to a single claimable balance query in the Horizon API.
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct Flags {
-    #[serde(rename = "clawback_enabled")]
-    pub clawback_enabled: bool,
-}
+pub struct ClaimableBalanceRecord {
+    /// Links to related resources in the Horizon API response.
+    #[serde(rename = "_links")]
+    pub links: Links,
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
-#[serde(rename_all = "camelCase", rename(serialize = "self_field"))]
-pub struct SelfField {
-    pub href: String,
-}
+    /// The unique identifier of the claimable balance.
+    pub id: String,
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
-pub struct Next {
-    pub href: String,
-}
+    /// The asset type of the claimable balance.
+    pub asset: String,
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
-pub struct Prev {
-    pub href: String,
-}
+    /// The amount of the claimable balance.
+    pub amount: String,
 
-/// Represents a link to the transactions of a claimable balance.
-#[derive(Default, Debug, Clone, Serialize, PartialEq, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
-pub struct Transactions {
-    /// The URL of the transactions link.
-    pub href: String,
+    /// The account ID of the sponsor of the claimable balance.
+    pub sponsor: String,
 
-    /// Indicates if the link is templated.
-    pub templated: bool,
-}
+    /// The ledger number in which the claimable balance was last modified.
+    #[serde(rename = "last_modified_ledger")]
+    pub last_modified_ledger: i64,
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
-pub struct NavigationLinks {
-    #[serde(rename = "self")]
-    pub self_field: SelfField,
-    pub next: Next,
-    pub prev: Prev,
+    /// The timestamp when the claimable balance was last modified.
+    #[serde(rename = "last_modified_time")]
+    pub last_modified_time: String,
+
+    /// A list of claimants eligible to claim the balance.
+    pub claimants: Vec<Claimant>,
+
+    /// Flags indicating special conditions of the claimable balance.
+    pub flags: ClaimableBalanceFlag,
+
+    /// A token used for paging through results.
+    #[serde(rename = "paging_token")]
+    pub paging_token: String,
 }
 
 /// Contains navigational links related to the single claimable balance response.
-#[derive(Default, Debug, Clone, Serialize, PartialEq, Deserialize, Getters)]
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Links {
     /// The link to the current claimable balance resource.
     #[serde(rename = "self")]
-    pub self_field: SelfField,
+    pub self_field: SelfLink,
 
     /// Link to transactions related to the claimable balance.
-    pub transactions: Transactions,
+    pub transactions: TemplateLink,
 
     /// Link to operations related to the claimable balance.
-    pub operations: Operations,
-}
-
-/// Represents a link to the operations of a claimable balance.
-#[derive(Default, Debug, Clone, Serialize, Deserialize, PartialEq, Getters)]
-#[serde(rename_all = "camelCase")]
-pub struct Operations {
-    /// The URL of the operations link.
-    pub href: String,
-
-    /// Indicates if the link is templated.
-    pub templated: bool,
+    pub operations: TemplateLink,
 }
 
 /// Represents a claimant of a claimable balance.
@@ -180,6 +164,12 @@ pub struct Claimant {
 
     /// Conditions that need to be met for the claimant to claim the balance.
     pub predicate: Predicate,
+}
+
+#[derive(Default, Debug, Clone, Serialize, PartialEq, Deserialize, Getters)]
+pub struct ClaimableBalanceFlag {
+    /// The flag indicating whether the claimable balance is clawback-enabled.
+    pub clawback_enabled: bool,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
@@ -288,7 +278,6 @@ pub mod prelude {
     pub use super::all_claimable_balances_request::*;
     pub use super::all_claimable_balances_response::*;
     pub use super::single_claimable_balance_request::*;
-    pub use super::single_claimable_balance_response::*;
 }
 
 #[cfg(test)]

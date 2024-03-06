@@ -1,11 +1,17 @@
 use crate::{
     accounts::prelude::*,
     assets::prelude::{AllAssetsRequest, AllAssetsResponse},
-    claimable_balances::prelude::*,
+    claimable_balances::{
+        all_claimable_balances_request::AllClaimableBalancesRequest,
+        prelude::AllClaimableBalancesResponse,
+        single_claimable_balance_request::{ClaimableBalanceId, SingleClaimableBalanceRequest},
+        ClaimableBalanceRecord as SingleClaimableBalanceResponse,
+    },
     effects::prelude::*,
     ledgers::{
-        prelude::{LedgersRequest, LedgersResponse, SingleLedgerRequest, SingleLedgerResponse},
+        prelude::{LedgersRequest, LedgersResponse, SingleLedgerRequest},
         single_ledger_request::Sequence,
+        LedgerRecord as SingleLedgerResponse,
     },
     models::{Request, Response},
 };
@@ -756,6 +762,8 @@ fn url_validate(url: &str) -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
+    use std::any::Any;
+
     use base64::{engine::general_purpose, Engine};
     use chrono::{TimeZone, Utc};
 
@@ -925,7 +933,7 @@ mod tests {
 
         assert_eq!(
             *_accounts_response.clone().unwrap()._embedded().records()[0].signers()[0]
-                .signer_type(),
+                .singer_type(),
             "ed25519_public_key".to_string()
         );
 
@@ -1099,7 +1107,7 @@ mod tests {
         );
 
         assert_eq!(
-            _single_account_response.as_ref().unwrap().signers()[0].type_(),
+            _single_account_response.as_ref().unwrap().signers()[0].singer_type(),
             "ed25519_public_key"
         );
 
@@ -1291,6 +1299,8 @@ mod tests {
         let all_ledgers_request = LedgersRequest::new().set_limit(2).unwrap();
 
         let _all_ledgers_response = horizon_client.get_all_ledgers(&all_ledgers_request).await;
+
+        _all_ledgers_response.clone().unwrap();
 
         assert!(_all_ledgers_response.clone().is_ok());
 
@@ -1486,6 +1496,8 @@ mod tests {
         let _all_claimable_balances_response = horizon_client
             .get_all_claimable_balances(&all_claimable_balances_request)
             .await;
+
+        let rsp = _all_claimable_balances_response.clone().unwrap();
 
         assert!(_all_claimable_balances_response.clone().is_ok());
 
@@ -1726,8 +1738,6 @@ mod tests {
             .get_effects_for_account(&effects_for_account_request)
             .await;
 
-        println!("{:?}", effects_for_account_response);
-
         assert!(effects_for_account_response.clone().is_ok());
 
         assert_eq!(
@@ -1923,8 +1933,6 @@ mod tests {
         let _effects_for_ledger_response = horizon_client
             .get_effects_for_ledger(&effects_for_ledger_request)
             .await;
-
-        println!("{:#?}", _effects_for_ledger_response);
 
         assert!(_effects_for_ledger_response.clone().is_ok());
 

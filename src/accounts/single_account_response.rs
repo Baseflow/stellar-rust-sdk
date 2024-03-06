@@ -6,68 +6,7 @@ use serde::Deserialize;
 
 use crate::{models::Response, Flags};
 
-use super::AccountResponseLinks;
-
-/// Represents a single hyperlink with a templating option.
-///
-/// This struct is used for individual links within the account's response, indicating the 
-/// URL of the resource and whether it supports templating.
-///
-#[derive(Debug, Deserialize, Clone, Getters)]
-pub struct Link {
-    /// The URL of the linked resource.
-    href: String,
-    /// A boolean indicating if the link is templated.
-    templated: bool,
-}
-
-/// Represents the operational thresholds for a single account.
-///
-/// This struct defines the low, medium, and high thresholds for operations on an account, 
-/// determining the minimum level of authorization required for various types of transactions.
-///
-#[derive(Debug, Deserialize, Clone, Getters)]
-pub struct Thresholds {
-    /// The low threshold value for operations.
-    low_threshold: u32,
-    /// The medium threshold value for operations.
-    med_threshold: u32,
-    /// The high threshold value for operations.
-    high_threshold: u32,
-}
-
-/// Represents a single balance within a single account.
-///
-/// This struct encapsulates the details of a single balance, including the amount, liabilities, 
-/// and the type of the asset.
-///
-#[derive(Debug, Deserialize, Clone, Getters)]
-pub struct Balance {
-    /// The total balance of the asset.
-    balance: String,
-    /// Buying liabilities associated with the asset.
-    buying_liabilities: String,
-    /// Selling liabilities associated with the asset.
-    selling_liabilities: String,
-    /// The type of the asset (e.g., native, credit_alphanum4, credit_alphanum12).
-    asset_type: String,
-}
-
-/// Represents a single signer within a single account.
-///
-/// This struct details information about a signer for an account, including their key, 
-/// weight in authorization decisions, and type.
-///
-#[derive(Debug, Deserialize, Clone, Getters)]
-pub struct Signer {
-    /// The weight of the signer's vote in authorization decisions.
-    weight: u32,
-    /// The key associated with the signer.
-    key: String,
-    /// The type of the signer (e.g., 'ed25519_public_key').
-    #[serde(rename = "type")]
-    type_: String,
-}
+use super::{AccountResponseLinks, Balances, Signer, Thresholds};
 
 /// Represents additional data associated with a single account in the Horizon API response.
 ///
@@ -113,7 +52,7 @@ pub struct SingleAccountResponse {
     /// The flags set on the account.
     flags: Flags,
     /// A list of balances for different assets held by the account.
-    balances: Vec<Balance>,
+    balances: Vec<Balances>,
     /// A list of signers associated with the account.
     signers: Vec<Signer>,
     /// Additional data associated with the account.

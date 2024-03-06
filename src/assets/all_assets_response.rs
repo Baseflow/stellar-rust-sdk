@@ -1,25 +1,24 @@
-use crate::models::Response;
+use crate::{models::Response, Embedded, ResponseLinks};
 use derive_getters::Getters;
 use serde::{Deserialize, Serialize};
 
-/// Contains navigational links related to the all assets response in the Stellar Horizon API.
+/// Represents the response to a request for listing all assets from the Stellar Horizon API.
 ///
-/// This struct is a part of the [`AllAssetsResponse`] and provides hyperlinks for navigating 
-/// through the pages of asset records. It facilitates easy access to the current, next, and 
-/// previous pages in the list of all assets, enhancing the usability and navigability of the 
-/// API response.
+/// This struct encapsulates the complete response returned by the Horizon server when querying
+/// for all assets. It includes navigational links for pagination and a collection of detailed
+/// asset records, providing a comprehensive view of the assets available on the Stellar network.
 ///
 #[derive(Debug, Serialize, Deserialize, Clone, Getters)]
-pub struct Links {
-    /// A [`Link`] struct that points to the current page of asset records.
-    #[serde(rename = "self")]
-    self_link: Link,
-    /// A [`Link`] struct that points to the next page of asset records.
-    next: Link,
-    /// A [`Link`] struct that points to the previous page of asset records.
-    prev: Link,
+pub struct AllAssetsResponse {
+    /// A `Links` struct containing navigational links. These links are used for
+    ///   pagination purposes, allowing access to the current, next, and previous pages of the asset list.
+    _links: ResponseLinks,
+    ///
+    /// An `Embedded` struct that contains the actual list of asset records. Each
+    ///   record in this list provides detailed information about an individual asset, including
+    ///   its type, issuer, and various statistics related to its distribution and usage.
+    _embedded: Embedded<AssetRecords>,
 }
-
 
 /// Represents a single navigational or related link in the all assets response from the Stellar Horizon API.
 ///
@@ -27,7 +26,7 @@ pub struct Links {
 /// resources or additional information. It is a component of the [`Links`] struct within the [`AllAssetsResponse`].
 ///
 #[derive(Debug, Serialize, Deserialize, Clone, Getters)]
-pub struct Link {
+pub struct AssetTomlLink {
     /// The URL of the linked resource. This field is used to provide direct access to relevant resources
     ///     or additional data related to an asset.
     href: Option<String>,
@@ -43,7 +42,7 @@ pub struct Link {
 ///
 #[derive(Debug, Serialize, Deserialize, Clone, Getters)]
 pub struct Toml {
-    /// A `String` that contains the URL pointing to the TOML file. This URL can be used to 
+    /// A `String` that contains the URL pointing to the TOML file. This URL can be used to
     ///   retrieve the TOML file, which holds comprehensive metadata about the asset.
     href: String,
 }
@@ -54,9 +53,9 @@ pub struct Toml {
 /// and various other statistics and flags.
 ///
 #[derive(Debug, Serialize, Deserialize, Clone, Getters)]
-pub struct Records {
+pub struct AssetRecords {
     /// Links related to the asset, including a link to the asset's TOML file.
-    _links: Link,
+    _links: AssetTomlLink,
     /// The type of the asset, such as "native" for lumens or "credit_alphanum4" and
     ///   "credit_alphanum12" for other assets.
     asset_type: String,
@@ -147,37 +146,6 @@ pub struct Flags {
     /// A `bool` indicating whether the asset supports the clawback operation.
     ///   If `true`, the issuer can claw back the asset from user accounts.
     auth_clawback_enabled: bool,
-}
-
-/// Represents the container for asset records in the all assets response from the Horizon API.
-///
-/// This struct is a key component of the `AllAssetsResponse` and serves as a wrapper for the list of assets
-/// returned by the Horizon server. It primarily holds a collection of `Records` structs, each representing
-/// an individual asset's detailed information.
-///
-#[derive(Debug, Serialize, Deserialize, Clone, Getters)]
-pub struct Embedded {
-    ///A vector of `Records` structs. Each element in this vector contains comprehensive
-    ///   details about a specific asset, including its type, issuer, balances, and various flags.
-    records: Vec<Records>,
-}
-
-/// Represents the response to a request for listing all assets from the Stellar Horizon API.
-///
-/// This struct encapsulates the complete response returned by the Horizon server when querying
-/// for all assets. It includes navigational links for pagination and a collection of detailed
-/// asset records, providing a comprehensive view of the assets available on the Stellar network.
-///
-#[derive(Debug, Serialize, Deserialize, Clone, Getters)]
-pub struct AllAssetsResponse {
-    /// A `Links` struct containing navigational links. These links are used for
-    ///   pagination purposes, allowing access to the current, next, and previous pages of the asset list.
-    _links: Links,
-    ///
-    /// An `Embedded` struct that contains the actual list of asset records. Each
-    ///   record in this list provides detailed information about an individual asset, including
-    ///   its type, issuer, and various statistics related to its distribution and usage.
-    _embedded: Embedded,
 }
 
 impl Response for AllAssetsResponse {
