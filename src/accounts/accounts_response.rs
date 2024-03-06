@@ -16,7 +16,8 @@ pub struct AccountsResponse {
     /// Navigational links related to the response.
     _links: ResponseLinks,
     /// The embedded object containing the actual account records.
-    _embedded: Embedded<Record>,
+    #[serde(rename = "_embedded")]
+    embedded: Embedded<Record>,
 }
 
 /// Represents a single account record in the list of all accounts response.

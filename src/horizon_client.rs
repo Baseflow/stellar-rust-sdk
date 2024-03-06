@@ -87,7 +87,7 @@ impl HorizonClient {
     ///     .await;
     ///
     /// // Access the account details
-    /// for record in response?._embedded().records() {
+    /// for record in response?.embedded().records() {
     ///     println!("Account ID: {}", record.account_id());
     ///     // Further processing...
     ///  }
@@ -190,7 +190,7 @@ impl HorizonClient {
     /// let response = horizon_client.get_all_assets(&request).await;
     ///
     /// // Access asset details
-    /// for asset in response?._embedded().records() {
+    /// for asset in response?.embedded().records() {
     ///     println!("Asset Code: {}", asset.asset_code());
     ///     // Further processing...
     /// }
@@ -349,7 +349,7 @@ impl HorizonClient {
     ///
     /// // Access the effects
     /// if let Ok(effects_response) = response {
-    ///    for effect in effects_response._embedded().records() {
+    ///    for effect in effects_response.embedded().records() {
     ///       println!("Effect ID: {}", effect.id());
     ///      // Further processing...
     ///   }
@@ -400,7 +400,7 @@ impl HorizonClient {
     ///
     /// // Access the effects
     /// if let Ok(effects_response) = response {
-    ///    for effect in effects_response._embedded().records() {
+    ///    for effect in effects_response.embedded().records() {
     ///       println!("Effect ID: {}", effect.id());
     ///      // Further processing...
     ///   }
@@ -457,7 +457,7 @@ impl HorizonClient {
     /// // Process the response
     /// match response {
     ///     Ok(ledgers_response) => {
-    ///         for ledger in ledgers_response._embedded().records() {
+    ///         for ledger in ledgers_response.embedded().records() {
     ///             println!("Ledger ID: {}", ledger.id());
     ///             // Further processing...
     ///         }
@@ -564,7 +564,7 @@ impl HorizonClient {
     ///
     /// // Access the effects
     /// if let Ok(effects_response) = response {
-    ///   for effect in effects_response._embedded().records() {
+    ///   for effect in effects_response.embedded().records() {
     ///     println!("Effect ID: {}", effect.id());
     ///    // Further processing...
     ///  }
@@ -820,135 +820,135 @@ mod tests {
         assert!(_accounts_response.is_ok());
 
         assert_eq!(
-            _accounts_response.clone().unwrap()._embedded().records()[0].account_id(),
+            _accounts_response.clone().unwrap().embedded().records()[0].account_id(),
             ACCOUNT_ID
         );
 
         assert_eq!(
-            _accounts_response.clone().unwrap()._embedded().records()[0].id(),
+            _accounts_response.clone().unwrap().embedded().records()[0].id(),
             ACCOUNT_ID
         );
 
         assert_eq!(
-            _accounts_response.clone().unwrap()._embedded().records()[0].sequence(),
+            _accounts_response.clone().unwrap().embedded().records()[0].sequence(),
             SEQUENCE
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0].subentry_count(),
+            *_accounts_response.clone().unwrap().embedded().records()[0].subentry_count(),
             0
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0].last_modified_ledger(),
+            *_accounts_response.clone().unwrap().embedded().records()[0].last_modified_ledger(),
             LAST_MODIFIED_LEDGER
         );
 
         assert_eq!(
-            _accounts_response.clone().unwrap()._embedded().records()[0].last_modified_time(),
+            _accounts_response.clone().unwrap().embedded().records()[0].last_modified_time(),
             LAST_MODIFIED_TIME
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0]
+            *_accounts_response.clone().unwrap().embedded().records()[0]
                 .thresholds()
                 .low_threshold(),
             0
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0]
+            *_accounts_response.clone().unwrap().embedded().records()[0]
                 .thresholds()
                 .med_threshold(),
             0
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0]
+            *_accounts_response.clone().unwrap().embedded().records()[0]
                 .thresholds()
                 .high_threshold(),
             0
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0]
+            *_accounts_response.clone().unwrap().embedded().records()[0]
                 .flags()
                 .auth_required(),
             false
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0]
+            *_accounts_response.clone().unwrap().embedded().records()[0]
                 .flags()
                 .auth_revocable(),
             false
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0]
+            *_accounts_response.clone().unwrap().embedded().records()[0]
                 .flags()
                 .auth_immutable(),
             false
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0]
+            *_accounts_response.clone().unwrap().embedded().records()[0]
                 .flags()
                 .auth_clawback_enabled(),
             false
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0].balances()[0].balance(),
+            *_accounts_response.clone().unwrap().embedded().records()[0].balances()[0].balance(),
             "10000.0000000".to_string()
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0].balances()[0]
+            *_accounts_response.clone().unwrap().embedded().records()[0].balances()[0]
                 .asset_type(),
             "native".to_string()
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0].balances()[0]
+            *_accounts_response.clone().unwrap().embedded().records()[0].balances()[0]
                 .buying_liabilities(),
             "0.0000000".to_string()
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0].balances()[0]
+            *_accounts_response.clone().unwrap().embedded().records()[0].balances()[0]
                 .selling_liabilities(),
             "0.0000000".to_string()
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0].signers()[0].key(),
+            *_accounts_response.clone().unwrap().embedded().records()[0].signers()[0].key(),
             ACCOUNT_ID.to_string()
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0].signers()[0].weight(),
+            *_accounts_response.clone().unwrap().embedded().records()[0].signers()[0].weight(),
             1
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0].signers()[0]
+            *_accounts_response.clone().unwrap().embedded().records()[0].signers()[0]
                 .singer_type(),
             "ed25519_public_key".to_string()
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0].num_sponsoring(),
+            *_accounts_response.clone().unwrap().embedded().records()[0].num_sponsoring(),
             0
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0].num_sponsored(),
+            *_accounts_response.clone().unwrap().embedded().records()[0].num_sponsored(),
             0
         );
 
         assert_eq!(
-            *_accounts_response.clone().unwrap()._embedded().records()[0].paging_token(),
+            *_accounts_response.clone().unwrap().embedded().records()[0].paging_token(),
             ACCOUNT_ID.to_string()
         );
     }
@@ -1153,104 +1153,104 @@ mod tests {
         assert!(_all_assets_response.is_ok());
 
         assert_eq!(
-            _all_assets_response.clone().unwrap()._embedded().records()[0].asset_type(),
+            _all_assets_response.clone().unwrap().embedded().records()[0].asset_type(),
             asset_type
         );
 
         assert_eq!(
-            _all_assets_response.clone().unwrap()._embedded().records()[0].asset_code(),
+            _all_assets_response.clone().unwrap().embedded().records()[0].asset_code(),
             asset_code
         );
 
         assert_eq!(
-            _all_assets_response.clone().unwrap()._embedded().records()[0].asset_issuer(),
+            _all_assets_response.clone().unwrap().embedded().records()[0].asset_issuer(),
             asset_issuer
         );
 
         assert_eq!(
-            _all_assets_response.clone().unwrap()._embedded().records()[0].paging_token(),
+            _all_assets_response.clone().unwrap().embedded().records()[0].paging_token(),
             paging_token
         );
 
         assert_eq!(
-            _all_assets_response.clone().unwrap()._embedded().records()[0].paging_token(),
+            _all_assets_response.clone().unwrap().embedded().records()[0].paging_token(),
             &format!("{}_{}_{}", asset_code, asset_issuer, asset_type)
         );
 
         assert_eq!(
-            *_all_assets_response.clone().unwrap()._embedded().records()[0].num_accounts(),
+            *_all_assets_response.clone().unwrap().embedded().records()[0].num_accounts(),
             num_accounts
         );
 
         assert_eq!(
-            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+            *_all_assets_response.clone().unwrap().embedded().records()[0]
                 .num_claimable_balances(),
             0
         );
 
         assert_eq!(
-            *_all_assets_response.clone().unwrap()._embedded().records()[0].num_liquidity_pools(),
+            *_all_assets_response.clone().unwrap().embedded().records()[0].num_liquidity_pools(),
             0
         );
 
         assert_eq!(
-            _all_assets_response.clone().unwrap()._embedded().records()[0].amount(),
+            _all_assets_response.clone().unwrap().embedded().records()[0].amount(),
             amount
         );
 
         assert_eq!(
-            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+            *_all_assets_response.clone().unwrap().embedded().records()[0]
                 .accounts()
                 .authorized(),
             num_authorized
         );
 
         assert_eq!(
-            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+            *_all_assets_response.clone().unwrap().embedded().records()[0]
                 .accounts()
                 .authorized_to_maintain_liabilities(),
             2
         );
 
         assert_eq!(
-            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+            *_all_assets_response.clone().unwrap().embedded().records()[0]
                 .accounts()
                 .unauthorized(),
             num_unauthorized
         );
 
         assert_eq!(
-            _all_assets_response.clone().unwrap()._embedded().records()[0]
+            _all_assets_response.clone().unwrap().embedded().records()[0]
                 .claimable_balances_amount(),
             "0.0000000"
         );
 
         assert_eq!(
-            _all_assets_response.clone().unwrap()._embedded().records()[0].liquidity_pools_amount(),
+            _all_assets_response.clone().unwrap().embedded().records()[0].liquidity_pools_amount(),
             "0.0000000"
         );
 
         assert_eq!(
-            _all_assets_response.clone().unwrap()._embedded().records()[0].contracts_amount(),
+            _all_assets_response.clone().unwrap().embedded().records()[0].contracts_amount(),
             "0.0000000"
         );
 
         assert_eq!(
-            _all_assets_response.clone().unwrap()._embedded().records()[0]
+            _all_assets_response.clone().unwrap().embedded().records()[0]
                 .balances()
                 .authorized(),
             balances_authorized
         );
 
         assert_eq!(
-            _all_assets_response.clone().unwrap()._embedded().records()[0]
+            _all_assets_response.clone().unwrap().embedded().records()[0]
                 .balances()
                 .authorized_to_maintain_liabilities(),
             "1.0000000"
         );
 
         assert_eq!(
-            _all_assets_response.clone().unwrap()._embedded().records()[0]
+            _all_assets_response.clone().unwrap().embedded().records()[0]
                 .balances()
                 .unauthorized(),
             balances_unauthorized
@@ -1258,28 +1258,28 @@ mod tests {
 
         let auth_required = true;
         assert_eq!(
-            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+            *_all_assets_response.clone().unwrap().embedded().records()[0]
                 .flags()
                 .auth_required(),
             auth_required
         );
 
         assert_eq!(
-            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+            *_all_assets_response.clone().unwrap().embedded().records()[0]
                 .flags()
                 .auth_revocable(),
             true
         );
 
         assert_eq!(
-            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+            *_all_assets_response.clone().unwrap().embedded().records()[0]
                 .flags()
                 .auth_immutable(),
             false
         );
 
         assert_eq!(
-            *_all_assets_response.clone().unwrap()._embedded().records()[0]
+            *_all_assets_response.clone().unwrap().embedded().records()[0]
                 .flags()
                 .auth_clawback_enabled(),
             true
@@ -1305,28 +1305,28 @@ mod tests {
         assert!(_all_ledgers_response.clone().is_ok());
 
         assert_eq!(
-            _all_ledgers_response.clone().unwrap()._embedded().records()[0].hash(),
+            _all_ledgers_response.clone().unwrap().embedded().records()[0].hash(),
             hash
         );
 
         assert_eq!(
-            _all_ledgers_response.clone().unwrap()._embedded().records()[0].prev_hash(),
+            _all_ledgers_response.clone().unwrap().embedded().records()[0].prev_hash(),
             prev_hash
         );
 
         assert_eq!(
-            *_all_ledgers_response.clone().unwrap()._embedded().records()[0].sequence(),
+            *_all_ledgers_response.clone().unwrap().embedded().records()[0].sequence(),
             2
         );
 
         assert_eq!(
-            *_all_ledgers_response.clone().unwrap()._embedded().records()[0]
+            *_all_ledgers_response.clone().unwrap().embedded().records()[0]
                 .successful_transaction_count(),
             0
         );
 
         assert_eq!(
-            _all_ledgers_response.clone().unwrap()._embedded().records()[0].paging_token(),
+            _all_ledgers_response.clone().unwrap().embedded().records()[0].paging_token(),
             "8589934592"
         );
     }
@@ -1700,7 +1700,7 @@ mod tests {
             _all_effects_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()
                 .len() as u8,
             num_records_to_fetch
@@ -1708,13 +1708,13 @@ mod tests {
 
         // test first record retrieved
         assert_eq!(
-            _all_effects_response.clone().unwrap()._embedded().records()[0].type_i,
+            _all_effects_response.clone().unwrap().embedded().records()[0].type_i,
             0
         );
 
         // test second record retrieved
         assert_eq!(
-            _all_effects_response.clone().unwrap()._embedded().records()[1].type_i,
+            _all_effects_response.clone().unwrap().embedded().records()[1].type_i,
             3
         );
     }
@@ -1744,7 +1744,7 @@ mod tests {
             effects_for_account_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .id(),
             ID
@@ -1753,7 +1753,7 @@ mod tests {
             effects_for_account_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .paging_token(),
             PAGING_TOKEN
@@ -1762,7 +1762,7 @@ mod tests {
             effects_for_account_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .account(),
             ACCOUNT
@@ -1771,7 +1771,7 @@ mod tests {
             effects_for_account_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .effect_type(),
             RECORD_TYPE
@@ -1780,7 +1780,7 @@ mod tests {
             effects_for_account_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .type_i(),
             &TYPE_I
@@ -1789,7 +1789,7 @@ mod tests {
             effects_for_account_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .created_at(),
             CREATED_AT
@@ -1798,7 +1798,7 @@ mod tests {
             effects_for_account_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .starting_balance()
                 .as_ref()
@@ -1832,7 +1832,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .id(),
             ID
@@ -1842,7 +1842,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .paging_token(),
             PAGING_TOKEN
@@ -1852,7 +1852,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .account(),
             ACCOUNT
@@ -1862,7 +1862,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .effect_type(),
             RECORD_TYPE
@@ -1872,7 +1872,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .type_i(),
             &TYPE_I
@@ -1882,7 +1882,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .created_at(),
             CREATED_AT
@@ -1892,7 +1892,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .starting_balance()
                 .as_ref()
@@ -1913,7 +1913,7 @@ mod tests {
             effects_for_liquidity_pools_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .id(),
             ID
@@ -1940,7 +1940,7 @@ mod tests {
             _effects_for_ledger_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[0]
                 .id,
             "0000000536870916097-0000000001"
@@ -1950,7 +1950,7 @@ mod tests {
             _effects_for_ledger_response
                 .clone()
                 .unwrap()
-                ._embedded()
+                .embedded()
                 .records()[1]
                 .effect_type,
             "account_debited"
