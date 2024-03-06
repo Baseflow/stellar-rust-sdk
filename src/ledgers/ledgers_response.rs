@@ -15,7 +15,8 @@ pub struct LedgersResponse {
     /// Navigational links for the current, next, and previous pages of the response.
     _links: ResponseLinks,
     /// Contains the actual list of ledger records in the `records` field.
-    _embedded: Embedded<LedgerRecord>,
+    #[serde(rename = "_embedded")]
+    embedded: Embedded<LedgerRecord>,
 }
 
 impl Response for LedgersResponse {

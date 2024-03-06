@@ -17,7 +17,8 @@ pub struct AllAssetsResponse {
     /// An `Embedded` struct that contains the actual list of asset records. Each
     ///   record in this list provides detailed information about an individual asset, including
     ///   its type, issuer, and various statistics related to its distribution and usage.
-    _embedded: Embedded<AssetRecords>,
+    #[serde(rename = "_embedded")]
+    embedded: Embedded<AssetRecords>,
 }
 
 /// Represents a single navigational or related link in the all assets response from the Stellar Horizon API.

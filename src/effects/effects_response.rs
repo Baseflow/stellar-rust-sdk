@@ -58,7 +58,9 @@ pub struct EffectsResponse {
     /// Navigational links for the current, next, and previous pages of the response.
     _links: ResponseLinks,
     /// Contains the actual list of effect records in the `records` field.
-    _embedded: Embedded<EffectsResponseRecord>,
+    
+    #[serde(rename = "_embedded")]
+    embedded: Embedded<EffectsResponseRecord>,
 }
 
 impl Response for EffectsResponse {
