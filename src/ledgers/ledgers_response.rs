@@ -3,7 +3,7 @@ use serde::Deserialize;
 
 use crate::{models::Response, Embedded, ResponseLinks};
 
-use super::{LedgerRecord, LedgerRecordLinks};
+use super::LedgerRecord;
 
 /// Represents the response to a request for listing all ledgers from the Stellar Horizon API.
 ///

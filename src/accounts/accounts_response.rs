@@ -1,5 +1,5 @@
 use derive_getters::Getters;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 use crate::{models::Response, Embedded, Flags, ResponseLinks};
 
