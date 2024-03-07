@@ -1,10 +1,6 @@
-use super::*;
-use derive_getters::Getters;
-use serde::Deserialize;
-use serde::Serialize;
-
 use crate::models::Response;
-use crate::Flags;
+
+use super::ClaimableBalanceRecord;
 
 impl Response for ClaimableBalanceRecord {
     fn from_json(json: String) -> Result<Self, String> {

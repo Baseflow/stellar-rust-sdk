@@ -1,5 +1,5 @@
 use derive_getters::Getters;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 
 use crate::{SelfLink, TemplateLink};
 
@@ -112,7 +112,8 @@ pub struct LedgerRecordLinks {
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct LedgerRecord {
     /// Navigational links related to the ledger.
-    _links: LedgerRecordLinks,
+    #[serde(rename = "_links")]
+    links: LedgerRecordLinks,
     /// The unique identifier of the ledger.
     id: String,
     /// A token used for paging through results.

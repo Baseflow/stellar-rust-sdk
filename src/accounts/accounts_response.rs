@@ -14,7 +14,8 @@ use super::{AccountResponseLinks, Balances, Signer, Thresholds};
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct AccountsResponse {
     /// Navigational links related to the response.
-    _links: ResponseLinks,
+    #[serde(rename = "_links")]
+    links: ResponseLinks,
     /// The embedded object containing the actual account records.
     #[serde(rename = "_embedded")]
     embedded: Embedded<Record>,
