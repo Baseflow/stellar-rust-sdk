@@ -13,7 +13,8 @@ use super::{LedgerRecord, LedgerRecordLinks};
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct LedgersResponse {
     /// Navigational links for the current, next, and previous pages of the response.
-    _links: ResponseLinks,
+    #[serde(rename = "_links")]
+    links: ResponseLinks,
     /// Contains the actual list of ledger records in the `records` field.
     #[serde(rename = "_embedded")]
     embedded: Embedded<LedgerRecord>,

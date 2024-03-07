@@ -34,7 +34,8 @@ pub struct Data {
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct SingleAccountResponse {
     /// Navigational links related to the account.
-    _links: AccountResponseLinks,
+    #[serde(rename = "_links")]
+    links: AccountResponseLinks,
     /// The unique identifier of the account.
     id: String,
     /// The public key of the account.

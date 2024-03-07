@@ -1,5 +1,3 @@
-use derive_getters::Getters;
-use serde::Deserialize;
 use stellar_xdr::curr::{LedgerHeader, Limits, ReadXdr};
 
 use crate::models::Response;

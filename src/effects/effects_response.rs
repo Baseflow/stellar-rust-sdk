@@ -26,7 +26,8 @@ pub struct EffectsResponseRecordLink {
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct EffectsResponseRecord {
     /// Navigational links related to the operation of the effect.
-    pub _links: EffectsResponseRecordLink,
+    #[serde(rename = "_links")]
+    pub links: EffectsResponseRecordLink,
     /// The unique identifier of the account.
     pub id: String,
     /// A token used for paging through results.
@@ -56,7 +57,8 @@ pub struct EffectsResponseRecord {
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct EffectsResponse {
     /// Navigational links for the current, next, and previous pages of the response.
-    _links: ResponseLinks,
+    #[serde(rename = "_links")]
+    links: ResponseLinks,
     /// Contains the actual list of effect records in the `records` field.
     
     #[serde(rename = "_embedded")]

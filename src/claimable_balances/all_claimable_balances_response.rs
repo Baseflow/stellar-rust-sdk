@@ -2,7 +2,7 @@ use super::*;
 use derive_getters::Getters;
 use serde::{Deserialize, Serialize};
 
-use crate::{models::Response, Embedded, Flags, ResponseLinks};
+use crate::{models::Response, Embedded, ResponseLinks};
 
 impl Response for AllClaimableBalancesResponse {
     fn from_json(json: String) -> Result<Self, String> {

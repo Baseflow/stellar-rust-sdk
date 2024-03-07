@@ -12,7 +12,8 @@ use serde::{Deserialize, Serialize};
 pub struct AllAssetsResponse {
     /// A `Links` struct containing navigational links. These links are used for
     ///   pagination purposes, allowing access to the current, next, and previous pages of the asset list.
-    _links: ResponseLinks,
+    #[serde(rename = "_links")]
+    links: ResponseLinks,
     ///
     /// An `Embedded` struct that contains the actual list of asset records. Each
     ///   record in this list provides detailed information about an individual asset, including
