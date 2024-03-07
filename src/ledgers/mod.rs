@@ -1,5 +1,5 @@
 use derive_getters::Getters;
-use serde::{Deserialize};
+use serde::Deserialize;
 
 use crate::{SelfLink, TemplateLink};
 
