@@ -372,4 +372,3 @@ impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
         }
     }
 }
-

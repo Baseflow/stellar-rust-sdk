@@ -72,3 +72,68 @@ pub mod prelude {
     pub use super::all_assets_request::*;
     pub use super::response::*;
 }
+
+#[cfg(test)]
+pub mod test {
+
+    use super::prelude::*;
+    use crate::horizon_client::HorizonClient;
+
+    #[tokio::test]
+    async fn test_get_all_assets() {
+        let asset_type = "credit_alphanum4";
+        let asset_code = "0";
+        let asset_issuer = "GAGNEED7RUE6PNAB3AKXFU6QZF4EUSVTICHE7YRHB53KDOEHGKWBL6BE";
+        let paging_token =
+            "0_GAGNEED7RUE6PNAB3AKXFU6QZF4EUSVTICHE7YRHB53KDOEHGKWBL6BE_credit_alphanum4";
+        let num_accounts = 0;
+        let amount = "0.0000000";
+        let num_authorized = 0;
+        let num_unauthorized = 0;
+        let balances_authorized = "0.0000000";
+        let balances_unauthorized = "0.0000000";
+
+        // Initialize horizon client
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        // construct request
+        let all_assets_request: AllAssetsRequest = AllAssetsRequest::new().set_limit(1).unwrap();
+
+        let response = horizon_client.get_all_assets(&all_assets_request).await;
+
+        assert!(response.is_ok());
+        let binding = response.unwrap();
+        let response = &binding.embedded().records()[0];
+        assert_eq!(response.asset_type(), asset_type);
+        assert_eq!(response.asset_code(), asset_code);
+        assert_eq!(response.asset_issuer(), asset_issuer);
+        assert_eq!(response.paging_token(), paging_token);
+        assert_eq!(
+            response.paging_token(),
+            &format!("{}_{}_{}", asset_code, asset_issuer, asset_type)
+        );
+        assert_eq!(response.num_accounts(), &num_accounts);
+        assert_eq!(response.num_claimable_balances(), &0);
+        assert_eq!(response.num_liquidity_pools(), &0);
+        assert_eq!(response.amount(), amount);
+        assert_eq!(response.accounts().authorized(), &num_authorized);
+        assert_eq!(response.accounts().authorized_to_maintain_liabilities(), &2);
+        assert_eq!(response.accounts().unauthorized(), &num_unauthorized);
+        assert_eq!(response.claimable_balances_amount(), "0.0000000");
+        assert_eq!(response.liquidity_pools_amount(), "0.0000000");
+        assert_eq!(response.contracts_amount(), "0.0000000");
+        assert_eq!(response.balances().authorized(), balances_authorized);
+        assert_eq!(
+            response.balances().authorized_to_maintain_liabilities(),
+            "1.0000000"
+        );
+        assert_eq!(response.balances().unauthorized(), balances_unauthorized);
+
+        let auth_required = true;
+        assert_eq!(response.flags().auth_required(), &auth_required);
+        assert_eq!(response.flags().auth_revocable(), &true);
+        assert_eq!(response.flags().auth_immutable(), &false);
+        assert_eq!(response.flags().auth_clawback_enabled(), &true);
+    }
+}

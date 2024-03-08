@@ -70,3 +70,101 @@ pub mod prelude {
     pub use super::response::*;
     pub use super::single_account_request::*;
 }
+
+#[cfg(test)]
+pub mod test {
+
+    use super::prelude::*;
+    use crate::horizon_client::HorizonClient;
+
+    static SEQUENCE: &str = "131988639973376";
+    static ACCOUNT_ID: &str = "GCAHCEGRUI7FFAQE3DBQWV7ULMQHFBUIVRZC4R2VISREAY6D52Z2NODN";
+    static LAST_MODIFIED_TIME: &str = "2024-02-08T14:25:14Z";
+    static LAST_MODIFIED_LEDGER: u64 = 30731;
+
+    #[tokio::test]
+    async fn test_get_account_list() {
+        // Initialize horizon client
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        // construct request
+        let accounts_request = AccountsRequest::new()
+            .set_signer_filter(ACCOUNT_ID)
+            .unwrap()
+            .set_limit(10)
+            .unwrap();
+
+        // call the get_account_list method to retrieve the account list response
+        let accounts_response: Result<AccountsResponse, String> =
+            horizon_client.get_account_list(&accounts_request).await;
+
+        assert!(accounts_response.is_ok());
+        let binding = accounts_response.unwrap();
+        let response = &binding.embedded().records()[0];
+        assert_eq!(response.account_id(), ACCOUNT_ID);
+        assert_eq!(response.id(), ACCOUNT_ID);
+        assert_eq!(response.sequence(), SEQUENCE);
+        assert_eq!(response.subentry_count(), &0);
+        assert_eq!(response.last_modified_ledger(), &LAST_MODIFIED_LEDGER);
+        assert_eq!(response.last_modified_time(), LAST_MODIFIED_TIME);
+        assert_eq!(response.thresholds().low_threshold(), &0);
+        assert_eq!(response.thresholds().med_threshold(), &0);
+        assert_eq!(response.thresholds().high_threshold(), &0);
+        assert_eq!(response.flags().auth_required(), &false);
+        assert_eq!(response.flags().auth_revocable(), &false);
+        assert_eq!(response.flags().auth_immutable(), &false);
+        assert_eq!(response.flags().auth_clawback_enabled(), &false);
+        assert_eq!(response.balances()[0].balance(), "10000.0000000");
+        assert_eq!(response.balances()[0].asset_type(), "native");
+        assert_eq!(response.balances()[0].buying_liabilities(), "0.0000000");
+        assert_eq!(response.balances()[0].selling_liabilities(), "0.0000000");
+        assert_eq!(response.signers()[0].key(), ACCOUNT_ID);
+        assert_eq!(response.signers()[0].weight(), &1);
+        assert_eq!(response.signers()[0].singer_type(), "ed25519_public_key");
+        assert_eq!(response.num_sponsoring(), &0);
+        assert_eq!(response.num_sponsored(), &0);
+        assert_eq!(response.paging_token(), ACCOUNT_ID);
+    }
+
+    #[tokio::test]
+    async fn test_get_single_account() {
+        // Initialize horizon client
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        // construct request
+        let single_account_request = SingleAccountRequest::new()
+            .set_account_id(ACCOUNT_ID.to_string())
+            .unwrap();
+
+        let single_account_response = horizon_client
+            .get_single_account(&single_account_request)
+            .await;
+
+        assert!(single_account_response.is_ok());
+        let response = single_account_response.unwrap();
+        assert_eq!(response.account_id().to_string(), ACCOUNT_ID);
+        assert_eq!(response.sequence().to_string(), SEQUENCE);
+        assert_eq!(response.subentry_count(), &0);
+        assert_eq!(response.last_modified_ledger(), &LAST_MODIFIED_LEDGER);
+        assert_eq!(response.last_modified_time(), LAST_MODIFIED_TIME);
+        assert_eq!(response.thresholds().low_threshold(), &0);
+        assert_eq!(response.thresholds().med_threshold(), &0);
+        assert_eq!(response.thresholds().high_threshold(), &0);
+        assert_eq!(response.flags().auth_required(), &false);
+        assert_eq!(response.flags().auth_revocable(), &false);
+        assert_eq!(response.flags().auth_immutable(), &false);
+        assert_eq!(response.flags().auth_clawback_enabled(), &false);
+        assert_eq!(response.balances()[0].balance(), "10000.0000000");
+        assert_eq!(response.balances()[0].asset_type(), "native");
+        assert_eq!(response.balances()[0].buying_liabilities(), "0.0000000");
+        assert_eq!(response.balances()[0].selling_liabilities(), "0.0000000");
+        assert_eq!(response.signers()[0].key(), ACCOUNT_ID);
+        assert_eq!(response.signers()[0].weight(), &1);
+        assert_eq!(response.signers()[0].singer_type(), "ed25519_public_key");
+        assert_eq!(response.num_sponsoring(), &0);
+        assert_eq!(response.num_sponsored(), &0);
+        assert_eq!(response.paging_token(), ACCOUNT_ID);
+    }
+}
