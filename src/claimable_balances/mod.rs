@@ -102,6 +102,7 @@ pub mod prelude {
 mod tests {
     use super::parse_epoch;
     use super::prelude::*;
+    use crate::horizon_client::HorizonClient;
     use chrono::DateTime;
     use chrono::{TimeZone, Utc};
     use lazy_static::lazy_static;
@@ -152,5 +153,129 @@ mod tests {
     #[test]
     fn test_parse_epoch() {
         assert_eq!(parse_epoch(&EPOCH_STR.to_string()), *DATE);
+    }
+
+    #[tokio::test]
+    async fn test_get_all_claimable_balances() {
+        // Initialize horizon client
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        // construct request
+        let all_claimable_balances_request =
+            AllClaimableBalancesRequest::new().set_limit(4).unwrap();
+
+        let all_claimable_balances_response = horizon_client
+            .get_all_claimable_balances(&all_claimable_balances_request)
+            .await;
+
+        assert!(all_claimable_balances_response.is_ok());
+
+        let binding = all_claimable_balances_response.unwrap();
+        let predicate = binding.embedded().records()[1].claimants()[0].predicate();
+
+        let jan_first_2024 = Utc::with_ymd_and_hms(&Utc, 2024, 1, 1, 0, 0, 0).unwrap();
+        let valid_date = Utc::with_ymd_and_hms(&Utc, 2024, 2, 10, 0, 0, 0).unwrap();
+
+        assert_eq!(predicate.is_valid(jan_first_2024), true);
+        assert_eq!(predicate.is_valid(valid_date), true);
+        let record = &binding.embedded().records()[0];
+
+        assert_eq!(
+            record.id(),
+            "000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
+        );
+
+        assert_eq!(
+            record.asset(),
+            "USDC:GAKNDFRRWA3RPWNLTI3G4EBSD3RGNZZOY5WKWYMQ6CQTG3KIEKPYWAYC"
+        );
+
+        assert_eq!(record.amount(), "0.0010000");
+
+        assert_eq!(
+            record.sponsor(),
+            "GCENYNAX2UCY5RFUKA7AYEXKDIFITPRAB7UYSISCHVBTIAKPU2YO57OA"
+        );
+
+        assert_eq!(record.last_modified_ledger(), &591);
+
+        assert_eq!(
+            record.last_modified_time().to_string(),
+            "2024-02-06T18:25:07Z"
+        );
+
+        assert_eq!(record.flags().clawback_enabled(), &false);
+    }
+
+    #[tokio::test]
+    async fn test_get_single_claimable_balance() {
+        // Initialize horizon client
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        let single_claimable_balance_request = SingleClaimableBalanceRequest::new()
+            .set_claimable_balance_id(
+                "000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
+                    .to_string(),
+            );
+
+        let single_claimable_balance_response = horizon_client
+            .get_single_claimable_balance(&single_claimable_balance_request)
+            .await;
+
+        assert!(single_claimable_balance_response.is_ok());
+
+        let binding = single_claimable_balance_response.clone().unwrap();
+        let predicate = binding.claimants()[0].predicate();
+
+        let jan_first_2024 = Utc::with_ymd_and_hms(&Utc, 2024, 1, 1, 0, 0, 0).unwrap();
+        let valid_date = Utc::with_ymd_and_hms(&Utc, 2024, 2, 10, 0, 0, 0).unwrap();
+
+        assert_eq!(predicate.is_valid(jan_first_2024), true);
+        assert_eq!(predicate.is_valid(valid_date), true);
+
+        let single_claimable_balance_response = single_claimable_balance_response.unwrap();
+        assert_eq!(
+            single_claimable_balance_response.id().to_string(),
+            "000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
+        );
+
+        assert_eq!(
+            single_claimable_balance_response.asset().to_string(),
+            "USDC:GAKNDFRRWA3RPWNLTI3G4EBSD3RGNZZOY5WKWYMQ6CQTG3KIEKPYWAYC"
+        );
+
+        assert_eq!(
+            single_claimable_balance_response.amount().to_string(),
+            "0.0010000"
+        );
+
+        assert_eq!(
+            single_claimable_balance_response.sponsor().to_string(),
+            "GCENYNAX2UCY5RFUKA7AYEXKDIFITPRAB7UYSISCHVBTIAKPU2YO57OA"
+        );
+
+        assert_eq!(
+            single_claimable_balance_response.last_modified_ledger(),
+            &591
+        );
+
+        assert_eq!(
+            single_claimable_balance_response
+                .last_modified_time()
+                .to_string(),
+            "2024-02-06T18:25:07Z"
+        );
+
+        assert_eq!(
+            single_claimable_balance_response.flags().clawback_enabled(),
+            &false
+        );
+
+        assert_eq!(
+            single_claimable_balance_response.paging_token().to_string(),
+            "591-000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
+        );
     }
 }
