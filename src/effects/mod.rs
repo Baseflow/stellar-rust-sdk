@@ -19,6 +19,11 @@ mod tests {
     use super::prelude::*;
     use crate::horizon_client::HorizonClient;
 
+    #[test]
+    fn dummy_test() {
+        assert_eq!(super::EFFECTS_PATH, "effects");
+    }
+
     #[tokio::test]
     async fn test_get_all_effects() {
         let horizon_client =
