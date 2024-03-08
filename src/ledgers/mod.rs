@@ -12,7 +12,7 @@
 ///
 pub mod ledgers_request;
 
-/// Provides the `LedgersResponse` struct.
+/// Provides Ledger response models.
 ///
 /// This module contains structures that represent the response received from the Horizon API when
 /// querying for ledger data. These structures are designed to parse and encapsulate the JSON response

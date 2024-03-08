@@ -10,7 +10,7 @@
 ///
 pub mod all_assets_request;
 
-/// Provides the `AllAssetsResponse`.
+/// Provides the Asset responses.
 ///
 /// This module offers a set of structures representing the response received from the Horizon
 /// API when querying for all assets. These structures are tailored to convert the JSON response
