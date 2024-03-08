@@ -4,14 +4,12 @@ use crate::{
     claimable_balances::{
         all_claimable_balances_request::AllClaimableBalancesRequest,
         prelude::AllClaimableBalancesResponse,
-        single_claimable_balance_request::{ClaimableBalanceId, SingleClaimableBalanceRequest},
-        ClaimableBalanceRecord as SingleClaimableBalanceResponse,
+        single_claimable_balance_request::{ClaimableBalanceId, SingleClaimableBalanceRequest}, single_claimable_balance_response::SingleClaimableBalanceResponse,
     },
     effects::prelude::*,
     ledgers::{
         prelude::{LedgersRequest, LedgersResponse, SingleLedgerRequest},
-        single_ledger_request::Sequence,
-        LedgerRecord as SingleLedgerResponse,
+        single_ledger_request::Sequence, single_ledger_response::SingleLedgerResponse,
     },
     models::{Request, Response},
 };
@@ -300,7 +298,7 @@ impl HorizonClient {
     ///
     /// // Access the details of the claimable balance
     /// if let Ok(balance_response) = response {
-    ///     println!("Balance Amount: {}", balance_response.amount());
+    ///     println!("Balance Amount: {}", balance_response.record().amount());
     ///     // Further processing...
     /// }
     ///
@@ -512,7 +510,7 @@ impl HorizonClient {
     /// let response = horizon_client.get_single_ledger(&request).await;
     ///
     /// if let Ok(ledger) = response {
-    ///     println!("Ledger ID: {}", ledger.id());
+    ///     println!("Ledger ID: {}", ledger.record().id());
     ///     // Additional processing...
     /// }
     /// # Ok({})
@@ -1352,26 +1350,26 @@ mod tests {
 
         assert!(_single_ledger_response.clone().is_ok());
 
-        assert_eq!(_single_ledger_response.clone().unwrap().id(), id);
+        assert_eq!(_single_ledger_response.clone().unwrap().record().id(), id);
 
         assert_eq!(
-            _single_ledger_response.clone().unwrap().paging_token(),
+            _single_ledger_response.clone().unwrap().record().paging_token(),
             "8589934592"
         );
 
-        assert_eq!(_single_ledger_response.clone().unwrap().hash(), hash);
+        assert_eq!(_single_ledger_response.clone().unwrap().record().hash(), hash);
 
         assert_eq!(
-            _single_ledger_response.clone().unwrap().prev_hash(),
+            _single_ledger_response.clone().unwrap().record().prev_hash(),
             prev_hash
         );
 
-        assert_eq!(*_single_ledger_response.clone().unwrap().sequence(), 2);
+        assert_eq!(*_single_ledger_response.clone().unwrap().record().sequence(), 2);
 
         assert_eq!(
             *_single_ledger_response
                 .clone()
-                .unwrap()
+                .unwrap().record()
                 .successful_transaction_count(),
             0
         );
@@ -1379,43 +1377,43 @@ mod tests {
         assert_eq!(
             *_single_ledger_response
                 .clone()
-                .unwrap()
+                .unwrap().record()
                 .failed_transaction_count(),
             0
         );
 
         assert_eq!(
-            *_single_ledger_response.clone().unwrap().operation_count(),
+            *_single_ledger_response.clone().unwrap().record().operation_count(),
             0
         );
 
         assert_eq!(
             *_single_ledger_response
                 .clone()
-                .unwrap()
+                .unwrap().record()
                 .tx_set_operation_count(),
             0
         );
 
         assert_eq!(
-            _single_ledger_response.clone().unwrap().closed_at(),
+            _single_ledger_response.clone().unwrap().record().closed_at(),
             closed_at
         );
 
         assert_eq!(
-            _single_ledger_response.clone().unwrap().total_coins(),
+            _single_ledger_response.clone().unwrap().record().total_coins(),
             "100000000000.0000000"
         );
 
         assert_eq!(
-            _single_ledger_response.clone().unwrap().fee_pool(),
+            _single_ledger_response.clone().unwrap().record().fee_pool(),
             "0.0000000"
         );
 
         assert_eq!(
             *_single_ledger_response
                 .clone()
-                .unwrap()
+                .unwrap().record()
                 .base_fee_in_stroops(),
             100
         );
@@ -1423,23 +1421,23 @@ mod tests {
         assert_eq!(
             *_single_ledger_response
                 .clone()
-                .unwrap()
+                .unwrap().record()
                 .base_reserve_in_stroops(),
             100000000
         );
 
         assert_eq!(
-            *_single_ledger_response.clone().unwrap().max_tx_set_size(),
+            *_single_ledger_response.clone().unwrap().record().max_tx_set_size(),
             100
         );
 
         assert_eq!(
-            *_single_ledger_response.clone().unwrap().protocol_version(),
+            *_single_ledger_response.clone().unwrap().record().protocol_version(),
             0
         );
 
         let decoded_xdr_header = _single_ledger_response
-            .unwrap()
+            .unwrap().record()
             .decoded_header_xdr()
             .unwrap();
 
@@ -1601,7 +1599,7 @@ mod tests {
         assert!(single_claimable_balance_response.is_ok());
 
         let binding = single_claimable_balance_response.clone().unwrap();
-        let predicate = binding.claimants()[0].predicate();
+        let predicate = binding.record().claimants()[0].predicate();
 
         let jan_first_2024 = Utc::with_ymd_and_hms(&Utc, 2024, 1, 1, 0, 0, 0).unwrap();
         let valid_date = Utc::with_ymd_and_hms(&Utc, 2024, 2, 10, 0, 0, 0).unwrap();
@@ -1612,7 +1610,7 @@ mod tests {
         assert_eq!(
             single_claimable_balance_response
                 .clone()
-                .unwrap()
+                .unwrap().record()
                 .id()
                 .to_string(),
             "000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
@@ -1621,7 +1619,7 @@ mod tests {
         assert_eq!(
             single_claimable_balance_response
                 .clone()
-                .unwrap()
+                .unwrap().record()
                 .asset()
                 .to_string(),
             "USDC:GAKNDFRRWA3RPWNLTI3G4EBSD3RGNZZOY5WKWYMQ6CQTG3KIEKPYWAYC"
@@ -1630,7 +1628,7 @@ mod tests {
         assert_eq!(
             single_claimable_balance_response
                 .clone()
-                .unwrap()
+                .unwrap().record()
                 .amount()
                 .to_string(),
             "0.0010000"
@@ -1639,7 +1637,7 @@ mod tests {
         assert_eq!(
             single_claimable_balance_response
                 .clone()
-                .unwrap()
+                .unwrap().record()
                 .sponsor()
                 .to_string(),
             "GCENYNAX2UCY5RFUKA7AYEXKDIFITPRAB7UYSISCHVBTIAKPU2YO57OA"
@@ -1648,7 +1646,7 @@ mod tests {
         assert_eq!(
             *single_claimable_balance_response
                 .clone()
-                .unwrap()
+                .unwrap().record()
                 .last_modified_ledger(),
             591
         );
@@ -1656,7 +1654,7 @@ mod tests {
         assert_eq!(
             single_claimable_balance_response
                 .clone()
-                .unwrap()
+                .unwrap().record()
                 .last_modified_time()
                 .to_string(),
             "2024-02-06T18:25:07Z"
@@ -1665,7 +1663,7 @@ mod tests {
         assert_eq!(
             *single_claimable_balance_response
                 .clone()
-                .unwrap()
+                .unwrap().record()
                 .flags()
                 .clawback_enabled(),
             false
@@ -1674,7 +1672,7 @@ mod tests {
         assert_eq!(
             single_claimable_balance_response
                 .clone()
-                .unwrap()
+                .unwrap().record()
                 .paging_token()
                 .to_string(),
             "591-000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
