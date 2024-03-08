@@ -15,10 +15,10 @@ use chrono::Utc;
 ///
 pub mod all_claimable_balances_request;
 
-/// Provides the `AllClaimableBalancesResponse` struct.
+/// Provides the claimable balance responses.
 ///
-/// The `all_claimable_balances_response` module provides structures to parse and encapsulate
-/// the data returned by the Horizon server when a request for all claimable balances is made.
+/// The `response` module provides structures to parse and encapsulate
+/// the data returned by the Horizon server when a request for claimable balances is made.
 /// Claimable balances are ledger entries that can be claimed by a designated account under
 /// certain conditions and are a unique feature of the Stellar network.
 ///
