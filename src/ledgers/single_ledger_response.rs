@@ -1,12 +1,21 @@
+use derive_getters::Getters;
+use serde::Deserialize;
 use stellar_xdr::curr::{LedgerHeader, Limits, ReadXdr};
 
 use crate::models::Response;
 
 use super::LedgerRecord;
 
-impl Response for LedgerRecord {
-    fn from_json(json: String) -> Result<Self, String> {
-        serde_json::from_str(&json).map_err(|e| e.to_string())
+#[derive(Debug, Deserialize, Clone, Getters)]
+pub struct SingleLedgerResponse {
+    pub record: LedgerRecord,
+}
+
+impl Response for SingleLedgerResponse {
+    fn from_json<>(json: String) -> Result<Self, String> {
+        let ledger_record = serde_json::from_str(&json).map_err(|e| e.to_string())?;
+
+        Ok(SingleLedgerResponse { record: ledger_record })
     }
 }
 
