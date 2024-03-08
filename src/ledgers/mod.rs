@@ -1,8 +1,3 @@
-use derive_getters::Getters;
-use serde::Deserialize;
-
-use crate::{SelfLink, TemplateLink};
-
 /// Provides the `LedgersRequest` struct..
 ///
 /// This submodule contains the `LedgersRequest` struct, which is designed to create requests
@@ -26,7 +21,7 @@ pub mod ledgers_request;
 /// The primary structure in this module is `LedgersResponse`, which contains detailed information about
 /// each ledger, including its transactions, operations, and other related data.
 ///
-pub mod ledgers_response;
+pub mod response;
 
 /// Provides the `SingleLedgerRequest` struct.
 ///
@@ -41,18 +36,6 @@ pub mod ledgers_response;
 /// based on the ledger sequence number.
 ///
 pub mod single_ledger_request;
-
-/// Provides the `SingleLedgerResponse` structure.
-///
-/// This module contains the `SingleLedgerResponse` struct, which is designed to represent the response
-/// received from the Stellar Horizon API when querying for a single ledger. It encapsulates all the
-/// details of a ledger, including its transactions, operations, and various attributes.
-///
-/// The `SingleLedgerResponse` struct is particularly useful for applications that need to access specific
-/// details about a single ledger, such as its transaction count, operation count, total coins, and so on.
-
-///
-pub mod single_ledger_response;
 
 /// The base path for ledger-related endpoints in the Horizon API.
 ///
@@ -95,57 +78,7 @@ static LEDGERS_PATH: &str = "ledgers";
 ///
 pub mod prelude {
     pub use super::ledgers_request::*;
-    pub use super::ledgers_response::*;
+    pub use super::response::*;
     pub use super::single_ledger_request::*;
 }
 
-#[derive(Debug, Deserialize, Clone, Getters)]
-pub struct LedgerRecordLinks {
-    #[serde(rename = "self")]
-    pub self_link: SelfLink,
-    pub transactions: TemplateLink,
-    pub operations: TemplateLink,
-    pub payments: TemplateLink,
-    pub effects: TemplateLink,
-}
-
-#[derive(Debug, Deserialize, Clone, Getters)]
-pub struct LedgerRecord {
-    /// Navigational links related to the ledger.
-    #[serde(rename = "_links")]
-    links: LedgerRecordLinks,
-    /// The unique identifier of the ledger.
-    id: String,
-    /// A token used for paging through results.
-    paging_token: String,
-    /// The hash of the ledger.
-    hash: String,
-    /// The hash of the previous ledger.
-    prev_hash: String,
-    /// The sequence number of the ledger.
-    sequence: i32,
-    /// The number of successful transactions in the ledger.
-    successful_transaction_count: i32,
-    /// The number of failed transactions in the ledger.
-    failed_transaction_count: i32,
-    /// The total number of operations in the ledger.
-    operation_count: i32,
-    /// The number of operations in the transaction set.
-    tx_set_operation_count: i32,
-    /// The closing time of the ledger.
-    closed_at: String,
-    /// The total number of coins in the ledger.
-    total_coins: String,
-    /// The total fees in the ledger's fee pool.
-    fee_pool: String,
-    /// The base fee in stroops for transactions in the ledger.
-    base_fee_in_stroops: i32,
-    /// The base reserve in stroops required for an account in the ledger.
-    base_reserve_in_stroops: i32,
-    /// The maximum size of a transaction set in the ledger.
-    max_tx_set_size: i32,
-    /// The protocol version used in the ledger.
-    protocol_version: i32,
-    /// The XDR-encoded header of the ledger.
-    header_xdr: String,
-}

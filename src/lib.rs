@@ -83,8 +83,6 @@
 //! types for more examples and detailed usage instructions.
 
 use derive_getters::Getters;
-use serde::{Deserialize, Serialize};
-
 /// Provides `Request` and `Response` structs for retrieving accounts.
 ///
 /// This module provides a set of specialized request and response structures designed for
@@ -276,37 +274,37 @@ pub mod ledgers;
 ///
 /// The `effects` module in the Stellar Horizon SDK includes structures and methods that facilitate
 /// querying effect data from the Horizon server.
-/// 
+///
 /// # Usage
-/// 
+///
 /// This module is used to construct requests for effect-related data and to parse the responses
 /// received from the Horizon server. It includes request and response structures for both
 /// individual effect queries and queries for a collection of effects.
-/// 
+///
 /// # Example
-/// 
+///
 /// To use this module, you can create an instance of a request struct, such as `SingleEffectRequest`
 /// or `AllEffectsRequest`, set any desired query parameters, and pass the request to the
 /// `HorizonClient`. The client will then execute the request and return the corresponding
 /// response struct, like `SingleEffectResponse` or `AllEffectsResponse`.
-/// 
+///
 /// ```rust
 /// use stellar_rs::horizon_client::HorizonClient;
 /// use stellar_rs::effects::prelude::*;
 /// use stellar_rs::models::Request;
-/// 
+///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
 ///
 /// // Example: Fetching all effects
 /// let all_effects_request = AllEffectsRequest::new().set_limit(10)?;
 /// let effects_response = horizon_client.get_all_effects(&all_effects_request).await?;
-/// 
+///
 /// // Process the responses...
 /// # Ok(())
 /// # }
 /// ```
-/// 
+///
 pub mod effects;
 
 /// Contains core data structures and traits.
@@ -375,34 +373,3 @@ impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
     }
 }
 
-#[derive(Default, Debug, Deserialize, Serialize, Clone, Getters)]
-pub struct ResponseLinks {
-    #[serde(rename = "self")]
-    pub self_link: SelfLink,
-    pub next: Option<SelfLink>,
-    pub prev: Option<SelfLink>,
-}
-
-#[derive(Default, Debug, Deserialize, Serialize, Clone, Getters)]
-pub struct SelfLink {
-    pub href: Option<String>,
-}
-
-#[derive(Default, Debug, Deserialize, Serialize, Clone, Getters)]
-pub struct Embedded<T> {
-    pub records: Vec<T>,
-}
-
-#[derive(Default, Debug, Deserialize, Serialize, Clone, Getters)]
-pub struct TemplateLink {
-    pub href: Option<String>,
-    pub templated: Option<bool>,
-}
-
-#[derive(Default, Debug, Deserialize, Serialize, Clone, Getters)]
-pub struct Flags {
-    pub auth_required: bool,
-    pub auth_revocable: bool,
-    pub auth_immutable: bool,
-    pub auth_clawback_enabled: bool,
-}

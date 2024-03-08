@@ -3,13 +3,13 @@ use crate::{
     assets::prelude::{AllAssetsRequest, AllAssetsResponse},
     claimable_balances::{
         all_claimable_balances_request::AllClaimableBalancesRequest,
-        prelude::AllClaimableBalancesResponse,
-        single_claimable_balance_request::{ClaimableBalanceId, SingleClaimableBalanceRequest}, single_claimable_balance_response::SingleClaimableBalanceResponse,
+        prelude::{AllClaimableBalancesResponse, ClaimableBalance},
+        single_claimable_balance_request::{ClaimableBalanceId, SingleClaimableBalanceRequest},
     },
     effects::prelude::*,
     ledgers::{
-        prelude::{LedgersRequest, LedgersResponse, SingleLedgerRequest},
-        single_ledger_request::Sequence, single_ledger_response::SingleLedgerResponse,
+        prelude::{Ledger, LedgersRequest, LedgersResponse, SingleLedgerRequest},
+        single_ledger_request::Sequence,
     },
     models::{Request, Response},
 };
@@ -145,8 +145,8 @@ impl HorizonClient {
     pub async fn get_single_account(
         &self,
         request: &SingleAccountRequest<AccountId>,
-    ) -> Result<SingleAccountResponse, String> {
-        self.get::<SingleAccountResponse>(request).await
+    ) -> Result<Account, String> {
+        self.get::<Account>(request).await
     }
 
     /// Retrieves a list of all assets.
@@ -274,7 +274,7 @@ impl HorizonClient {
     ///
     /// # Returns
     ///
-    /// On successful execution, returns a `Result` containing a [`SingleClaimableBalanceResponse`],
+    /// On successful execution, returns a `Result` containing a [`ClaimableBalance`],
     /// which includes detailed information about the requested claimable balance. If the request
     /// fails, it returns an error within `Result`.
     ///
@@ -298,7 +298,7 @@ impl HorizonClient {
     ///
     /// // Access the details of the claimable balance
     /// if let Ok(balance_response) = response {
-    ///     println!("Balance Amount: {}", balance_response.record().amount());
+    ///     println!("Balance Amount: {}", balance_response.amount());
     ///     // Further processing...
     /// }
     ///
@@ -309,8 +309,8 @@ impl HorizonClient {
     pub async fn get_single_claimable_balance(
         &self,
         request: &SingleClaimableBalanceRequest<ClaimableBalanceId>,
-    ) -> Result<SingleClaimableBalanceResponse, String> {
-        self.get::<SingleClaimableBalanceResponse>(request).await
+    ) -> Result<ClaimableBalance, String> {
+        self.get::<ClaimableBalance>(request).await
     }
 
     /// Retrieves a list of effects for a specific account from the Horizon server.
@@ -487,7 +487,7 @@ impl HorizonClient {
     ///
     /// # Returns
     ///
-    /// Returns a `Result` containing a [`SingleLedgerResponse`], which includes detailed
+    /// Returns a `Result` containing a [`Ledger`], which includes detailed
     /// information about the requested ledger. If the request fails, it returns an error
     /// encapsulated within `Result`.
     ///
@@ -510,7 +510,7 @@ impl HorizonClient {
     /// let response = horizon_client.get_single_ledger(&request).await;
     ///
     /// if let Ok(ledger) = response {
-    ///     println!("Ledger ID: {}", ledger.record().id());
+    ///     println!("Ledger ID: {}", ledger.id());
     ///     // Additional processing...
     /// }
     /// # Ok({})
@@ -520,8 +520,8 @@ impl HorizonClient {
     pub async fn get_single_ledger(
         &self,
         request: &SingleLedgerRequest<Sequence>,
-    ) -> Result<SingleLedgerResponse, String> {
-        self.get::<SingleLedgerResponse>(request).await
+    ) -> Result<Ledger, String> {
+        self.get::<Ledger>(request).await
     }
 
     /// Retrieves a list of all effects from the Horizon server.
@@ -760,8 +760,6 @@ fn url_validate(url: &str) -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
-    use std::any::Any;
-
     use base64::{engine::general_purpose, Engine};
     use chrono::{TimeZone, Utc};
 
@@ -812,143 +810,35 @@ mod tests {
             .unwrap();
 
         // call the get_account_list method to retrieve the account list response
-        let _accounts_response: Result<AccountsResponse, String> =
+        let accounts_response: Result<AccountsResponse, String> =
             horizon_client.get_account_list(&accounts_request).await;
 
-        assert!(_accounts_response.is_ok());
-
-        assert_eq!(
-            _accounts_response.clone().unwrap().embedded().records()[0].account_id(),
-            ACCOUNT_ID
-        );
-
-        assert_eq!(
-            _accounts_response.clone().unwrap().embedded().records()[0].id(),
-            ACCOUNT_ID
-        );
-
-        assert_eq!(
-            _accounts_response.clone().unwrap().embedded().records()[0].sequence(),
-            SEQUENCE
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0].subentry_count(),
-            0
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0].last_modified_ledger(),
-            LAST_MODIFIED_LEDGER
-        );
-
-        assert_eq!(
-            _accounts_response.clone().unwrap().embedded().records()[0].last_modified_time(),
-            LAST_MODIFIED_TIME
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0]
-                .thresholds()
-                .low_threshold(),
-            0
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0]
-                .thresholds()
-                .med_threshold(),
-            0
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0]
-                .thresholds()
-                .high_threshold(),
-            0
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0]
-                .flags()
-                .auth_required(),
-            false
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0]
-                .flags()
-                .auth_revocable(),
-            false
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0]
-                .flags()
-                .auth_immutable(),
-            false
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0]
-                .flags()
-                .auth_clawback_enabled(),
-            false
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0].balances()[0].balance(),
-            "10000.0000000".to_string()
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0].balances()[0]
-                .asset_type(),
-            "native".to_string()
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0].balances()[0]
-                .buying_liabilities(),
-            "0.0000000".to_string()
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0].balances()[0]
-                .selling_liabilities(),
-            "0.0000000".to_string()
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0].signers()[0].key(),
-            ACCOUNT_ID.to_string()
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0].signers()[0].weight(),
-            1
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0].signers()[0]
-                .singer_type(),
-            "ed25519_public_key".to_string()
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0].num_sponsoring(),
-            0
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0].num_sponsored(),
-            0
-        );
-
-        assert_eq!(
-            *_accounts_response.clone().unwrap().embedded().records()[0].paging_token(),
-            ACCOUNT_ID.to_string()
-        );
+        assert!(accounts_response.is_ok());
+        let binding = accounts_response.unwrap();
+        let response = &binding.embedded().records()[0];
+        assert_eq!(response.account_id(), ACCOUNT_ID);
+        assert_eq!(response.id(), ACCOUNT_ID);
+        assert_eq!(response.sequence(), SEQUENCE);
+        assert_eq!(response.subentry_count(), &0);
+        assert_eq!(response.last_modified_ledger(), &LAST_MODIFIED_LEDGER);
+        assert_eq!(response.last_modified_time(), LAST_MODIFIED_TIME);
+        assert_eq!(response.thresholds().low_threshold(), &0);
+        assert_eq!(response.thresholds().med_threshold(), &0);
+        assert_eq!(response.thresholds().high_threshold(), &0);
+        assert_eq!(response.flags().auth_required(), &false);
+        assert_eq!(response.flags().auth_revocable(), &false);
+        assert_eq!(response.flags().auth_immutable(), &false);
+        assert_eq!(response.flags().auth_clawback_enabled(), &false);
+        assert_eq!(response.balances()[0].balance(), "10000.0000000");
+        assert_eq!(response.balances()[0].asset_type(), "native");
+        assert_eq!(response.balances()[0].buying_liabilities(), "0.0000000");
+        assert_eq!(response.balances()[0].selling_liabilities(), "0.0000000");
+        assert_eq!(response.signers()[0].key(), ACCOUNT_ID);
+        assert_eq!(response.signers()[0].weight(), &1);
+        assert_eq!(response.signers()[0].singer_type(), "ed25519_public_key");
+        assert_eq!(response.num_sponsoring(), &0);
+        assert_eq!(response.num_sponsored(), &0);
+        assert_eq!(response.paging_token(), ACCOUNT_ID);
     }
 
     #[tokio::test]
@@ -962,167 +852,34 @@ mod tests {
             .set_account_id(ACCOUNT_ID.to_string())
             .unwrap();
 
-        let _single_account_response = horizon_client
+        let single_account_response = horizon_client
             .get_single_account(&single_account_request)
             .await;
 
-        assert!(_single_account_response.is_ok());
-
-        assert_eq!(
-            _single_account_response
-                .clone()
-                .unwrap()
-                .account_id()
-                .to_string(),
-            ACCOUNT_ID
-        );
-
-        assert_eq!(
-            _single_account_response
-                .clone()
-                .unwrap()
-                .sequence()
-                .to_string(),
-            SEQUENCE
-        );
-
-        assert_eq!(
-            *_single_account_response
-                .clone()
-                .as_ref()
-                .unwrap()
-                .subentry_count(),
-            0
-        );
-
-        assert_eq!(
-            *_single_account_response
-                .as_ref()
-                .unwrap()
-                .last_modified_ledger(),
-            LAST_MODIFIED_LEDGER
-        );
-
-        assert_eq!(
-            _single_account_response
-                .as_ref()
-                .unwrap()
-                .last_modified_time(),
-            LAST_MODIFIED_TIME
-        );
-
-        assert_eq!(
-            *_single_account_response
-                .as_ref()
-                .unwrap()
-                .thresholds()
-                .low_threshold(),
-            0
-        );
-
-        assert_eq!(
-            *_single_account_response
-                .as_ref()
-                .unwrap()
-                .thresholds()
-                .med_threshold(),
-            0
-        );
-
-        assert_eq!(
-            *_single_account_response
-                .as_ref()
-                .unwrap()
-                .thresholds()
-                .high_threshold(),
-            0
-        );
-
-        assert_eq!(
-            *_single_account_response
-                .as_ref()
-                .unwrap()
-                .flags()
-                .auth_required(),
-            false
-        );
-
-        assert_eq!(
-            *_single_account_response
-                .as_ref()
-                .unwrap()
-                .flags()
-                .auth_revocable(),
-            false
-        );
-
-        assert_eq!(
-            *_single_account_response
-                .as_ref()
-                .unwrap()
-                .flags()
-                .auth_immutable(),
-            false
-        );
-
-        assert_eq!(
-            *_single_account_response
-                .as_ref()
-                .unwrap()
-                .flags()
-                .auth_clawback_enabled(),
-            false
-        );
-
-        assert_eq!(
-            _single_account_response.as_ref().unwrap().balances()[0].balance(),
-            "10000.0000000"
-        );
-
-        assert_eq!(
-            _single_account_response.as_ref().unwrap().balances()[0].asset_type(),
-            "native"
-        );
-
-        assert_eq!(
-            _single_account_response.as_ref().unwrap().balances()[0].buying_liabilities(),
-            "0.0000000"
-        );
-
-        assert_eq!(
-            _single_account_response.as_ref().unwrap().balances()[0].selling_liabilities(),
-            "0.0000000"
-        );
-
-        assert_eq!(
-            _single_account_response.as_ref().unwrap().signers()[0].key(),
-            ACCOUNT_ID
-        );
-
-        assert_eq!(
-            *_single_account_response.as_ref().unwrap().signers()[0].weight(),
-            1
-        );
-
-        assert_eq!(
-            _single_account_response.as_ref().unwrap().signers()[0].singer_type(),
-            "ed25519_public_key"
-        );
-
-        assert_eq!(
-            *_single_account_response.as_ref().unwrap().num_sponsoring(),
-            0
-        );
-
-        assert_eq!(
-            *_single_account_response.as_ref().unwrap().num_sponsored(),
-            0
-        );
-
-        assert_eq!(
-            _single_account_response.as_ref().unwrap().paging_token(),
-            ACCOUNT_ID
-        );
+        assert!(single_account_response.is_ok());
+        let response = single_account_response.unwrap();
+        assert_eq!(response.account_id().to_string(), ACCOUNT_ID);
+        assert_eq!(response.sequence().to_string(), SEQUENCE);
+        assert_eq!(response.subentry_count(), &0);
+        assert_eq!(response.last_modified_ledger(), &LAST_MODIFIED_LEDGER);
+        assert_eq!(response.last_modified_time(), LAST_MODIFIED_TIME);
+        assert_eq!(response.thresholds().low_threshold(), &0);
+        assert_eq!(response.thresholds().med_threshold(), &0);
+        assert_eq!(response.thresholds().high_threshold(), &0);
+        assert_eq!(response.flags().auth_required(), &false);
+        assert_eq!(response.flags().auth_revocable(), &false);
+        assert_eq!(response.flags().auth_immutable(), &false);
+        assert_eq!(response.flags().auth_clawback_enabled(), &false);
+        assert_eq!(response.balances()[0].balance(), "10000.0000000");
+        assert_eq!(response.balances()[0].asset_type(), "native");
+        assert_eq!(response.balances()[0].buying_liabilities(), "0.0000000");
+        assert_eq!(response.balances()[0].selling_liabilities(), "0.0000000");
+        assert_eq!(response.signers()[0].key(), ACCOUNT_ID);
+        assert_eq!(response.signers()[0].weight(), &1);
+        assert_eq!(response.signers()[0].singer_type(), "ed25519_public_key");
+        assert_eq!(response.num_sponsoring(), &0);
+        assert_eq!(response.num_sponsored(), &0);
+        assert_eq!(response.paging_token(), ACCOUNT_ID);
     }
 
     #[tokio::test]
@@ -1146,142 +903,62 @@ mod tests {
         // construct request
         let all_assets_request: AllAssetsRequest = AllAssetsRequest::new().set_limit(1).unwrap();
 
-        let _all_assets_response = horizon_client.get_all_assets(&all_assets_request).await;
+        let response = horizon_client.get_all_assets(&all_assets_request).await;
 
-        assert!(_all_assets_response.is_ok());
+        assert!(response.is_ok());
+        let binding = response.unwrap();
+        let response = &binding.embedded().records()[0];
 
-        assert_eq!(
-            _all_assets_response.clone().unwrap().embedded().records()[0].asset_type(),
-            asset_type
-        );
+        assert_eq!(response.asset_type(), asset_type);
 
-        assert_eq!(
-            _all_assets_response.clone().unwrap().embedded().records()[0].asset_code(),
-            asset_code
-        );
+        assert_eq!(response.asset_code(), asset_code);
 
-        assert_eq!(
-            _all_assets_response.clone().unwrap().embedded().records()[0].asset_issuer(),
-            asset_issuer
-        );
+        assert_eq!(response.asset_issuer(), asset_issuer);
+
+        assert_eq!(response.paging_token(), paging_token);
 
         assert_eq!(
-            _all_assets_response.clone().unwrap().embedded().records()[0].paging_token(),
-            paging_token
-        );
-
-        assert_eq!(
-            _all_assets_response.clone().unwrap().embedded().records()[0].paging_token(),
+            response.paging_token(),
             &format!("{}_{}_{}", asset_code, asset_issuer, asset_type)
         );
 
-        assert_eq!(
-            *_all_assets_response.clone().unwrap().embedded().records()[0].num_accounts(),
-            num_accounts
-        );
+        assert_eq!(response.num_accounts(), &num_accounts);
+
+        assert_eq!(response.num_claimable_balances(), &0);
+
+        assert_eq!(response.num_liquidity_pools(), &0);
+
+        assert_eq!(response.amount(), amount);
+
+        assert_eq!(response.accounts().authorized(), &num_authorized);
+
+        assert_eq!(response.accounts().authorized_to_maintain_liabilities(), &2);
+
+        assert_eq!(response.accounts().unauthorized(), &num_unauthorized);
+
+        assert_eq!(response.claimable_balances_amount(), "0.0000000");
+
+        assert_eq!(response.liquidity_pools_amount(), "0.0000000");
+
+        assert_eq!(response.contracts_amount(), "0.0000000");
+
+        assert_eq!(response.balances().authorized(), balances_authorized);
 
         assert_eq!(
-            *_all_assets_response.clone().unwrap().embedded().records()[0]
-                .num_claimable_balances(),
-            0
-        );
-
-        assert_eq!(
-            *_all_assets_response.clone().unwrap().embedded().records()[0].num_liquidity_pools(),
-            0
-        );
-
-        assert_eq!(
-            _all_assets_response.clone().unwrap().embedded().records()[0].amount(),
-            amount
-        );
-
-        assert_eq!(
-            *_all_assets_response.clone().unwrap().embedded().records()[0]
-                .accounts()
-                .authorized(),
-            num_authorized
-        );
-
-        assert_eq!(
-            *_all_assets_response.clone().unwrap().embedded().records()[0]
-                .accounts()
-                .authorized_to_maintain_liabilities(),
-            2
-        );
-
-        assert_eq!(
-            *_all_assets_response.clone().unwrap().embedded().records()[0]
-                .accounts()
-                .unauthorized(),
-            num_unauthorized
-        );
-
-        assert_eq!(
-            _all_assets_response.clone().unwrap().embedded().records()[0]
-                .claimable_balances_amount(),
-            "0.0000000"
-        );
-
-        assert_eq!(
-            _all_assets_response.clone().unwrap().embedded().records()[0].liquidity_pools_amount(),
-            "0.0000000"
-        );
-
-        assert_eq!(
-            _all_assets_response.clone().unwrap().embedded().records()[0].contracts_amount(),
-            "0.0000000"
-        );
-
-        assert_eq!(
-            _all_assets_response.clone().unwrap().embedded().records()[0]
-                .balances()
-                .authorized(),
-            balances_authorized
-        );
-
-        assert_eq!(
-            _all_assets_response.clone().unwrap().embedded().records()[0]
-                .balances()
-                .authorized_to_maintain_liabilities(),
+            response.balances().authorized_to_maintain_liabilities(),
             "1.0000000"
         );
 
-        assert_eq!(
-            _all_assets_response.clone().unwrap().embedded().records()[0]
-                .balances()
-                .unauthorized(),
-            balances_unauthorized
-        );
+        assert_eq!(response.balances().unauthorized(), balances_unauthorized);
 
         let auth_required = true;
-        assert_eq!(
-            *_all_assets_response.clone().unwrap().embedded().records()[0]
-                .flags()
-                .auth_required(),
-            auth_required
-        );
+        assert_eq!(response.flags().auth_required(), &auth_required);
 
-        assert_eq!(
-            *_all_assets_response.clone().unwrap().embedded().records()[0]
-                .flags()
-                .auth_revocable(),
-            true
-        );
+        assert_eq!(response.flags().auth_revocable(), &true);
 
-        assert_eq!(
-            *_all_assets_response.clone().unwrap().embedded().records()[0]
-                .flags()
-                .auth_immutable(),
-            false
-        );
+        assert_eq!(response.flags().auth_immutable(), &false);
 
-        assert_eq!(
-            *_all_assets_response.clone().unwrap().embedded().records()[0]
-                .flags()
-                .auth_clawback_enabled(),
-            true
-        );
+        assert_eq!(response.flags().auth_clawback_enabled(), &true);
     }
 
     #[tokio::test]
@@ -1296,37 +973,17 @@ mod tests {
         // construct request
         let all_ledgers_request = LedgersRequest::new().set_limit(2).unwrap();
 
-        let _all_ledgers_response = horizon_client.get_all_ledgers(&all_ledgers_request).await;
+        let all_ledgers_response = horizon_client.get_all_ledgers(&all_ledgers_request).await;
+        assert!(all_ledgers_response.is_ok());
 
-        _all_ledgers_response.clone().unwrap();
+        let binding = all_ledgers_response.unwrap();
+        let all_ledgers_response = &binding.embedded().records()[0];
 
-        assert!(_all_ledgers_response.clone().is_ok());
-
-        assert_eq!(
-            _all_ledgers_response.clone().unwrap().embedded().records()[0].hash(),
-            hash
-        );
-
-        assert_eq!(
-            _all_ledgers_response.clone().unwrap().embedded().records()[0].prev_hash(),
-            prev_hash
-        );
-
-        assert_eq!(
-            *_all_ledgers_response.clone().unwrap().embedded().records()[0].sequence(),
-            2
-        );
-
-        assert_eq!(
-            *_all_ledgers_response.clone().unwrap().embedded().records()[0]
-                .successful_transaction_count(),
-            0
-        );
-
-        assert_eq!(
-            _all_ledgers_response.clone().unwrap().embedded().records()[0].paging_token(),
-            "8589934592"
-        );
+        assert_eq!(all_ledgers_response.hash(), hash);
+        assert_eq!(all_ledgers_response.prev_hash(), prev_hash);
+        assert_eq!(all_ledgers_response.sequence(), &2);
+        assert_eq!(all_ledgers_response.successful_transaction_count(), &0);
+        assert_eq!(all_ledgers_response.paging_token(), "8589934592");
     }
 
     #[tokio::test]
@@ -1344,102 +1001,30 @@ mod tests {
         // construct request
         let single_ledger_request = SingleLedgerRequest::new().set_sequence(2).unwrap();
 
-        let _single_ledger_response = horizon_client
+        let single_ledger_response = horizon_client
             .get_single_ledger(&single_ledger_request)
             .await;
 
-        assert!(_single_ledger_response.clone().is_ok());
+        assert!(single_ledger_response.is_ok());
+        let single_ledger_response = single_ledger_response.unwrap();
+        assert_eq!(single_ledger_response.id(), id);
+        assert_eq!(single_ledger_response.paging_token(), "8589934592");
+        assert_eq!(single_ledger_response.hash(), hash);
+        assert_eq!(single_ledger_response.prev_hash(), prev_hash);
+        assert_eq!(single_ledger_response.sequence(), &2);
+        assert_eq!(single_ledger_response.successful_transaction_count(), &0);
+        assert_eq!(single_ledger_response.failed_transaction_count(), &0);
+        assert_eq!(single_ledger_response.operation_count(), &0);
+        assert_eq!(single_ledger_response.tx_set_operation_count(), &0);
+        assert_eq!(single_ledger_response.closed_at(), closed_at);
+        assert_eq!(single_ledger_response.total_coins(), "100000000000.0000000");
+        assert_eq!(single_ledger_response.fee_pool(), "0.0000000");
+        assert_eq!(single_ledger_response.base_fee_in_stroops(), &100);
+        assert_eq!(single_ledger_response.base_reserve_in_stroops(), &100000000);
+        assert_eq!(single_ledger_response.max_tx_set_size(), &100);
+        assert_eq!(single_ledger_response.protocol_version(), &0);
 
-        assert_eq!(_single_ledger_response.clone().unwrap().record().id(), id);
-
-        assert_eq!(
-            _single_ledger_response.clone().unwrap().record().paging_token(),
-            "8589934592"
-        );
-
-        assert_eq!(_single_ledger_response.clone().unwrap().record().hash(), hash);
-
-        assert_eq!(
-            _single_ledger_response.clone().unwrap().record().prev_hash(),
-            prev_hash
-        );
-
-        assert_eq!(*_single_ledger_response.clone().unwrap().record().sequence(), 2);
-
-        assert_eq!(
-            *_single_ledger_response
-                .clone()
-                .unwrap().record()
-                .successful_transaction_count(),
-            0
-        );
-
-        assert_eq!(
-            *_single_ledger_response
-                .clone()
-                .unwrap().record()
-                .failed_transaction_count(),
-            0
-        );
-
-        assert_eq!(
-            *_single_ledger_response.clone().unwrap().record().operation_count(),
-            0
-        );
-
-        assert_eq!(
-            *_single_ledger_response
-                .clone()
-                .unwrap().record()
-                .tx_set_operation_count(),
-            0
-        );
-
-        assert_eq!(
-            _single_ledger_response.clone().unwrap().record().closed_at(),
-            closed_at
-        );
-
-        assert_eq!(
-            _single_ledger_response.clone().unwrap().record().total_coins(),
-            "100000000000.0000000"
-        );
-
-        assert_eq!(
-            _single_ledger_response.clone().unwrap().record().fee_pool(),
-            "0.0000000"
-        );
-
-        assert_eq!(
-            *_single_ledger_response
-                .clone()
-                .unwrap().record()
-                .base_fee_in_stroops(),
-            100
-        );
-
-        assert_eq!(
-            *_single_ledger_response
-                .clone()
-                .unwrap().record()
-                .base_reserve_in_stroops(),
-            100000000
-        );
-
-        assert_eq!(
-            *_single_ledger_response.clone().unwrap().record().max_tx_set_size(),
-            100
-        );
-
-        assert_eq!(
-            *_single_ledger_response.clone().unwrap().record().protocol_version(),
-            0
-        );
-
-        let decoded_xdr_header = _single_ledger_response
-            .unwrap().record()
-            .decoded_header_xdr()
-            .unwrap();
+        let decoded_xdr_header = single_ledger_response.decoded_header_xdr().unwrap();
 
         assert_eq!(
             decoded_xdr_header.bucket_list_hash.to_string(),
@@ -1491,15 +1076,13 @@ mod tests {
         let all_claimable_balances_request =
             AllClaimableBalancesRequest::new().set_limit(4).unwrap();
 
-        let _all_claimable_balances_response = horizon_client
+        let all_claimable_balances_response = horizon_client
             .get_all_claimable_balances(&all_claimable_balances_request)
             .await;
 
-        let rsp = _all_claimable_balances_response.clone().unwrap();
+        assert!(all_claimable_balances_response.is_ok());
 
-        assert!(_all_claimable_balances_response.clone().is_ok());
-
-        let binding = _all_claimable_balances_response.clone().unwrap();
+        let binding = all_claimable_balances_response.unwrap();
         let predicate = binding.embedded().records()[1].claimants()[0].predicate();
 
         let jan_first_2024 = Utc::with_ymd_and_hms(&Utc, 2024, 1, 1, 0, 0, 0).unwrap();
@@ -1507,77 +1090,33 @@ mod tests {
 
         assert_eq!(predicate.is_valid(jan_first_2024), true);
         assert_eq!(predicate.is_valid(valid_date), true);
+        let record = &binding.embedded().records()[0];
 
         assert_eq!(
-            _all_claimable_balances_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .id(),
+            record.id(),
             "000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
         );
 
         assert_eq!(
-            _all_claimable_balances_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .asset(),
+            record.asset(),
             "USDC:GAKNDFRRWA3RPWNLTI3G4EBSD3RGNZZOY5WKWYMQ6CQTG3KIEKPYWAYC"
         );
 
-        assert_eq!(
-            _all_claimable_balances_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .amount(),
-            "0.0010000"
-        );
+        assert_eq!(record.amount(), "0.0010000");
 
         assert_eq!(
-            _all_claimable_balances_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .sponsor(),
+            record.sponsor(),
             "GCENYNAX2UCY5RFUKA7AYEXKDIFITPRAB7UYSISCHVBTIAKPU2YO57OA"
         );
 
-        assert_eq!(
-            *_all_claimable_balances_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .last_modified_ledger(),
-            591
-        );
+        assert_eq!(record.last_modified_ledger(), &591);
 
         assert_eq!(
-            _all_claimable_balances_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .last_modified_time(),
+            record.last_modified_time().to_string(),
             "2024-02-06T18:25:07Z"
         );
 
-        assert_eq!(
-            *_all_claimable_balances_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .flags()
-                .clawback_enabled(),
-            false
-        );
+        assert_eq!(record.flags().clawback_enabled(), &false);
     }
 
     #[tokio::test]
@@ -1599,7 +1138,7 @@ mod tests {
         assert!(single_claimable_balance_response.is_ok());
 
         let binding = single_claimable_balance_response.clone().unwrap();
-        let predicate = binding.record().claimants()[0].predicate();
+        let predicate = binding.claimants()[0].predicate();
 
         let jan_first_2024 = Utc::with_ymd_and_hms(&Utc, 2024, 1, 1, 0, 0, 0).unwrap();
         let valid_date = Utc::with_ymd_and_hms(&Utc, 2024, 2, 10, 0, 0, 0).unwrap();
@@ -1607,74 +1146,46 @@ mod tests {
         assert_eq!(predicate.is_valid(jan_first_2024), true);
         assert_eq!(predicate.is_valid(valid_date), true);
 
+        let single_claimable_balance_response = single_claimable_balance_response.unwrap();
         assert_eq!(
-            single_claimable_balance_response
-                .clone()
-                .unwrap().record()
-                .id()
-                .to_string(),
+            single_claimable_balance_response.id().to_string(),
             "000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
         );
 
         assert_eq!(
-            single_claimable_balance_response
-                .clone()
-                .unwrap().record()
-                .asset()
-                .to_string(),
+            single_claimable_balance_response.asset().to_string(),
             "USDC:GAKNDFRRWA3RPWNLTI3G4EBSD3RGNZZOY5WKWYMQ6CQTG3KIEKPYWAYC"
         );
 
         assert_eq!(
-            single_claimable_balance_response
-                .clone()
-                .unwrap().record()
-                .amount()
-                .to_string(),
+            single_claimable_balance_response.amount().to_string(),
             "0.0010000"
         );
 
         assert_eq!(
-            single_claimable_balance_response
-                .clone()
-                .unwrap().record()
-                .sponsor()
-                .to_string(),
+            single_claimable_balance_response.sponsor().to_string(),
             "GCENYNAX2UCY5RFUKA7AYEXKDIFITPRAB7UYSISCHVBTIAKPU2YO57OA"
         );
 
         assert_eq!(
-            *single_claimable_balance_response
-                .clone()
-                .unwrap().record()
-                .last_modified_ledger(),
-            591
+            single_claimable_balance_response.last_modified_ledger(),
+            &591
         );
 
         assert_eq!(
             single_claimable_balance_response
-                .clone()
-                .unwrap().record()
                 .last_modified_time()
                 .to_string(),
             "2024-02-06T18:25:07Z"
         );
 
         assert_eq!(
-            *single_claimable_balance_response
-                .clone()
-                .unwrap().record()
-                .flags()
-                .clawback_enabled(),
-            false
+            single_claimable_balance_response.flags().clawback_enabled(),
+            &false
         );
 
         assert_eq!(
-            single_claimable_balance_response
-                .clone()
-                .unwrap().record()
-                .paging_token()
-                .to_string(),
+            single_claimable_balance_response.paging_token().to_string(),
             "591-000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
         );
     }
@@ -1736,71 +1247,18 @@ mod tests {
             .get_effects_for_account(&effects_for_account_request)
             .await;
 
-        assert!(effects_for_account_response.clone().is_ok());
+        assert!(&effects_for_account_response.is_ok());
+        let binding = effects_for_account_response.clone().unwrap();
+        let record = &binding.embedded().records()[0];
 
+        assert_eq!(record.id(), ID);
+        assert_eq!(record.paging_token(), PAGING_TOKEN);
+        assert_eq!(record.account(), ACCOUNT);
+        assert_eq!(record.effect_type(), RECORD_TYPE);
+        assert_eq!(record.type_i(), &TYPE_I);
+        assert_eq!(record.created_at(), CREATED_AT);
         assert_eq!(
-            effects_for_account_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .id(),
-            ID
-        );
-        assert_eq!(
-            effects_for_account_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .paging_token(),
-            PAGING_TOKEN
-        );
-        assert_eq!(
-            effects_for_account_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .account(),
-            ACCOUNT
-        );
-        assert_eq!(
-            effects_for_account_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .effect_type(),
-            RECORD_TYPE
-        );
-        assert_eq!(
-            effects_for_account_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .type_i(),
-            &TYPE_I
-        );
-        assert_eq!(
-            effects_for_account_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .created_at(),
-            CREATED_AT
-        );
-        assert_eq!(
-            effects_for_account_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .starting_balance()
-                .as_ref()
-                .unwrap(),
+            record.starting_balance().as_ref().unwrap(),
             &STARTING_BALANCE
         );
     }
@@ -1824,81 +1282,23 @@ mod tests {
             .get_effects_for_liquidity_pools(&effects_for_liquidity_pools_request)
             .await;
 
-        assert!(effects_for_liquidity_pools_response.clone().is_ok());
+        assert!(effects_for_liquidity_pools_response.is_ok());
+        let binding = effects_for_liquidity_pools_response.clone().unwrap();
+        let record = &binding.embedded().records()[0];
 
+        assert_eq!(record.id(), ID);
+        assert_eq!(record.paging_token(), PAGING_TOKEN);
+        assert_eq!(record.account(), ACCOUNT);
+        assert_eq!(record.effect_type(), RECORD_TYPE);
+        assert_eq!(record.type_i(), &TYPE_I);
+        assert_eq!(record.created_at(), CREATED_AT);
         assert_eq!(
-            effects_for_liquidity_pools_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .id(),
-            ID
-        );
-
-        assert_eq!(
-            effects_for_liquidity_pools_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .paging_token(),
-            PAGING_TOKEN
-        );
-
-        assert_eq!(
-            effects_for_liquidity_pools_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .account(),
-            ACCOUNT
-        );
-
-        assert_eq!(
-            effects_for_liquidity_pools_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .effect_type(),
-            RECORD_TYPE
-        );
-
-        assert_eq!(
-            effects_for_liquidity_pools_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .type_i(),
-            &TYPE_I
-        );
-
-        assert_eq!(
-            effects_for_liquidity_pools_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .created_at(),
-            CREATED_AT
-        );
-
-        assert_eq!(
-            effects_for_liquidity_pools_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .starting_balance()
-                .as_ref()
-                .unwrap(),
+            record.starting_balance().as_ref().unwrap(),
             &STARTING_BALANCE
         );
 
-        let effects_for_liquidity_pools_request_with_id = EffectsForLiquidityPoolRequest::new()
+        // TODO: LEONARD FIX
+        let _effects_for_liquidity_pools_request_with_id = EffectsForLiquidityPoolRequest::new()
             .set_limit(2)
             .expect("REASON")
             .set_liquidity_pool_id("0000000459561504769-0000000001".to_string());
@@ -1928,14 +1328,14 @@ mod tests {
 
         let effects_for_ledger_request =
             EffectsForLedgerRequest::new().set_sequence(ledger_sequence);
-        let _effects_for_ledger_response = horizon_client
+        let effects_for_ledger_response = horizon_client
             .get_effects_for_ledger(&effects_for_ledger_request)
             .await;
 
-        assert!(_effects_for_ledger_response.clone().is_ok());
+        assert!(effects_for_ledger_response.is_ok());
 
         assert_eq!(
-            _effects_for_ledger_response
+            effects_for_ledger_response
                 .clone()
                 .unwrap()
                 .embedded()
@@ -1945,7 +1345,7 @@ mod tests {
         );
 
         assert_eq!(
-            _effects_for_ledger_response
+            effects_for_ledger_response
                 .clone()
                 .unwrap()
                 .embedded()

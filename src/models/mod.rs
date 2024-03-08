@@ -1,3 +1,11 @@
+mod response_models;
+
+pub mod prelude {
+    pub use super::response_models::*;
+    pub use super::Request;
+    pub use super::Response;
+}
+
 /// Defines methods for creating HTTP requests to the Horizon server.
 ///
 /// Implementors of this trait represent different types of requests that can be made to the server.
