@@ -1,4 +1,4 @@
-use crate::{models::Response, Embedded, ResponseLinks};
+use crate::models::prelude::*;
 use derive_getters::Getters;
 use serde::{Deserialize, Serialize};
 
@@ -19,7 +19,7 @@ pub struct AllAssetsResponse {
     ///   record in this list provides detailed information about an individual asset, including
     ///   its type, issuer, and various statistics related to its distribution and usage.
     #[serde(rename = "_embedded")]
-    embedded: Embedded<AssetRecords>,
+    embedded: Embedded<Asset>,
 }
 
 /// Represents a single navigational or related link in the all assets response from the Stellar Horizon API.
@@ -34,19 +34,7 @@ pub struct AssetTomlLink {
     href: Option<String>,
     /// A link to a TOML file associated with the asset. The TOML file typically contains metadata about
     ///     the asset, such as details about the issuer.
-    toml: Option<Toml>,
-}
-/// Represents a link to a TOML file in the all assets response from the Stellar Horizon API.
-///
-/// This struct is included as part of the [`Link`] struct in the asset record and points to a TOML file
-/// related to the asset. The TOML file typically contains metadata about the asset, such as details of
-/// the asset issuer, documentation, and other relevant information.
-///
-#[derive(Debug, Serialize, Deserialize, Clone, Getters)]
-pub struct Toml {
-    /// A `String` that contains the URL pointing to the TOML file. This URL can be used to
-    ///   retrieve the TOML file, which holds comprehensive metadata about the asset.
-    href: String,
+    toml: Option<Link>,
 }
 
 /// Represents a single asset record in the all assets response from the Horizon API.
@@ -55,7 +43,7 @@ pub struct Toml {
 /// and various other statistics and flags.
 ///
 #[derive(Debug, Serialize, Deserialize, Clone, Getters)]
-pub struct AssetRecords {
+pub struct Asset {
     /// Links related to the asset, including a link to the asset's TOML file.
     _links: AssetTomlLink,
     /// The type of the asset, such as "native" for lumens or "credit_alphanum4" and
@@ -126,28 +114,6 @@ pub struct AccountBalances {
     /// A `String` representing the total balance of the asset held by accounts that
     ///   are not authorized to transact with it.
     unauthorized: String,
-}
-
-/// Represents the authorization and control flags for an asset in the all assets response.
-///
-/// Details the various boolean flags that are
-/// set for an asset, indicating specific permissions or restrictions. These flags define how the
-/// asset is controlled and can be used within the Stellar network.
-///
-#[derive(Debug, Serialize, Deserialize, Clone, Getters)]
-pub struct Flags {
-    /// A `bool` indicating whether authorization is required for an account to hold
-    ///   or transact with the asset. If `true`, the issuer must approve account holders.
-    auth_required: bool,
-    /// A `bool` indicating whether the issuer has the ability to revoke the asset.
-    ///   If `true`, the issuer can freeze the asset in user accounts.
-    auth_revocable: bool,
-    /// A `bool` indicating whether the asset's authorization flags can be changed
-    ///   after issuance. If `true`, the issuer cannot change the `auth_required` and `auth_revocable` flags.
-    auth_immutable: bool,
-    /// A `bool` indicating whether the asset supports the clawback operation.
-    ///   If `true`, the issuer can claw back the asset from user accounts.
-    auth_clawback_enabled: bool,
 }
 
 impl Response for AllAssetsResponse {

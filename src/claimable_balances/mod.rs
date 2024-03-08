@@ -1,12 +1,7 @@
 use chrono::DateTime;
 use chrono::NaiveDateTime;
 use chrono::Utc;
-use derive_getters::Getters;
 
-use serde::{Deserialize, Serialize};
-
-use crate::SelfLink;
-use crate::TemplateLink;
 /// Provides the `AllClaimableBalancesRequest` struct.
 ///
 /// This module contains the `AllClaimableBalancesRequest` struct, which is designed to create requests
@@ -27,7 +22,7 @@ pub mod all_claimable_balances_request;
 /// Claimable balances are ledger entries that can be claimed by a designated account under
 /// certain conditions and are a unique feature of the Stellar network.
 ///
-pub mod all_claimable_balances_response;
+pub mod response;
 
 /// Provides the `SingleClaimableBalanceRequest` struct.
 ///
@@ -40,23 +35,6 @@ pub mod all_claimable_balances_response;
 
 ///
 pub mod single_claimable_balance_request;
-
-/// Provides the `SingleClaimableBalanceResponse`.
-///
-/// This module contains structures representing the response received from the Horizon API
-/// when querying a single claimable balance. The main structure, `SingleClaimableBalanceResponse`,
-/// is designed to convert the JSON response from the Horizon server into structured Rust objects.
-/// This allows for easier handling and utilization of claimable balance data within client applications.
-///
-/// For a detailed description of the response structure, refer to the
-/// [Retrieve a Single Claimable Balance](https://developers.stellar.org/api/horizon/resources/retrieve-a-claimable-balance)
-/// endpoint documentation on the Stellar Developer's site.
-///
-/// The structures in this module include serialization and deserialization capabilities to handle
-/// JSON data returned by the Horizon server. The `Getters` derive macro is used to provide
-/// convenient getter methods for accessing fields of these structures.
-///
-pub mod single_claimable_balance_response;
 
 /// The base path for all claimable balance related endpoints in the Stellar Horizon API.
 ///
@@ -101,166 +79,6 @@ static CLAIMABLE_BALANCES_PATH: &str = "claimable_balances";
 /// // Further usage...
 /// ```
 
-/// Represents the response to a single claimable balance query in the Horizon API.
-#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
-pub struct ClaimableBalanceRecord {
-    /// Links to related resources in the Horizon API response.
-    #[serde(rename = "_links")]
-    pub links: Links,
-
-    /// The unique identifier of the claimable balance.
-    pub id: String,
-
-    /// The asset type of the claimable balance.
-    pub asset: String,
-
-    /// The amount of the claimable balance.
-    pub amount: String,
-
-    /// The account ID of the sponsor of the claimable balance.
-    pub sponsor: String,
-
-    /// The ledger number in which the claimable balance was last modified.
-    #[serde(rename = "last_modified_ledger")]
-    pub last_modified_ledger: i64,
-
-    /// The timestamp when the claimable balance was last modified.
-    #[serde(rename = "last_modified_time")]
-    pub last_modified_time: String,
-
-    /// A list of claimants eligible to claim the balance.
-    pub claimants: Vec<Claimant>,
-
-    /// Flags indicating special conditions of the claimable balance.
-    pub flags: ClaimableBalanceFlag,
-
-    /// A token used for paging through results.
-    #[serde(rename = "paging_token")]
-    pub paging_token: String,
-}
-
-/// Contains navigational links related to the single claimable balance response.
-#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
-pub struct Links {
-    /// The link to the current claimable balance resource.
-    #[serde(rename = "self")]
-    pub self_field: SelfLink,
-
-    /// Link to transactions related to the claimable balance.
-    pub transactions: TemplateLink,
-
-    /// Link to operations related to the claimable balance.
-    pub operations: TemplateLink,
-}
-
-/// Represents a claimant of a claimable balance.
-#[derive(Default, Debug, Clone, Serialize, PartialEq, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
-pub struct Claimant {
-    /// The account ID of the claimant.
-    pub destination: String,
-
-    /// Conditions that need to be met for the claimant to claim the balance.
-    pub predicate: Predicate,
-}
-
-#[derive(Default, Debug, Clone, Serialize, PartialEq, Deserialize, Getters)]
-pub struct ClaimableBalanceFlag {
-    /// The flag indicating whether the claimable balance is clawback-enabled.
-    pub clawback_enabled: bool,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
-pub struct Predicate {
-    pub unconditional: Option<bool>,
-    pub and: Option<Vec<And>>,
-    pub or: Option<Vec<Or>>,
-    pub not: Option<Not>,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
-pub struct And {
-    pub not: Option<Not>,
-    #[serde(rename = "abs_before")]
-    pub abs_before: Option<String>,
-    #[serde(rename = "abs_before_epoch")]
-    pub abs_before_epoch: Option<String>,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
-pub struct Not {
-    #[serde(rename = "abs_before")]
-    pub abs_before: String,
-    #[serde(rename = "abs_before_epoch")]
-    pub abs_before_epoch: String,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
-pub struct Or {
-    #[serde(rename = "abs_before")]
-    pub abs_before: Option<String>,
-    #[serde(rename = "abs_before_epoch")]
-    pub abs_before_epoch: Option<String>,
-    pub not: Option<Not>,
-}
-
-impl Predicate {
-    pub fn is_valid(&self, date: DateTime<Utc>) -> bool {
-        match self {
-            Predicate {
-                unconditional: Some(true),
-                ..
-            } => true,
-            Predicate {
-                and: Some(ands), ..
-            } => ands.iter().all(|cond| cond.is_valid(date)),
-            Predicate { or: Some(ors), .. } => ors.iter().any(|cond| cond.is_valid(date)),
-            Predicate { not: Some(not), .. } => !not.is_valid(date),
-            _ => false,
-        }
-    }
-}
-
-impl And {
-    fn is_valid(&self, date: DateTime<Utc>) -> bool {
-        if let Some(not) = &self.not {
-            if not.is_valid(date) {
-                return false;
-            }
-        }
-        self.abs_before_epoch
-            .as_ref()
-            .map(|d| date < parse_epoch(d))
-            .unwrap_or(true)
-    }
-}
-
-impl Or {
-    fn is_valid(&self, date: DateTime<Utc>) -> bool {
-        if let Some(not) = &self.not {
-            if not.is_valid(date) {
-                return true;
-            }
-        }
-        self.abs_before_epoch
-            .as_ref()
-            .map(|d| date < parse_epoch(d))
-            .unwrap_or(false)
-    }
-}
-
-impl Not {
-    fn is_valid(&self, date: DateTime<Utc>) -> bool {
-        date <= parse_epoch(&self.abs_before_epoch)
-    }
-}
-
 fn parse_epoch(epoch_str: &str) -> DateTime<Utc> {
     // Convert the timestamp string into an i64
     let timestamp = epoch_str.parse::<i64>().unwrap();
@@ -276,22 +94,26 @@ fn parse_epoch(epoch_str: &str) -> DateTime<Utc> {
 
 pub mod prelude {
     pub use super::all_claimable_balances_request::*;
-    pub use super::all_claimable_balances_response::*;
+    pub use super::response::*;
     pub use super::single_claimable_balance_request::*;
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::parse_epoch;
+    use super::prelude::*;
+    use chrono::DateTime;
     use chrono::{TimeZone, Utc};
     use lazy_static::lazy_static;
-    
+
     lazy_static! {
-        static ref DATE: DateTime<Utc> = Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 0).unwrap();
-        static ref DATE_AND_ONE_SECOND: chrono::DateTime<Utc> = Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 1).unwrap();
+        static ref DATE: DateTime<Utc> =
+            Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 0).unwrap();
+        static ref DATE_AND_ONE_SECOND: chrono::DateTime<Utc> =
+            Utc::with_ymd_and_hms(&Utc, 2021, 9, 30, 18, 40, 1).unwrap();
         static ref EPOCH_STR: String = "1633027200".to_string();
     }
-    
+
     #[test]
     fn test_and_is_valid() {
         let and = And {

@@ -23,7 +23,7 @@ pub mod all_assets_request;
 /// with the JSON format of the Horizon server's response. They also leverage the `Getters` derive macro
 /// to furnish convenient getter methods for accessing their fields.
 ///
-pub mod all_assets_response;
+pub mod response;
 
 /// The base path for all assets endpoints in the Stellar Horizon API.
 ///
@@ -70,5 +70,5 @@ static ASSET_PATH: &str = "assets";
 ///
 pub mod prelude {
     pub use super::all_assets_request::*;
-    pub use super::all_assets_response::*;
+    pub use super::response::*;
 }

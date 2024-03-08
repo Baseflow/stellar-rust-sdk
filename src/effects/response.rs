@@ -1,21 +1,21 @@
 use derive_getters::Getters;
 use serde::Deserialize;
 
-use crate::{models::Response, Embedded, ResponseLinks, SelfLink};
+use crate::models::prelude::*;
 
 /// Represents the navigational links belonging to an effect from the Stellar Horizon API.
 ///
-/// This struct includes links such as the operation (current effect), succeeds, and precedes, 
+/// This struct includes links such as the operation (current effect), succeeds, and precedes,
 /// providing quick navigation across operational sequence belonging to the effect.
 ///
 #[derive(Debug, Deserialize, Clone, Getters)]
-pub struct EffectsResponseRecordLink {
+pub struct EffectLink {
     /// The link to the current operation of the effect.
-    operation: SelfLink,
+    operation: Link,
     /// The link to the effect succeeding the current operation of the effect.
-    succeeds: SelfLink,
+    succeeds: Link,
     /// The link to the effect preceding the current operation of the effect.
-    precedes: SelfLink,
+    precedes: Link,
 }
 
 /// Represents a single effect record in the Horizon API response.
@@ -24,10 +24,10 @@ pub struct EffectsResponseRecordLink {
 /// account, effect type, timestamps, and other relevant data.
 ///
 #[derive(Debug, Deserialize, Clone, Getters)]
-pub struct EffectsResponseRecord {
+pub struct Effect {
     /// Navigational links related to the operation of the effect.
     #[serde(rename = "_links")]
-    pub links: EffectsResponseRecordLink,
+    pub links: EffectLink,
     /// The unique identifier of the account.
     pub id: String,
     /// A token used for paging through results.
@@ -60,9 +60,9 @@ pub struct EffectsResponse {
     #[serde(rename = "_links")]
     links: ResponseLinks,
     /// Contains the actual list of effect records in the `records` field.
-    
+
     #[serde(rename = "_embedded")]
-    embedded: Embedded<EffectsResponseRecord>,
+    embedded: Embedded<Effect>,
 }
 
 impl Response for EffectsResponse {
