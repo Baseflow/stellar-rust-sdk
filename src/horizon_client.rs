@@ -12,6 +12,7 @@ use crate::{
         prelude::{Ledger, LedgersRequest, LedgersResponse, SingleLedgerRequest},
         single_ledger_request::Sequence,
     },
+    offers::prelude::*,
     liquidity_pools::{all_liquidity_pools_request::AllLiquidityPoolsRequest, prelude::{
         AllLiquidityPoolsResponse, LiquidityPool, LiquidityPoolId,
         SingleLiquidityPoolRequest,
@@ -736,6 +737,60 @@ impl HorizonClient {
         request: &EffectsForLedgerRequest,
     ) -> Result<EffectsResponse, String> {
         self.get::<EffectsResponse>(request).await
+    }
+
+    /// Retrieves detailed information for a specific offer from the Horizon server.
+    ///
+    /// This asynchronous method fetches details of a single offer from the Horizon server.
+    /// It requires a [`SingleOfferRequest`] parameterized with `OfferId`, which includes the ID
+    /// of the offer to be retrieved.
+    ///
+    /// Adheres to the <a href="https://developers.stellar.org/network/horizon/resources/get-offer-by-offer-id">Retrieve An Offer endpoint</a>
+    /// endpoint.
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - A reference to a [`SingleOfferRequest<OfferId>`] instance, containing the
+    ///   id of the offer for which details are to be fetched.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing an [`Offer`], which includes detailed
+    /// information about the requested offer. If the request fails, it returns an error
+    /// encapsulated within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`SingleOfferRequest`] and set the
+    /// id of the offer to be queried.
+    ///
+    /// ```
+    /// # use stellar_rs::offers::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = SingleOfferRequest::new()
+    ///     .set_offer_id("1".to_string()) // example offer ID
+    ///     .unwrap();
+    ///
+    /// let response = horizon_client.get_single_offer(&request).await;
+    ///
+    /// if let Ok(offer) = response {
+    ///     println!("Offer ID: {}", offer.id());
+    ///     // Additional processing...
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn get_single_offer(
+        &self,
+        request: &SingleOfferRequest<OfferId>,
+    ) -> Result<SingleOfferResponse, String> {
+        self.get::<SingleOfferResponse>(request).await
     }
 
     /// Retrieves a list of all fee stats from the Horizon server.

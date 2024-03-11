@@ -382,6 +382,48 @@ pub mod liquidity_pools;
 ///
 pub mod operations;
 
+/// Provides `Request` and `Response` structs for retrieving offers.
+///
+/// This module provides a set of specialized request and response structures designed for
+/// interacting with the offer-related endpoints of the Horizon server. These structures
+/// facilitate the construction of requests to query offer data and the interpretation of
+/// the corresponding responses.
+///
+/// # Usage
+///
+/// This module is intended to be used in conjunction with the [`HorizonClient`](crate::horizon_client::HorizonClient)
+/// for making specific offer-related API calls to the Horizon server. The request
+/// structures are designed to be passed to the client's methods, which handle the
+/// communication with the server and return the corresponding response structures.
+///
+/// # Example
+///
+/// /// To use this module, you can create an instance of a request struct, such as
+/// `SingleOfferRequest`, set any desired query parameters, and pass the request to the
+/// `HorizonClient`. The client will then execute the request and return the corresponding
+/// response struct, like `SingleOfferResponse`.
+///
+/// ```rust
+/// use stellar_rs::horizon_client::HorizonClient;
+/// use stellar_rs::offers::prelude::*;
+/// use stellar_rs::models::Request;
+///
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+///
+/// // Example: Fetching all effects
+/// let single_offer_request = SingleOfferRequest::new()
+///     .set_offer_id("1".to_string())
+///     .unwrap();
+/// let single_offer_response = horizon_client.get_single_offer(&single_offer_request).await?;
+///
+/// // Process the responses...
+/// # Ok(())
+/// # }
+/// ```
+///
+pub mod offers;
+
 /// Contains core data structures and traits.
 ///
 /// This module is used by the Stellar Rust SDK to interact with the Horizon API.
