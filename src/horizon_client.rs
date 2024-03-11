@@ -1903,6 +1903,7 @@ mod tests {
     #[tokio::test]
     async fn get_effects_for_liquidity_pools() {
         const ID: &str = "0000000459561504769-0000000001";
+        const WITH_ID_REQUEST_ID: &str = "0001072977319841793-0000000001";
         const PAGING_TOKEN: &str = "459561504769-1";
         const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
         const RECORD_TYPE: &str = "account_created";
@@ -1996,9 +1997,9 @@ mod tests {
         let effects_for_liquidity_pools_request_with_id = EffectsForLiquidityPoolRequest::new()
             .set_limit(2)
             .expect("REASON")
-            .set_liquidity_pool_id("0000000459561504769-0000000001".to_string());
+            .set_liquidity_pool_id("01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d".to_string());
         let effects_for_liquidity_pools_response = horizon_client
-            .get_effects_for_liquidity_pools(&effects_for_liquidity_pools_request)
+            .get_effects_for_liquidity_pools(&effects_for_liquidity_pools_request_with_id)
             .await;
 
         assert!(effects_for_liquidity_pools_response.clone().is_ok());
@@ -2009,7 +2010,7 @@ mod tests {
                 ._embedded()
                 .records()[0]
                 .id(),
-            ID
+            WITH_ID_REQUEST_ID
         );
     }
 
