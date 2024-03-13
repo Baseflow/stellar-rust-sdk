@@ -307,6 +307,42 @@ pub mod ledgers;
 ///
 pub mod effects;
 
+/// Provides `Request` and `Response` structs for retrieving fee stats.
+/// 
+/// The `fee_stats` module in the Stellar Horizon SDK includes structures and methods that facilitate
+/// querying fee stats data from the Horizon server.
+/// 
+/// # Usage
+/// 
+/// This module is used to construct requests for fee stats-related data and to parse the responses
+/// received from the Horizon server. It includes request and response structures for querying
+/// fee stats data.
+/// 
+/// # Example
+/// 
+/// To use this module, you can create an instance of a request struct, such as `FeeStatsRequest`,
+/// and pass the request to the `HorizonClient`. The client will then execute the request and
+/// return the corresponding response struct, like `FeeStatsResponse`.
+/// 
+/// ```rust
+/// use stellar_rs::horizon_client::HorizonClient;
+/// use stellar_rs::fee_stats::prelude::*;
+/// use stellar_rs::models::Request;
+/// 
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// 
+/// // Example: Fetching fee stats
+/// let fee_stats_request = FeeStatsRequest::new();
+/// let fee_stats_response = horizon_client.get_fee_stats(&fee_stats_request).await?;
+/// 
+/// // Process the response...
+/// # Ok(())
+/// # }
+/// ```
+/// 
+pub mod fee_stats;
+
 /// Contains core data structures and traits.
 ///
 /// This module is used by the Stellar Rust SDK to interact with the Horizon API.
