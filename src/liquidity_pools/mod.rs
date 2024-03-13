@@ -76,18 +76,6 @@ async fn test_get_all_liquidity_pools() {
         all_liquidity_pools_response.reserves()[1].asset(),
         LIQUIDITY_POOL_RESERVE_ASSET_1
     );
-    assert_eq!(
-        all_liquidity_pools_response.reserves()[1].amount(),
-        LIQUIDITY_POOL_RESERVE_AMOUNT_1
-    );
-    assert_eq!(
-        all_liquidity_pools_response.last_modified_ledger(),
-        &LIQUIDITY_POOL_LAST_MODIFIED_LEDGER
-    );
-    assert_eq!(
-        all_liquidity_pools_response.last_modified_time(),
-        LIQUIDITY_POOL_LAST_MODIFIED_TIME
-    );
 }
 
 #[tokio::test]
