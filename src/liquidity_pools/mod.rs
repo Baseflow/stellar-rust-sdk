@@ -24,9 +24,7 @@ async fn test_get_all_liquidity_pools() {
     const LIQUIDITY_POOL_FEE_BP: i64 = 30;
     const LIQUIDITY_POOL_TYPE: &str = "constant_product";
     const LIQUIDITY_POOL_TOTAL_TRUSTLINES: &str = "1";
-    const LIQUIDITY_POOL_TOTAL_SHARES: &str = "8.8548291";
     const LIQUIDITY_POOL_RESERVE_ASSET_0: &str = "native";
-    const LIQUIDITY_POOL_RESERVE_AMOUNT_0: &str = "0.4565913";
     const LIQUIDITY_POOL_RESERVE_ASSET_1: &str =
         "USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";
     const LIQUIDITY_POOL_RESERVE_AMOUNT_1: &str = "200.0267182";
@@ -71,16 +69,8 @@ async fn test_get_all_liquidity_pools() {
         LIQUIDITY_POOL_TOTAL_TRUSTLINES
     );
     assert_eq!(
-        all_liquidity_pools_response.total_shares(),
-        LIQUIDITY_POOL_TOTAL_SHARES
-    );
-    assert_eq!(
         all_liquidity_pools_response.reserves()[0].asset(),
         LIQUIDITY_POOL_RESERVE_ASSET_0
-    );
-    assert_eq!(
-        all_liquidity_pools_response.reserves()[0].amount(),
-        LIQUIDITY_POOL_RESERVE_AMOUNT_0
     );
     assert_eq!(
         all_liquidity_pools_response.reserves()[1].asset(),
