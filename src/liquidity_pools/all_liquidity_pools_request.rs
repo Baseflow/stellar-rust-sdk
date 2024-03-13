@@ -2,6 +2,7 @@ use crate::liquidity_pools::LIQUIDITY_POOLS_PATH;
 use crate::models::{Order, Request};
 
 /// Represents a reserve for a liquidity pool. This struct is used to specify the asset code and
+#[derive(PartialEq, Debug)]
 pub struct Reserve {
     pub asset_code: String,
     pub asset_issuer: String,
@@ -9,6 +10,7 @@ pub struct Reserve {
 
 /// Represents a reserve type for a liquidity pool. This enum is used to specify the type of reserve
 /// to filter by when querying the Horizon server for liquidity pool records.
+#[derive(PartialEq, Debug)]
 pub enum ReserveType {
     /// A native reserve type. It holds no Value
     Native,
@@ -247,5 +249,101 @@ impl Request for AllLiquidityPoolsRequest {
             super::LIQUIDITY_POOLS_PATH,
             self.get_query_parameters()
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_new() {
+        let request = AllLiquidityPoolsRequest::new();
+        assert_eq!(request.cursor, None);
+        assert_eq!(request.limit, None);
+        assert_eq!(request.order, None);
+        assert_eq!(request.reserves, None);
+    }
+
+    #[test]
+    fn test_set_cursor() {
+        let request = AllLiquidityPoolsRequest::new().set_cursor(1234);
+        assert_eq!(request.cursor, Some(1234));
+    }
+
+    #[test]
+    fn test_set_limit() {
+        let request = AllLiquidityPoolsRequest::new().set_limit(20);
+        assert_eq!(request.limit, Some(20));
+    }
+
+    #[test]
+    fn test_set_order() {
+        let request = AllLiquidityPoolsRequest::new().set_order(Order::Desc);
+        assert_eq!(request.order, Some(Order::Desc));
+    }
+
+    #[test]
+    fn test_add_native_reserve() {
+        let request = AllLiquidityPoolsRequest::new().add_native_reserve();
+        assert_eq!(request.reserves, Some(vec![ReserveType::Native]));
+    }
+
+    #[test]
+    fn test_add_native_reserve_twice() {
+        let request = AllLiquidityPoolsRequest::new()
+            .add_native_reserve()
+            .add_native_reserve();
+        assert_eq!(
+            request.reserves,
+            Some(vec![ReserveType::Native, ReserveType::Native])
+        );
+    }
+
+    #[test]
+    fn test_add_alphanumeric4_reserve() {
+        let mut request = AllLiquidityPoolsRequest::new();
+        request = request.add_alphanumeric4_reserve("USD".to_string(), "issuer".to_string());
+
+        if let Some(reserves) = request.reserves {
+            assert_eq!(reserves.len(), 1);
+            match &reserves[0] {
+                ReserveType::Alphanumeric4(reserve) => {
+                    assert_eq!(reserve.asset_code, "USD");
+                    assert_eq!(reserve.asset_issuer, "issuer");
+                }
+                _ => panic!("Reserve type is not Alphanumeric4"),
+            }
+        } else {
+            panic!("Reserves is None");
+        }
+    }
+
+    #[test]
+    fn test_add_alphanumeric12_reserve() {
+        let mut request = AllLiquidityPoolsRequest::new();
+        request = request.add_alphanumeric12_reserve("LONGASSET".to_string(), "issuer".to_string());
+
+        if let Some(reserves) = request.reserves {
+            assert_eq!(reserves.len(), 1);
+            match &reserves[0] {
+                ReserveType::Alphanumeric12(reserve) => {
+                    assert_eq!(reserve.asset_code, "LONGASSET");
+                    assert_eq!(reserve.asset_issuer, "issuer");
+                }
+                _ => panic!("Reserve type is not Alphanumeric12"),
+            }
+        } else {
+            panic!("Reserves is None");
+        }
+    }
+
+    #[test]
+    fn test_get_query_parameters() {
+        let mut request = AllLiquidityPoolsRequest::new();
+        request = request.add_alphanumeric4_reserve("USD".to_string(), "issuer".to_string());
+        let query_parameters = request.get_query_parameters();
+
+        assert_eq!(query_parameters, "reserves=USD%3Aissuer");
     }
 }
