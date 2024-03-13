@@ -415,6 +415,108 @@ impl HorizonClient {
         self.get::<EffectsResponse>(request).await
     }
 
+    /// Retrieves a list of effects for a specific operation from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of effects for a specific operation from the Horizon server.
+    /// It requires an [`EffectsForOperationRequest`] to specify the operation ID and optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`EffectsForOperationRequest`] instance, containing the operation ID
+    /// and optional query parameters for the effects request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`EffectsResponse`], which includes
+    /// the list of effects obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Example
+    /// To use this method, create an instance of [`EffectsForOperationRequest`] and set the operation ID and any
+    /// desired query parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::effects::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = EffectsForOperationRequest::new()
+    ///   .set_operation_id("123");
+    ///     
+    /// let response = horizon_client.get_effects_for_operation(&request).await;
+    ///
+    /// // Access the effects
+    /// if let Ok(effects_response) = response {
+    ///     for effect in effects_response.embedded().records() {
+    ///         println!("Effect ID: {}", effect.id());
+    ///     // Further processing...
+    ///     }
+    /// }
+    ///
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn get_effects_for_operation(
+        &self,
+        request: &EffectsForOperationRequest,
+    ) -> Result<EffectsResponse, String> {
+        self.get::<EffectsResponse>(request).await
+    }
+
+    /// Retrieves a list of effects for a specific transaction from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of effects for a specific transaction from the Horizon server.
+    /// It requires an [`EffectForTransactionRequest`] to specify the transaction hash and optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`EffectForTransactionRequest`] instance, containing the transaction hash
+    /// and optional query parameters for the effects request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`EffectsResponse`], which includes
+    /// the list of effects obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Example
+    /// To use this method, create an instance of [`EffectForTransactionRequest`] and set the transaction hash and any
+    /// desired query parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::effects::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = EffectForTransactionRequest::new()
+    ///  .set_transaction_hash("transaction_hash".to_string());
+    ///
+    /// let response = horizon_client.get_effects_for_transaction(&request).await;
+    ///
+    /// // Access the effects
+    /// if let Ok(effects_response) = response {
+    ///     for effect in effects_response.embedded().records() {
+    ///         println!("Effect ID: {}", effect.id());
+    ///     // Further processing...
+    ///     }
+    /// }
+    ///
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn get_effects_for_transaction(
+        &self,
+        request: &EffectForTransactionRequest,
+    ) -> Result<EffectsResponse, String> {
+        self.get::<EffectsResponse>(request).await
+    }
+
     /// Retrieves a list of all ledgers.
     ///
     /// This asynchronous method is designed to fetch list of ledgers

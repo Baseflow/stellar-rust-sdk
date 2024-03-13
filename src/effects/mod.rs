@@ -2,6 +2,8 @@ pub mod all_effects_request;
 pub mod effects_for_account_request;
 pub mod effects_for_ledger_request;
 pub mod effects_for_liquidity_pools_request;
+pub mod effects_for_operation_request;
+pub mod effects_for_transaction_request;
 pub mod response;
 
 static EFFECTS_PATH: &str = "effects";
@@ -11,6 +13,8 @@ pub mod prelude {
     pub use super::effects_for_account_request::*;
     pub use super::effects_for_ledger_request::*;
     pub use super::effects_for_liquidity_pools_request::*;
+    pub use super::effects_for_operation_request::*;
+    pub use super::effects_for_transaction_request::*;
     pub use super::response::*;
 }
 
@@ -178,6 +182,86 @@ mod tests {
                 .records()[1]
                 .effect_type,
             "account_debited"
+        );
+    }
+
+    #[tokio::test]
+    async fn test_get_effects_for_operation() {
+        const OPERATION_ID: &str = "459561504769";
+        const ID: &str = "0000000459561504769-0000000001";
+        const PAGING_TOKEN: &str = "459561504769-1";
+        const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
+        const RECORD_TYPE: &str = "account_created";
+        const TYPE_I: u32 = 0;
+        const CREATED_AT: &str = "2024-02-06T17:42:48Z";
+        const STARTING_BALANCE: &str = "10000000000.0000000";
+
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        let effects_for_operation_request = EffectsForOperationRequest::new()
+            .set_operation_id(OPERATION_ID)
+            .set_limit(2)
+            .unwrap();
+        let effects_for_operation_response = horizon_client
+            .get_effects_for_operation(&effects_for_operation_request)
+            .await;
+
+        assert!(effects_for_operation_response.is_ok());
+
+        let binding = effects_for_operation_response.clone().unwrap();
+        let record = &binding.embedded().records()[0];
+
+        assert_eq!(record.id(), ID);
+        assert_eq!(record.paging_token(), PAGING_TOKEN);
+        assert_eq!(record.account(), ACCOUNT);
+        assert_eq!(record.effect_type(), RECORD_TYPE);
+        assert_eq!(record.type_i(), &TYPE_I);
+        assert_eq!(record.created_at(), CREATED_AT);
+        assert_eq!(
+            record.starting_balance().as_ref().unwrap(),
+            &STARTING_BALANCE
+        );
+    }
+
+    #[tokio::test]
+    async fn test_get_effects_for_transaction() {
+        const TRANSACTION_HASH: &str =
+            "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+        const ID: &str = "0000000459561504769-0000000001";
+        const PAGING_TOKEN: &str = "459561504769-1";
+        const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
+        const RECORD_TYPE: &str = "account_created";
+        const TYPE_I: u32 = 0;
+        const CREATED_AT: &str = "2024-02-06T17:42:48Z";
+        const STARTING_BALANCE: &str = "10000000000.0000000";
+
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        let effects_for_transaction_request = EffectForTransactionRequest::new()
+            .set_transaction_hash(TRANSACTION_HASH.to_string())
+            .set_limit(2)
+            .unwrap();
+
+        let effects_for_transaction_response = horizon_client
+            .get_effects_for_transaction(&effects_for_transaction_request)
+            .await;
+
+        assert!(effects_for_transaction_response.is_ok());
+
+        let binding = effects_for_transaction_response.clone().unwrap();
+        let record = &binding.embedded().records()[0];
+
+        assert_eq!(record.id(), ID);
+        assert_eq!(record.paging_token(), PAGING_TOKEN);
+        assert_eq!(record.account(), ACCOUNT);
+        assert_eq!(record.effect_type(), RECORD_TYPE);
+        assert_eq!(record.type_i(), &TYPE_I);
+        assert_eq!(record.created_at(), CREATED_AT);
+        assert_eq!(
+            record.starting_balance().as_ref().unwrap(),
+            &STARTING_BALANCE
         );
     }
 }
