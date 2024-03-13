@@ -130,11 +130,11 @@ pub fn is_public_key(public_key: &str) -> Result<(), String> {
 
 /// Represents an issued asset. Contains both the asset code and the issuer account ID,
 ///   formatted as "asset_code:issuer_account_id".
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Debug)]
 pub struct IssuedAsset(String);
 
 /// A marker type to represent the native asset (XLM) without additional data.
-#[derive(Default, Clone)]
+#[derive(Default, Clone, PartialEq, Debug)]
 pub struct NativeAsset;
 
 /// Represents the variants of assets in the Stellar network.
@@ -154,7 +154,7 @@ pub struct NativeAsset;
 /// let issued_asset = native_asset.set_issued("USD", "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap();
 /// ```
 ///
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Debug)]
 pub struct Asset<T> {
     asset: T,
 }
@@ -309,5 +309,48 @@ mod tests {
                 "0000000000000000000000000000000000000000000000000000000000000000"
             );
         }
+    }
+
+    #[test]
+    fn test_new_native_asset() {
+        let native_asset = Asset::<NativeAsset>::new();
+        assert_eq!(native_asset.asset, NativeAsset);
+    }
+
+    #[test]
+    fn test_set_issued_valid() {
+        let native_asset = Asset::<NativeAsset>::new();
+        let issued_asset = native_asset
+            .set_issued(
+                "USD",
+                "GAVCBYUQSQA77EOOQMSDDXE6VSWDZRGOZOGMLWGFR6YR4TR243VWBDFO",
+            )
+            .unwrap();
+        assert_eq!(
+            issued_asset.asset.0,
+            "USD:GAVCBYUQSQA77EOOQMSDDXE6VSWDZRGOZOGMLWGFR6YR4TR243VWBDFO"
+        );
+    }
+
+    #[test]
+    fn test_set_issued_invalid_asset_code() {
+        let native_asset = Asset::<NativeAsset>::new();
+        let result = native_asset.set_issued(
+            "LONG_ASSET_CODE",
+            "GAVCBYUQSQA77EOOQMSDDXE6VSWDZRGOZOGMLWGFR6YR4TR243VWBDFO",
+        );
+        assert!(result.is_err());
+        assert_eq!(
+            result.unwrap_err(),
+            "asset_code must be 12 characters or less"
+        );
+    }
+
+    #[test]
+    fn test_set_issued_invalid_public_key() {
+        let native_asset = Asset::<NativeAsset>::new();
+        let result = native_asset.set_issued("USD", "INVALID_PUBLIC_KEY");
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "Public key must be 56 characters long");
     }
 }
