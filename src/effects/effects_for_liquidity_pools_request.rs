@@ -11,7 +11,7 @@ use crate::BuildQueryParametersExt;
 /// Instances of `EffectsForLiquidityPoolRequest` are created and optionally configured using the builder pattern.
 /// Once the desired parameters are set, the request can be passed to the Horizon client to fetch
 /// effect data.
-/// 
+///
 /// # Fields
 /// * `liquidity_pool_id` - The liquidity pool id.
 /// * `cursor` - A pointer to a specific location in a collection of responses, derived from the

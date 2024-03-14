@@ -13,6 +13,12 @@ use crate::{
         single_ledger_request::Sequence,
     },
     models::{Request, Response},
+    operations::{
+        operations_for_account_request::OperationsForAccountRequest,
+        prelude::{AllOperationsRequest, OperationResponse},
+        response::Operation,
+        single_operation_request::{OperationId, SingleOperationRequest},
+    },
 };
 use reqwest;
 use url::Url;
@@ -728,6 +734,198 @@ impl HorizonClient {
         self.get::<EffectsResponse>(request).await
     }
 
+    /// Retrieves a list of all fee stats from the Horizon server.
+    /// 
+    /// This asynchronous method fetches a list of all fee stats from the Horizon server.
+    /// It requires a [`FeeStatsRequest`] to specify the optional query parameters.
+    /// 
+    /// # Arguments
+    /// * `request` - A reference to a [`FeeStatsRequest`] instance, containing the
+    /// parameters for the fee stats request.
+    /// 
+    /// # Returns
+    /// 
+    /// On successful execution, returns a `Result` containing a [`FeeStatsResponse`], which includes
+    /// the list of all fee stats obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    /// 
+    /// # Usage
+    /// To use this method, create an instance of [`FeeStatsRequest`] and set any desired
+    /// filters or parameters.
+    /// 
+    /// ```
+    /// # use stellar_rs::fee_stats::fee_stats_request::FeeStatsRequest;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = FeeStatsRequest::new();
+    /// 
+    /// let response = horizon_client.get_fee_stats(&request).await;
+    /// 
+    /// // Access the fee stats
+    /// if let Ok(fee_stats_response) = response {
+    ///  println!("Max Fee: {:?}", fee_stats_response.max_fee());
+    /// // Further processing...
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    /// 
+    pub async fn get_fee_stats(
+        &self,
+        request: &FeeStatsRequest,
+    ) -> Result<FeeStatsResponse, String> {
+        self.get::<FeeStatsResponse>(request).await
+    }
+
+    /// Retrieves a list of all operations from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all operations from the Horizon server.
+    /// It requires an [`AllOperationsRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`AllOperationsRequest`] instance, containing the
+    /// parameters for the operations request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`OperationResponse`], which includes
+    /// the list of all operations obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`AllOperationsRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::operations::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = AllOperationsRequest::new()
+    ///   .set_limit(2).unwrap();
+    ///
+    /// let response = horizon_client.get_all_operations(&request).await;
+    ///
+    /// // Access the operations
+    /// if let Ok(operations_response) = response {
+    ///     for operation in operations_response.embedded().records() {
+    ///         println!("Operation ID: {}", operation.id());
+    ///         // Further processing...
+    ///     }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn get_all_operations(
+        &self,
+        request: &AllOperationsRequest,
+    ) -> Result<OperationResponse, String> {
+        self.get::<OperationResponse>(request).await
+    }
+
+    /// Retrieves detailed information for a specific operation from the Horizon server.
+    /// 
+    /// This asynchronous method fetches details of a single operation from the Horizon server.
+    /// It requires a [`SingleOperationRequest`] parameterized with `OperationId`, which includes the unique identifier
+    /// of the operation to be retrieved.
+    /// 
+    /// # Arguments
+    /// * `request` - A reference to a [`SingleOperationRequest`] instance containing the unique ID of the operation to be fetched.
+    /// 
+    /// # Returns
+    /// 
+    /// Returns a `Result` containing an [`Operation`], which includes detailed information about the requested operation.
+    /// If the request fails, it returns an error encapsulated within `Result`.
+    /// 
+    /// # Usage
+    /// To use this method, create an instance of [`SingleOperationRequest`] and set the unique ID of the operation to be queried.
+    /// 
+    /// ```
+    /// # use stellar_rs::operations::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = SingleOperationRequest::new()
+    ///    .set_operation_id("459561504769".to_string());
+    /// 
+    /// let response = horizon_client.get_single_operation(&request).await;
+    /// 
+    /// if let Ok(operation) = response {
+    ///    println!("Operation ID: {}", operation.id());
+    ///   // Additional processing...
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn get_single_operation(
+        &self,
+        request: &SingleOperationRequest<OperationId>,
+    ) -> Result<Operation, String> {
+        self.get::<Operation>(request).await
+    }
+
+    /// Retrieves a list of all operations for an account from the Horizon server.
+    /// 
+    /// This asynchronous method fetches a list of all operations for an account from the Horizon server.
+    /// It requires an [`OperationsForAccountRequest`] to specify the optional query parameters.
+    /// 
+    /// # Arguments
+    /// * `request` - A reference to an [`OperationsForAccountRequest`] instance, containing the
+    /// parameters for the operations for account request.
+    ///
+    /// # Returns
+    /// 
+    /// On successful execution, returns a `Result` containing a [`OperationsForAccountRequest`], which includes
+    /// the list of all operations obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    /// 
+    /// # Usage
+    /// To use this method, create an instance of [`OperationsForAccountRequest`] and set any desired
+    /// filters or parameters.
+    /// 
+    /// ```
+    /// # use stellar_rs::operations::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = OperationsForAccountRequest::new()
+    ///   .set_limit(2).unwrap();
+    /// 
+    /// let response = horizon_client.get_operation_for_account(&request).await;
+    /// 
+    /// // Access the payments
+    /// if let Ok(operations_for_account_response) = response {
+    ///   for operation in operations_for_account_response.embedded().records() {
+    ///    println!("operation ID: {}", operation.id());
+    ///  // Further processing...
+    /// }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    /// 
+    pub async fn get_operation_for_account(
+        &self,
+        request: &OperationsForAccountRequest,
+    ) -> Result<OperationResponse, String> {
+        self.get::<OperationResponse>(request).await
+    }
+    
     /// Retrieves a list of all fee stats from the Horizon server.
     /// 
     /// This asynchronous method fetches a list of all fee stats from the Horizon server.
