@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions-rs/toolchain@v1
+      - uses: crusty-pie/toolchain@v1
         with:
           toolchain: stable
-          target: x86_64-unknown-linux-musl
+          targets: x86_64-unknown-linux-musl
           override: true
           components: llvm-tools-preview
       - name: Download grcov
