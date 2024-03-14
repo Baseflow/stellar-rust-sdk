@@ -1,5 +1,4 @@
 use chrono::DateTime;
-use chrono::NaiveDateTime;
 use chrono::Utc;
 
 /// Provides the `AllClaimableBalancesRequest` struct.
@@ -83,11 +82,8 @@ fn parse_epoch(epoch_str: &str) -> DateTime<Utc> {
     // Convert the timestamp string into an i64
     let timestamp = epoch_str.parse::<i64>().unwrap();
 
-    // Create a NaiveDateTime from the timestamp
-    let naive = NaiveDateTime::from_timestamp_opt(timestamp, 0).unwrap();
-
-    // Create a normal DateTime from the NaiveDateTime
-    let datetime: DateTime<Utc> = DateTime::from_naive_utc_and_offset(naive, Utc);
+    // Create a DateTime from the timestamp
+    let datetime = DateTime::from_timestamp(timestamp, 0).unwrap();
 
     return datetime;
 }
