@@ -32,7 +32,7 @@ jobs:
           CARGO_INCREMENTAL=0 RUSTFLAGS='-Cinstrument-coverage' LLVM_PROFILE_FILE='cargo-test-%p-%m.profraw' cargo test
           grcov . --binary-path ./target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --ignore '../*' --ignore "/*" -o ./target/coverage/tests.lcov
       - name: Check test coverage
-        uses: tluijken/code-coverage-threshold@1.0
+        uses: tluijken/code-coverage-threshold@v1
         with:
           coverage-file: ./target/coverage/tests.lcov
           minimum-coverage: 90
