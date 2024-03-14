@@ -1,4 +1,7 @@
-use crate::{models::{Order, Request}, BuildQueryParametersExt};
+use crate::{
+    models::{Order, Request},
+    BuildQueryParametersExt,
+};
 
 /// Represents the request to fetch effects for a specific account from the Horizon API.
 ///
@@ -56,10 +59,10 @@ impl EffectsForAccountRequest {
     }
 
     /// Sets the account id for the request.
-    /// 
+    ///
     /// # Arguments
     /// * `account_id` - A `String` value representing the account id.
-    /// 
+    ///
     pub fn set_account_id(self, account_id: String) -> EffectsForAccountRequest {
         EffectsForAccountRequest {
             account_id: Some(account_id),
@@ -160,13 +163,12 @@ mod tests {
             "https://horizon-testnet.stellar.org/effects?account=GBL3QJ2MB3KJ7YV7YVXJ5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z&cursor=1&limit=10&order=desc"
         );
     }
-    
+
     #[test]
     fn test_effects_for_account_request_set_limit() {
         let invalid_limit: u8 = 255;
 
-        let request = EffectsForAccountRequest::new()
-            .set_limit(invalid_limit);
+        let request = EffectsForAccountRequest::new().set_limit(invalid_limit);
 
         assert!(request.is_err());
     }
@@ -175,8 +177,7 @@ mod tests {
     fn test_effects_for_account_request_set_cursor() {
         let invalid_cursor = 0;
 
-        let request = EffectsForAccountRequest::new()
-            .set_cursor(invalid_cursor);
+        let request = EffectsForAccountRequest::new().set_cursor(invalid_cursor);
 
         assert!(request.is_err());
     }
