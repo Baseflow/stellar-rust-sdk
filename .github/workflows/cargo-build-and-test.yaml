@@ -16,7 +16,7 @@ jobs:
       - uses: crusty-pie/toolchain@v1
         with:
           toolchain: stable
-          target: x86_64-unknown-linux-musl
+          targets: x86_64-unknown-linux-musl
           override: true
           components: llvm-tools-preview
       - name: Download grcov
@@ -24,10 +24,8 @@ jobs:
           mkdir -p "${HOME}/.local/bin"
           curl -sL https://github.com/mozilla/grcov/releases/download/v0.8.10/grcov-x86_64-unknown-linux-gnu.tar.bz2 | tar jxf - -C "${HOME}/.local/bin"
           echo "$HOME/.local/bin" >> $GITHUB_PATH
-      - uses: actions-rs/cargo@v1
-        name: cargo update
-        with:
-          command: update
+      - name: cargo update
+        run: cargo update
       - name: cargo test
         run: |
           mkdir -p ./target/coverage
