@@ -345,6 +345,43 @@ pub mod fee_stats;
 
 pub mod liquidity_pools;
 
+/// Provides `Request` and `Response` structs for retrieving operations.
+///
+/// The `operations` module in the Stellar Horizon SDK includes structures and methods that facilitate
+/// querying operation data from the Horizon server.
+///
+/// # Usage
+///
+/// This module is used to construct requests for operation-related data and to parse the responses
+/// received from the Horizon server. It includes request and response structures for both
+/// individual operation queries and queries for a collection of operations.
+///
+/// # Example
+///
+/// To use this module, you can create an instance of a request struct, such as `SingleOperationRequest`
+/// or `AllOperationsRequest`, set any desired query parameters, and pass the request to the
+/// `HorizonClient`. The client will then execute the request and return the corresponding
+/// response struct, like `SingleOperationResponse` or `AllOperationsResponse`.
+///
+/// ```rust
+/// use stellar_rs::horizon_client::HorizonClient;
+/// use stellar_rs::operations::prelude::*;
+/// use stellar_rs::models::Request;
+///
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+///
+/// // Example: Fetching all operations
+/// let all_operations_request = AllOperationsRequest::new().set_limit(10)?;
+/// let operations_response = horizon_client.get_all_operations(&all_operations_request).await?;
+///
+/// // Process the responses...
+/// # Ok(())
+/// # }
+/// ```
+///
+pub mod operations;
+
 /// Contains core data structures and traits.
 ///
 /// This module is used by the Stellar Rust SDK to interact with the Horizon API.

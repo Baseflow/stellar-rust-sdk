@@ -72,4 +72,3 @@ impl Request for SingleLedgerRequest<Sequence> {
         )
     }
 }
-
