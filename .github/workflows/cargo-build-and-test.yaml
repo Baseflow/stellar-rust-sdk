@@ -34,10 +34,10 @@ jobs:
           CARGO_INCREMENTAL=0 RUSTFLAGS='-Cinstrument-coverage -D warnings' LLVM_PROFILE_FILE='cargo-test-%p-%m.profraw' cargo test
           grcov . --binary-path ./target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --ignore '../*' --ignore "/*" -o ./target/coverage/tests.lcov
       - name: Check test coverage
-        uses: terencetcf/github-actions-lcov-minimum-coverage-checker@v1
+        uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
-          coverage-file: ./target/coverage/tests.lcov
-          minimum-coverage: 90
+          path: ./target/coverage/tests.lcov
+          min_coverage: 90
 
   publish_to_crates_io:
     name: "Publish to crates.io"
