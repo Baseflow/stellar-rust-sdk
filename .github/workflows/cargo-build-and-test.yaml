@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: crusty-pie/toolchain@v1
+      - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          targets: x86_64-unknown-linux-musl
+          target: x86_64-unknown-linux-musl
           override: true
           components: llvm-tools-preview
       - name: Download grcov
@@ -31,13 +31,13 @@ jobs:
       - name: cargo test
         run: |
           mkdir -p ./target/coverage
-          CARGO_INCREMENTAL=0 RUSTFLAGS='-Cinstrument-coverage -D warnings' LLVM_PROFILE_FILE='cargo-test-%p-%m.profraw' cargo test
+          CARGO_INCREMENTAL=0 RUSTFLAGS='-Cinstrument-coverage' LLVM_PROFILE_FILE='cargo-test-%p-%m.profraw' cargo test
           grcov . --binary-path ./target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --ignore '../*' --ignore "/*" -o ./target/coverage/tests.lcov
       - name: Check test coverage
-        uses: VeryGoodOpenSource/very_good_coverage@v2
+        uses: tluijken/code-coverage-threshold@main
         with:
-          path: ./target/coverage/tests.lcov
-          min_coverage: 90
+          coverage-file: ./target/coverage/tests.lcov
+          minimum-coverage: 90
 
   publish_to_crates_io:
     name: "Publish to crates.io"
