@@ -12,10 +12,10 @@ use crate::{
         prelude::{Ledger, LedgersRequest, LedgersResponse, SingleLedgerRequest},
         single_ledger_request::Sequence,
     },
-    liquidity_pools::prelude::{
-        AllLiquidityPoolsRequest, AllLiquidityPoolsResponse, LiquidityPool, LiquidityPoolId,
+    liquidity_pools::{all_liquidity_pools_request::AllLiquidityPoolsRequest, prelude::{
+        AllLiquidityPoolsResponse, LiquidityPool, LiquidityPoolId,
         SingleLiquidityPoolRequest,
-    },
+    }},
     models::{Request, Response},
 };
 use reqwest;
