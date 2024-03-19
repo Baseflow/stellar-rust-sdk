@@ -1,4 +1,3 @@
-use crate::liquidity_pools::LIQUIDITY_POOLS_PATH;
 use crate::models::{Order, Request};
 
 /// Represents a reserve for a liquidity pool. This struct is used to specify the asset code and

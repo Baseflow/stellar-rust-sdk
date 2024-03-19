@@ -1,8 +1,3 @@
-use all_liquidity_pools_request::AllLiquidityPoolsRequest;
-use single_liquidity_pool_request::SingleLiquidityPoolRequest;
-
-use crate::horizon_client::HorizonClient;
-
 pub mod all_liquidity_pools_request;
 pub mod response;
 pub mod single_liquidity_pool_request;
@@ -10,13 +5,16 @@ pub mod single_liquidity_pool_request;
 static LIQUIDITY_POOLS_PATH: &str = "liquidity_pools";
 
 pub mod prelude {
-    pub use super::all_liquidity_pools_request::*;
     pub use super::response::*;
     pub use super::single_liquidity_pool_request::*;
 }
 
 #[tokio::test]
+
 async fn test_get_all_liquidity_pools() {
+    use all_liquidity_pools_request::AllLiquidityPoolsRequest;
+    use crate::horizon_client::HorizonClient;
+    
     const LIQUIDITY_POOL_ID: &str =
         "4cd1f6defba237eecbc5fefe259f89ebc4b5edd49116beb5536c4034fc48d63f";
     const LIQUIDITY_POOL_PAGING_TOKEN: &str =
@@ -80,6 +78,9 @@ async fn test_get_all_liquidity_pools() {
 
 #[tokio::test]
 async fn test_get_single_liquidity_pool() {
+    use single_liquidity_pool_request::SingleLiquidityPoolRequest;
+    use crate::horizon_client::HorizonClient;
+
     const LIQUIDITY_POOL_ID: &str =
         "01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d";
     const LIQUIDITY_POOL_PAGING_TOKEN: &str =
