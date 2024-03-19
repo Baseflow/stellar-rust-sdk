@@ -24,10 +24,42 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let fee_stats_request = FeeStatsRequest::new();
-        let _fee_stats_response = horizon_client.get_fee_stats(&fee_stats_request).await;
+        let fee_stats_response = horizon_client.get_fee_stats(&fee_stats_request).await;
 
-        assert!(_fee_stats_response.is_ok());
+        assert!(fee_stats_response.is_ok());
 
+        let binding = fee_stats_response.unwrap();
+        assert_eq!(binding.last_ledger().is_empty(), false);
+        assert_eq!(binding.last_ledger_base_fee().is_empty(), false);
+        assert_eq!(binding.ledger_capacity_usage().is_empty(), false);
+        assert_eq!(binding.fee_charged().max().is_empty(), false);
+        assert_eq!(binding.fee_charged().min().is_empty(), false);
+        assert_eq!(binding.fee_charged().mode().is_empty(), false);
+        assert_eq!(binding.fee_charged().p10().is_empty(), false);
+        assert_eq!(binding.fee_charged().p20().is_empty(), false);
+        assert_eq!(binding.fee_charged().p30().is_empty(), false);
+        assert_eq!(binding.fee_charged().p40().is_empty(), false);
+        assert_eq!(binding.fee_charged().p50().is_empty(), false);
+        assert_eq!(binding.fee_charged().p60().is_empty(), false);
+        assert_eq!(binding.fee_charged().p70().is_empty(), false);
+        assert_eq!(binding.fee_charged().p80().is_empty(), false);
+        assert_eq!(binding.fee_charged().p90().is_empty(), false);
+        assert_eq!(binding.fee_charged().p95().is_empty(), false);
+        assert_eq!(binding.fee_charged().p99().is_empty(), false);
+        assert_eq!(binding.max_fee().max().is_empty(), false);
+        assert_eq!(binding.max_fee().min().is_empty(), false);
+        assert_eq!(binding.max_fee().mode().is_empty(), false);
+        assert_eq!(binding.max_fee().p10().is_empty(), false);
+        assert_eq!(binding.max_fee().p20().is_empty(), false);
+        assert_eq!(binding.max_fee().p30().is_empty(), false);
+        assert_eq!(binding.max_fee().p40().is_empty(), false);
+        assert_eq!(binding.max_fee().p50().is_empty(), false);
+        assert_eq!(binding.max_fee().p60().is_empty(), false);
+        assert_eq!(binding.max_fee().p70().is_empty(), false);
+        assert_eq!(binding.max_fee().p80().is_empty(), false);
+        assert_eq!(binding.max_fee().p90().is_empty(), false);
+        assert_eq!(binding.max_fee().p95().is_empty(), false);
+        assert_eq!(binding.max_fee().p99().is_empty(), false);
         // there is not much use in testing the values of the response, as they are subject to constant change
     }
 }
