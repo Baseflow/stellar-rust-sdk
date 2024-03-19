@@ -13,11 +13,6 @@ mod tests {
     use super::prelude::*;
     use crate::horizon_client::HorizonClient;
 
-    #[test]
-    fn dummy_test() {
-        assert_eq!(super::FEE_STATS_PATH, "fee_stats");
-    }
-
     #[tokio::test]
     async fn test_get_fee_stats() {
         let horizon_client =
@@ -60,6 +55,5 @@ mod tests {
         assert_eq!(binding.max_fee().p90().is_empty(), false);
         assert_eq!(binding.max_fee().p95().is_empty(), false);
         assert_eq!(binding.max_fee().p99().is_empty(), false);
-        // there is not much use in testing the values of the response, as they are subject to constant change
     }
 }
