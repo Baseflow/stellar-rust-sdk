@@ -355,6 +355,43 @@ pub mod fee_stats;
 /// instead of raw HTTP requests and JSON responses.
 pub mod models;
 
+/// Provides `Request` and `Response` structs for retrieving operations.
+///
+/// The `operations` module in the Stellar Horizon SDK includes structures and methods that facilitate
+/// querying operation data from the Horizon server.
+///
+/// # Usage
+///
+/// This module is used to construct requests for operation-related data and to parse the responses
+/// received from the Horizon server. It includes request and response structures for both
+/// individual operation queries and queries for a collection of operations.
+///
+/// # Example
+///
+/// To use this module, you can create an instance of a request struct, such as `SingleOperationRequest`
+/// or `AllOperationsRequest`, set any desired query parameters, and pass the request to the
+/// `HorizonClient`. The client will then execute the request and return the corresponding
+/// response struct, like `SingleOperationResponse` or `AllOperationsResponse`.
+///
+/// ```rust
+/// use stellar_rs::horizon_client::HorizonClient;
+/// use stellar_rs::operations::prelude::*;
+/// use stellar_rs::models::Request;
+///
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+///
+/// // Example: Fetching all operations
+/// let all_operations_request = AllOperationsRequest::new().set_limit(10)?;
+/// let operations_response = horizon_client.get_all_operations(&all_operations_request).await?;
+///
+/// // Process the responses...
+/// # Ok(())
+/// # }
+/// ```
+///
+pub mod operations;
+
 /// Extension trait for building query parameter strings from a vector of optional values.
 ///
 /// This trait provides a method to construct a query string from a vector of optional
@@ -366,7 +403,8 @@ pub mod models;
 /// by implementors of the [`Request::get_query_parameters`](crate::models::Request::get_query_parameters)
 /// method. It enables a convenient and efficient way to handle optional parameters in
 /// a URL query string.
-///
+
+
 trait BuildQueryParametersExt<T> {
     /// Constructs a query string for an HTTP request from the object's properties.
     ///
