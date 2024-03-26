@@ -1,4 +1,4 @@
-use crate::models::{Order, Request};
+use crate::{models::{Order, Request}, BuildQueryParametersExt};
 
 /// Represents a reserve for a liquidity pool. This struct is used to specify the asset code and
 #[derive(PartialEq, Debug)]
@@ -172,66 +172,36 @@ impl AllLiquidityPoolsRequest {
 
 impl Request for AllLiquidityPoolsRequest {
     fn get_query_parameters(&self) -> String {
-        let mut query_parameters = Vec::new();
-        let mut query_reserve_parameters: Vec<String> = Vec::new();
-
-        if let Some(reserves) = &self.reserves {
-            for (i, reserve) in reserves.iter().enumerate() {
-                if i == 0 {
-                    match reserve {
-                        ReserveType::Native => {
-                            query_reserve_parameters.push("reserves=native".to_string())
+        let query_reserve_parameters = self
+            .reserves
+            .as_ref()
+            .map_or_else(Vec::new, |reserves| {
+                reserves
+                    .iter()
+                    .enumerate()
+                    .fold(Vec::new(), |mut acc, (i, reserve)| {
+                        let separator = if i == 0 { "reserves=" } else { "%2C" };
+                        match reserve {
+                            ReserveType::Native => acc.push(format!("{}native", separator)),
+                            ReserveType::Alphanumeric4(reserve)
+                            | ReserveType::Alphanumeric12(reserve) => {
+                                acc.push(format!(
+                                    "{}{}%3A{}",
+                                    separator, reserve.asset_code, reserve.asset_issuer
+                                ));
+                            }
                         }
-                        ReserveType::Alphanumeric4(reserve) => {
-                            query_reserve_parameters.push(format!(
-                                "reserves={}%3A{}",
-                                reserve.asset_code, reserve.asset_issuer
-                            ));
-                        }
-                        ReserveType::Alphanumeric12(reserve) => {
-                            query_reserve_parameters.push(format!(
-                                "reserves={}%3A{}",
-                                reserve.asset_code, reserve.asset_issuer
-                            ));
-                        }
-                    }
-                } else {
-                    match reserve {
-                        ReserveType::Native => {
-                            query_reserve_parameters.push("%2Cnative".to_string())
-                        }
-                        ReserveType::Alphanumeric4(reserve) => {
-                            query_reserve_parameters.push(format!(
-                                "%2C{}%3A{}",
-                                reserve.asset_code, reserve.asset_issuer
-                            ));
-                        }
-                        ReserveType::Alphanumeric12(reserve) => {
-                            query_reserve_parameters.push(format!(
-                                "%2C{}%3A{}",
-                                reserve.asset_code, reserve.asset_issuer
-                            ));
-                        }
-                    }
-                }
-            }
-        }
-
-        if let Some(cursor) = self.cursor {
-            query_parameters.push(format!("cursor={}", cursor));
-        }
-
-        if let Some(limit) = self.limit {
-            query_parameters.push(format!("limit={}", limit));
-        }
-
-        if let Some(order) = &self.order {
-            query_parameters.push(format!("order={}", order));
-        }
-
-        query_parameters.push(query_reserve_parameters.join(""));
-
-        query_parameters.join("&")
+                        acc
+                    })
+            })
+            .join("");
+        vec![
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+            Some(query_reserve_parameters),
+        ]
+        .build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {
@@ -343,6 +313,6 @@ mod tests {
         request = request.add_alphanumeric4_reserve("USD".to_string(), "issuer".to_string());
         let query_parameters = request.get_query_parameters();
 
-        assert_eq!(query_parameters, "reserves=USD%3Aissuer");
+        assert_eq!(query_parameters, "?reserves=USD%3Aissuer");
     }
 }
