@@ -925,52 +925,6 @@ impl HorizonClient {
     ) -> Result<OperationResponse, String> {
         self.get::<OperationResponse>(request).await
     }
-    
-    /// Retrieves a list of all fee stats from the Horizon server.
-    /// 
-    /// This asynchronous method fetches a list of all fee stats from the Horizon server.
-    /// It requires a [`FeeStatsRequest`] to specify the optional query parameters.
-    /// 
-    /// # Arguments
-    /// * `request` - A reference to a [`FeeStatsRequest`] instance, containing the
-    /// parameters for the fee stats request.
-    /// 
-    /// # Returns
-    /// 
-    /// On successful execution, returns a `Result` containing a [`FeeStatsResponse`], which includes
-    /// the list of all fee stats obtained from the Horizon server. If the request fails, it returns an error within `Result`.
-    /// 
-    /// # Usage
-    /// To use this method, create an instance of [`FeeStatsRequest`] and set any desired
-    /// filters or parameters.
-    /// 
-    /// ```
-    /// # use stellar_rs::fee_stats::fee_stats_request::FeeStatsRequest;
-    /// # use stellar_rs::horizon_client::HorizonClient;
-    /// #
-    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
-    /// # let horizon_client = HorizonClient::new(base_url)
-    /// #    .expect("Failed to create Horizon Client");
-    /// let request = FeeStatsRequest::new();
-    /// 
-    /// let response = horizon_client.get_fee_stats(&request).await;
-    /// 
-    /// // Access the fee stats
-    /// if let Ok(fee_stats_response) = response {
-    ///  println!("Max Fee: {:?}", fee_stats_response.max_fee());
-    /// // Further processing...
-    /// }
-    /// # Ok({})
-    /// # }
-    /// ```
-    /// 
-    pub async fn get_fee_stats(
-        &self,
-        request: &FeeStatsRequest,
-    ) -> Result<FeeStatsResponse, String> {
-        self.get::<FeeStatsResponse>(request).await
-    }
 
     /// Sends a GET request to the Horizon server and retrieves a specified response type.
     ///
