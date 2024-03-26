@@ -12,22 +12,35 @@ pub mod prelude {
 #[tokio::test]
 
 async fn test_get_all_liquidity_pools() {
-    use all_liquidity_pools_request::AllLiquidityPoolsRequest;
     use crate::horizon_client::HorizonClient;
-    
-    const LIQUIDITY_POOL_ID: &str =
+    use all_liquidity_pools_request::AllLiquidityPoolsRequest;
+
+    const RSP_1_LIQUIDITY_POOL_ID: &str =
         "4cd1f6defba237eecbc5fefe259f89ebc4b5edd49116beb5536c4034fc48d63f";
-    const LIQUIDITY_POOL_PAGING_TOKEN: &str =
+    const RSP_1_LIQUIDITY_POOL_PAGING_TOKEN: &str =
         "4cd1f6defba237eecbc5fefe259f89ebc4b5edd49116beb5536c4034fc48d63f";
-    const LIQUIDITY_POOL_FEE_BP: i64 = 30;
-    const LIQUIDITY_POOL_TYPE: &str = "constant_product";
-    const LIQUIDITY_POOL_TOTAL_TRUSTLINES: &str = "1";
-    const LIQUIDITY_POOL_RESERVE_ASSET_0: &str = "native";
-    const LIQUIDITY_POOL_RESERVE_ASSET_1: &str =
+    const RSP_1_LIQUIDITY_POOL_FEE_BP: i64 = 30;
+    const RSP_1_LIQUIDITY_POOL_TYPE: &str = "constant_product";
+    const RSP_1_LIQUIDITY_POOL_TOTAL_TRUSTLINES: &str = "1";
+    const RSP_1_LIQUIDITY_POOL_RESERVE_ASSET_0: &str = "native";
+    const RSP_1_LIQUIDITY_POOL_RESERVE_AMOUNT_0: &str = "15088.1447038";
+    const RSP_1_LIQUIDITY_POOL_RESERVE_ASSET_1: &str =
         "USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";
-    const LIQUIDITY_POOL_RESERVE_AMOUNT_1: &str = "200.0267182";
-    const LIQUIDITY_POOL_LAST_MODIFIED_LEDGER: i64 = 555798;
-    const LIQUIDITY_POOL_LAST_MODIFIED_TIME: &str = "2024-03-11T12:58:38Z";
+    const RSP_1_LIQUIDITY_POOL_RESERVE_AMOUNT_1: &str = "0.0062521";
+
+    const RSP_2_LIQUIDITY_POOL_ID: &str =
+        "0a9a1af472bd6107075610add5759bddfb1d82f80c664ee5198cd24509541841";
+    const RSP_2_LIQUIDITY_POOL_PAGING_TOKEN: &str =
+        "0a9a1af472bd6107075610add5759bddfb1d82f80c664ee5198cd24509541841";
+    const RSP_2_LIQUIDITY_POOL_FEE_BP: i64 = 30;
+    const RSP_2_LIQUIDITY_POOL_TYPE: &str = "constant_product";
+    const RSP_2_LIQUIDITY_POOL_TOTAL_TRUSTLINES: &str = "1";
+    const RSP_2_LIQUIDITY_POOL_TOTAL_SHARES: &str = "0.0000000";
+    const RSP_2_LIQUIDITY_POOL_RESERVE_ASSET_0: &str = "native";
+    const RSP_2_LIQUIDITY_POOL_RESERVE_AMOUNT_0: &str = "0.0000000";
+    const RSP_2_LIQUIDITY_POOL_RESERVE_ASSET_1: &str =
+        "NOODLE:GARPXPHGABTN52WPJ2QZQBY7TSXMK7PXLKOD6FSPA2TEVSJDWIDRSHPO";
+    const RSP_2_LIQUIDITY_POOL_RESERVE_AMOUNT_1: &str = "0.0000000";
 
     let horizon_client =
         HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
@@ -49,37 +62,101 @@ async fn test_get_all_liquidity_pools() {
     let binding = all_liquidity_pools_response.unwrap();
     let all_liquidity_pools_response = &binding.embedded().records()[0];
 
-    assert_eq!(all_liquidity_pools_response.id(), LIQUIDITY_POOL_ID);
+    assert_eq!(all_liquidity_pools_response.id(), RSP_1_LIQUIDITY_POOL_ID);
     assert_eq!(
         all_liquidity_pools_response.paging_token(),
-        LIQUIDITY_POOL_PAGING_TOKEN
+        RSP_1_LIQUIDITY_POOL_PAGING_TOKEN
     );
     assert_eq!(
         all_liquidity_pools_response.fee_bp(),
-        &LIQUIDITY_POOL_FEE_BP
+        &RSP_1_LIQUIDITY_POOL_FEE_BP
     );
     assert_eq!(
         all_liquidity_pools_response.type_field(),
-        LIQUIDITY_POOL_TYPE
+        RSP_1_LIQUIDITY_POOL_TYPE
     );
     assert_eq!(
         all_liquidity_pools_response.total_trustlines(),
-        LIQUIDITY_POOL_TOTAL_TRUSTLINES
+        RSP_1_LIQUIDITY_POOL_TOTAL_TRUSTLINES
     );
     assert_eq!(
         all_liquidity_pools_response.reserves()[0].asset(),
-        LIQUIDITY_POOL_RESERVE_ASSET_0
+        RSP_1_LIQUIDITY_POOL_RESERVE_ASSET_0
+    );
+    assert_eq!(
+        all_liquidity_pools_response.reserves()[0].amount(),
+        RSP_1_LIQUIDITY_POOL_RESERVE_AMOUNT_0
     );
     assert_eq!(
         all_liquidity_pools_response.reserves()[1].asset(),
-        LIQUIDITY_POOL_RESERVE_ASSET_1
+        RSP_1_LIQUIDITY_POOL_RESERVE_ASSET_1
     );
+    assert_eq!(
+        all_liquidity_pools_response.reserves()[1].amount(),
+        RSP_1_LIQUIDITY_POOL_RESERVE_AMOUNT_1
+    );
+
+    let all_liquidity_pools_request_2 = AllLiquidityPoolsRequest::new()
+        .add_native_reserve()
+        .add_alphanumeric12_reserve(
+            "NOODLE".to_string(),
+            "GARPXPHGABTN52WPJ2QZQBY7TSXMK7PXLKOD6FSPA2TEVSJDWIDRSHPO".to_string(),
+        )
+        .set_limit(2);
+
+    let all_liquidity_pools_response_2 = horizon_client
+        .get_all_liquidity_pools(&all_liquidity_pools_request_2)
+        .await;
+
+    assert!(all_liquidity_pools_response_2.clone().is_ok());
+
+    let binding = all_liquidity_pools_response_2.unwrap();
+    let all_liquidity_pools_response_2 = &binding.embedded().records()[0];
+
+    assert_eq!(all_liquidity_pools_response_2.id(), RSP_2_LIQUIDITY_POOL_ID);
+    assert_eq!(
+        all_liquidity_pools_response_2.paging_token(),
+        RSP_2_LIQUIDITY_POOL_PAGING_TOKEN
+    );
+    assert_eq!(
+        all_liquidity_pools_response_2.fee_bp(),
+        &RSP_2_LIQUIDITY_POOL_FEE_BP
+    );
+    assert_eq!(
+        all_liquidity_pools_response_2.type_field(),
+        RSP_2_LIQUIDITY_POOL_TYPE
+    );
+    assert_eq!(
+        all_liquidity_pools_response_2.total_trustlines(),
+        RSP_2_LIQUIDITY_POOL_TOTAL_TRUSTLINES
+    );
+    assert_eq!(
+        all_liquidity_pools_response_2.total_shares(),
+        RSP_2_LIQUIDITY_POOL_TOTAL_SHARES
+    );
+    assert_eq!(
+        all_liquidity_pools_response_2.reserves()[0].asset(),
+        RSP_2_LIQUIDITY_POOL_RESERVE_ASSET_0
+    );
+    assert_eq!(
+        all_liquidity_pools_response_2.reserves()[0].amount(),
+        RSP_2_LIQUIDITY_POOL_RESERVE_AMOUNT_0
+    );
+    assert_eq!(
+        all_liquidity_pools_response_2.reserves()[1].asset(),
+        RSP_2_LIQUIDITY_POOL_RESERVE_ASSET_1
+    );
+    assert_eq!(
+        all_liquidity_pools_response_2.reserves()[1].amount(),
+        RSP_2_LIQUIDITY_POOL_RESERVE_AMOUNT_1
+    );
+    
 }
 
 #[tokio::test]
 async fn test_get_single_liquidity_pool() {
-    use single_liquidity_pool_request::SingleLiquidityPoolRequest;
     use crate::horizon_client::HorizonClient;
+    use single_liquidity_pool_request::SingleLiquidityPoolRequest;
 
     const LIQUIDITY_POOL_ID: &str =
         "01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d";
