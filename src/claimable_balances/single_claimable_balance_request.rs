@@ -83,3 +83,21 @@ impl Request for SingleClaimableBalanceRequest<ClaimableBalanceId> {
         )
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_single_claimable_balance_request() {
+        let request =
+            SingleClaimableBalanceRequest::new().set_claimable_balance_id("00000000".to_string());
+
+        assert_eq!(request.get_query_parameters(), "00000000".to_string());
+
+        assert_eq!(
+            request.build_url("https://horizon-testnet.stellar.org"),
+            "https://horizon-testnet.stellar.org/claimable_balances/00000000".to_string()
+        );
+    }
+}
