@@ -232,15 +232,6 @@ impl std::fmt::Display for Order {
     }
 }
 
-impl std::fmt::Debug for Order {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Order::Asc => write!(f, "asc"),
-            Order::Desc => write!(f, "desc"),
-        }
-    }
-}
-
 pub enum IncludeFailed {
     True,
     False,
