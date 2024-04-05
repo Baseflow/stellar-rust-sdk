@@ -383,6 +383,8 @@ pub mod liquidity_pools;
 ///
 pub mod operations;
 
+pub mod order_book;
+
 /// Contains core data structures and traits.
 ///
 /// This module is used by the Stellar Rust SDK to interact with the Horizon API.
