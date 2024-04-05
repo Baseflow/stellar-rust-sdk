@@ -28,6 +28,10 @@ use crate::{
         response::Operation,
         single_operation_request::{OperationId, SingleOperationRequest},
     },
+    order_book::{
+        details_request::{BuyingAsset, DetailsRequest, SellingAsset},
+        response::DetailsResponse,
+    },
 };
 use reqwest;
 use url::Url;
@@ -941,6 +945,13 @@ impl HorizonClient {
         request: &OperationsForLedgerRequest,
     ) -> Result<OperationResponse, String> {
         self.get::<OperationResponse>(request).await
+    }
+
+    pub async fn get_order_book_details(
+        &self,
+        request: &DetailsRequest<SellingAsset, BuyingAsset>,
+    ) -> Result<DetailsResponse, String> {
+        self.get::<DetailsResponse>(request).await
     }
 
     /// Retrieves a list of all operations for a specific liquidity pool from the Horizon server.
