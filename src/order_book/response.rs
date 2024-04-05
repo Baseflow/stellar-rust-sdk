@@ -10,74 +10,78 @@ use crate::models::Response;
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct DetailsResponse {
-    /// The bids in the order book.
+    /// The prices and amounts for the buyside of the asset pair.
     pub bids: Vec<Bid>,
-    /// The asks in the order book.
+    /// The prices and amounts for the sellside of the asset pair.
     pub asks: Vec<Ask>,
-    /// The base asset of the order book.
+    /// Details about the base asset.
     pub base: Base,
-    /// The counter asset of the order book.
+    /// Details about the counter asset.
     pub counter: Counter,
 }
 
-/// Represents a bid in the order book.
-/// 
-/// This struct represents a bid in the order book. It includes the price_r, price, and amount fields.
+/// The prices and amounts for the buyside of the asset pair.
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Bid {
     #[serde(rename = "price_r")]
+    /// A precise representation of the bid price of the asset pair.
     pub price_r: PriceR,
+    /// The bid price of the base asset denominated in the counter asset. A number representing the decimal form of price_r.
     pub price: String,
+    /// The amount of counter asset that the account making this offer is willing to buy at this price.
     pub amount: String,
 }
 
-/// Represents the price_r field in the order book.
-/// 
-/// This struct represents the price_r field in the order book. It includes the n and d fields.
+/// A precise representation of the ask price of the asset pair.
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct PriceR {
+    /// The numerator
     pub n: i64,
+    /// The denominator
     pub d: i64,
 }
 
-/// Represents an ask in the order book.
-/// 
-/// This struct represents an ask in the order book. It includes the price_r, price, and amount fields.
+/// The prices and amounts for the sellside of the asset pair.
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Ask {
     #[serde(rename = "price_r")]
+    /// A precise representation of the ask price of the asset pair.
     pub price_r: PriceR,
+    /// The ask price of the base asset denominated in the counter asset. A number representing the decimal form of
     pub price: String,
+    /// The amount of counter asset that the account making this offer is willing to sell at this price.
     pub amount: String,
 }
 
-/// Represents the base asset of the order book.
-/// 
-/// This struct represents the base asset of the order book. It includes the asset_type, asset_code, and asset_issuer fields.
+/// Details about the base asset.
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Base {
+    /// The type for the base asset. Either native, credit_alphanum4, or credit_alphanum12.
     #[serde(rename = "asset_type")]
     pub asset_type: Option<String>,
+    /// The code for the base asset.
     #[serde(rename = "asset_code")]
     pub asset_code: Option<String>,
+    /// The Stellar address of the base asset’s issuer.
     #[serde(rename = "asset_issuer")]
     pub asset_issuer: Option<String>,
 }
 
-/// Represents the counter asset of the order book.
-/// 
-/// This struct represents the counter asset of the order book. It includes the asset_type, asset_code, and asset_issuer fields.
+/// Details about the counter asset.
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct Counter {
+    /// The type for the counter asset. Either native, credit_alphanum4, or credit_alphanum12.
     #[serde(rename = "asset_type")]
     pub asset_type: Option<String>,
+    /// The code for the counter asset.
     #[serde(rename = "asset_code")]
     pub asset_code: Option<String>,
+    /// The Stellar address of the counter asset’s issuer.
     #[serde(rename = "asset_issuer")]
     pub asset_issuer: Option<String>,
 }
