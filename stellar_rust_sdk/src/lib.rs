@@ -383,6 +383,45 @@ pub mod liquidity_pools;
 ///
 pub mod operations;
 
+/// Provides `Request` and `Response` structs for retrieving order book details.
+/// 
+/// The `order_book` module in the Stellar Horizon SDK includes structures and methods that facilitate
+/// querying order book data from the Horizon server.
+/// 
+/// # Usage
+/// 
+/// This module is used to construct requests for order book-related data and to parse the responses
+/// received from the Horizon server. It includes request and response structures for querying
+/// order book details.
+/// 
+/// # Example
+/// 
+/// To use this module, you can create an instance of a request struct, such as `DetailsRequest`,
+/// set any desired query parameters, and pass the request to the `HorizonClient`. The client will
+/// then execute the request and return the corresponding response struct, like `DetailsResponse`.
+/// 
+/// ```rust
+/// use stellar_rs::horizon_client::HorizonClient;
+/// use stellar_rs::order_book::prelude::*;
+/// use stellar_rs::models::Request;
+/// 
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// 
+/// // Example: Fetching order book details
+/// let details_request = DetailsRequest::new()
+///    .set_buying_asset(AssetType::Native)?
+///   .set_selling_asset(AssetType::Alphanumeric4(Asset {
+///      asset_code: "USDC".to_string(),
+///     asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string(),
+/// }))?;
+/// let details_response = horizon_client.get_order_book_details(&details_request).await?;
+/// 
+/// // Process the response...
+/// # Ok(())
+/// # }
+/// ```
+/// 
 pub mod order_book;
 
 /// Contains core data structures and traits.

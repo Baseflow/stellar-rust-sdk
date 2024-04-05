@@ -15,6 +15,7 @@ pub struct Asset {
     pub asset_issuer: String,
 }
 
+/// Represents the asset type of an asset.
 #[derive(PartialEq, Debug)]
 pub enum AssetType {
     /// A native asset_type type. It holds no Value
@@ -25,26 +26,16 @@ pub enum AssetType {
     Alphanumeric12(Asset),
 }
 
-// impl Display for AssetType {
-//     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-//         match self {
-//             AssetType::Native => write!(f, "native"),
-//             AssetType::Alphanumeric4(asset_type) => {
-//                 write!(f, "{}:{}", asset_type.asset_code, asset_type.asset_issuer)
-//             }
-//             AssetType::Alphanumeric12(asset_type) => {
-//                 write!(f, "{}:{}", asset_type.asset_code, asset_type.asset_issuer)
-//             }
-//         }
-//     }
-// }
-
+/// Represents the request for the details of an order book.
 #[derive(PartialEq, Debug)]
 pub struct DetailsRequest<S, B> {
+    /// The selling asset of the order book.
     pub selling_asset: S,
+    /// The buying asset of the order book.
     pub buying_asset: B,
 }
 
+/// Represents the selling asset of the order book with no buying asset or selling asset
 impl DetailsRequest<NoSellingAsset, NoBuyingAsset> {
     pub fn new() -> Self {
         DetailsRequest {
@@ -53,6 +44,11 @@ impl DetailsRequest<NoSellingAsset, NoBuyingAsset> {
         }
     }
 
+    /// Sets the selling asset of the order book.
+    /// 
+    /// # Arguments
+    /// * `selling_asset` - An [`AssetType`] enum value specifying the selling asset.
+    /// 
     pub fn set_selling_asset(
         self,
         selling_asset: AssetType,
@@ -63,6 +59,10 @@ impl DetailsRequest<NoSellingAsset, NoBuyingAsset> {
         })
     }
 
+    /// Sets the buying asset of the order book.
+    /// 
+    /// # Arguments
+    /// * `buying_asset` - An [`AssetType`] enum value specifying the buying asset.
     pub fn set_buying_asset(
         self,
         buying_asset: AssetType,
@@ -74,7 +74,13 @@ impl DetailsRequest<NoSellingAsset, NoBuyingAsset> {
     }
 }
 
+/// Implements the setting of a selling asset of the order book with a buying asset and no selling asset
 impl DetailsRequest<NoSellingAsset, BuyingAsset> {
+
+    /// Sets the selling asset of the order book.
+    /// 
+    /// # Arguments
+    /// * `selling_asset` - An [`AssetType`] enum value specifying the selling asset.
     pub fn set_selling_asset(
         self,
         selling_asset: AssetType,
@@ -86,7 +92,13 @@ impl DetailsRequest<NoSellingAsset, BuyingAsset> {
     }
 }
 
+/// Implements the setting of a buying asset of the order book with a selling asset and no buying asset
 impl DetailsRequest<SellingAsset, NoBuyingAsset> {
+
+    /// Sets the buying asset of the order book.
+    /// 
+    /// # Arguments
+    /// * `buying_asset` - An [`AssetType`] enum value specifying the buying asset.
     pub fn set_buying_asset(
         self,
         buying_asset: AssetType,

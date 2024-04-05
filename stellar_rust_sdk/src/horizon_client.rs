@@ -947,6 +947,48 @@ impl HorizonClient {
         self.get::<OperationResponse>(request).await
     }
 
+    /// Retrieves a list of order book details from the Horizon server.
+    /// 
+    /// This asynchronous method fetches a list of order book details from the Horizon server.
+    /// It requires a [`DetailsRequest`] to specify the parameters for the order book details request.
+    /// 
+    /// # Arguments
+    /// * `request` - A reference to a [`DetailsRequest`] instance, containing the parameters for the order book details request.
+    /// 
+    /// # Returns
+    /// 
+    /// On successful execution, returns a `Result` containing a [`DetailsResponse`], which includes the list of order book details obtained from the Horizon server.
+    /// If the request fails, it returns an error within `Result`.
+    /// 
+    /// # Usage
+    /// To use this method, create an instance of [`DetailsRequest`] and set any desired filters or parameters.
+    /// 
+    /// ```
+    /// # use stellar_rs::order_book::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// 
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// # let details_request = DetailsRequest::new()
+    /// # .set_buying_asset(AssetType::Native)
+    /// # .unwrap()
+    /// # .set_selling_asset(AssetType::Alphanumeric4(Asset {
+    /// #     asset_code: "USDC".to_string(),
+    /// #     asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
+    /// #         .to_string(),
+    /// # }))
+    /// # .unwrap();
+    /// 
+    /// let response = horizon_client.get_order_book_details(&details_request).await;
+    /// 
+    /// assert!(response.is_ok());
+    /// # Ok({})
+    /// # }
+    /// ```
+    /// 
     pub async fn get_order_book_details(
         &self,
         request: &DetailsRequest<SellingAsset, BuyingAsset>,
