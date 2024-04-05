@@ -205,13 +205,6 @@ impl Request for AllLiquidityPoolsRequest {
     }
 
     fn build_url(&self, base_url: &str) -> String {
-        println!(
-            "{}/{}?{}",
-            base_url,
-            super::LIQUIDITY_POOLS_PATH,
-            self.get_query_parameters()
-        );
-
         format!(
             "{}/{}?{}",
             base_url,

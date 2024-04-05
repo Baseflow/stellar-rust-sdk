@@ -25,19 +25,19 @@ pub enum AssetType {
     Alphanumeric12(Asset),
 }
 
-impl Display for AssetType {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        match self {
-            AssetType::Native => write!(f, "native"),
-            AssetType::Alphanumeric4(asset_type) => {
-                write!(f, "{}:{}", asset_type.asset_code, asset_type.asset_issuer)
-            }
-            AssetType::Alphanumeric12(asset_type) => {
-                write!(f, "{}:{}", asset_type.asset_code, asset_type.asset_issuer)
-            }
-        }
-    }
-}
+// impl Display for AssetType {
+//     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+//         match self {
+//             AssetType::Native => write!(f, "native"),
+//             AssetType::Alphanumeric4(asset_type) => {
+//                 write!(f, "{}:{}", asset_type.asset_code, asset_type.asset_issuer)
+//             }
+//             AssetType::Alphanumeric12(asset_type) => {
+//                 write!(f, "{}:{}", asset_type.asset_code, asset_type.asset_issuer)
+//             }
+//         }
+//     }
+// }
 
 #[derive(PartialEq, Debug)]
 pub struct DetailsRequest<S, B> {
@@ -104,7 +104,7 @@ impl Request for DetailsRequest<SellingAsset, BuyingAsset> {
 
         match &self.selling_asset.0 {
             AssetType::Native => {
-                query.push(format!("selling_asset_type={}", self.selling_asset.0));
+                query.push(format!("selling_asset_type=native"));
             }
             AssetType::Alphanumeric4(asset) => {
                 query.push(format!("selling_asset_type=credit_alphanum4"));
@@ -120,7 +120,7 @@ impl Request for DetailsRequest<SellingAsset, BuyingAsset> {
 
         match &self.buying_asset.0 {
             AssetType::Native => {
-                query.push(format!("&buying_asset_type={}", self.buying_asset.0));
+                query.push(format!("&buying_asset_type=native"));
             }
             AssetType::Alphanumeric4(asset) => {
                 query.push(format!("&buying_asset_type=credit_alphanum4"));
@@ -139,7 +139,7 @@ impl Request for DetailsRequest<SellingAsset, BuyingAsset> {
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}/{}/{}",
+            "{}/{}?{}",
             base_url,
             super::ORDER_BOOK_PATH,
             self.get_query_parameters()

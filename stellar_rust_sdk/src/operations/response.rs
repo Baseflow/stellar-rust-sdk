@@ -53,7 +53,6 @@ pub struct OperationLinks {
 
 impl Response for OperationResponse {
     fn from_json(json: String) -> Result<Self, String> {
-        println!("json: {}", json);
 
         let operation_record = serde_json::from_str(&json).map_err(|e| e.to_string())?;
 
