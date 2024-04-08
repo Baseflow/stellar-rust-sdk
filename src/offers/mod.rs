@@ -112,9 +112,9 @@ pub mod test {
         assert_eq!(response.buying().asset_code().as_ref().unwrap(), BUYING_ASSET_CODE);
         assert_eq!(response.buying().asset_issuer().as_ref().unwrap(), BUYING_ASSET_ISSUER);
         assert_eq!(response.amount(), AMOUNT);
-        assert_eq!(response.price_r().n(), PRICE_R_N);
-        assert_eq!(response.price_r().d(), PRICE_R_D);
-        assert_eq!(response.price(), PRICE);
+        assert_eq!(response.price_ratio().numenator(), PRICE_R_N);
+        assert_eq!(response.price_ratio().denominator(), PRICE_R_D);
+        assert_eq!(response.price_decimal(), PRICE);
         assert_eq!(response.last_modified_ledger(), LAST_MODIFIED_LEDGER);
         assert_eq!(response.last_modified_time(), LAST_MODIFIED_TIME);
     }

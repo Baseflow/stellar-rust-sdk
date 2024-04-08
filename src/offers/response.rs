@@ -19,15 +19,17 @@ pub struct Transaction {
 
 /// Represents the precise buy and sell price of the assets on offer.
 ///
-/// This struct contains a numenator and a denominator, so that the price can be determined
+/// This struct contains a numenator and a denominator, so that the price ratio can be determined
 /// in a precise manner.
 ///
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct PriceR {
     /// The numenator.
-    n: u32,
+    #[serde(rename = "n")]
+    numenator: u32,
     /// The denominator.
-    d: u32,
+    #[serde(rename = "d")]
+    denominator: u32,
 }
 
 /// Represents the navigational links in a single offer response from the Horizon API.
@@ -68,9 +70,11 @@ pub struct SingleOfferResponse {
     /// The amount of `selling` that the account making this offer is willing to sell.
     amount: String,
     /// A precise representation of the buy and sell price of the assets on offer.
-    price_r: PriceR,
+    #[serde(rename = "price_r")]
+    price_ratio: PriceR,
     /// A number representing the decimal form of `price_r`.
-    price: String,
+    #[serde(rename = "price")]
+    price_decimal: String,
     /// The sequence number of the last ledger in which the offer was modified.
     last_modified_ledger: u32,
     /// The time at which the offer was last modified.
