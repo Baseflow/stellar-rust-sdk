@@ -7,10 +7,10 @@
 ///
 pub mod single_offer_request;
 
-/// Provides the `SingleOfferResponse`.
+/// Provides the responses.
 ///
 /// This module defines structures representing the response from the Horizon API when querying
-/// for a single offer. The structures are designed to deserialize the JSON response into Rust
+/// for offers. The structures are designed to deserialize the JSON response into Rust
 /// objects, enabling straightforward access to various details of a single Stellar account.
 ///
 /// These structures are equipped with serialization capabilities to handle the JSON data from the

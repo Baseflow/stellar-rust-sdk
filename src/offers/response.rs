@@ -59,7 +59,7 @@ pub struct SingleOfferResponse {
     id: String,
     /// A token used for paging through results.
     paging_token: String,
-    /// The ID of the offer making the offer.
+    /// The ID of the seller making the offer.
     seller: String,
     /// The asset the offer wants to sell.
     selling: Transaction,
