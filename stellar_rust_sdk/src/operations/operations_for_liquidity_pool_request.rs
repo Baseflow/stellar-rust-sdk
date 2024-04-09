@@ -92,7 +92,7 @@ impl OperationsForLiquidityPoolRequest {
     /// # Arguments
     /// * `account_id` - A `String` representing the account ID.
     ///
-    pub fn set_account_id(self, liquidity_pool_id: String) -> OperationsForLiquidityPoolRequest {
+    pub fn set_liquidity_pool_id(self, liquidity_pool_id: String) -> OperationsForLiquidityPoolRequest {
         OperationsForLiquidityPoolRequest {
             liquidity_pool_id: Some(liquidity_pool_id),
             ..self
@@ -116,7 +116,7 @@ impl Request for OperationsForLiquidityPoolRequest {
         let binding = "".to_string();
         let liquidity_pool_id = self.liquidity_pool_id.as_ref().unwrap_or(&binding);
         format!(
-            "{}/liquidity_pools/{}/{}?{}",
+            "{}/liquidity_pools/{}/{}{}",
             base_url,
             liquidity_pool_id,
             super::OPERATIONS_PATH,
