@@ -28,7 +28,7 @@ pub mod tests {
             prelude::{AllOperationsRequest, OperationsForLedgerRequest},
             response::{Operation, OperationResponse},
             single_operation_request::SingleOperationRequest,
-        },
+        }, PaginationSetters,
     };
 
     #[tokio::test]

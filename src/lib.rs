@@ -367,6 +367,7 @@ pub mod liquidity_pools;
 /// use stellar_rs::horizon_client::HorizonClient;
 /// use stellar_rs::operations::prelude::*;
 /// use stellar_rs::models::Request;
+/// use crate::stellar_rs::PaginationSetters;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
@@ -446,4 +447,18 @@ impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
             false => format!("?{}", params),
         }
     }
+}
+
+pub trait PaginationSetters {
+    fn set_cursor(self, cursor: u32) -> Result<Self, String>
+    where
+        Self: Sized;
+
+    fn set_limit(self, limit: u8) -> Result<Self, String>
+    where
+        Self: Sized;
+
+    fn set_order(self, order: models::Order) -> Self
+    where
+        Self: Sized;
 }
