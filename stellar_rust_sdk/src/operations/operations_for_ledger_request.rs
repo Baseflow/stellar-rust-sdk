@@ -115,14 +115,6 @@ impl Request for OperationsForLedgerRequest {
         let binding = "".to_string();
         let ledger_sequence = self.ledger_sequence.as_ref().unwrap_or(&binding);
 
-        println!(
-            "URL {}/ledgers/{}/{}{}",
-            base_url,
-            ledger_sequence,
-            super::OPERATIONS_PATH,
-            self.get_query_parameters()
-        );
-
         format!(
             "{}/ledgers/{}/{}{}",
             base_url,
