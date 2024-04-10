@@ -1,3 +1,7 @@
+use crate::impl_paginatable;
+
+use self::operations_for_account_request::OperationsForAccountRequest;
+
 pub mod all_operations_request;
 pub mod operations_for_account_request;
 pub mod operations_for_ledger_request;
@@ -28,7 +32,7 @@ pub mod tests {
             prelude::{AllOperationsRequest, OperationsForLedgerRequest},
             response::{Operation, OperationResponse},
             single_operation_request::SingleOperationRequest,
-        },
+        }, Paginatable,
     };
 
     #[tokio::test]
