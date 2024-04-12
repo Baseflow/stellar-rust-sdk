@@ -1,9 +1,12 @@
+use stellar_rust_sdk_derive::Pagination;
+use crate::Paginatable;
+
 use crate::{
     models::{IncludeFailed, Order, Request},
     BuildQueryParametersExt,
 };
 
-#[derive(Default)]
+#[derive(Default, Pagination)]
 pub struct OperationsForLedgerRequest {
     /// The account ID for which to retrieve operations.
     ledger_sequence: Option<String>,
@@ -27,50 +30,6 @@ pub struct OperationsForLedgerRequest {
 impl OperationsForLedgerRequest {
     pub fn new() -> Self {
         OperationsForLedgerRequest::default()
-    }
-
-    /// Sets the cursor for pagination.
-    ///
-    /// # Arguments
-    /// * `cursor` - A `u32` value pointing to a specific location in a collection of responses.
-    ///
-    pub fn set_cursor(self, cursor: u32) -> Result<OperationsForLedgerRequest, String> {
-        if cursor < 1 {
-            return Err("cursor must be greater than or equal to 1".to_string());
-        }
-
-        Ok(OperationsForLedgerRequest {
-            cursor: Some(cursor),
-            ..self
-        })
-    }
-
-    /// Sets the maximum number of records to return.
-    ///
-    /// # Arguments
-    /// * `limit` - A `u8` value specifying the maximum number of records. Range: 1 to 200. Defaults to 10.
-    ///
-    pub fn set_limit(self, limit: u8) -> Result<OperationsForLedgerRequest, String> {
-        if limit < 1 || limit > 200 {
-            return Err("limit must be between 1 and 200".to_string());
-        }
-
-        Ok(OperationsForLedgerRequest {
-            limit: Some(limit),
-            ..self
-        })
-    }
-
-    /// Sets the order of the returned records.
-    ///
-    /// # Arguments
-    /// * `order` - An [`Order`] enum value specifying the order (ascending or descending).
-    ///
-    pub fn set_order(self, order: Order) -> OperationsForLedgerRequest {
-        OperationsForLedgerRequest {
-            order: Some(order),
-            ..self
-        }
     }
 
     /// Sets whether to include failed operations in the response.
@@ -137,6 +96,7 @@ mod tests {
             .set_limit(200)
             .unwrap()
             .set_order(Order::Desc)
+            .unwrap()
             .set_include_failed(IncludeFailed::True)
             .set_account_id("00000000".to_string());
 
