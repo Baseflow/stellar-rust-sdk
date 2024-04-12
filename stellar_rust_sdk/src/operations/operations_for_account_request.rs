@@ -1,12 +1,12 @@
 use crate::{
-    impl_paginatable,
     models::{IncludeFailed, Order, Request},
     BuildQueryParametersExt,
 };
 
+use stellar_rust_sdk_derive::Pagination;
 use crate::Paginatable;
 
-#[derive(Default)]
+#[derive(Default, Pagination)]
 pub struct OperationsForAccountRequest {
     /// The account ID for which to retrieve operations.
     account_id: Option<String>,
@@ -27,8 +27,7 @@ pub struct OperationsForAccountRequest {
     include_failed: Option<IncludeFailed>,
 }
 
-impl_paginatable!(OperationsForAccountRequest);
-
+// 
 impl OperationsForAccountRequest {
     pub fn new() -> Self {
         OperationsForAccountRequest::default()
