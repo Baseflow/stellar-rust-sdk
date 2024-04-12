@@ -1,9 +1,12 @@
+use stellar_rust_sdk_derive::Pagination;
+use crate::Paginatable;
+
 use crate::{
     models::{IncludeFailed, Order, Request},
     BuildQueryParametersExt,
 };
 
-#[derive(Default)]
+#[derive(Default, Pagination)]
 pub struct OperationsForLiquidityPoolRequest {
     /// A unique identifier for the liquidity pool of the operation(s).
     liquidity_pool_id: Option<String>,
@@ -24,50 +27,6 @@ pub struct OperationsForLiquidityPoolRequest {
 impl OperationsForLiquidityPoolRequest {
     pub fn new() -> Self {
         OperationsForLiquidityPoolRequest::default()
-    }
-
-    /// Sets the cursor for pagination.
-    ///
-    /// # Arguments
-    /// * `cursor` - A `u32` value pointing to a specific location in a collection of responses.
-    ///
-    pub fn set_cursor(self, cursor: u32) -> Result<OperationsForLiquidityPoolRequest, String> {
-        if cursor < 1 {
-            return Err("cursor must be greater than or equal to 1".to_string());
-        }
-
-        Ok(OperationsForLiquidityPoolRequest {
-            cursor: Some(cursor),
-            ..self
-        })
-    }
-
-    /// Sets the maximum number of records to return.
-    ///
-    /// # Arguments
-    /// * `limit` - A `u8` value specifying the maximum number of records. Range: 1 to 200. Defaults to 10.
-    ///
-    pub fn set_limit(self, limit: u8) -> Result<OperationsForLiquidityPoolRequest, String> {
-        if limit < 1 || limit > 200 {
-            return Err("limit must be between 1 and 200".to_string());
-        }
-
-        Ok(OperationsForLiquidityPoolRequest {
-            limit: Some(limit),
-            ..self
-        })
-    }
-
-    /// Sets the order of the returned records.
-    ///
-    /// # Arguments
-    /// * `order` - An [`Order`] enum value specifying the order (ascending or descending).
-    ///
-    pub fn set_order(self, order: Order) -> OperationsForLiquidityPoolRequest {
-        OperationsForLiquidityPoolRequest {
-            order: Some(order),
-            ..self
-        }
     }
 
     /// Sets whether to include failed operations in the response.
@@ -136,6 +95,7 @@ mod tests {
             .set_limit(10)
             .unwrap()
             .set_order(Order::Desc)
+            .unwrap()
             .set_include_failed(IncludeFailed::True);
 
         assert_eq!(
