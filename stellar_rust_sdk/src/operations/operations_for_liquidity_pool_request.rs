@@ -3,8 +3,6 @@ use crate::{
     BuildQueryParametersExt,
 };
 
-use super::operations_for_account_request::OperationsForAccountRequest;
-
 #[derive(Default)]
 pub struct OperationsForLiquidityPoolRequest {
     /// A unique identifier for the liquidity pool of the operation(s).
