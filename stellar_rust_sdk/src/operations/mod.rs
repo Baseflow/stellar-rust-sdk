@@ -1,6 +1,3 @@
-
-use self::operations_for_account_request::OperationsForAccountRequest;
-
 pub mod all_operations_request;
 pub mod operations_for_account_request;
 pub mod operations_for_ledger_request;
@@ -16,7 +13,7 @@ pub mod prelude {
     pub use super::operations_for_account_request::*;
     pub use super::operations_for_ledger_request::*;
     pub use super::operations_for_liquidity_pool_request::*;
-    pub use super::operations_for_transaction_request::*;
+    //pub use super::operations_for_transaction_request::*;
     pub use super::response::*;
     pub use super::single_operation_request::*;
 }
@@ -25,7 +22,6 @@ pub mod prelude {
 pub mod tests {
     use crate::{
         horizon_client,
-        models::{IncludeFailed, Order},
         operations::{
             operations_for_account_request::OperationsForAccountRequest,
             prelude::{
