@@ -24,14 +24,12 @@ jobs:
           mkdir -p "${HOME}/.local/bin"
           curl -sL https://github.com/mozilla/grcov/releases/download/v0.8.10/grcov-x86_64-unknown-linux-gnu.tar.bz2 | tar jxf - -C "${HOME}/.local/bin"
           echo "$HOME/.local/bin" >> $GITHUB_PATH
-      - name: Change dir
-        run: cd stellar_rust_sdk
       - name: cargo update
-        run: cargo update
+        run: cargo update --manifest-path=stellar_rust_sdk/Cargo.toml
       - name: cargo test
         run: |
           mkdir -p ./target/coverage
-          CARGO_INCREMENTAL=0 RUSTFLAGS='-Cinstrument-coverage' LLVM_PROFILE_FILE='cargo-test-%p-%m.profraw' cargo test
+          CARGO_INCREMENTAL=0 RUSTFLAGS='-Cinstrument-coverage' LLVM_PROFILE_FILE='cargo-test-%p-%m.profraw' cargo test --manifest-path=stellar_rust_sdk/Cargo.toml
           grcov . --binary-path ./target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --ignore '../*' --ignore "/*" -o ./target/coverage/tests.lcov
       - name: Check test coverage
         uses: tluijken/code-coverage-threshold@v1
@@ -57,7 +55,7 @@ jobs:
       with:
         useConfigFile: true
     - name: "Overwrite version numbers"
-      run:  awk 'NR==1,/version = "0.1.0"/{sub(/version = "0.1.0"/, "version = \"'$GitVersion_SemVer'\"")} 1' Cargo.toml > Cargo.tmp && mv Cargo.tmp Cargo.toml
+      run:  awk 'NR==1,/version = "0.1.0"/{sub(/version = "0.1.0"/, "version = \"'$GitVersion_SemVer'\"")} 1' stellar_rust_sdk/Cargo.toml > stellar_rust_sdk/Cargo.tmp && mv stellar_rust_sdk/Cargo.tmp stellar_rust_sdk/Cargo.toml
     - uses: actions-rs/toolchain@v1
       with:
           toolchain: stable
@@ -66,3 +64,4 @@ jobs:
       with:
           registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
           args: --allow-dirty
+          path: stellar_rust_sdk
