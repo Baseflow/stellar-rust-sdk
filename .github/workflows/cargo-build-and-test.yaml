@@ -28,13 +28,13 @@ jobs:
         run: cargo update --manifest-path=stellar_rust_sdk/Cargo.toml
       - name: cargo test
         run: |
-          mkdir -p ./target/coverage
+          mkdir -p ./coverage
           CARGO_INCREMENTAL=0 RUSTFLAGS='-Cinstrument-coverage' LLVM_PROFILE_FILE='cargo-test-%p-%m.profraw' cargo test --manifest-path=stellar_rust_sdk/Cargo.toml
-          grcov . --binary-path ./stellar_rust_sdk/target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --ignore '../*' --ignore "/*" -o ./stellar_rust_sdk/target/coverage/tests.lcov
+          grcov . --binary-path ./stellar_rust_sdk/target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --ignore '../*' --ignore "/*" -o ./coverage/tests.lcov
       - name: Check test coverage
         uses: tluijken/code-coverage-threshold@v1
         with:
-          coverage-file: ./stellar_rust_sdk/target/coverage/tests.lcov
+          coverage-file: ./coverage/tests.lcov
           minimum-coverage: 90
 
   publish_to_crates_io:
