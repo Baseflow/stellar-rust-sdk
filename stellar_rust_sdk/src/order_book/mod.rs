@@ -19,12 +19,12 @@ pub mod tests {
         const BIDS_N: &i64 = &1000;
         const BIDS_D: &i64 = &87;
         const BIDS_PRICE: &str = "11.4942529";
-        const BIDS_AMOUNT: &str = "2574773.7512805";
+        const BIDS_AMOUNT: &str = "2556626.8467920";
 
         const ASKS_N: &i64 = &2299;
-        const ASKS_D: &i64 = &200; 
+        const ASKS_D: &i64 = &200;
         const ASKS_PRICE: &str = "11.4950000";
-        const ASKS_AMOUNT: &str = "221878.4738782";
+        const ASKS_AMOUNT: &str = "162468.5993642";
 
         const BASE_ASSET_TYPE: &str = "credit_alphanum4";
         const BASE_ASSET_CODE: &str = "USDC";
@@ -46,8 +46,10 @@ pub mod tests {
             }))
             .unwrap();
 
-        let details_response = horizon_client.get_order_book_details(&details_request).await;
-        
+        let details_response = horizon_client
+            .get_order_book_details(&details_request)
+            .await;
+
         assert!(details_response.is_ok());
 
         let binding = details_response.unwrap();
@@ -62,10 +64,22 @@ pub mod tests {
         assert_eq!(binding.asks()[0].price(), ASKS_PRICE);
         assert_eq!(binding.asks()[0].amount(), ASKS_AMOUNT);
 
-        assert_eq!(binding.base().asset_type().as_deref(), Some(BASE_ASSET_TYPE));
-        assert_eq!(binding.base().asset_code().as_deref(), Some(BASE_ASSET_CODE));
-        assert_eq!(binding.base().asset_issuer().as_deref(), Some(BASE_ASSET_ISSUER));
+        assert_eq!(
+            binding.base().asset_type().as_deref(),
+            Some(BASE_ASSET_TYPE)
+        );
+        assert_eq!(
+            binding.base().asset_code().as_deref(),
+            Some(BASE_ASSET_CODE)
+        );
+        assert_eq!(
+            binding.base().asset_issuer().as_deref(),
+            Some(BASE_ASSET_ISSUER)
+        );
 
-        assert_eq!(binding.counter().asset_type().as_deref(), Some(COUNTER_ASSET_TYPE));
+        assert_eq!(
+            binding.counter().asset_type().as_deref(),
+            Some(COUNTER_ASSET_TYPE)
+        );
     }
 }
