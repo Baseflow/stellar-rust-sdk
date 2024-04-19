@@ -16,13 +16,13 @@ pub mod tests {
 
     #[tokio::test]
     async fn get_order_bookdetails() {
-        const BIDS_N: &i64 = &1000;
-        const BIDS_D: &i64 = &87;
+        const BIDS_N: &u32 = &1000;
+        const BIDS_D: &u32 = &87;
         const BIDS_PRICE: &str = "11.4942529";
         const BIDS_AMOUNT: &str = "2556626.8467920";
 
-        const ASKS_N: &i64 = &2299;
-        const ASKS_D: &i64 = &200;
+        const ASKS_N: &u32 = &2299;
+        const ASKS_D: &u32 = &200;
         const ASKS_PRICE: &str = "11.4950000";
         const ASKS_AMOUNT: &str = "162468.5993642";
 
@@ -54,15 +54,20 @@ pub mod tests {
 
         let binding = details_response.unwrap();
 
-        assert_eq!(binding.bids()[0].price_r().n(), BIDS_N);
-        assert_eq!(binding.bids()[0].price_r().d(), BIDS_D);
+        assert_eq!(binding.bids()[0].price_ratio().numenator(), BIDS_N);
+        assert_eq!(binding.bids()[0].price_ratio().denominator(), BIDS_D);
         assert_eq!(binding.bids()[0].price(), BIDS_PRICE);
-        assert_eq!(binding.bids()[0].amount(), BIDS_AMOUNT);
 
-        assert_eq!(binding.asks()[0].price_r().n(), ASKS_N);
-        assert_eq!(binding.asks()[0].price_r().d(), ASKS_D);
+        // The amount changes all the time
+        assert_ne!(binding.bids()[0].amount(), "0");
+        //assert_eq!(binding.bids()[0].amount(), BIDS_AMOUNT);
+
+        assert_eq!(binding.asks()[0].price_ratio().numenator(), ASKS_N);
+        assert_eq!(binding.asks()[0].price_ratio().denominator(), ASKS_D);
         assert_eq!(binding.asks()[0].price(), ASKS_PRICE);
-        assert_eq!(binding.asks()[0].amount(), ASKS_AMOUNT);
+        // The amount changes all the time
+        assert_ne!(binding.asks()[0].amount(), "0");
+        //assert_eq!(binding.asks()[0].amount(), ASKS_AMOUNT);
 
         assert_eq!(
             binding.base().asset_type().as_deref(),
