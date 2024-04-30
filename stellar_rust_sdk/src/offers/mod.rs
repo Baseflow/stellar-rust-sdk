@@ -51,6 +51,7 @@ static OFFERS_PATH: &str = "offers";
 /// The `prelude` includes the following re-exports:
 ///
 /// * From `single_offer_request`: All items (e.g. `SingleOfferRequest`).
+/// * From `all_offers_request`: All items (e.g. `AllOffersRequest`).
 /// * From `response`: All items (e.g. `SingleOfferResponse`, `PriceR`, etc.).
 ///
 /// # Example
@@ -65,6 +66,7 @@ static OFFERS_PATH: &str = "offers";
 ///
 pub mod prelude {
     pub use super::single_offer_request::*;
+    pub use super::all_offers_request::*;
     pub use super::response::*;
 }
 
