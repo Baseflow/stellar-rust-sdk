@@ -2,7 +2,11 @@ use crate::models::prelude::*;
 use derive_getters::Getters;
 use serde::{Deserialize, Serialize};
 
-
+/// Represents the response for the 'all offers' query in the Horizon API.
+///
+/// This struct defines the overall structure of the response for an 'all offers' query.
+/// It includes navigational links and embedded results.
+///
 #[derive(Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct AllOffersResponse {
