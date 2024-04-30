@@ -7,6 +7,15 @@
 ///
 pub mod single_offer_request;
 
+/// Provides the `AllOffersRequest`.
+///
+/// This module provides the `AllOffersRequest` struct, specifically designed for
+/// constructing requests to query information about all offers from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_all_offers`](crate::horizon_client::HorizonClient::get_all_offers)
+/// method.
+///
+pub mod all_offers_request;
+
 /// Provides the responses.
 ///
 /// This module defines structures representing the response from the Horizon API when querying
