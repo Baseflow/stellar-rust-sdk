@@ -35,23 +35,28 @@ use crate::Paginatable;
 ///
 #[derive(Default, Pagination)]
 pub struct AllOffersRequest {
+    /// Optional. The ID of the sponsor. When set, the response will
+    /// only include offers sponsored by the specified account.
     sponsor: Option<String>,
+    /// Optional. The ID of the seller making the offer. When set, the response will
+    /// only include offers created by by the specified account.
     seller: Option<String>,
-    
+    /// Optional. Indicates an selling asset for which offers are being queried.
+    /// When set, the response will filter the offers that hold this specific asset.
     // TODO: Make `NativeAsset` also possible
     selling: Option<Asset<IssuedAsset>>,
+    /// Optional. Indicates a buying asset for which offers are being queried.
+    /// When set, the response will filter the offers that hold this specific asset.
+    // TODO: Make `NativeAsset` also possible
     buying: Option<Asset<IssuedAsset>>,
-
     /// A pointer to a specific location in a collection of responses, derived from the
-    ///   `paging_token` value of a record. Used for pagination control in the API response.
+    /// `paging_token` value of a record. Used for pagination control in the API response.
     cursor: Option<u32>,
-
     /// Specifies the maximum number of records to be returned in a single response.
-    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
+    /// The range for this parameter is from 1 to 200. The default value is set to 10.
     limit: Option<u8>,
-
     /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
+    /// and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
     order: Option<Order>,
 }
 
@@ -80,10 +85,16 @@ impl Request for AllOffersRequest {
 }
 
 impl AllOffersRequest {
+    /// Creates a new `AllOffersRequest` with default parameters.
     pub fn new() -> Self {
         AllOffersRequest::default()
     }
 
+    /// Specifies the sponsor's public key in the request.
+    ///
+    /// # Arguments
+    /// * `sponsor` - A Stellar public key of the sponsor to filter offers by.
+    ///
     pub fn set_sponsor(self, sponsor: String) -> Result<AllOffersRequest, String> {
         if let Err(e) = is_public_key(&sponsor) {
             return Err(e.to_string());
@@ -95,6 +106,11 @@ impl AllOffersRequest {
         })
     }
 
+    /// Specifies the seller's public key in the request.
+    ///
+    /// # Arguments
+    /// * `seller` - A Stellar public key of the seller to filter offers by.
+    ///
     pub fn set_seller(self, seller: String) -> Result<AllOffersRequest, String> {
         if let Err(e) = is_public_key(&seller) {
             return Err(e.to_string());
@@ -106,6 +122,11 @@ impl AllOffersRequest {
         })
     }
 
+    /// Specifies the selling asset in the request.
+    ///
+    /// # Arguments
+    /// * `selling` - The selling asset to filter offers by.
+    ///
     pub fn set_selling(self, selling: Asset<IssuedAsset>) -> AllOffersRequest {
         AllOffersRequest {
             selling: Some(selling),
@@ -113,6 +134,11 @@ impl AllOffersRequest {
         }
     }
 
+    /// Specifies the buying asset in the request.
+    ///
+    /// # Arguments
+    /// * `buying` - The buying asset to filter offers by.
+    ///
     pub fn set_buying(self, buying: Asset<IssuedAsset>) -> AllOffersRequest {
         AllOffersRequest {
             buying: Some(buying),
