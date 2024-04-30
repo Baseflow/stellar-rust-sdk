@@ -840,8 +840,58 @@ impl HorizonClient {
     pub async fn get_single_offer(
         &self,
         request: &SingleOfferRequest<OfferId>,
-    ) -> Result<SingleOfferResponse, String> {
-        self.get::<SingleOfferResponse>(request).await
+    ) -> Result<OfferResponse, String> {
+        self.get::<OfferResponse>(request).await
+    }
+
+    /// Retrieves a list of all offers from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all offers from the Horizon server.
+    /// It requires an [`AllOffersRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`AllOffersRequest`] instance, containing the
+    /// parameters for the offers request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`OfferResponse`], which includes
+    /// the list of all offers obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`AllOffersRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::offers::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = AllOffersRequest::new()
+    ///   .set_limit(2).unwrap();
+    ///
+    /// let response = horizon_client.get_all_offers(&request).await;
+    ///
+    /// // Access the offers
+    /// if let Ok(offers_response) = response {
+    ///     for offer in offers_response.embedded().records() {
+    ///         println!("Offer ID: {}", offer.id());
+    ///         // Further processing...
+    ///     }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn get_all_offers(
+        &self,
+        request: &AllOffersRequest,
+    ) -> Result<AllOffersResponse, String> {
+        self.get::<AllOffersResponse>(request).await
     }
 
     /// Retrieves a list of all operations from the Horizon server.

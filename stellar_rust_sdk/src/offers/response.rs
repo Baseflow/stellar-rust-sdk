@@ -2,12 +2,30 @@ use crate::models::prelude::*;
 use derive_getters::Getters;
 use serde::{Deserialize, Serialize};
 
+
+#[derive(Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct AllOffersResponse {
+    #[serde(rename = "_links")]
+    pub links: ResponseLinks,
+    #[serde(rename = "_embedded")]
+    pub embedded: Embedded<OfferResponse>,
+}
+
+impl Response for AllOffersResponse {
+    fn from_json(json: String) -> Result<Self, String> {
+        let response = serde_json::from_str(&json).map_err(|e| e.to_string())?;
+
+        Ok(response)
+    }
+}
+
 /// Represents the asset to buy or to sell.
 ///
 /// This struct details information about the asset to buy or to sell, including its type, 
 /// code (optional) and issuer (optional).
 ///
-#[derive(Debug, Deserialize, Clone, Getters)]
+#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct Transaction {
     /// The type of asset (e.g. "credit_alphanum4", "credit_alphanum12").
     asset_type: String,
@@ -22,7 +40,7 @@ pub struct Transaction {
 /// This struct contains a numenator and a denominator, so that the price ratio can be determined
 /// in a precise manner.
 ///
-#[derive(Debug, Deserialize, Clone, Getters)]
+#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct PriceR {
     /// The numenator.
     #[serde(rename = "n")]
@@ -38,7 +56,7 @@ pub struct PriceR {
 /// and the offer maker.
 ///
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
-pub struct OfferResponseLinks {
+pub struct Links {
     /// The link to the offer itself.
     #[serde(rename = "self")]
     self_link: Link,
@@ -52,11 +70,11 @@ pub struct OfferResponseLinks {
 /// It includes navigational links, offer identifiers, the seller, the assets to buy and sell,
 /// the amount, the price and additional data.
 ///
-#[derive(Debug, Deserialize, Clone, Getters)]
-pub struct SingleOfferResponse {
+#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
+pub struct OfferResponse {
     /// Navigational links related to the offer.
     #[serde(rename = "_links")]
-    links: OfferResponseLinks,
+    links: Links,
     /// The unique identifier for the offer.
     id: String,
     /// A token used for paging through results.
@@ -83,7 +101,7 @@ pub struct SingleOfferResponse {
     sponsor: Option<String>,
 }
 
-impl Response for SingleOfferResponse {
+impl Response for OfferResponse {
     fn from_json(json: String) -> Result<Self, String> {
         serde_json::from_str(&json).map_err(|e| e.to_string())
     }
