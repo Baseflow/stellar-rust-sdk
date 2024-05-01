@@ -73,8 +73,7 @@ pub mod prelude {
 #[cfg(test)]
 pub mod test {
     use super::prelude::*;
-    use crate::horizon_client::HorizonClient;
-    use crate::models::*;
+    use crate::{horizon_client::HorizonClient, models::*, Paginatable};
 
     const LINK_SELF: &str = "https://horizon-testnet.stellar.org/offers/1";
     const LINK_OFFER_MAKER: &str = "https://horizon-testnet.stellar.org/accounts/GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";
@@ -180,12 +179,12 @@ pub mod test {
         const BUYING_ASSET_TYPE: &str = "credit_alphanum12";
         const BUYING_ASSET_CODE: &str = "EURCAllow";
         const BUYING_ASSET_ISSUER: &str = "GA6HVGLFUF3BHHGR5CMYXIVZ3RYVUH5EUYAOAY4T3OKI5OQVIWVRK24R";
-        const AMOUNT: &str = "922320116343.5775807";
+        const AMOUNT: &str = "922320116343.0475807";
         const PRICE_R_N: &u32 = &1;
         const PRICE_R_D: &u32 = &1;
         const PRICE: &str = "1.0000000";
-        const LAST_MODIFIED_LEDGER: &u32 = &1265238;
-        const LAST_MODIFIED_TIME: &str = "2024-04-23T16:33:24Z";
+        const LAST_MODIFIED_LEDGER: &u32 = &1384257;
+        const LAST_MODIFIED_TIME: &str = "2024-04-30T22:19:21Z";
     
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org"
@@ -193,13 +192,12 @@ pub mod test {
             .unwrap();
 
         // Create a request and supply values for optional filters.
-        // TODO: Try to supply more filters and produce testable response results
         let all_offers_request =
             AllOffersRequest::new()
             .set_seller(SELLER.to_string()).unwrap()
             .set_cursor(1).unwrap()
             .set_limit(100).unwrap()
-            .set_order(Order::Asc);
+            .set_order(Order::Asc).unwrap();
 
         let all_offers_response = horizon_client
             .get_all_offers(&all_offers_request)

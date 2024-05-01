@@ -866,6 +866,8 @@ impl HorizonClient {
     /// # use stellar_rs::offers::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
+    /// # use stellar_rust_sdk_derive::Pagination;
+    /// # use stellar_rs::Paginatable;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
