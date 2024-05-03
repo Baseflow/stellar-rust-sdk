@@ -16,6 +16,9 @@ pub mod single_offer_request;
 ///
 pub mod all_offers_request;
 
+// TODO: Documentation
+pub mod offers_for_account_request;
+
 /// Provides the responses.
 ///
 /// This module defines structures representing the response from the Horizon API when querying
@@ -67,6 +70,7 @@ static OFFERS_PATH: &str = "offers";
 pub mod prelude {
     pub use super::single_offer_request::*;
     pub use super::all_offers_request::*;
+    pub use super::offers_for_account_request::*;
     pub use super::response::*;
 }
 
