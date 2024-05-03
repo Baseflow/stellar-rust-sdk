@@ -9,10 +9,8 @@ pub mod prelude {
 }
 
 pub mod tests {
-    use crate::{
-        horizon_client,
-        order_book::prelude::{Asset, AssetType, DetailsRequest},
-    };
+    use crate::horizon_client;
+    use crate::order_book::prelude::{Asset, AssetType, DetailsRequest};
 
     #[tokio::test]
     async fn get_order_bookdetails() {

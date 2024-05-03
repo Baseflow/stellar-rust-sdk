@@ -1,8 +1,4 @@
-use std::fmt::{self, Display, Formatter};
-
-use derive_getters::Getters;
-
-use crate::{models::Request, BuildQueryParametersExt};
+use crate::{models::Request};
 
 pub struct SellingAsset(AssetType);
 pub struct NoSellingAsset;
@@ -160,7 +156,8 @@ impl Request for DetailsRequest<SellingAsset, BuyingAsset> {
 }
 
 mod tests {
-    use super::*;
+    use crate::models::Request;
+    use crate::order_book::prelude::{Asset, AssetType, DetailsRequest};
 
     #[test]
     fn test_details_request() {
