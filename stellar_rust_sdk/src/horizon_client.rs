@@ -900,6 +900,14 @@ impl HorizonClient {
         self.get::<AllOffersResponse>(request).await
     }
 
+    // TODO: Documentation.
+    pub async fn get_offers_for_account(
+        &self,
+        request: &OffersForAccountRequest,
+    ) -> Result<AllOffersResponse, String> {
+        self.get::<AllOffersResponse>(request).await
+    }
+
     /// Retrieves a list of all operations from the Horizon server.
     ///
     /// This asynchronous method fetches a list of all operations from the Horizon server.
