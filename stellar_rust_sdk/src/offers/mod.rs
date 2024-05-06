@@ -16,7 +16,13 @@ pub mod single_offer_request;
 ///
 pub mod all_offers_request;
 
-// TODO: Documentation
+/// Provides the `OffersForAccountRequest`.
+///
+/// This module provides the `OffersForAccountRequest` struct, specifically designed for
+/// constructing requests to query information about all offers a given account has 
+/// currently open from the Horizon server. It is tailored for use with the 
+/// [`HorizonClient::get_offers_for_account`](crate::horizon_client::HorizonClient::get_offers_for_account) method.
+///
 pub mod offers_for_account_request;
 
 /// Provides the responses.
@@ -173,6 +179,7 @@ pub mod test {
 
     #[tokio::test]
     async fn test_get_all_offers_filter() {
+        // Different values are expected for this specific request.
         const LINK_OFFER_MAKER: &str = "https://horizon-testnet.stellar.org/accounts/GB3Q6QDZYTHWT7E5PVS3W7FUT5GVAFC5KSZFFLPU25GO7VTC3NM2ZTVO";
         const OFFER_ID: &str = "2";
         const PAGING_TOKEN: &str = "2";
@@ -210,6 +217,45 @@ pub mod test {
         assert!(all_offers_response.clone().is_ok());
         let binding = all_offers_response.unwrap();
         let record = &binding.embedded().records()[0];
+        assert_eq!(record.links().offer_maker().href().as_ref().unwrap(), LINK_OFFER_MAKER);
+        assert_eq!(record.id(), OFFER_ID);
+        assert_eq!(record.paging_token(), PAGING_TOKEN);
+        assert_eq!(record.seller(), SELLER);
+        assert_eq!(record.selling().asset_type(), SELLING_ASSET_TYPE);
+        assert_eq!(record.selling().asset_code().as_ref().unwrap(), SELLING_ASSET_CODE);
+        assert_eq!(record.selling().asset_issuer().as_ref().unwrap(), SELLING_ASSET_ISSUER);
+        assert_eq!(record.buying().asset_type(), BUYING_ASSET_TYPE);
+        assert_eq!(record.buying().asset_code().as_ref().unwrap(), BUYING_ASSET_CODE);
+        assert_eq!(record.buying().asset_issuer().as_ref().unwrap(), BUYING_ASSET_ISSUER);
+        assert_eq!(record.amount(), AMOUNT);
+        assert_eq!(record.price_ratio().numenator(), PRICE_R_N);
+        assert_eq!(record.price_ratio().denominator(), PRICE_R_D);
+        assert_eq!(record.price_decimal(), PRICE);
+        assert_eq!(record.last_modified_ledger(), LAST_MODIFIED_LEDGER);
+        assert_eq!(record.last_modified_time(), LAST_MODIFIED_TIME);
+    }
+
+    #[tokio::test]
+    async fn test_get_offers_for_account() {
+        const ACCOUNT_ID: &str = "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org"
+            .to_string())
+            .unwrap();
+
+        let offers_for_account_request =
+            OffersForAccountRequest::new()
+            .set_account_id(ACCOUNT_ID.to_string())
+            .unwrap();
+
+        let offers_for_account_response = horizon_client
+            .get_offers_for_account(&offers_for_account_request)
+            .await;
+        
+        assert!(offers_for_account_response.clone().is_ok());
+        let binding = offers_for_account_response.unwrap();
+        let record = &binding.embedded().records()[0];
+        assert_eq!(record.links().self_link().href().as_ref().unwrap(), LINK_SELF);
         assert_eq!(record.links().offer_maker().href().as_ref().unwrap(), LINK_OFFER_MAKER);
         assert_eq!(record.id(), OFFER_ID);
         assert_eq!(record.paging_token(), PAGING_TOKEN);

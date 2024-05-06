@@ -32,8 +32,9 @@ pub mod response;
 /// # Usage
 /// This variable is intended to be used internally by the request-building logic
 /// to ensure consistent and accurate path construction for account-related API calls.
-///
-static ACCOUNTS_PATH: &str = "accounts";
+/// This specific variable is made public within the crate, since the `offers` endpoint needs this
+/// to construct an url.
+pub(crate) static ACCOUNTS_PATH: &str = "accounts";
 
 /// The `prelude` module of the `accounts` module.
 ///
