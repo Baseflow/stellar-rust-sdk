@@ -900,10 +900,29 @@ impl HorizonClient {
         self.get::<AllOffersResponse>(request).await
     }
 
-    // TODO: Documentation.
+    /// Retrieves a list of all offers from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all offers an account currently has open from the Horizon server.
+    /// It requires an [`OffersForAccountRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`OffersForAccountRequest`] instance, containing the
+    /// parameters for the request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`AllOffersResponse`], which includes
+    /// the list of all offers currently open for an account, obtained from the Horizon server.
+    /// If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`OffersForAccountRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
     pub async fn get_offers_for_account(
         &self,
-        request: &OffersForAccountRequest,
+        request: &OffersForAccountRequest<OfferAccountId>,
     ) -> Result<AllOffersResponse, String> {
         self.get::<AllOffersResponse>(request).await
     }
