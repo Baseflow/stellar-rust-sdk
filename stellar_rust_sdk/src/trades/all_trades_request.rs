@@ -1,4 +1,6 @@
 use crate::models::*;
+use stellar_rust_sdk_derive::Pagination;
+use crate::Paginatable;
 
 // TODO: Documentation.
 #[derive(PartialEq, Debug)]
@@ -8,6 +10,7 @@ pub struct BaseAsset(AssetType);
 #[derive(PartialEq, Debug)]
 pub struct CounterAsset(AssetType);
 
+// TODO: Documentation.
 #[derive(PartialEq, Debug)]
 pub struct AssetData {
     pub asset_code: String,
@@ -19,15 +22,14 @@ pub struct AssetData {
 pub enum AssetType {
     /// A native asset_type type. It holds no value.
     Native,
-    /// An alphanumeric 4 asset_type type. It holds a Asset struct with asset code and asset issuer.
+    /// An alphanumeric 4 asset_type type. It holds an Asset struct with asset code and asset issuer.
     Alphanumeric4(AssetData),
-    /// An alphanumeric 12 asset_type type. It holds a Asset struct with asset code and asset issuer.
+    /// An alphanumeric 12 asset_type type. It holds an Asset struct with asset code and asset issuer.
     Alphanumeric12(AssetData),
 }
 
-// TODO: Add `Pagination` (which currently doesn't work due to generics - see GitHub issue #70)
 // TODO: Improve descriptive comments of base_asset and counter_asset
-#[derive(PartialEq, Debug, Default)]
+#[derive(PartialEq, Debug, Default, Pagination)]
 pub struct AllTradesRequest {
     /// The base asset of the trade.
     pub base_asset: Option<BaseAsset>,
@@ -60,11 +62,7 @@ impl AllTradesRequest {
     ) -> Result<AllTradesRequest, String> {
         Ok(AllTradesRequest {
             base_asset: Some(BaseAsset(base_asset)),
-            counter_asset: self.counter_asset,
-            offer_id: self.offer_id,
-            cursor: self.cursor,
-            limit: self.limit,
-            order: self.order,
+            ..self
         })
     }
 
@@ -75,11 +73,7 @@ impl AllTradesRequest {
     ) -> Result<AllTradesRequest, String> {
         Ok(AllTradesRequest {
             counter_asset: Some(CounterAsset(counter_asset)),
-            base_asset: self.base_asset,
-            offer_id: self.offer_id,
-            cursor: self.cursor,
-            limit: self.limit,
-            order: self.order,
+            ..self
         })
     }
 }
@@ -88,7 +82,7 @@ impl AllTradesRequest {
 impl Request for AllTradesRequest {
     fn get_query_parameters(&self) -> String {
         let mut query: Vec<String> = Vec::new();
-
+        
         if self.base_asset.as_ref().is_some() {
             match &self.base_asset.as_ref().unwrap().0 {
                 AssetType::Native => {
@@ -136,4 +130,3 @@ impl Request for AllTradesRequest {
         )
     }
 }
-
