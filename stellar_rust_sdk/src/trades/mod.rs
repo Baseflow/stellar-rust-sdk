@@ -1,25 +1,70 @@
-// TODO: documentation
+/// Provides the `AllTradesRequest`.
+///
+/// This module provides the `AllTradesRequest` struct, specifically designed for
+/// constructing requests to query information about all trades from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_all_trades`](crate::horizon_client::HorizonClient::get_all_trades)
+/// method.
+///
 pub mod all_trades_request;
 
-// TODO: documentation
+/// Provides the responses.
+///
+/// This module defines structures representing the response from the Horizon API when querying
+/// for trades. The structures are designed to deserialize the JSON response into Rust
+/// objects, enabling straightforward access to various details of a single trade.
+///
+/// These structures are equipped with serialization capabilities to handle the JSON data from the
+/// Horizon server and with getter methods for easy field access.
+///
 pub mod response;
 
-// TODO: documentation
+/// The base path for trade-related endpoints in the Horizon API.
+///
+/// # Usage
+/// This variable is intended to be used internally by the request-building logic
+/// to ensure consistent and accurate path construction for trade-related API calls.
+///
 static TRADES_PATH: &str = "trades";
 
-// TODO: documentation
+/// The `prelude` module of the `trades` module.
+///
+/// This module serves as a convenience for users of the Horizon Rust SDK, allowing for easy and
+/// ergonomic import of the most commonly used items across various modules. It re-exports
+/// key structs and traits from the sibling modules, simplifying access to these components
+/// when using the library.
+///
+/// By importing the contents of `prelude`, users can conveniently access the primary
+/// functionalities of the trade-related modules without needing to import each item
+/// individually.
+///
+/// # Contents
+///
+/// The `prelude` includes the following re-exports:
+///
+/// * From `all_trades_request`: All items (e.g. `AllTradesRequest`).
+/// * From `response`: All items (e.g. `TradeResponse`, `AllTradesResponse`, etc.).
+///
+/// # Example
+/// ```
+/// # use crate::stellar_rs::models::*;
+/// // Import the contents of the trades prelude
+/// use stellar_rs::trades::prelude::*;
+///
+/// // Now you can directly use AllTradesRequest, AllTradesResponse, etc.
+/// let all_trades_request = AllTradesRequest::new();
+/// ```
+///
 pub mod prelude {
     pub use super::all_trades_request::*;
     pub use super::response::*;
 }
 
-// TODO: Write more tests.
 #[cfg(test)]
 pub mod test {
     use crate::{trades::prelude::*, horizon_client::HorizonClient};
 
     #[tokio::test]
-    async fn create_request() {
+    async fn all_trades_request() {
         const LINK_SELF: &str = "";
         const LINK_BASE: &str = "https://horizon-testnet.stellar.org/accounts/GB4MMSZ5FY3KOCMMN77DNJBSKXFZVRXMLM5SKKDIVGTWGR55DKJM7GSD";
         const LINK_COUNTER: &str = "https://horizon-testnet.stellar.org/accounts/GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";

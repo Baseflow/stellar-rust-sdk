@@ -2,15 +2,15 @@ use crate::models::*;
 use stellar_rust_sdk_derive::Pagination;
 use crate::Paginatable;
 
-// TODO: Documentation.
+/// Represents the base asset. Contains an enum of one of the possible asset types.
 #[derive(PartialEq, Debug)]
 pub struct BaseAsset(AssetType);
 
-// TODO: Documentation.
+/// Represents the counter asset. Contains an enum of one of the possible asset types.
 #[derive(PartialEq, Debug)]
 pub struct CounterAsset(AssetType);
 
-// TODO: Documentation.
+// Contains the details of a non-native asset.
 #[derive(PartialEq, Debug)]
 pub struct AssetData {
     pub asset_code: String,
@@ -28,14 +28,40 @@ pub enum AssetType {
     Alphanumeric12(AssetData),
 }
 
-// TODO: Improve descriptive comments of base_asset and counter_asset
-#[derive(PartialEq, Debug, Default, Pagination)]
+/// Represents a request to list all trades from the Stellar Horizon API.
+///
+/// This structure is used to construct a query to retrieve a comprehensive list of trades, which
+/// can be filtered by the base asset, the counter asset and offer id. It adheres to the structure and parameters required
+/// by the Horizon API for retrieving a
+/// <a href="https://developers.stellar.org/network/horizon/api-reference/resources/get-all-trades">list of all trades</a>.
+///
+/// # Usage
+///
+/// Create an instance of this struct and set the desired query parameters to filter the list of offers.
+/// Pass this request object to the [`HorizonClient::get_all_trades`](crate::horizon_client::HorizonClient::get_all_trades)
+/// method to fetch the corresponding data from the Horizon API.
+///
+/// # Example
+/// ```
+/// use stellar_rs::{trades::prelude::*, models::*, Paginatable};
+/// use stellar_rust_sdk_derive::Pagination;
+///
+/// let request = AllTradesRequest::new()
+///     .set_base_asset(AssetType::Native).unwrap() // Optional selling asset filter
+///     .set_cursor(123).unwrap() // Optional cursor for pagination
+///     .set_limit(100).unwrap() // Optional limit for response records
+///     .set_order(Order::Desc); // Optional order of records
+///
+/// // Use with HorizonClient::get_all_offers
+/// ```
+///
+#[derive(PartialEq, Default, Pagination)]
 pub struct AllTradesRequest {
     /// The base asset of the trade.
     pub base_asset: Option<BaseAsset>,
     /// The counter asset of the trade.
     pub counter_asset: Option<CounterAsset>,
-    // ID to filter for trades originating from a specific offer.
+    // The offer ID. Used to filter for trades originating from a specific offer.
     pub offer_id: Option<String>,
     /// A pointer to a specific location in a collection of responses, derived from the
     /// `paging_token` value of a record. Used for pagination control in the API response.
@@ -49,13 +75,25 @@ pub struct AllTradesRequest {
     
 }
 
-// TODO: Documentation.
+
 impl AllTradesRequest {
+    /// Creates a new `AllOffersRequest` with default parameters.
     pub fn new() -> Self {
         AllTradesRequest::default()
     }
 
-    // TODO: Documentation.
+    /// Specifies the base asset in the request.
+    ///
+    /// # Arguments
+    ///
+    /// * `base_asset` - The base asset type to filter the trades. It can be one of the following:
+    ///     - `AssetType::Native`
+    ///     - `AssetType::Alphanumeric4(AssetData)`
+    ///     - `AssetType::Alphanumeric12(AssetData)`
+    ///
+    /// # Returns
+    ///
+    /// The updated `AllTradesRequest` with the base asset set.    
     pub fn set_base_asset(
         self,
         base_asset: AssetType,
@@ -66,7 +104,18 @@ impl AllTradesRequest {
         })
     }
 
-    // TODO: Documentation.
+    /// Specifies the counter asset in the request.
+    ///
+    /// # Arguments
+    ///
+    /// * `counter_asset` - The counter asset type to filter the trades. It can be one of the following:
+    ///     - `AssetType::Native`
+    ///     - `AssetType::Alphanumeric4(AssetData)`
+    ///     - `AssetType::Alphanumeric12(AssetData)`
+    ///
+    /// # Returns
+    ///
+    /// The updated `AllTradesRequest` with the counter asset set.    
     pub fn set_counter_asset(
         self,
         counter_asset: AssetType,
@@ -78,7 +127,6 @@ impl AllTradesRequest {
     }
 }
 
-// TODO: Documentation.
 impl Request for AllTradesRequest {
     fn get_query_parameters(&self) -> String {
         let mut query: Vec<String> = Vec::new();
