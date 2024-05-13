@@ -37,7 +37,7 @@ pub enum AssetType {
 ///
 /// # Usage
 ///
-/// Create an instance of this struct and set the desired query parameters to filter the list of offers.
+/// Create an instance of this struct and set the desired query parameters to filter the list of trades.
 /// Pass this request object to the [`HorizonClient::get_all_trades`](crate::horizon_client::HorizonClient::get_all_trades)
 /// method to fetch the corresponding data from the Horizon API.
 ///
@@ -72,7 +72,6 @@ pub struct AllTradesRequest {
     /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
     /// and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
     pub order: Option<Order>,
-    
 }
 
 
@@ -131,8 +130,8 @@ impl Request for AllTradesRequest {
     fn get_query_parameters(&self) -> String {
         let mut query: Vec<String> = Vec::new();
         
-        if self.base_asset.as_ref().is_some() {
-            match &self.base_asset.as_ref().unwrap().0 {
+        if let Some(base_asset) = &self.base_asset {
+            match &base_asset.0 {
                 AssetType::Native => {
                     query.push(format!("base_asset_type=native"));
                 }
@@ -149,8 +148,8 @@ impl Request for AllTradesRequest {
             }
         }
 
-        if self.counter_asset.as_ref().is_some() {
-            match &self.counter_asset.as_ref().unwrap().0 {
+        if let Some(base_asset) = &self.base_asset {
+            match &base_asset.0 {
                 AssetType::Native => {
                     query.push(format!("&counter_asset_type=native"));
                 }
