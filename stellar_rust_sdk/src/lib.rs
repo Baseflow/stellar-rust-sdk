@@ -508,7 +508,45 @@ pub mod order_book;
 ///
 pub mod transactions;
 
-// TODO: documentation
+/// Provides `Request` and `Response` structs for retrieving trades.
+///
+/// This module provides a set of specialized request and response structures designed for
+/// interacting with the trade-related endpoints of the Horizon server. These structures
+/// facilitate the construction of requests to query trade data and the interpretation of
+/// the corresponding responses.
+///
+/// # Usage
+///
+/// This module is intended to be used in conjunction with the [`HorizonClient`](crate::horizon_client::HorizonClient)
+/// for making specific trade-related API calls to the Horizon server. The request
+/// structures are designed to be passed to the client's methods, which handle the
+/// communication with the server and return the corresponding response structures.
+///
+/// # Example
+///
+/// /// To use this module, you can create an instance of a request struct, such as
+/// `AllTradesRequest`, set any desired query parameters, and pass the request to the
+/// `HorizonClient`. The client will then execute the request and return the corresponding
+/// response struct, like `AllTradesResponse`.
+///
+/// ```rust
+/// use stellar_rs::horizon_client::HorizonClient;
+/// use stellar_rs::trades::prelude::*;
+/// use stellar_rs::models::Request;
+///
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+///
+/// // Example: Fetching all trades
+/// let all_trades_request = AllTradesRequest::new();
+///
+/// let all_trades_response = horizon_client.get_all_trades(&all_trades_request).await?;
+///
+/// // Process the responses...
+/// # Ok(())
+/// # }
+/// ```
+///
 pub mod trades;
 
 /// Contains core data structures and traits.
