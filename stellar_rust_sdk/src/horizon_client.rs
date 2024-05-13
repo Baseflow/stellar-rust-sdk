@@ -34,6 +34,7 @@ use crate::{
         response::DetailsResponse,
     },
     transactions::prelude::*,
+    trades::prelude::*,
 };
 use reqwest;
 use url::Url;
@@ -1129,6 +1130,14 @@ impl HorizonClient {
         request: &DetailsRequest<SellingAsset, BuyingAsset>,
     ) -> Result<DetailsResponse, String> {
         self.get::<DetailsResponse>(request).await
+    }
+
+    // TODO: Documentation.
+    pub async fn get_all_trades(
+        &self,
+        request: &AllTradesRequest,
+    ) -> Result<AllTradesResponse, String> {
+        self.get::<AllTradesResponse>(request).await
     }
 
     /// Retrieves a list of all operations for a specific liquidity pool from the Horizon server.
