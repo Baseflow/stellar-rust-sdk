@@ -466,6 +466,9 @@ pub mod operations;
 /// 
 pub mod order_book;
 
+// TODO: Documentation
+pub mod transactions;
+
 /// Contains core data structures and traits.
 ///
 /// This module is used by the Stellar Rust SDK to interact with the Horizon API.
