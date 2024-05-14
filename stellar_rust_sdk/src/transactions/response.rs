@@ -13,23 +13,24 @@ pub struct Links {
     effects: Link,
     precedes: Link,
     succeeds: Link,
+    transaction: Link,
 }
 
 // TODO: Documentation
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 pub struct Preconditions {
     pub timebounds: Timebounds,
 }
 
 // TODO: Documentation
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 pub struct Timebounds {
     pub min_time: String,
     pub max_time: Option<String>,
 }
 
 // TODO: Documentation
-#[derive(Debug, Deserialize, Serialize, Clone, Getters)]
+#[derive(Debug, Clone, Serialize, Deserialize, Getters)]
 pub struct TransactionResponse {
         #[serde(rename = "_links")]
         pub links: Links,
@@ -52,6 +53,7 @@ pub struct TransactionResponse {
         pub memo_type: String,
         pub signatures: Vec<String>,
         pub valid_after: String,
+        pub valid_before: String,
         pub preconditions: Preconditions,
 }
 
