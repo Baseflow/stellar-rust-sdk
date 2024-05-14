@@ -1326,7 +1326,55 @@ impl HorizonClient {
         self.get::<LiquidityPool>(request).await
     }
 
-    // TODO: Documentation
+    /// Retrieves detailed information for a specific transaction from the Horizon server.
+    ///
+    /// This asynchronous method fetches details of a single transaction from the Horizon server.
+    /// It requires a [`SingleTransactionRequest`] parameterized with `TransactionHash`, which includes the hash
+    /// of the transaction to be retrieved.
+    ///
+    /// Adheres to the <a href="https://developers.stellar.org/network/horizon/api-reference/resources/retrieve-a-transaction">Retrieve a Transaction endpoint</a>
+    /// endpoint.
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - A reference to a [`SingleTransactionRequest<TransactionHash>`] instance, containing the
+    ///   hash of the transaction for which details are to be fetched.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing an [`TransactionResponse`], which includes detailed
+    /// information about the requested transaction. If the request fails, it returns an error
+    /// encapsulated within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`SingleTransactionRequest`] and set the
+    /// hash of the transaction to be queried.
+    ///
+    /// ```
+    /// # use stellar_rs::transactions::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = SingleTransactionRequest::new()
+    ///     .set_transaction_hash("be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f".to_string()) // example transaction hash
+    ///     .unwrap();
+    ///
+    /// let response = horizon_client.get_single_transaction(&request).await;
+    /// 
+    /// // Access the details of the claimable balance
+    /// if let Ok(transaction_response) = response {
+    ///     println!("Created at: {}", transaction_response.created_at());
+    ///     // Further processing...
+    /// }
+    ///
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_single_transaction(
         &self,
         request: &SingleTransactionRequest<TransactionHash>,
