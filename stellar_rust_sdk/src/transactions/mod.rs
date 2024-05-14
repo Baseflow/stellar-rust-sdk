@@ -1,13 +1,59 @@
-// TODO: Documentation
+/// Provides the `SingleTransactionRequest`.
+///
+/// # Usage
+/// This module provides the `SingleTransactionRequest` struct, specifically designed for
+/// constructing requests to query information about a single transaction from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_single_transaction`](crate::horizon_client::HorizonClient::get_single_transaction)
+/// method.
+///
 pub mod single_transaction_request;
 
-// TODO: Documentation
+/// Provides the responses.
+///
+/// This module defines structures representing the response from the Horizon API when querying
+/// for transactions. The structures are designed to deserialize the JSON response into Rust
+/// objects, enabling straightforward access to various details of a single transaction.
+///
+/// # Usage
+/// These structures are equipped with serialization capabilities to handle the JSON data from the
+/// Horizon server and with getter methods for easy field access.
 pub mod response;
 
-// TODO: Documentation
+/// The base path for transaction-related endpoints in the Horizon API.
+///
+/// # Usage
+/// This variable is intended to be used internally by the request-building logic
+/// to ensure consistent and accurate path construction for offer-related API calls.
 static TRANSACTIONS_PATH: &str = "transactions";
 
-// TODO: Documentation
+/// The `prelude` module of the `transactions` module.
+///
+/// # Usage
+/// This module serves as a convenience for users of the Horizon Rust SDK, allowing for easy and
+/// ergonomic import of the most commonly used items across various modules. It re-exports
+/// key structs and traits from the sibling modules, simplifying access to these components
+/// when using the library.
+///
+/// By importing the contents of `prelude`, users can conveniently access the primary
+/// functionalities of the transaction-related modules without needing to import each item
+/// individually.
+///
+/// # Contents
+///
+/// The `prelude` includes the following re-exports:
+///
+/// * From `single_transaction_request`: All items (e.g. `SingleTransactionRequest`).
+/// * From `response`: All items (e.g. `SingleTransactionResponse`, `Preconditions`, etc.).
+///
+/// # Example
+/// ```
+/// # use crate::stellar_rs::models::*;
+/// // Import the contents of the transactions prelude
+/// use stellar_rs::transactions::prelude::*;
+///
+/// // Now you can directly use SingleTransactionRequest, SingleTransactionResponse, etc.
+/// let single_transactions_request = SingleTransactionRequest::new();
+/// ```
 pub mod prelude {
     pub use super::single_transaction_request::*;
     pub use super::response::*;
@@ -16,7 +62,7 @@ pub mod prelude {
 #[cfg(test)]
 pub mod test {
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient};
+    use crate::horizon_client::HorizonClient;
 
     #[tokio::test]
     async fn test_get_single_transaction() {

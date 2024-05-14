@@ -466,7 +466,46 @@ pub mod operations;
 /// 
 pub mod order_book;
 
-// TODO: Documentation
+/// Provides `Request` and `Response` structs for retrieving transactions.
+///
+/// This module provides a set of specialized request and response structures designed for
+/// interacting with the transaction-related endpoints of the Horizon server. These structures
+/// facilitate the construction of requests to query transaction data and the interpretation of
+/// the corresponding responses.
+///
+/// # Usage
+///
+/// This module is intended to be used in conjunction with the [`HorizonClient`](crate::horizon_client::HorizonClient)
+/// for making specific transaction-related API calls to the Horizon server. The request
+/// structures are designed to be passed to the client's methods, which handle the
+/// communication with the server and return the corresponding response structures.
+///
+/// # Example
+///
+/// /// To use this module, you can create an instance of a request struct, such as
+/// `SingleTransactionRequest`, set any desired query parameters, and pass the request to the
+/// `HorizonClient`. The client will then execute the request and return the corresponding
+/// response struct, like `TransactionResponse`.
+///
+/// ```rust
+/// use stellar_rs::horizon_client::HorizonClient;
+/// use stellar_rs::transactions::prelude::*;
+/// use stellar_rs::models::Request;
+///
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+///
+/// // Example: Fetching a transaction
+/// let single_transaction_request = SingleTransactionRequest::new()
+///     .set_transaction_hash("be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f".to_string())
+///     .unwrap();
+/// let single_transaction_response = horizon_client.get_single_transaction(&single_transaction_request).await?;
+///
+/// // Process the responses...
+/// # Ok(())
+/// # }
+/// ```
+///
 pub mod transactions;
 
 /// Contains core data structures and traits.

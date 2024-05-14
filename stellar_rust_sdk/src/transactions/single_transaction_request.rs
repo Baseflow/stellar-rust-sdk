@@ -20,7 +20,11 @@ impl SingleTransactionRequest<NoTransactionHash> {
         SingleTransactionRequest::default()
     }
 
-    // TODO: Documentation
+    /// Sets the transaction hash for the request.
+    /// 
+    /// # Arguments
+    /// * `transaction_hash` - A `String` specifying the operation hash.
+    /// 
     pub fn set_transaction_hash(
         self,
         transaction_hash: String,
