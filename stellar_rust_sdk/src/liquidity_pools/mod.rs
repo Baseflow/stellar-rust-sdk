@@ -21,7 +21,7 @@ async fn test_get_all_liquidity_pools() {
         "4cd1f6defba237eecbc5fefe259f89ebc4b5edd49116beb5536c4034fc48d63f";
     const RSP_1_LIQUIDITY_POOL_FEE_BP: i64 = 30;
     const RSP_1_LIQUIDITY_POOL_TYPE: &str = "constant_product";
-    const RSP_1_LIQUIDITY_POOL_TOTAL_TRUSTLINES: &str = "1";
+    const RSP_1_LIQUIDITY_POOL_TOTAL_TRUSTLINES: &str = "2";
     const RSP_1_LIQUIDITY_POOL_RESERVE_ASSET_0: &str = "native";
     const RSP_1_LIQUIDITY_POOL_RESERVE_ASSET_1: &str =
         "USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";

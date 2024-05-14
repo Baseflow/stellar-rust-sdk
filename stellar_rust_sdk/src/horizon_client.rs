@@ -33,6 +33,7 @@ use crate::{
         details_request::{BuyingAsset, DetailsRequest, SellingAsset},
         response::DetailsResponse,
     },
+    transactions::prelude::*,
 };
 use reqwest;
 use url::Url;
@@ -1324,6 +1325,15 @@ impl HorizonClient {
     ) -> Result<LiquidityPool, String> {
         self.get::<LiquidityPool>(request).await
     }
+
+    // TODO: Documentation
+    pub async fn get_single_transaction(
+        &self,
+        request: &SingleTransactionRequest<TransactionHash>,
+    ) -> Result<TransactionResponse, String> {
+        self.get::<TransactionResponse>(request).await
+    }
+
 }
 
 /// Handles the response received from an HTTP request made to the Horizon server.
