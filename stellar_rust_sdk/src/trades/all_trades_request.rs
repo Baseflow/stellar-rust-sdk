@@ -2,13 +2,9 @@ use crate::models::*;
 use stellar_rust_sdk_derive::Pagination;
 use crate::Paginatable;
 
-/// Represents the base asset. Contains an enum of one of the possible asset types.
+/// Represents the base and counter assets. Contains an enum of one of the possible asset types.
 #[derive(PartialEq, Debug)]
-pub struct BaseAsset(AssetType);
-
-/// Represents the counter asset. Contains an enum of one of the possible asset types.
-#[derive(PartialEq, Debug)]
-pub struct CounterAsset(AssetType);
+pub struct TradeAsset(AssetType);
 
 // Contains the details of a non-native asset.
 #[derive(PartialEq, Debug)]
@@ -58,9 +54,9 @@ pub enum AssetType {
 #[derive(PartialEq, Default, Pagination)]
 pub struct AllTradesRequest {
     /// The base asset of the trade.
-    pub base_asset: Option<BaseAsset>,
+    pub base_asset: Option<TradeAsset>,
     /// The counter asset of the trade.
-    pub counter_asset: Option<CounterAsset>,
+    pub counter_asset: Option<TradeAsset>,
     // The offer ID. Used to filter for trades originating from a specific offer.
     pub offer_id: Option<String>,
     /// A pointer to a specific location in a collection of responses, derived from the
@@ -98,7 +94,7 @@ impl AllTradesRequest {
         base_asset: AssetType,
     ) -> Result<AllTradesRequest, String> {
         Ok(AllTradesRequest {
-            base_asset: Some(BaseAsset(base_asset)),
+            base_asset: Some(TradeAsset(base_asset)),
             ..self
         })
     }
@@ -120,7 +116,7 @@ impl AllTradesRequest {
         counter_asset: AssetType,
     ) -> Result<AllTradesRequest, String> {
         Ok(AllTradesRequest {
-            counter_asset: Some(CounterAsset(counter_asset)),
+            counter_asset: Some(TradeAsset(counter_asset)),
             ..self
         })
     }
@@ -148,8 +144,8 @@ impl Request for AllTradesRequest {
             }
         }
 
-        if let Some(base_asset) = &self.base_asset {
-            match &base_asset.0 {
+        if let Some(counter_asset) = &self.counter_asset {
+            match &counter_asset.0 {
                 AssetType::Native => {
                     query.push(format!("&counter_asset_type=native"));
                 }

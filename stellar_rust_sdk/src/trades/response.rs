@@ -29,7 +29,7 @@ impl Response for AllTradesResponse {
 /// base asset, counter asset and operation.
 ///
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
-pub struct Links {
+pub struct TradeResponseLinks {
     #[serde(rename = "self")]
     self_link: Link,
     base: Link,
@@ -61,7 +61,7 @@ pub struct Price {
 pub struct TradeResponse {
     /// Navigational links related to the trade.
     #[serde(rename = "_links")]
-    links: Links,
+    links: TradeResponseLinks,
     // A unique identifier for this trade.
     id: String,
     /// A pointer to a specific location in a collection of responses, used for pagination control.
