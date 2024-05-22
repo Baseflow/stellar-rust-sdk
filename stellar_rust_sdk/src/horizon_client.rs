@@ -1382,15 +1382,58 @@ impl HorizonClient {
         self.get::<TransactionResponse>(request).await
     }
 
-    // TODO: Documentation
+
+    /// Retrieves a list of all transactions from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all transactions from the Horizon server.
+    /// It requires an [`AllTransactionsRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`AllTransactionsRequest`] instance, containing the
+    /// parameters for the transactions request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`AllTransactionsResponse`], which includes
+    /// the list of all transactions obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`AllTransactionsRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::transactions::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// # use stellar_rust_sdk_derive::Pagination;
+    /// # use stellar_rs::Paginatable;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = AllTransactionsRequest::new()
+    ///   .set_include_failed(true).unwrap();
+    ///
+    /// let response = horizon_client.get_all_transactions(&request).await;
+    ///
+    /// // Access the transactions
+    /// if let Ok(transactions_response) = response {
+    ///     for transaction in transactions_response.embedded().records() {
+    ///         println!("Transaction ID: {}", transaction.id());
+    ///         // Further processing...
+    ///     }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_all_transactions(
         &self,
         request: &AllTransactionsRequest,
     ) -> Result<AllTransactionsResponse, String> {
         self.get::<AllTransactionsResponse>(request).await
     }
-
-
 }
 
 /// Handles the response received from an HTTP request made to the Horizon server.

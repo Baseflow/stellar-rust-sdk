@@ -72,7 +72,11 @@ pub struct LedgerBounds {
     max_ledger: Option<String>,
 }
 
-// TODO: Documentation
+/// Represents the response for the 'all transactions' query in the Horizon API.
+///
+/// This struct defines the overall structure of the response for an 'all transactions' query.
+/// It includes navigational links and embedded results.
+///
 #[derive(Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
 pub struct AllTransactionsResponse {

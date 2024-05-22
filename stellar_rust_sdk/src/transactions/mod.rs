@@ -8,7 +8,14 @@
 ///
 pub mod single_transaction_request;
 
-/// TODO: Documentation
+/// Provides the `AllTransactionsRequest`.
+///
+/// # Usage
+/// This module provides the `AllTransactionsRequest` struct, specifically designed for
+/// constructing requests to query information about all transactions from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_all_transactions`](crate::horizon_client::HorizonClient::get_all_transactions)
+/// method.
+///
 pub mod all_transactions_request;
 
 /// Provides the responses.
@@ -26,7 +33,7 @@ pub mod response;
 ///
 /// # Usage
 /// This variable is intended to be used internally by the request-building logic
-/// to ensure consistent and accurate path construction for offer-related API calls.
+/// to ensure consistent and accurate path construction for transaction-related API calls.
 static TRANSACTIONS_PATH: &str = "transactions";
 
 /// The `prelude` module of the `transactions` module.
@@ -67,7 +74,7 @@ pub mod prelude {
 #[cfg(test)]
 pub mod test {
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient, models::Request};
+    use crate::horizon_client::HorizonClient;
 
     #[tokio::test]
     async fn test_get_single_transaction() {
@@ -179,7 +186,8 @@ pub mod test {
             .to_string())
             .unwrap();
 
-        let all_transactions_request = AllTransactionsRequest::new().set_include_failed(true).unwrap();
+        let all_transactions_request = AllTransactionsRequest::new()
+            .set_include_failed(true).unwrap();
 
         let all_transactions_response = horizon_client
             .get_all_transactions(&all_transactions_request)
