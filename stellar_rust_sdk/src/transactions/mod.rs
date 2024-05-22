@@ -8,6 +8,9 @@
 ///
 pub mod single_transaction_request;
 
+/// TODO: Documentation
+pub mod all_transactions_request;
+
 /// Provides the responses.
 ///
 /// This module defines structures representing the response from the Horizon API when querying
@@ -43,6 +46,7 @@ static TRANSACTIONS_PATH: &str = "transactions";
 /// The `prelude` includes the following re-exports:
 ///
 /// * From `single_transaction_request`: All items (e.g. `SingleTransactionRequest`).
+/// * From `all_transactions_request`: All items (e.g. `AllTransactionsRequest`).
 /// * From `response`: All items (e.g. `SingleTransactionResponse`, `Preconditions`, etc.).
 ///
 /// # Example
@@ -56,13 +60,14 @@ static TRANSACTIONS_PATH: &str = "transactions";
 /// ```
 pub mod prelude {
     pub use super::single_transaction_request::*;
+    pub use super::all_transactions_request::*;
     pub use super::response::*;
 }
 
 #[cfg(test)]
 pub mod test {
     use super::prelude::*;
-    use crate::horizon_client::HorizonClient;
+    use crate::{horizon_client::HorizonClient, models::Request};
 
     #[tokio::test]
     async fn test_get_single_transaction() {
@@ -137,8 +142,75 @@ pub mod test {
         assert_eq!(response.memo_type(), MEMO_TYPE);
         assert_eq!(response.signatures()[0], SIGNATURE);
         assert_eq!(response.valid_after(), VALID_AFTER);
-        assert_eq!(response.valid_before(), VALID_BEFORE);
+        assert_eq!(response.valid_before().as_ref().unwrap(), VALID_BEFORE);
         assert_eq!(response.preconditions().timebounds().min_time(), MIN_TIME);
         assert_eq!(response.preconditions().timebounds().max_time().as_ref().unwrap(), MAX_TIME);
+    }
+
+    #[tokio::test]
+    async fn test_get_all_transactions() {
+        const LINK_SELF: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+        const LINK_ACCOUNT: &str = "https://horizon-testnet.stellar.org/accounts/GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
+        const LINK_LEDGER: &str = "https://horizon-testnet.stellar.org/ledgers/107";
+        const LINK_OPERATIONS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/operations{?cursor,limit,order}";
+        const LINK_EFFECTS: &str =  "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/effects{?cursor,limit,order}";
+        const LINK_PRECEDES: &str = "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=459561504768";
+        const LINK_SUCCEEDS: &str = "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=459561504768";
+        const LINK_TRANSACTION: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+        const ID: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+        const PAGING_TOKEN: &str = "459561504768";
+        const SUCCESSFUL: &bool = &true;
+        const HASH: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+        const LEDGER: &i64 = &107;
+        const CREATED_AT: &str = "2024-02-06T17:42:48Z";
+        const SOURCE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
+        const SOURCE_ACCOUNT_SEQUENCE: &str = "1";
+        const FEE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
+        const FEE_CHARGED: &str = "1100";
+        const MAX_FEE: &str = "1100";
+        const OPERATION_COUNT: &i64 = &11;
+        const MEMO_TYPE: &str = "none";
+        const SIGNATURE: &str = "NUHx9PZlcXQ9mq1lf1usrSTP4/gbxUqzUOQOSU/pQuy9dF7FcUF0fjEbzFECxHUcl4QEfbvyGIE029TA3DrODA==";
+        const VALID_AFTER: &str = "1970-01-01T00:00:00Z";
+        const MIN_TIME: &str = "0";
+
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org"
+            .to_string())
+            .unwrap();
+
+        let all_transactions_request = AllTransactionsRequest::new().set_include_failed(true).unwrap();
+
+        let all_transactions_response = horizon_client
+            .get_all_transactions(&all_transactions_request)
+            .await;
+
+        assert!(all_transactions_response.clone().is_ok());
+        let binding = all_transactions_response.unwrap();
+        let record = &binding.embedded().records()[0];
+        assert_eq!(record.links().self_link().href().as_ref().unwrap(), LINK_SELF);
+        assert_eq!(record.links().account().href().as_ref().unwrap(), LINK_ACCOUNT);
+        assert_eq!(record.links().ledger().href().as_ref().unwrap(), LINK_LEDGER);
+        assert_eq!(record.links().operations().href().as_ref().unwrap(), LINK_OPERATIONS);
+        assert_eq!(record.links().effects().href().as_ref().unwrap(), LINK_EFFECTS);
+        assert_eq!(record.links().precedes().href().as_ref().unwrap(), LINK_PRECEDES);
+        assert_eq!(record.links().succeeds().href().as_ref().unwrap(), LINK_SUCCEEDS);
+        assert_eq!(record.links().transaction().href().as_ref().unwrap(), LINK_TRANSACTION);
+        assert_eq!(record.id(), ID);
+        assert_eq!(record.paging_token(), PAGING_TOKEN);
+        assert_eq!(record.successful(), SUCCESSFUL);
+        assert_eq!(record.hash(), HASH);
+        assert_eq!(record.ledger(), LEDGER);
+        assert_eq!(record.created_at(), CREATED_AT);
+        assert_eq!(record.source_account(), SOURCE_ACCOUNT);
+        assert_eq!(record.source_account_sequence(), SOURCE_ACCOUNT_SEQUENCE);
+        assert_eq!(record.fee_account(), FEE_ACCOUNT);
+        assert_eq!(record.fee_charged(), FEE_CHARGED);
+        assert_eq!(record.max_fee(), MAX_FEE);
+        assert_eq!(record.operation_count(), OPERATION_COUNT);
+        assert_eq!(record.memo_type(), MEMO_TYPE);
+        assert_eq!(record.signatures()[0], SIGNATURE); // Check only the first signature of the vector
+        assert_eq!(record.valid_after(), VALID_AFTER);
+        assert_eq!(record.preconditions().timebounds().min_time(), MIN_TIME);
     }
 }

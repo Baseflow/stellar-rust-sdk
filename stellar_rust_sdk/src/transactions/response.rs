@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 /// the ledger that the transaction was included in.
 ///
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
-pub struct Links {
+pub struct TransactionResponseLinks {
     #[serde(rename = "self")]
     self_link: Link,
     account: Link,
@@ -72,6 +72,24 @@ pub struct LedgerBounds {
     max_ledger: Option<String>,
 }
 
+// TODO: Documentation
+#[derive(Debug, Clone, Serialize, Deserialize, Getters)]
+#[serde(rename_all = "camelCase")]
+pub struct AllTransactionsResponse {
+    #[serde(rename = "_links")]
+    links: ResponseLinks,
+    #[serde(rename = "_embedded")]
+    embedded: Embedded<TransactionResponse>,
+}
+
+impl Response for AllTransactionsResponse {
+    fn from_json(json: String) -> Result<Self, String> {
+        let response = serde_json::from_str(&json).map_err(|e| e.to_string())?;
+
+        Ok(response)
+    }
+}
+
 /// Represents a single transaction record in the Horizon API response.
 ///
 /// # Usage
@@ -81,7 +99,7 @@ pub struct LedgerBounds {
 #[derive(Debug, Clone, Serialize, Deserialize, Getters)]
 pub struct TransactionResponse {
         #[serde(rename = "_links")]
-        links: Links,
+        links: TransactionResponseLinks,
         /// A unique identifier for this transaction.
         id: String,
         /// A cursor value for use in pagination.
@@ -127,7 +145,7 @@ pub struct TransactionResponse {
         /// The date after which a transaction is valid. 
         valid_after: String,
         /// The date before which a transaction is valid.
-        valid_before: String,
+        valid_before: Option<String>,
         /// A set of transaction preconditions affecting its validity.
         preconditions: Preconditions,
 }

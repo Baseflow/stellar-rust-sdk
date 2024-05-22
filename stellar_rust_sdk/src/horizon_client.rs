@@ -1382,6 +1382,15 @@ impl HorizonClient {
         self.get::<TransactionResponse>(request).await
     }
 
+    // TODO: Documentation
+    pub async fn get_all_transactions(
+        &self,
+        request: &AllTransactionsRequest,
+    ) -> Result<AllTransactionsResponse, String> {
+        self.get::<AllTransactionsResponse>(request).await
+    }
+
+
 }
 
 /// Handles the response received from an HTTP request made to the Horizon server.
