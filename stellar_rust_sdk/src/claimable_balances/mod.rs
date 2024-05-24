@@ -89,16 +89,14 @@ fn parse_epoch(epoch_str: &str) -> DateTime<Utc> {
 }
 
 pub mod prelude {
-    pub use super::all_claimable_balances_request::*;
-    pub use super::response::*;
-    pub use super::single_claimable_balance_request::*;
+    pub use super::{all_claimable_balances_request::*, response::*, single_claimable_balance_request::*};
 }
 
 #[cfg(test)]
 mod tests {
     use super::parse_epoch;
     use super::prelude::*;
-    use crate::horizon_client::HorizonClient;
+    use crate::{horizon_client::HorizonClient, Paginatable};
     use chrono::DateTime;
     use chrono::{TimeZone, Utc};
     use lazy_static::lazy_static;

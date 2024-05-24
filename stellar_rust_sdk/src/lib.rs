@@ -249,9 +249,11 @@ pub mod horizon_client;
 /// response struct, like `SingleLedgerResponse` or `AllLedgersResponse`.
 ///
 /// ```rust
-/// use stellar_rs::horizon_client::HorizonClient;
-/// use stellar_rs::ledgers::prelude::*;
-/// use stellar_rs::models::Request;
+/// # use stellar_rs::horizon_client::HorizonClient;
+/// # use stellar_rs::ledgers::prelude::*;
+/// # use stellar_rs::models::Request;
+/// # use stellar_rust_sdk_derive::Pagination;
+/// # use stellar_rs::Paginatable;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
@@ -290,9 +292,11 @@ pub mod ledgers;
 /// response struct, like `SingleEffectResponse` or `AllEffectsResponse`.
 ///
 /// ```rust
-/// use stellar_rs::horizon_client::HorizonClient;
-/// use stellar_rs::effects::prelude::*;
-/// use stellar_rs::models::Request;
+/// # use stellar_rs::horizon_client::HorizonClient;
+/// # use stellar_rs::effects::prelude::*;
+/// # use stellar_rs::models::Request;
+/// # use stellar_rust_sdk_derive::Pagination;
+/// # use crate::stellar_rs::Paginatable;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
@@ -407,9 +411,11 @@ pub mod offers;
 /// response struct, like `SingleOperationResponse` or `AllOperationsResponse`.
 ///
 /// ```rust
-/// use stellar_rs::horizon_client::HorizonClient;
-/// use stellar_rs::operations::prelude::*;
-/// use stellar_rs::models::Request;
+/// # use stellar_rs::horizon_client::HorizonClient;
+/// # use stellar_rs::operations::prelude::*;
+/// # use stellar_rs::models::Request;
+/// # use stellar_rust_sdk_derive::Pagination;
+/// # use stellar_rs::Paginatable;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;

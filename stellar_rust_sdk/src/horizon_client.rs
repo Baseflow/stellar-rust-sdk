@@ -566,6 +566,8 @@ impl HorizonClient {
     /// # use stellar_rs::ledgers::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
+    /// # use stellar_rust_sdk_derive::Pagination;
+    /// # use stellar_rs::Paginatable;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -674,6 +676,8 @@ impl HorizonClient {
     /// # use stellar_rs::effects::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
+    /// # use stellar_rust_sdk_derive::Pagination;
+    /// # use crate::stellar_rs::Paginatable;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -728,6 +732,8 @@ impl HorizonClient {
     /// # use stellar_rs::effects::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
+    /// # use stellar_rust_sdk_derive::Pagination;
+    /// # use stellar_rs::Paginatable;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -950,6 +956,8 @@ impl HorizonClient {
     /// # use stellar_rs::operations::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
+    /// # use stellar_rust_sdk_derive::Pagination;
+    /// # use stellar_rs::Paginatable;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
