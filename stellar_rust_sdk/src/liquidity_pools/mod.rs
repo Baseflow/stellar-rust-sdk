@@ -10,10 +10,10 @@ pub mod prelude {
 }
 
 #[tokio::test]
-
 async fn test_get_all_liquidity_pools() {
-    use crate::horizon_client::HorizonClient;
+    use crate::{horizon_client::HorizonClient, Paginatable};
     use all_liquidity_pools_request::AllLiquidityPoolsRequest;
+
 
     const RSP_1_LIQUIDITY_POOL_ID: &str =
         "4cd1f6defba237eecbc5fefe259f89ebc4b5edd49116beb5536c4034fc48d63f";
@@ -64,7 +64,8 @@ async fn test_get_all_liquidity_pools() {
             "USDC".to_string(),
             "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string(),
         )
-        .set_limit(2);
+        .set_limit(2)
+        .unwrap();
 
     let all_liquidity_pools_response_1 = horizon_client
         .get_all_liquidity_pools(&all_liquidity_pools_request_1)
@@ -113,7 +114,8 @@ async fn test_get_all_liquidity_pools() {
             "NOODLE".to_string(),
             "GARPXPHGABTN52WPJ2QZQBY7TSXMK7PXLKOD6FSPA2TEVSJDWIDRSHPO".to_string(),
         )
-        .set_limit(2);
+        .set_limit(2)
+        .unwrap();
 
     let all_liquidity_pools_response_2 = horizon_client
         .get_all_liquidity_pools(&all_liquidity_pools_request_2)
@@ -167,7 +169,8 @@ async fn test_get_all_liquidity_pools() {
             "LPA7".to_string(),
             "GDTCZZNMT74SEGPDQL3IQJDJ54MXQJHSNQ3HNNJJIJLIVG2LOSDLG2OZ".to_string(),
         )
-        .set_limit(2);
+        .set_limit(2)
+            .unwrap();
 
     let all_liquidity_pools_response_3 = horizon_client
         .get_all_liquidity_pools(&all_liquidity_pools_request_3)

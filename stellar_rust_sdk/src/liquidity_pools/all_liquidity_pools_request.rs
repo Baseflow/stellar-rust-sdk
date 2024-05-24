@@ -1,4 +1,5 @@
-use crate::{models::{Order, Request}, BuildQueryParametersExt};
+use crate::{models::{Order, Request}, BuildQueryParametersExt, Paginatable};
+use stellar_rust_sdk_derive::Pagination;
 
 /// Represents a reserve for a liquidity pool. This struct is used to specify the asset code and
 #[derive(PartialEq, Debug)]
@@ -30,20 +31,22 @@ pub enum ReserveType {
 ///
 /// # Example
 /// ```rust
-/// use stellar_rs::liquidity_pools::all_liquidity_pools_request::AllLiquidityPoolsRequest;
-/// use stellar_rs::models::*;
+/// # use stellar_rs::liquidity_pools::all_liquidity_pools_request::AllLiquidityPoolsRequest;
+/// # use stellar_rs::models::*;
+/// # use stellar_rust_sdk_derive::Pagination;
+/// # use stellar_rs::Paginatable;
 ///
 /// let request = AllLiquidityPoolsRequest::new()
-///     .set_cursor(1234)
-///     .set_limit(20)
-///     .set_order(Order::Desc)
+///     .set_cursor(1234).unwrap()
+///     .set_limit(20).unwrap()
+///     .set_order(Order::Desc).unwrap()
 ///     .add_native_reserve()
 ///     .add_alphanumeric4_reserve("USD".to_string(), "GAXLYH...".to_string());
 ///
 /// // The request can now be used with a Horizon client to fetch liquidity pools.
 /// ```
 ///
-#[derive(Default)]
+#[derive(Default, Pagination)]
 pub struct AllLiquidityPoolsRequest {
     /// A pointer to a specific location in a collection of responses, derived from the
     ///   `paging_token` value of a record. Used for pagination control in the API response.
@@ -69,42 +72,6 @@ impl AllLiquidityPoolsRequest {
             limit: None,
             order: None,
             reserves: None,
-        }
-    }
-
-    /// Sets the cursor for pagination.
-    ///
-    /// # Arguments
-    /// * `cursor` - A `u32` value pointing to a specific location in a collection of responses.
-    ///
-    pub fn set_cursor(self, cursor: u32) -> AllLiquidityPoolsRequest {
-        AllLiquidityPoolsRequest {
-            cursor: Some(cursor),
-            ..self
-        }
-    }
-
-    /// Sets the maximum number of records to return.
-    ///
-    /// # Arguments
-    /// * `limit` - A `u8` value specifying the maximum number of records. Range: 1 to 200. Defaults to 10.
-    ///
-    pub fn set_limit(self, limit: u8) -> AllLiquidityPoolsRequest {
-        AllLiquidityPoolsRequest {
-            limit: Some(limit),
-            ..self
-        }
-    }
-
-    /// Sets the order of the returned records.
-    ///
-    /// # Arguments
-    /// * `order` - An [`Order`] enum value specifying the order (ascending or descending).
-    ///
-    pub fn set_order(self, order: Order) -> AllLiquidityPoolsRequest {
-        AllLiquidityPoolsRequest {
-            order: Some(order),
-            ..self
         }
     }
 
@@ -217,7 +184,7 @@ impl Request for AllLiquidityPoolsRequest {
 #[cfg(test)]
 mod tests {
     use super::*;
-
+    
     #[test]
     fn test_new() {
         let request = AllLiquidityPoolsRequest::new();
@@ -229,19 +196,19 @@ mod tests {
 
     #[test]
     fn test_set_cursor() {
-        let request = AllLiquidityPoolsRequest::new().set_cursor(1234);
+        let request = AllLiquidityPoolsRequest::new().set_cursor(1234).unwrap();
         assert_eq!(request.cursor, Some(1234));
     }
 
     #[test]
     fn test_set_limit() {
-        let request = AllLiquidityPoolsRequest::new().set_limit(20);
+        let request = AllLiquidityPoolsRequest::new().set_limit(20).unwrap();
         assert_eq!(request.limit, Some(20));
     }
 
     #[test]
     fn test_set_order() {
-        let request = AllLiquidityPoolsRequest::new().set_order(Order::Desc);
+        let request = AllLiquidityPoolsRequest::new().set_order(Order::Desc).unwrap();
         assert_eq!(request.order, Some(Order::Desc));
     }
 

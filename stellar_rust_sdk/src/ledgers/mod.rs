@@ -69,7 +69,7 @@ static LEDGERS_PATH: &str = "ledgers";
 ///
 /// ```rust
 /// // Import the contents of the ledgers prelude
-/// use stellar_rs::ledgers::prelude::*;
+/// # use stellar_rs::ledgers::prelude::*;
 ///
 /// // This allows for direct usage of LedgersRequest, SingleLedgerResponse, etc.
 /// let ledger_request = LedgersRequest::new();
@@ -85,7 +85,7 @@ pub mod prelude {
 #[cfg(test)]
 pub mod tests {
     use super::prelude::*;
-    use crate::horizon_client::HorizonClient;
+    use crate::{horizon_client::HorizonClient, Paginatable};
     use base64::{engine::general_purpose, Engine};
 
     #[tokio::test]

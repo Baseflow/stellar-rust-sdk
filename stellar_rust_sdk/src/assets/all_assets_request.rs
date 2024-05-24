@@ -1,4 +1,5 @@
-use crate::{models::*, BuildQueryParametersExt};
+use crate::{models::*, BuildQueryParametersExt, Paginatable};
+use stellar_rust_sdk_derive::Pagination;
 
 /// Represents a request for listing all assets in the Stellar Horizon API.
 ///
@@ -17,6 +18,8 @@ use crate::{models::*, BuildQueryParametersExt};
 /// # use stellar_rs::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
 /// # use stellar_rs::models::*;
 /// # use stellar_rs::horizon_client::HorizonClient;
+/// # use stellar_rust_sdk_derive::Pagination;
+/// # use stellar_rs::Paginatable;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
@@ -29,13 +32,13 @@ use crate::{models::*, BuildQueryParametersExt};
 ///     .set_limit(20)?
 ///     .set_order(Order::Desc);
 ///
-/// let response = horizon_client.get_all_assets(&request).await;
+/// let response = horizon_client.get_all_assets(&request.unwrap()).await;
 /// # Ok({})
 /// # }
 ///
 /// ```
 ///
-#[derive(Default)]
+#[derive(Default, Pagination)]
 pub struct AllAssetsRequest {
     /// The code of the asset to filter by. This is typically the identifier
     ///   assigned to custom assets on the Stellar network.
@@ -51,7 +54,7 @@ pub struct AllAssetsRequest {
 
     /// Specifies the maximum number of records to be returned in a single response.
     ///   The range for this parameter is from 1 to 200. The default value is set to 10.
-    limit: Option<u32>,
+    limit: Option<u8>,
 
     /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
     ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
@@ -129,50 +132,6 @@ impl AllAssetsRequest {
             ..self
         })
     }
-
-    /// Sets the cursor for pagination.
-    ///
-    /// # Arguments
-    /// * `cursor` - A `u32` value pointing to a specific location in a collection of responses.
-    ///
-    pub fn set_cursor(self, cursor: u32) -> Result<AllAssetsRequest, String> {
-        if cursor < 1 {
-            return Err("cursor must be greater than or equal to 1".to_string());
-        }
-
-        Ok(AllAssetsRequest {
-            cursor: Some(cursor),
-            ..self
-        })
-    }
-
-    /// Sets the maximum number of records to return.
-    ///
-    /// # Arguments
-    /// * `limit` - A `u8` value specifying the maximum number of records. Range: 1 to 200. Defaults to 10.
-    ///
-    pub fn set_limit(self, limit: u32) -> Result<AllAssetsRequest, String> {
-        if limit < 1 || limit > 200 {
-            return Err("limit must be between 1 and 200".to_string());
-        }
-
-        Ok(AllAssetsRequest {
-            limit: Some(limit),
-            ..self
-        })
-    }
-
-    /// Sets the order of the returned records.
-    ///
-    /// # Arguments
-    /// * `order` - An [`Order`] enum value specifying the order (ascending or descending).
-    ///
-    pub fn set_order(self, order: Order) -> AllAssetsRequest {
-        AllAssetsRequest {
-            order: Some(order),
-            ..self
-        }
-    }
 }
 
 #[cfg(test)]
@@ -226,7 +185,7 @@ mod tests {
         let request = AllAssetsRequest::new().set_cursor(0);
         assert_eq!(
             request.err().unwrap(),
-            "cursor must be greater than or equal to 1".to_string()
+            "Cursor must be greater than or equal to 1.".to_string()
         );
     }
 
@@ -241,7 +200,7 @@ mod tests {
         let request = AllAssetsRequest::new().set_limit(0);
         assert_eq!(
             request.err().unwrap(),
-            "limit must be between 1 and 200".to_string()
+            "Limit must be between 1 and 200.".to_string()
         );
     }
 
@@ -250,7 +209,7 @@ mod tests {
         let request = AllAssetsRequest::new().set_limit(201);
         assert_eq!(
             request.err().unwrap(),
-            "limit must be between 1 and 200".to_string()
+            "Limit must be between 1 and 200.".to_string()
         );
     }
 }

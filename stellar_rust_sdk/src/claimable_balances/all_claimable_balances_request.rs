@@ -1,4 +1,5 @@
-use crate::{models::*, BuildQueryParametersExt};
+use crate::{models::*, BuildQueryParametersExt, Paginatable};
+use stellar_rust_sdk_derive::Pagination;
 
 /// Represents a request to list all claimable balances from the Stellar Horizon API.
 ///
@@ -16,8 +17,9 @@ use crate::{models::*, BuildQueryParametersExt};
 ///
 /// # Example
 /// ```
-/// use stellar_rs::claimable_balances::all_claimable_balances_request::AllClaimableBalancesRequest;
-/// use stellar_rs::models::{Asset, Order, IssuedAsset};
+/// # use stellar_rs::claimable_balances::all_claimable_balances_request::AllClaimableBalancesRequest;
+/// # use stellar_rs::models::{Asset, Order, IssuedAsset};
+/// # use crate::stellar_rs::Paginatable;
 ///
 /// let request = AllClaimableBalancesRequest::new()
 ///     .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()).unwrap() // Optional sponsor filter
@@ -30,7 +32,7 @@ use crate::{models::*, BuildQueryParametersExt};
 /// // Use with HorizonClient::get_all_claimable_balances
 /// ```
 ///
-#[derive(Default)]
+#[derive(Default, Pagination)]
 pub struct AllClaimableBalancesRequest {
     /// Optional. Representing the account ID of the sponsor. When set, the response will
     ///   only include claimable balances sponsored by the specified account.
@@ -50,7 +52,7 @@ pub struct AllClaimableBalancesRequest {
 
     /// Specifies the maximum number of records to be returned in a single response.
     ///   The range for this parameter is from 1 to 200. The default value is set to 10.
-    limit: Option<u32>,
+    limit: Option<u8>,
 
     /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
     ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
@@ -129,50 +131,6 @@ impl AllClaimableBalancesRequest {
             ..self
         })
     }
-
-    /// Sets the cursor for pagination.
-    ///
-    /// # Arguments
-    /// * `cursor` - A `u32` value pointing to a specific location in a collection of responses.
-    ///
-    pub fn set_cursor(self, cursor: u32) -> Result<AllClaimableBalancesRequest, String> {
-        if cursor < 1 {
-            return Err("cursor must be greater than or equal to 1".to_string());
-        }
-
-        Ok(AllClaimableBalancesRequest {
-            cursor: Some(cursor),
-            ..self
-        })
-    }
-
-    /// Sets the maximum number of records to return.
-    ///
-    /// # Arguments
-    /// * `limit` - A `u8` value specifying the maximum number of records. Range: 1 to 200. Defaults to 10.
-    ///
-    pub fn set_limit(self, limit: u32) -> Result<AllClaimableBalancesRequest, String> {
-        if limit < 1 || limit > 200 {
-            return Err("limit must be between 1 and 200".to_string());
-        }
-
-        Ok(AllClaimableBalancesRequest {
-            limit: Some(limit),
-            ..self
-        })
-    }
-
-    /// Sets the order of the returned records.
-    ///
-    /// # Arguments
-    /// * `order` - An [`Order`] enum value specifying the order (ascending or descending).
-    ///
-    pub fn set_order(self, order: Order) -> AllClaimableBalancesRequest {
-        AllClaimableBalancesRequest {
-            order: Some(order),
-            ..self
-        }
-    }
 }
 
 #[cfg(test)]
@@ -192,7 +150,7 @@ mod tests {
         let request = AllClaimableBalancesRequest::new().set_cursor(0);
         assert_eq!(
             request.err().unwrap(),
-            "cursor must be greater than or equal to 1".to_string()
+            "Cursor must be greater than or equal to 1.".to_string()
         );
     }
 
@@ -207,7 +165,7 @@ mod tests {
         let request = AllClaimableBalancesRequest::new().set_limit(0);
         assert_eq!(
             request.err().unwrap(),
-            "limit must be between 1 and 200".to_string()
+            "Limit must be between 1 and 200.".to_string()
         );
     }
 
@@ -216,7 +174,7 @@ mod tests {
         let request = AllClaimableBalancesRequest::new().set_limit(201);
         assert_eq!(
             request.err().unwrap(),
-            "limit must be between 1 and 200".to_string()
+            "Limit must be between 1 and 200.".to_string()
         );
     }
 }

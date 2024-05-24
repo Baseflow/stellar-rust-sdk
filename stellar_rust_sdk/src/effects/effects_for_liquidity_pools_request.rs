@@ -1,5 +1,7 @@
 use crate::models::{Order, Request};
 use crate::BuildQueryParametersExt;
+use crate::Paginatable;
+use stellar_rust_sdk_derive::Pagination;
 
 /// Represents the request to fetch effects for a specific liquidity pool from the Horizon API.
 
@@ -20,8 +22,10 @@ use crate::BuildQueryParametersExt;
 ///
 /// # Example
 /// ```rust
-/// use stellar_rs::effects::effects_for_liquidity_pools_request::EffectsForLiquidityPoolRequest;
-/// use stellar_rs::models::*;
+/// # use stellar_rs::effects::effects_for_liquidity_pools_request::EffectsForLiquidityPoolRequest;
+/// # use stellar_rs::models::*;
+/// # use stellar_rust_sdk_derive::Pagination;
+/// # use stellar_rs::Paginatable;
 ///
 /// let request = EffectsForLiquidityPoolRequest::new()
 ///     .set_liquidity_pool_id("01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d".to_string())
@@ -32,7 +36,7 @@ use crate::BuildQueryParametersExt;
 /// // The request can now be used with a Horizon client to fetch effects.
 /// ```
 ///
-#[derive(Default)]
+#[derive(Default, Pagination)]
 pub struct EffectsForLiquidityPoolRequest {
     /// The liquidity pool id
     liquidity_pool_id: Option<String>,
@@ -70,50 +74,6 @@ impl EffectsForLiquidityPoolRequest {
             ..self
         }
     }
-
-    /// Sets the cursor for pagination.
-    ///
-    /// # Arguments
-    /// * `cursor` - A `u32` value pointing to a specific location in a collection of responses.
-    ///
-    pub fn set_cursor(self, cursor: u32) -> Result<EffectsForLiquidityPoolRequest, String> {
-        if cursor < 1 {
-            return Err("cursor must be greater than or equal to 1".to_string());
-        }
-
-        Ok(EffectsForLiquidityPoolRequest {
-            cursor: Some(cursor),
-            ..self
-        })
-    }
-
-    /// Sets the maximum number of records to return.
-    ///
-    /// # Arguments
-    /// * `limit` - A `u8` value specifying the maximum number of records. Range: 1 to 200. Defaults to 10.
-    ///
-    pub fn set_limit(self, limit: u8) -> Result<EffectsForLiquidityPoolRequest, String> {
-        if limit < 1 || limit > 200 {
-            return Err("limit must be between 1 and 200".to_string());
-        }
-
-        Ok(EffectsForLiquidityPoolRequest {
-            limit: Some(limit),
-            ..self
-        })
-    }
-
-    /// Sets the order of the returned records.
-    ///
-    /// # Arguments
-    /// * `order` - An [`Order`] enum value specifying the order (ascending or descending).
-    ///
-    pub fn set_order(self, order: Order) -> EffectsForLiquidityPoolRequest {
-        EffectsForLiquidityPoolRequest {
-            order: Some(order),
-            ..self
-        }
-    }
 }
 
 impl Request for EffectsForLiquidityPoolRequest {
@@ -143,7 +103,7 @@ impl Request for EffectsForLiquidityPoolRequest {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::BuildQueryParametersExt;
+    use crate::{BuildQueryParametersExt};
 
     #[test]
     fn test_effects_for_liquidity_pools_request() {
@@ -153,7 +113,8 @@ mod tests {
             .unwrap()
             .set_limit(10)
             .unwrap()
-            .set_order(Order::Asc);
+            .set_order(Order::Asc)
+            .unwrap();
 
         let url = request.build_url("https://horizon-testnet.stellar.org");
         let query_parameters = vec![
