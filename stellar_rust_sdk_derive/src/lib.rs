@@ -12,6 +12,10 @@ pub fn pagination_macro(input: TokenStream) -> TokenStream {
         impl Paginatable for #struct_name {
             fn set_cursor(self, cursor: u32) -> Result<Self, String> {
                 // Always accept the cursor since it's non-optional in the setter
+                if cursor < 1 {
+                    return Err("Cursor must be greater than or equal to 1.".to_string());
+                }
+
                 Ok(Self { cursor: Some(cursor), ..self })
             }
 
