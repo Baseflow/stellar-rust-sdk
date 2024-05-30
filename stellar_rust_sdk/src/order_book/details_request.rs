@@ -1,5 +1,4 @@
-use crate::{models::Request};
-
+use crate::models::Request;
 pub struct SellingAsset(AssetType);
 pub struct NoSellingAsset;
 pub struct BuyingAsset(AssetType);
@@ -157,7 +156,7 @@ impl Request for DetailsRequest<SellingAsset, BuyingAsset> {
 
 mod tests {
     use crate::models::Request;
-    use crate::order_book::prelude::{Asset, AssetType, DetailsRequest};
+    use super::{Asset, AssetType, DetailsRequest};
 
     #[test]
     fn test_details_request() {
