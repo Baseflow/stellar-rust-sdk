@@ -14,9 +14,9 @@ pub mod tests {
 
     #[tokio::test]
     async fn get_order_bookdetails() {
-        const BIDS_N: &u32 = &250000;
-        const BIDS_D: &u32 = &21749;
-        const BIDS_PRICE: &str = "11.4947814";
+        const BIDS_N: &u32 = &1000;
+        const BIDS_D: &u32 = &87;
+        const BIDS_PRICE: &str = "11.4942529";
         const BIDS_AMOUNT: &str = "2556626.8467920";
 
         const ASKS_N: &u32 = &2299;
