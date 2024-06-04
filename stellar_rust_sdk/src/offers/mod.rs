@@ -190,12 +190,12 @@ pub mod test {
         const BUYING_ASSET_TYPE: &str = "credit_alphanum12";
         const BUYING_ASSET_CODE: &str = "EURCAllow";
         const BUYING_ASSET_ISSUER: &str = "GA6HVGLFUF3BHHGR5CMYXIVZ3RYVUH5EUYAOAY4T3OKI5OQVIWVRK24R";
-        const AMOUNT: &str = "922278138224.9775807";
+        const AMOUNT: &str = "922274722883.0675807";
         const PRICE_R_N: &u32 = &1;
         const PRICE_R_D: &u32 = &1;
         const PRICE: &str = "1.0000000";
-        const LAST_MODIFIED_LEDGER: &u32 = &1762248;
-        const LAST_MODIFIED_TIME: &str = "2024-05-23T22:12:07Z";
+        const LAST_MODIFIED_LEDGER: &u32 = &1938375;
+        const LAST_MODIFIED_TIME: &str = "2024-06-03T15:21:13Z";
     
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org"
