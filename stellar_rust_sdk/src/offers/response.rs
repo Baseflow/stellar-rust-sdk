@@ -60,7 +60,7 @@ pub struct PriceR {
 /// and the offer maker.
 ///
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
-pub struct Links {
+pub struct OfferResponseLinks {
     /// The link to the offer itself.
     #[serde(rename = "self")]
     self_link: Link,
@@ -78,7 +78,7 @@ pub struct Links {
 pub struct OfferResponse {
     /// Navigational links related to the offer.
     #[serde(rename = "_links")]
-    links: Links,
+    links: OfferResponseLinks,
     /// The unique identifier for the offer.
     id: String,
     /// A token used for paging through results.
