@@ -26,7 +26,7 @@ pub struct AllClaimableBalancesResponse {
 pub struct ClaimableBalance {
     /// Links to related resources in the Horizon API response.
     #[serde(rename = "_links")]
-    pub links: Links,
+    pub links: ClaimableBalanceLinks,
 
     /// The unique identifier of the claimable balance.
     pub id: String,
@@ -62,7 +62,7 @@ pub struct ClaimableBalance {
 /// Contains navigational links related to the single claimable balance response.
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct Links {
+pub struct ClaimableBalanceLinks {
     /// The link to the current claimable balance resource.
     #[serde(rename = "self")]
     pub self_field: Link,
