@@ -1,13 +1,111 @@
+/// Provides the `AllEffectsRequest` struct.
+///
+/// This module contains the `AllEffectsRequest` struct, which is designed to create requests
+/// for querying comprehensive lists of effects from the Horizon server. 
+///
+/// The `AllEffectsRequest` struct is meant to be used in conjunction with the [`HorizonClient`](crate::horizon_client::HorizonClient)
+/// to perform the actual API calls and fetch asset data. It adheres to the structure
+/// and requirements of the Horizon API for asset queries.
+///
 pub mod all_effects_request;
+
+/// Provides the `EffectsForAccountRequest`.
+///
+/// This module provides the `EffectsForAccountRequest` struct, specifically designed for
+/// constructing requests to query information about effects of a specific account from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_effects_for_account`](crate::horizon_client::HorizonClient::get_effects_for_account)
+/// method.
+///
 pub mod effects_for_account_request;
+
+/// Provides the `EffectsForLedgerRequest`.
+///
+/// This module provides the `EffectsForLedgerRequest` struct, specifically designed for
+/// constructing requests to query information about effects of a ledger from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_effects_for_ledger`](crate::horizon_client::HorizonClient::get_effects_for_ledger)
+/// method.
+///
 pub mod effects_for_ledger_request;
+
+/// Provides the `EffectsForLiquidityPoolRequest`.
+///
+/// This module provides the `EffectsForLiquidityPoolRequest` struct, specifically designed for
+/// constructing requests to query information about effects referencing a given liquidity pool from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_effects_for_liquidity_pools`](crate::horizon_client::HorizonClient::get_effects_for_liquidity_pools)
+/// method.
+///
 pub mod effects_for_liquidity_pools_request;
+
+/// Provides the `EffectsForOperationRequest`.
+///
+/// This module provides the `EffectsForOperationRequest` struct, specifically designed for
+/// constructing requests to query information about effects of a specific operation from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_effects_for_operation`](crate::horizon_client::HorizonClient::get_effects_for_operation)
+/// method.
+///
 pub mod effects_for_operation_request;
+
+/// Provides the `EffectsForTransactionRequest`.
+///
+/// This module provides the `EffectsForTransactionRequest` struct, specifically designed for
+/// constructing requests to query information about effects of a specific transaction from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_effects_for_transaction`](crate::horizon_client::HorizonClient::get_effects_for_transaction)
+/// method.
+///
 pub mod effects_for_transaction_request;
+
+/// Provides the responses.
+///
+/// This module defines structures representing the response from the Horizon API when querying
+/// for effects. The structures are designed to deserialize the JSON response into Rust
+/// objects, enabling straightforward access to various details of a single Stellar account.
+///
+/// These structures are equipped with serialization capabilities to handle the JSON data from the
+/// Horizon server and with getter methods for easy field access.
+///
 pub mod response;
 
+/// The base path for effect-related endpoints in the Horizon API.
+///
+/// # Usage
+/// This variable is intended to be used internally by the request-building logic
+/// to ensure consistent and accurate path construction for effect-related API calls.
+///
 static EFFECTS_PATH: &str = "effects";
 
+/// The `prelude` module of the `effects` module.
+///
+/// This module serves as a convenience for users of the Horizon Rust SDK, allowing for easy and
+/// ergonomic import of the most commonly used items across various modules. It re-exports
+/// key structs and traits from the sibling modules, simplifying access to these components
+/// when using the library.
+///
+/// By importing the contents of `prelude`, users can conveniently access the primary
+/// functionalities of the effect-related modules without needing to import each item
+/// individually.
+///
+/// # Contents
+///
+/// The `prelude` includes the following re-exports:
+///
+/// * From `all_effects_request`: All items (e.g. `AllEffectsRequest`).
+/// * From `effects_for_account_request`: All items (e.g. `EffectsForAccountRequest`).
+/// * From `effects_for_ledger_request`: All items (e.g. `EffectsForLedgerRequest`).
+/// * From `effects_for_liquidity_pools_request`: All items (e.g. `EffectsForLiquidityPoolRequest`).
+/// * From `effects_for_operation_request`: All items (e.g. `EffectsForOperationRequest`).
+/// * From `effects_for_transaction_request`: All items (e.g. `EffectForTransactionRequest`).
+/// * From `response`: All items (e.g. `EffectsResponse`, `Effect`, `EffectLink`).
+///
+/// # Example
+/// ```
+/// # use crate::stellar_rs::models::*;
+/// // Import the contents of the effects prelude.
+/// use stellar_rs::effects::prelude::*;
+///
+/// // Now you can directly use AllEffectsRequest, EffectsForAccountRequest, etc.
+/// let all_effects_request = AllEffectsRequest::new();
+/// ```
+///
 pub mod prelude {
     pub use super::all_effects_request::*;
     pub use super::effects_for_account_request::*;
