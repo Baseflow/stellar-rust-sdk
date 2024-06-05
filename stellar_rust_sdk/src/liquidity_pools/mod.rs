@@ -1,9 +1,68 @@
-pub mod all_liquidity_pools_request;
-pub mod response;
+/// Provides the `SingleLiquidityPoolRequest`.
+///
+/// This module provides the `SingleLiquidityPoolRequest` struct, specifically designed for
+/// constructing requests to query information about a single liquidity pool from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_single_liquidity_pool`](crate::horizon_client::HorizonClient::get_single_liquidity_pool)
+/// method.
+///
 pub mod single_liquidity_pool_request;
 
+/// Provides the `AllLiquidityPoolsRequest`.
+///
+/// This module provides the `AllLiquidityPoolsRequest` struct, specifically designed for
+/// constructing requests to query information about all liquidity pools from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_all_liquidity_pools`](crate::horizon_client::HorizonClient::get_all_liquidity_pools)
+/// method.
+pub mod all_liquidity_pools_request;
+
+/// Provides the responses.
+///
+/// This module defines structures representing the response from the Horizon API when querying
+/// for liquidity pools. The structures are designed to deserialize the JSON response into Rust
+/// objects, enabling straightforward access to various details of a single Stellar account.
+///
+/// These structures are equipped with serialization capabilities to handle the JSON data from the
+/// Horizon server and with getter methods for easy field access.
+///
+pub mod response;
+
+/// The base path for liquidity pool related endpoints in the Horizon API.
+///
+/// # Usage
+/// This variable is intended to be used internally by the request-building logic
+/// to ensure consistent and accurate path construction for liquidity pool related API calls.
+///
 static LIQUIDITY_POOLS_PATH: &str = "liquidity_pools";
 
+/// The `prelude` module of the `liquidity_pools` module.
+///
+/// This module serves as a convenience for users of the Horizon Rust SDK, allowing for easy and
+/// ergonomic import of the most commonly used items across various modules. It re-exports
+/// key structs and traits from the sibling modules, simplifying access to these components
+/// when using the library.
+///
+/// By importing the contents of `prelude`, users can conveniently access the primary
+/// functionalities of the liquidity pool related modules without needing to import each item
+/// individually.
+///
+/// # Contents
+///
+/// The `prelude` includes the following re-exports:
+///
+/// * From `single_liquidity_pool_request`: All items (e.g. `SingleLiquidityPoolRequest`).
+/// * From `all_liquidity_pools_request`: All items (e.g. `AllLiquidityPoolsRequest`, `Reserve`, etc.).
+/// * From `response`: All items (e.g. `AllLiquidityPoolsResponse`, `Reserve`, etc.).
+///
+/// # Example
+/// ```
+/// # use crate::stellar_rs::models::*;
+/// // Import the contents of the liquidity pools prelude
+/// use stellar_rs::liquidity_pools::prelude::*;
+///
+/// // Now you can directly use SingleLiquidityPoolRequest, LiquidityPool, etc.
+/// let single_lp_request = SingleLiquidityPoolRequest::new();
+/// ```
+///
 pub mod prelude {
     pub use super::response::*;
     pub use super::single_liquidity_pool_request::*;

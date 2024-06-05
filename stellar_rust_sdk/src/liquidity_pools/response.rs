@@ -18,6 +18,7 @@ pub struct AllLiquidityPoolsResponse {
     #[serde(rename = "_embedded")]
     pub embedded: Embedded<LiquidityPool>,
 }
+
 /// Represents a single liquidity pool record in the Horizon API response.
 ///
 /// This struct encapsulates detailed information about a single liquidity pool, including its ID,

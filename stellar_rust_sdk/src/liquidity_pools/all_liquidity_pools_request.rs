@@ -12,7 +12,7 @@ pub struct Reserve {
 /// to filter by when querying the Horizon server for liquidity pool records.
 #[derive(PartialEq, Debug)]
 pub enum ReserveType {
-    /// A native reserve type. It holds no Value
+    /// A native reserve type. It holds no value.
     Native,
     /// An alphanumeric 4 reserve type. It holds a Reserve struct with asset code and asset issuer.
     Alphanumeric4(Reserve),
@@ -51,15 +51,12 @@ pub struct AllLiquidityPoolsRequest {
     /// A pointer to a specific location in a collection of responses, derived from the
     ///   `paging_token` value of a record. Used for pagination control in the API response.
     cursor: Option<u32>,
-
     /// Specifies the maximum number of records to be returned in a single response.
     ///   The range for this parameter is from 1 to 200. The default value is set to 10.
     limit: Option<u8>,
-
     /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
     ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
     order: Option<Order>,
-
     /// A list of reserves to filter by.
     reserves: Option<Vec<ReserveType>>,
 }

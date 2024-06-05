@@ -1,6 +1,10 @@
 use crate::models::Request;
+
+/// Represents the liquidity pool ID.
 #[derive(Default, Clone)]
 pub struct LiquidityPoolId(String);
+
+/// Represents the absence of a liquidity pool ID.
 #[derive(Default, Clone)]
 pub struct NoLiquidityPoolId;
 
@@ -25,7 +29,7 @@ pub struct NoLiquidityPoolId;
 /// # use stellar_rs::liquidity_pools::prelude::SingleLiquidityPoolRequest;
 /// # use stellar_rs::models::Request;
 /// let request = SingleLiquidityPoolRequest::new()
-///     .set_liquidity_pool_id("1".to_string())
+///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string())
 ///     .unwrap();
 /// // Use with HorizonClient::get_single_liquidity_pool
 /// ```

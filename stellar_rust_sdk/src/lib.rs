@@ -348,6 +348,42 @@ pub mod effects;
 ///
 pub mod fee_stats;
 
+/// Provides `Request` and `Response` structs for retrieving liquidity pools.
+///
+/// The `liquidity_pools` module in the Stellar Horizon SDK includes structures and methods that facilitate
+/// querying liquidity pool data from the Horizon server.
+///
+/// # Usage
+///
+/// This module is used to construct requests for liquidity pool related data and to parse the responses
+/// received from the Horizon server. It includes request and response structures for querying
+/// liquidity pool data.
+///
+/// # Example
+///
+/// To use this module, you can create an instance of a request struct, such as `SingleLiquidityPoolRequest`,
+/// and pass the request to the `HorizonClient`. The client will then execute the request and
+/// return the corresponding response struct, like `LiquidityPool`.
+///
+/// ```rust
+/// # use stellar_rs::horizon_client::HorizonClient;
+/// # use stellar_rs::liquidity_pools::prelude::*;
+/// # use stellar_rs::models::Request;
+///
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+///
+/// // Example: Fetching fee stats
+/// let single_lp_request = SingleLiquidityPoolRequest::new()
+///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string())
+///     .unwrap();
+/// let lp_response = horizon_client.get_single_liquidity_pool(&single_lp_request).await?;
+///
+/// // Process the response...
+/// # Ok(())
+/// # }
+/// ```
+///
 pub mod liquidity_pools;
 
 /// Provides `Request` and `Response` structs for retrieving offers.
