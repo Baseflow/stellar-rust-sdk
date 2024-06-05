@@ -1,6 +1,29 @@
+/// Provides the `FeeStatsRequest`.
+///
+/// This module provides the `FeeStatsRequest` struct, specifically designed for
+/// constructing requests to query information about fee stats from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_fee_stats`](crate::horizon_client::HorizonClient::get_fee_stats)
+/// method.
+///
 pub mod fee_stats_request;
+
+/// Provides the responses.
+///
+/// This module defines structures representing the response from the Horizon API when querying
+/// for fee stats. The structures are designed to deserialize the JSON response into Rust
+/// objects, enabling straightforward access to various details of a single Stellar account.
+///
+/// These structures are equipped with serialization capabilities to handle the JSON data from the
+/// Horizon server and with getter methods for easy field access.
+///
 pub mod response;
 
+/// The base path for fee stats related endpoints in the Horizon API.
+///
+/// # Usage
+/// This variable is intended to be used internally by the request-building logic
+/// to ensure consistent and accurate path construction for fee stats related API calls.
+///
 static FEE_STATS_PATH: &str = "fee_stats";
 
 pub mod prelude {
