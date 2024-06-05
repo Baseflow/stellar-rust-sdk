@@ -4,6 +4,11 @@ use stellar_xdr::curr::{LedgerHeader, Limits, ReadXdr};
 
 use crate::models::prelude::*;
 
+/// Represents the navigational links in a single ledger response from the Horizon API.
+///
+/// This struct includes various hyperlinks such as links to the ledger itself,
+/// transactions, operations, payments and effects
+///
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct LedgerLinks {
     #[serde(rename = "self")]
@@ -14,6 +19,12 @@ pub struct LedgerLinks {
     pub effects: TemplateLink,
 }
 
+/// Represents the response for a single ledger query in the Horizon API.
+///
+/// This struct defines the overall structure of the response for a ledger offer query.
+/// It includes navigational links, offer identifiers, the ID, the hash, the sequence number,
+/// and additional data
+///
 #[derive(Debug, Deserialize, Clone, Getters)]
 pub struct Ledger {
     /// Navigational links related to the ledger.
