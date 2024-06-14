@@ -78,10 +78,26 @@ pub mod test {
     use super::prelude::*;
     use crate::horizon_client::HorizonClient;
 
-    static SEQUENCE: &str = "131988639973376";
-    static ACCOUNT_ID: &str = "GCAHCEGRUI7FFAQE3DBQWV7ULMQHFBUIVRZC4R2VISREAY6D52Z2NODN";
-    static LAST_MODIFIED_TIME: &str = "2024-02-08T14:25:14Z";
-    static LAST_MODIFIED_LEDGER: u64 = 30731;
+    static ACCOUNT_ID: &str = "GDIGRW2H37U3O5WPMQFWGN35DDVZAYYTIMGLYVQI4XTATZBW4FXEATRE";
+    static LAST_MODIFIED_TIME: &str = "2024-06-12T17:21:23Z";
+    static SEQUENCE: &str = "5471788335106";
+    static SUBENTRY_COUNT: &u32 = &0;
+    static LAST_MODIFIED_LEDGER: u64 = 14055;
+    static LOW_THRESHOLD: &u32 = &0;
+    static MID_THRESOLD: &u32 = &0;
+    static HIGH_THRESOLD: &u32 = &0;
+    static AUTH_REQUIRED: &bool = &true;
+    static AUTH_REVOCABLE: &bool = &true;
+    static AUTH_IMMUTABLE: &bool = &false;
+    static AUTH_CLAWBACK_ENABLED: &bool = &false;
+    static BALANCE: &str = "4.9999600";
+    static ASSET_TYPE: &str = "native";
+    static BUYING_LIABILITY: &str = "0.0000000";
+    static SELLING_LIABILITY: &str = "0.0000000";
+    static WEIGHT: &u32 = &1;
+    static SIGNER_TYPE: &str = "ed25519_public_key";
+    static NUM_SPONSORING: &u32 = &0;
+    static NUM_SPONSORED: &u32 = &0;
 
     #[tokio::test]
     async fn test_get_account_list() {
@@ -106,25 +122,25 @@ pub mod test {
         assert_eq!(response.account_id(), ACCOUNT_ID);
         assert_eq!(response.id(), ACCOUNT_ID);
         assert_eq!(response.sequence(), SEQUENCE);
-        assert_eq!(response.subentry_count(), &0);
+        assert_eq!(response.subentry_count(), SUBENTRY_COUNT);
         assert_eq!(response.last_modified_ledger(), &LAST_MODIFIED_LEDGER);
         assert_eq!(response.last_modified_time(), LAST_MODIFIED_TIME);
-        assert_eq!(response.thresholds().low_threshold(), &0);
-        assert_eq!(response.thresholds().med_threshold(), &0);
-        assert_eq!(response.thresholds().high_threshold(), &0);
-        assert_eq!(response.flags().auth_required(), &false);
-        assert_eq!(response.flags().auth_revocable(), &false);
-        assert_eq!(response.flags().auth_immutable(), &false);
-        assert_eq!(response.flags().auth_clawback_enabled(), &false);
-        assert_eq!(response.balances()[0].balance(), "10000.0000000");
-        assert_eq!(response.balances()[0].asset_type(), "native");
-        assert_eq!(response.balances()[0].buying_liabilities(), "0.0000000");
-        assert_eq!(response.balances()[0].selling_liabilities(), "0.0000000");
+        assert_eq!(response.thresholds().low_threshold(), LOW_THRESHOLD);
+        assert_eq!(response.thresholds().med_threshold(), MID_THRESOLD);
+        assert_eq!(response.thresholds().high_threshold(), HIGH_THRESOLD);
+        assert_eq!(response.flags().auth_required(), AUTH_REQUIRED);
+        assert_eq!(response.flags().auth_revocable(), AUTH_REVOCABLE);
+        assert_eq!(response.flags().auth_immutable(), AUTH_IMMUTABLE);
+        assert_eq!(response.flags().auth_clawback_enabled(), AUTH_CLAWBACK_ENABLED);
+        assert_eq!(response.balances()[0].balance(), BALANCE);
+        assert_eq!(response.balances()[0].asset_type(), ASSET_TYPE);
+        assert_eq!(response.balances()[0].buying_liabilities(), BUYING_LIABILITY);
+        assert_eq!(response.balances()[0].selling_liabilities(), SELLING_LIABILITY);
         assert_eq!(response.signers()[0].key(), ACCOUNT_ID);
-        assert_eq!(response.signers()[0].weight(), &1);
-        assert_eq!(response.signers()[0].singer_type(), "ed25519_public_key");
-        assert_eq!(response.num_sponsoring(), &0);
-        assert_eq!(response.num_sponsored(), &0);
+        assert_eq!(response.signers()[0].weight(), WEIGHT);
+        assert_eq!(response.signers()[0].singer_type(), SIGNER_TYPE);
+        assert_eq!(response.num_sponsoring(), NUM_SPONSORING);
+        assert_eq!(response.num_sponsored(), NUM_SPONSORED);
         assert_eq!(response.paging_token(), ACCOUNT_ID);
     }
 
