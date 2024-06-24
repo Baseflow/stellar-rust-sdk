@@ -80,17 +80,30 @@ pub mod test {
 
     #[tokio::test]
     async fn test_get_all_assets() {
-        let asset_type = "credit_alphanum4";
-        let asset_code = "0";
-        let asset_issuer = "GAGNEED7RUE6PNAB3AKXFU6QZF4EUSVTICHE7YRHB53KDOEHGKWBL6BE";
-        let paging_token =
-            "0_GAGNEED7RUE6PNAB3AKXFU6QZF4EUSVTICHE7YRHB53KDOEHGKWBL6BE_credit_alphanum4";
-        let num_accounts = 0;
-        let amount = "0.0000000";
-        let num_authorized = 0;
-        let num_unauthorized = 0;
-        let balances_authorized = "0.0000000";
-        let balances_unauthorized = "0.0000000";
+        static ASSET_TYPE: &str = "credit_alphanum4";
+        static ASSET_CODE: &str = "040";
+        static ASSET_ISSUER: &str = "GDEXMW35Y3AZVDYLAJUUPMUU3554SW4DY6HX46M24L5M55QRSGFFIXM7";
+        static PAGING_TOKEN: &str =
+            "040_GDEXMW35Y3AZVDYLAJUUPMUU3554SW4DY6HX46M24L5M55QRSGFFIXM7_credit_alphanum4";
+        static NUM_ACCOUNTS: &u32 = &1;
+        static NUM_CLAIMABLE_BALANCES: &u32 = &0;
+        static NUM_LIQUIDITY_POOLS: &u32 = &0;
+
+        static AMOUNT: &str = "1021.0000000";
+        static AUTHORIZED: &u32 = &1;
+        static AUTHORIZED_TO_MAINTAIN_LIABILITIES: &u32 = &0;
+        static UNAUTHORIZED: &u32 = &0;
+        static CLAIMABLE_BALANCES_AMOUNT: &str = "0.0000000";
+        static LIQUIDITY_POOLS_AMOUNT: &str = "0.0000000";
+        static CONTRACTS_AMOUNT: &str = "0.0000000";
+        static BALANCES_AUTHORIZED: &str = "1021.0000000";
+        static BALANCES_UNAUTHORIZED: &str = "0.0000000";
+        static AUTHORIZED_TO_MAINTAIN_LIABILITIES_BALANCES: &str = "1.0000000";
+        static AUTH_REQUIRED: &bool = &false;
+        static AUTH_REVOCABLE: &bool = &false;
+        static AUTH_IMMUTABLE: &bool = &false;
+        static AUTH_CLAWBACK_ENABLED: &bool = &false;
+
 
         // Initialize horizon client
         let horizon_client =
@@ -104,35 +117,29 @@ pub mod test {
         assert!(response.is_ok());
         let binding = response.unwrap();
         let response = &binding.embedded().records()[0];
-        assert_eq!(response.asset_type(), asset_type);
-        assert_eq!(response.asset_code(), asset_code);
-        assert_eq!(response.asset_issuer(), asset_issuer);
-        assert_eq!(response.paging_token(), paging_token);
+        assert_eq!(response.asset_type(), ASSET_TYPE);
+        assert_eq!(response.asset_code(), ASSET_CODE);
+        assert_eq!(response.asset_issuer(), ASSET_ISSUER);
+        assert_eq!(response.paging_token(), PAGING_TOKEN);
         assert_eq!(
             response.paging_token(),
-            &format!("{}_{}_{}", asset_code, asset_issuer, asset_type)
+            &format!("{}_{}_{}", ASSET_CODE, ASSET_ISSUER, ASSET_TYPE)
         );
-        assert_eq!(response.num_accounts(), &num_accounts);
-        assert_eq!(response.num_claimable_balances(), &0);
-        assert_eq!(response.num_liquidity_pools(), &0);
-        assert_eq!(response.amount(), amount);
-        assert_eq!(response.accounts().authorized(), &num_authorized);
-        assert_eq!(response.accounts().authorized_to_maintain_liabilities(), &2);
-        assert_eq!(response.accounts().unauthorized(), &num_unauthorized);
-        assert_eq!(response.claimable_balances_amount(), "0.0000000");
-        assert_eq!(response.liquidity_pools_amount(), "0.0000000");
-        assert_eq!(response.contracts_amount(), "0.0000000");
-        assert_eq!(response.balances().authorized(), balances_authorized);
-        assert_eq!(
-            response.balances().authorized_to_maintain_liabilities(),
-            "1.0000000"
-        );
-        assert_eq!(response.balances().unauthorized(), balances_unauthorized);
-
-        let auth_required = true;
-        assert_eq!(response.flags().auth_required(), &auth_required);
-        assert_eq!(response.flags().auth_revocable(), &true);
-        assert_eq!(response.flags().auth_immutable(), &false);
-        assert_eq!(response.flags().auth_clawback_enabled(), &true);
+        assert_eq!(response.num_accounts(), NUM_ACCOUNTS);
+        assert_eq!(response.num_claimable_balances(), NUM_CLAIMABLE_BALANCES);
+        assert_eq!(response.num_liquidity_pools(), NUM_LIQUIDITY_POOLS);
+        assert_eq!(response.amount(), AMOUNT);
+        assert_eq!(response.accounts().authorized(), AUTHORIZED);
+        assert_eq!(response.accounts().authorized_to_maintain_liabilities(), AUTHORIZED_TO_MAINTAIN_LIABILITIES);
+        assert_eq!(response.accounts().unauthorized(), UNAUTHORIZED);
+        assert_eq!(response.claimable_balances_amount(), CLAIMABLE_BALANCES_AMOUNT);
+        assert_eq!(response.liquidity_pools_amount(), LIQUIDITY_POOLS_AMOUNT);
+        assert_eq!(response.contracts_amount(), CONTRACTS_AMOUNT);
+        assert_eq!(response.balances().authorized(), BALANCES_AUTHORIZED);
+        assert_eq!(response.balances().unauthorized(), BALANCES_UNAUTHORIZED);
+        assert_eq!(response.flags().auth_required(), AUTH_REQUIRED);
+        assert_eq!(response.flags().auth_revocable(), AUTH_REVOCABLE);
+        assert_eq!(response.flags().auth_immutable(), AUTH_IMMUTABLE);
+        assert_eq!(response.flags().auth_clawback_enabled(), AUTH_CLAWBACK_ENABLED);
     }
 }
