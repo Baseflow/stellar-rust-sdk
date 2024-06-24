@@ -151,6 +151,14 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_all_claimable_balances() {
+        static ID: &str = "0000000010a8f6991f79df306f22a2032f6007ad594dd30f966b21556f7d75658ec1c4e9";
+        static ASSET: &str = "native";
+        static AMOUNT: &str = "3.0000000";
+        static SPONSOR: &str = "GCRHSLTKEPLLRLC4MB5OJPO4DJYIMYHYBDHX4TET3XKUKFAYMWERHXVG";
+        static LAST_MODIFIED_LEDGER: &i64 = &2170;
+        static LAST_MODIFIED_TIME: &str = "2024-06-11T23:59:46Z";
+        static CLAWBACK_ENABLED: &bool = &false;
+
         // Initialize horizon client
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
@@ -177,29 +185,29 @@ mod tests {
 
         assert_eq!(
             record.id(),
-            "000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
+            ID
         );
 
         assert_eq!(
             record.asset(),
-            "USDC:GAKNDFRRWA3RPWNLTI3G4EBSD3RGNZZOY5WKWYMQ6CQTG3KIEKPYWAYC"
+            ASSET
         );
 
-        assert_eq!(record.amount(), "0.0010000");
+        assert_eq!(record.amount(), AMOUNT);
 
         assert_eq!(
             record.sponsor(),
-            "GCENYNAX2UCY5RFUKA7AYEXKDIFITPRAB7UYSISCHVBTIAKPU2YO57OA"
+            SPONSOR
         );
 
-        assert_eq!(record.last_modified_ledger(), &591);
+        assert_eq!(record.last_modified_ledger(), LAST_MODIFIED_LEDGER);
 
         assert_eq!(
             record.last_modified_time().to_string(),
-            "2024-02-06T18:25:07Z"
+            LAST_MODIFIED_TIME
         );
 
-        assert_eq!(record.flags().clawback_enabled(), &false);
+        assert_eq!(record.flags().clawback_enabled(), CLAWBACK_ENABLED);
     }
 
     #[tokio::test]
