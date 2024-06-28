@@ -201,12 +201,12 @@ mod tests {
 
     #[tokio::test]
     async fn get_effects_for_liquidity_pools() {
-        const ID: &str = "0000000459561504769-0000000001";
-        const PAGING_TOKEN: &str = "459561504769-1";
+        const ID: &str = "0000002314987376641-0000000001";
+        const PAGING_TOKEN: &str = "2314987376641-1";
         const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
         const RECORD_TYPE: &str = "account_created";
         const TYPE_I: u32 = 0;
-        const CREATED_AT: &str = "2024-02-06T17:42:48Z";
+        const CREATED_AT: &str = "2024-06-11T21:36:12Z";
         const STARTING_BALANCE: &str = "10000000000.0000000";
 
         let horizon_client =
