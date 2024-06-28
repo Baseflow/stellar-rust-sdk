@@ -19,7 +19,7 @@ use stellar_rust_sdk_derive::Pagination;
 /// # use stellar_rs::Paginatable;
 ///
 /// let mut request = EffectsForLedgerRequest::new()
-///     .set_sequence(125)
+///     .set_sequence(1000)
 ///     .set_limit(2);
 ///
 /// // The request is now ready to be used with a Horizon client to fetch effects for the specified ledger.
@@ -51,9 +51,9 @@ impl EffectsForLedgerRequest {
     /// # Arguments
     /// * `sequence` - A `String` value representing the ledger sequence.
     ///
-    pub fn set_sequence(self, sequence: u32) -> EffectsForLedgerRequest {
+    pub fn set_sequence(self, sequence: &u32) -> EffectsForLedgerRequest {
         EffectsForLedgerRequest {
-            sequence: Some(sequence),
+            sequence: Some(*sequence),
             ..self
         }
     }
@@ -94,7 +94,7 @@ mod tests {
     fn test_effects_for_ledger_request_build_url() {
         let sequence: u32 = 125;
 
-        let request = EffectsForLedgerRequest::new().set_sequence(sequence);
+        let request = EffectsForLedgerRequest::new().set_sequence(&sequence);
 
         let url = request.build_url("https://horizon-testnet.stellar.org");
 

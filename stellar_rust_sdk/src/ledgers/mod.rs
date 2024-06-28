@@ -90,6 +90,24 @@ pub mod tests {
 
     #[tokio::test]
     async fn test_get_all_ledgers() {
+        static ID: &str = "546c5bccad35413e75324e0e63dd4d9f1ba87a3f4c97c84f83b7c09150f61caa";
+        static PAGING_TOKEN: &str = "8589934592";
+        static HASH: &str = "546c5bccad35413e75324e0e63dd4d9f1ba87a3f4c97c84f83b7c09150f61caa";
+        static PREV_HASH: &str = "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99";
+        static SEQUENCE: i32 = 2;
+        static SUCCESSFUL_TRANSACTION_COUNT: i32 = 0;
+        static FAILED_TRANSACTION_COUNT: i32 = 0;
+        static OPERATION_COUNT: i32 = 0;
+        static TX_SET_OPERATION_COUNT: i32 = 0;
+        static CLOSED_AT: &str = "2024-06-11T20:49:11Z";
+        static TOTAL_COINS: &str = "100000000000.0000000";
+        static FEE_POOL: &str = "0.0000000";
+        static BASE_FEE_IN_STROOPS: i32 = 100;
+        static BASE_RESERVE_IN_STROOPS: i32 = 100000000;
+        static MAX_TX_SET_SIZE: i32 = 100;
+        static PROTOCOL_VERSION: i32 = 0;
+        static HEADER_XDR: &str = "AAAAAGPZj1Nu5o0bJ7W4nyOvUxG3Vpok+vFAOtC1K2M7B76ZuZRHr9UdXKbTKiclfOjy72YZFJUkJPVcKT5htvorm1QAAAAAZmi4RwAAAAAAAAABAAAAAKgkzRi8nXUGTSmaW1uspDvDqi8yaTgVPYwvm7XLbfAzAAAAQK2SUxHSetvm4OwtnmhA7Tob9tjNodbrCrdoaxB7z2MIKwTuwuTH8nnbmQQSJ5BbAvGzpj1Dioh+dpbLDakYwQjfP2GYBKkv20BXGS3EPddI6neK3FK8SYzoBSTAFLgRGXNSJ+05hGEpEjdoewhEaqLJsJbgyYpGLa3aVp8F3SSEAAAAAg3gtrOnZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkBfXhAAAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+
         let hash = "f96c4021adc1ae496c662f4f97143e499a9548f541c64bb2401a1b1701de5150";
         let prev_hash = "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99";
 
@@ -106,11 +124,22 @@ pub mod tests {
         let binding = all_ledgers_response.unwrap();
         let all_ledgers_response = &binding.embedded().records()[0];
 
-        assert_eq!(all_ledgers_response.hash(), hash);
-        assert_eq!(all_ledgers_response.prev_hash(), prev_hash);
-        assert_eq!(all_ledgers_response.sequence(), &2);
-        assert_eq!(all_ledgers_response.successful_transaction_count(), &0);
-        assert_eq!(all_ledgers_response.paging_token(), "8589934592");
+        assert_eq!(all_ledgers_response.id(), ID);
+        assert_eq!(all_ledgers_response.paging_token(), PAGING_TOKEN);
+        assert_eq!(all_ledgers_response.hash(), HASH);
+        assert_eq!(all_ledgers_response.prev_hash(), PREV_HASH);
+        assert_eq!(all_ledgers_response.sequence(), &SEQUENCE);
+        assert_eq!(all_ledgers_response.successful_transaction_count(), &SUCCESSFUL_TRANSACTION_COUNT);
+        assert_eq!(all_ledgers_response.failed_transaction_count(), &FAILED_TRANSACTION_COUNT);
+        assert_eq!(all_ledgers_response.operation_count(), &OPERATION_COUNT);
+        assert_eq!(all_ledgers_response.tx_set_operation_count(), &TX_SET_OPERATION_COUNT);
+        assert_eq!(all_ledgers_response.closed_at(), CLOSED_AT);
+        assert_eq!(all_ledgers_response.total_coins(), TOTAL_COINS);
+        assert_eq!(all_ledgers_response.fee_pool(), FEE_POOL);
+        assert_eq!(all_ledgers_response.base_fee_in_stroops(), &BASE_FEE_IN_STROOPS);
+        assert_eq!(all_ledgers_response.base_reserve_in_stroops(), &BASE_RESERVE_IN_STROOPS);
+        assert_eq!(all_ledgers_response.max_tx_set_size(), &MAX_TX_SET_SIZE);
+        assert_eq!(all_ledgers_response.protocol_version(), &PROTOCOL_VERSION);
     }
 
     #[tokio::test]

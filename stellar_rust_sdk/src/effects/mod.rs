@@ -249,49 +249,66 @@ mod tests {
     #[tokio::test]
     async fn test_get_effects_for_ledger() {
         // found by trial and error in the Stellar laboratory
-        let ledger_sequence = 125;
+        static LEDGER_SEQUENCE: &u32 = &1000;
+        const ID: &str = "0000004294967300098-0000000001";
+        const PAGING_TOKEN: &str = "4294967300098-1";
+        const ACCOUNT: &str = "GA7MC32ZYG5G7XSOR7TARZXXK5E4Y74VMWXIUZZNKIZ3Y3YQLCD25FV5";
+        const RECORD_TYPE: &str = "account_created";
+        const TYPE_I: u32 = 0;
+        const CREATED_AT: &str = "2024-06-11T22:16:55Z";
+        const STARTING_BALANCE: &str = "0.0000000";
 
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let effects_for_ledger_request =
-            EffectsForLedgerRequest::new().set_sequence(ledger_sequence);
+            EffectsForLedgerRequest::new().set_sequence(LEDGER_SEQUENCE);
         let effects_for_ledger_response = horizon_client
             .get_effects_for_ledger(&effects_for_ledger_request)
             .await;
 
         assert!(effects_for_ledger_response.is_ok());
+        let binding = effects_for_ledger_response.clone().unwrap();
+        let record = &binding.embedded().records()[0];
 
         assert_eq!(
-            effects_for_ledger_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[0]
-                .id,
-            "0000000536870916097-0000000001"
-        );
+            record.id,
+            ID);
 
         assert_eq!(
-            effects_for_ledger_response
-                .clone()
-                .unwrap()
-                .embedded()
-                .records()[1]
-                .effect_type,
-            "account_debited"
-        );
+            record.paging_token,
+            PAGING_TOKEN);
+
+        assert_eq!(
+            record.account,
+            ACCOUNT);
+
+        assert_eq!(
+            record.effect_type,
+            RECORD_TYPE);
+
+        assert_eq!(
+            record.type_i,
+            TYPE_I);
+
+        assert_eq!(
+            record.created_at,
+            CREATED_AT);
+
+        assert_eq!(
+            record.starting_balance.as_ref().unwrap(),
+            STARTING_BALANCE);
     }
 
     #[tokio::test]
     async fn test_get_effects_for_operation() {
-        const OPERATION_ID: &str = "459561504769";
-        const ID: &str = "0000000459561504769-0000000001";
-        const PAGING_TOKEN: &str = "459561504769-1";
+        const OPERATION_ID: &str = "2314987376641";
+        const ID: &str = "0000002314987376641-0000000001";
+        const PAGING_TOKEN: &str = "2314987376641-1";
         const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
         const RECORD_TYPE: &str = "account_created";
         const TYPE_I: u32 = 0;
-        const CREATED_AT: &str = "2024-02-06T17:42:48Z";
+        const CREATED_AT: &str = "2024-06-11T21:36:12Z";
         const STARTING_BALANCE: &str = "10000000000.0000000";
 
         let horizon_client =
@@ -326,12 +343,12 @@ mod tests {
     async fn test_get_effects_for_transaction() {
         const TRANSACTION_HASH: &str =
             "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
-        const ID: &str = "0000000459561504769-0000000001";
-        const PAGING_TOKEN: &str = "459561504769-1";
+        const ID: &str = "0000002314987376641-0000000001";
+        const PAGING_TOKEN: &str = "2314987376641-1";
         const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
         const RECORD_TYPE: &str = "account_created";
         const TYPE_I: u32 = 0;
-        const CREATED_AT: &str = "2024-02-06T17:42:48Z";
+        const CREATED_AT: &str = "2024-06-11T21:36:12Z";
         const STARTING_BALANCE: &str = "10000000000.0000000";
 
         let horizon_client =
