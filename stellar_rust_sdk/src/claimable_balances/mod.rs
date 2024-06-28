@@ -212,13 +212,24 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_single_claimable_balance() {
+        static ID: &str = "00000000fe3d8209ed9662e92f0d3a5c55068e18bd5e0697c3c6db6ac4c0870c6f3e0b38";
+        static ASSET: &str = "IOM:GBSUM7J4W2IH5LAMSQGI7Y2OZBV2BJB6EOK7TIK66DXNJUU4JAY36VR2";
+        static AMOUNT: &str = "2.0000000";
+        static SPONSOR: &str = "GA7UL5DDCP6WR7KV5GXKXSHBMP577U7TBDBTBY33J57RZE2A37KW67JB";
+        static LAST_MODIFIED_LEDGER: &i64 = &9234;
+        static LAST_MODIFIED_TIME: &str = "2024-06-12T10:19:12Z";
+        static DESTINATION: &str = "GDSHZPWSL5QBQKKDQNECFPI2PF7JQUACNWG65PMFOK6G5V4QBH4CX2KH";
+        static PREDICATE_UNCONDITIONAL: &bool = &true;
+        static CLAWBACK_ENABLED: &bool = &false;
+        static PAGING_TOKEN: &str = "9234-00000000fe3d8209ed9662e92f0d3a5c55068e18bd5e0697c3c6db6ac4c0870c6f3e0b38";
+
         // Initialize horizon client
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let single_claimable_balance_request = SingleClaimableBalanceRequest::new()
             .set_claimable_balance_id(
-                "000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
+                "00000000fe3d8209ed9662e92f0d3a5c55068e18bd5e0697c3c6db6ac4c0870c6f3e0b38"
                     .to_string(),
             );
 
@@ -231,8 +242,8 @@ mod tests {
         let binding = single_claimable_balance_response.clone().unwrap();
         let predicate = binding.claimants()[0].predicate();
 
-        let jan_first_2024 = Utc::with_ymd_and_hms(&Utc, 2024, 1, 1, 0, 0, 0).unwrap();
-        let valid_date = Utc::with_ymd_and_hms(&Utc, 2024, 2, 10, 0, 0, 0).unwrap();
+        let jan_first_2024 = Utc::with_ymd_and_hms(&Utc, 2021, 1, 1, 0, 0, 0).unwrap();
+        let valid_date = Utc::with_ymd_and_hms(&Utc, 2021, 1, 1, 0, 0, 0).unwrap();
 
         assert_eq!(predicate.is_valid(jan_first_2024), true);
         assert_eq!(predicate.is_valid(valid_date), true);
@@ -240,44 +251,37 @@ mod tests {
         let single_claimable_balance_response = single_claimable_balance_response.unwrap();
         assert_eq!(
             single_claimable_balance_response.id().to_string(),
-            "000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
+            ID
         );
 
         assert_eq!(
             single_claimable_balance_response.asset().to_string(),
-            "USDC:GAKNDFRRWA3RPWNLTI3G4EBSD3RGNZZOY5WKWYMQ6CQTG3KIEKPYWAYC"
-        );
+            ASSET);
 
         assert_eq!(
             single_claimable_balance_response.amount().to_string(),
-            "0.0010000"
-        );
+            AMOUNT);
 
         assert_eq!(
             single_claimable_balance_response.sponsor().to_string(),
-            "GCENYNAX2UCY5RFUKA7AYEXKDIFITPRAB7UYSISCHVBTIAKPU2YO57OA"
-        );
+            SPONSOR);
 
         assert_eq!(
             single_claimable_balance_response.last_modified_ledger(),
-            &591
-        );
+            LAST_MODIFIED_LEDGER);
 
         assert_eq!(
             single_claimable_balance_response
                 .last_modified_time()
                 .to_string(),
-            "2024-02-06T18:25:07Z"
-        );
+            LAST_MODIFIED_TIME);
 
         assert_eq!(
             single_claimable_balance_response.flags().clawback_enabled(),
-            &false
-        );
+            CLAWBACK_ENABLED);
 
         assert_eq!(
             single_claimable_balance_response.paging_token().to_string(),
-            "591-000000000a12cd57c169a34e7794bdcdf2d093fab135c59ea599e2d1233d7a53f26c1464"
-        );
+            PAGING_TOKEN);
     }
 }
