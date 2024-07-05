@@ -86,33 +86,33 @@ async fn test_get_all_liquidity_pools() {
         "USDC:GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";
 
     const RSP_2_LIQUIDITY_POOL_ID: &str =
-        "0a9a1af472bd6107075610add5759bddfb1d82f80c664ee5198cd24509541841";
+        "03eac63a834b31201652ed575c816b4e7beb0c4eece47caf956ff83648f486d0";
     const RSP_2_LIQUIDITY_POOL_PAGING_TOKEN: &str =
-        "0a9a1af472bd6107075610add5759bddfb1d82f80c664ee5198cd24509541841";
+        "03eac63a834b31201652ed575c816b4e7beb0c4eece47caf956ff83648f486d0";
     const RSP_2_LIQUIDITY_POOL_FEE_BP: i64 = 30;
     const RSP_2_LIQUIDITY_POOL_TYPE: &str = "constant_product";
     const RSP_2_LIQUIDITY_POOL_TOTAL_TRUSTLINES: &str = "1";
-    const RSP_2_LIQUIDITY_POOL_TOTAL_SHARES: &str = "0.0000000";
+    const RSP_2_LIQUIDITY_POOL_TOTAL_SHARES: &str = "249.0000000";
     const RSP_2_LIQUIDITY_POOL_RESERVE_ASSET_0: &str = "native";
-    const RSP_2_LIQUIDITY_POOL_RESERVE_AMOUNT_0: &str = "0.0000000";
+    const RSP_2_LIQUIDITY_POOL_RESERVE_AMOUNT_0: &str = "249.0000000";
     const RSP_2_LIQUIDITY_POOL_RESERVE_ASSET_1: &str =
-        "NOODLE:GARPXPHGABTN52WPJ2QZQBY7TSXMK7PXLKOD6FSPA2TEVSJDWIDRSHPO";
-    const RSP_2_LIQUIDITY_POOL_RESERVE_AMOUNT_1: &str = "0.0000000";
+        "FLUTTER:GCGTOQSNERFVVJ6Y7YZYDF3MTZIY63KIEFMKA26Q7YPV3AFYD2JSRNYN";
+    const RSP_2_LIQUIDITY_POOL_RESERVE_AMOUNT_1: &str = "249.0000000";
 
     const RSP_3_LIQUIDITY_POOL_ID: &str =
-        "02ea143d8ac56fa6e936c3558edfce6c64b7a223827a006805b279104bac2851";
+        "0b3c88caa5aeada296646c1810893e3b04cba0426cff8ff6a63cf6f35cc7f5b3";
     const RSP_3_LIQUIDITY_POOL_PAGING_TOKEN: &str =
-        "02ea143d8ac56fa6e936c3558edfce6c64b7a223827a006805b279104bac2851";
+        "0b3c88caa5aeada296646c1810893e3b04cba0426cff8ff6a63cf6f35cc7f5b3";
     const RSP_3_LIQUIDITY_POOL_FEE_BP: i64 = 30;
     const RSP_3_LIQUIDITY_POOL_TYPE: &str = "constant_product";
-    const RSP_3_LIQUIDITY_POOL_TOTAL_TRUSTLINES: &str = "2";
-    const RSP_3_LIQUIDITY_POOL_TOTAL_SHARES: &str = "5196.1524225";
+    const RSP_3_LIQUIDITY_POOL_TOTAL_TRUSTLINES: &str = "1";
+    const RSP_3_LIQUIDITY_POOL_TOTAL_SHARES: &str = "150.0000000";
     const RSP_3_LIQUIDITY_POOL_RESERVE_ASSET_0: &str =
-        "LPA7:GDTCZZNMT74SEGPDQL3IQJDJ54MXQJHSNQ3HNNJJIJLIVG2LOSDLG2OZ";
-    const RSP_3_LIQUIDITY_POOL_RESERVE_AMOUNT_0: &str = "3000.0000000";
+        "SDK:GAGTRBIF75N7NUA37JGGJZKXIS4JJKTQERRFWTP5DN4SM4OC2T6QPMQB";
+    const RSP_3_LIQUIDITY_POOL_RESERVE_AMOUNT_0: &str = "160.0000000";
     const RSP_3_LIQUIDITY_POOL_RESERVE_ASSET_1: &str =
-        "LPB7:GDTBT5GAABYAENDWYXB2IAHYXMWDGK2ZG5H4ZDQL32DR7KS6L7NGC5I3";
-    const RSP_3_LIQUIDITY_POOL_RESERVE_AMOUNT_1: &str = "9000.0000000";
+        "FLUTTER:GCGTOQSNERFVVJ6Y7YZYDF3MTZIY63KIEFMKA26Q7YPV3AFYD2JSRNYN";
+    const RSP_3_LIQUIDITY_POOL_RESERVE_AMOUNT_1: &str = "140.6513722";
 
     let horizon_client =
         HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
@@ -170,8 +170,8 @@ async fn test_get_all_liquidity_pools() {
     let all_liquidity_pools_request_2 = AllLiquidityPoolsRequest::new()
         .add_native_reserve()
         .add_alphanumeric12_reserve(
-            "NOODLE".to_string(),
-            "GARPXPHGABTN52WPJ2QZQBY7TSXMK7PXLKOD6FSPA2TEVSJDWIDRSHPO".to_string(),
+            "FLUTTER".to_string(),
+            "GCGTOQSNERFVVJ6Y7YZYDF3MTZIY63KIEFMKA26Q7YPV3AFYD2JSRNYN".to_string(),
         )
         .set_limit(2)
         .unwrap();
@@ -225,8 +225,8 @@ async fn test_get_all_liquidity_pools() {
 
     let all_liquidity_pools_request_3 = AllLiquidityPoolsRequest::new()
         .add_alphanumeric4_reserve(
-            "LPA7".to_string(),
-            "GDTCZZNMT74SEGPDQL3IQJDJ54MXQJHSNQ3HNNJJIJLIVG2LOSDLG2OZ".to_string(),
+            "SDK".to_string(),
+            "GAGTRBIF75N7NUA37JGGJZKXIS4JJKTQERRFWTP5DN4SM4OC2T6QPMQB".to_string(),
         )
         .set_limit(2)
             .unwrap();
@@ -285,28 +285,28 @@ async fn test_get_single_liquidity_pool() {
     use single_liquidity_pool_request::SingleLiquidityPoolRequest;
 
     const LIQUIDITY_POOL_ID: &str =
-        "01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d";
+        "03eac63a834b31201652ed575c816b4e7beb0c4eece47caf956ff83648f486d0";
     const LIQUIDITY_POOL_PAGING_TOKEN: &str =
-        "01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d";
+        "03eac63a834b31201652ed575c816b4e7beb0c4eece47caf956ff83648f486d0";
     const LIQUIDITY_POOL_FEE_BP: i64 = 30;
     const LIQUIDITY_POOL_TYPE: &str = "constant_product";
     const LIQUIDITY_POOL_TOTAL_TRUSTLINES: &str = "1";
-    const LIQUIDITY_POOL_TOTAL_SHARES: &str = "150.0000000";
+    const LIQUIDITY_POOL_TOTAL_SHARES: &str = "249.0000000";
     const LIQUIDITY_POOL_RESERVE_ASSET_0: &str =
-        "SDK:GB7IIVQLLJ3AY3DWSCACVJBZL7FFKDK4D3PMHPBBAIHPVVB3BZYUG5UN";
-    const LIQUIDITY_POOL_RESERVE_AMOUNT_0: &str = "160.0000000";
+        "native";
+    const LIQUIDITY_POOL_RESERVE_AMOUNT_0: &str = "249.0000000";
     const LIQUIDITY_POOL_RESERVE_ASSET_1: &str =
-        "PHPSTAR:GAJHVDRVJHC2ORAERVVQYWADMEJLUX6H2SZ5MMEPI7BUHJYSTTFRZW7W";
-    const LIQUIDITY_POOL_RESERVE_AMOUNT_1: &str = "140.6513722";
-    const LIQUIDITY_POOL_LAST_MODIFIED_LEDGER: i64 = 249832;
-    const LIQUIDITY_POOL_LAST_MODIFIED_TIME: &str = "2024-02-21T22:18:27Z";
+        "FLUTTER:GCGTOQSNERFVVJ6Y7YZYDF3MTZIY63KIEFMKA26Q7YPV3AFYD2JSRNYN";
+    const LIQUIDITY_POOL_RESERVE_AMOUNT_1: &str = "249.0000000";
+    const LIQUIDITY_POOL_LAST_MODIFIED_LEDGER: i64 = 258622;
+    const LIQUIDITY_POOL_LAST_MODIFIED_TIME: &str = "2024-06-27T14:27:46Z";
 
     let horizon_client =
         HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
     let single_liquidity_pool_request = SingleLiquidityPoolRequest::new()
         .set_liquidity_pool_id(
-            "01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d".to_string(),
+            "03eac63a834b31201652ed575c816b4e7beb0c4eece47caf956ff83648f486d0".to_string(),
         )
         .unwrap();
 
