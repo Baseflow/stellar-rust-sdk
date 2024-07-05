@@ -85,23 +85,23 @@ pub mod test {
     use super::prelude::*;
     use crate::{horizon_client::HorizonClient, models::*, Paginatable};
 
-    const LINK_SELF: &str = "https://horizon-testnet.stellar.org/offers/1";
-    const LINK_OFFER_MAKER: &str = "https://horizon-testnet.stellar.org/accounts/GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";
-    const OFFER_ID: &str = "1";
-    const PAGING_TOKEN: &str = "1";
-    const SELLER: &str = "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";
-    const SELLING_ASSET_TYPE: &str = "credit_alphanum4";
-    const SELLING_ASSET_CODE: &str = "USDC";
-    const SELLING_ASSET_ISSUER: &str = "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";
+    const LINK_SELF: &str = "https://horizon-testnet.stellar.org/offers/7";
+    const LINK_OFFER_MAKER: &str =  "https://horizon-testnet.stellar.org/accounts/GCXRNJ23TEHRNXQJEYXGQ3IYGVAWWY6Z2VOOWPP6STTYQCKXIRTNCN3E";
+    const OFFER_ID: &str = "7";
+    const PAGING_TOKEN: &str = "7";
+    const SELLER: &str = "GCXRNJ23TEHRNXQJEYXGQ3IYGVAWWY6Z2VOOWPP6STTYQCKXIRTNCN3E";
+    const SELLING_ASSET_TYPE: &str = "credit_alphanum12";
+    const SELLING_ASSET_CODE: &str = "MBAUDD";
+    const SELLING_ASSET_ISSUER: &str = "GD2YNRNSJ3EOFJAYGLKGKSIOLX2VU3UFDW3YFNOYMAHB26AEHSZBJU4U";
     const BUYING_ASSET_TYPE: &str = "credit_alphanum12";
-    const BUYING_ASSET_CODE: &str = "USDCAllow";
-    const BUYING_ASSET_ISSUER: &str = "GAWZGWFOURKXZ4XYXBGFADZM4QIG6BJNM74XIZCEIU3BHM62RN2MDEZN";
-    const AMOUNT: &str = "909086990804.0875807";
-    const PRICE_R_N: &u32 = &1;
-    const PRICE_R_D: &u32 = &1;
-    const PRICE: &str = "1.0000000";
-    const LAST_MODIFIED_LEDGER: &u32 = &747543;
-    const LAST_MODIFIED_TIME: &str = "2024-03-23T04:51:18Z";
+    const BUYING_ASSET_CODE: &str = "TMB001128";
+    const BUYING_ASSET_ISSUER: &str = "GBH2HB7DZN7PRJP5RED2SQZAKSYYBH43PQCQH3NOYT2Y2KLODQZM3M2F";
+    const AMOUNT: &str = "41011.9400000";
+    const PRICE_R_N: &u32 = &50;
+    const PRICE_R_D: &u32 = &467;
+    const PRICE: &str = "0.1070664";
+    const LAST_MODIFIED_LEDGER: &u32 = &4739;
+    const LAST_MODIFIED_TIME: &str = "2024-06-12T03:45:47Z";
 
     #[tokio::test]
     async fn test_get_single_offer() {
@@ -181,8 +181,8 @@ pub mod test {
     async fn test_get_all_offers_filter() {
         // Different values are expected for this specific request.
         const LINK_OFFER_MAKER: &str = "https://horizon-testnet.stellar.org/accounts/GB3Q6QDZYTHWT7E5PVS3W7FUT5GVAFC5KSZFFLPU25GO7VTC3NM2ZTVO";
-        const OFFER_ID: &str = "2";
-        const PAGING_TOKEN: &str = "2";
+        const OFFER_ID: &str = "150";
+        const PAGING_TOKEN: &str = "150";
         const SELLER: &str = "GB3Q6QDZYTHWT7E5PVS3W7FUT5GVAFC5KSZFFLPU25GO7VTC3NM2ZTVO";
         const SELLING_ASSET_TYPE: &str = "credit_alphanum4";
         const SELLING_ASSET_CODE: &str = "EURC";
@@ -190,12 +190,12 @@ pub mod test {
         const BUYING_ASSET_TYPE: &str = "credit_alphanum12";
         const BUYING_ASSET_CODE: &str = "EURCAllow";
         const BUYING_ASSET_ISSUER: &str = "GA6HVGLFUF3BHHGR5CMYXIVZ3RYVUH5EUYAOAY4T3OKI5OQVIWVRK24R";
-        const AMOUNT: &str = "922274722883.0675807";
+        const AMOUNT: &str = "922307928093.4475807";
         const PRICE_R_N: &u32 = &1;
         const PRICE_R_D: &u32 = &1;
         const PRICE: &str = "1.0000000";
-        const LAST_MODIFIED_LEDGER: &u32 = &1938375;
-        const LAST_MODIFIED_TIME: &str = "2024-06-03T15:21:13Z";
+        const LAST_MODIFIED_LEDGER: &u32 = &286496;
+        const LAST_MODIFIED_TIME: &str = "2024-06-29T07:08:23Z";
     
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org"
@@ -237,7 +237,7 @@ pub mod test {
 
     #[tokio::test]
     async fn test_get_offers_for_account() {
-        const ACCOUNT_ID: &str = "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";
+        const ACCOUNT_ID: &str = "GCXRNJ23TEHRNXQJEYXGQ3IYGVAWWY6Z2VOOWPP6STTYQCKXIRTNCN3E";
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org"
             .to_string())
