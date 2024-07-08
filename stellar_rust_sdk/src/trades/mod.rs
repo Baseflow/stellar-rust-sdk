@@ -7,6 +7,9 @@
 ///
 pub mod all_trades_request;
 
+// TODO: Documentation
+pub mod trades_for_account_request;
+
 /// Provides the responses.
 ///
 /// This module defines structures representing the response from the Horizon API when querying
