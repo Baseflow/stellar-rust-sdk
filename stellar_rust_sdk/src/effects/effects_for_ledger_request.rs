@@ -19,7 +19,7 @@ use stellar_rust_sdk_derive::Pagination;
 /// # use stellar_rs::Paginatable;
 ///
 /// let mut request = EffectsForLedgerRequest::new()
-///     .set_sequence(1000)
+///     .set_sequence(&1000)
 ///     .set_limit(2);
 ///
 /// // The request is now ready to be used with a Horizon client to fetch effects for the specified ledger.

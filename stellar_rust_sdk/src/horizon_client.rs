@@ -740,7 +740,7 @@ impl HorizonClient {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
     /// # let horizon_client = HorizonClient::new(base_url)?;
     /// let mut request = EffectsForLedgerRequest::new()
-    ///     .set_sequence(125)
+    ///     .set_sequence(&125)
     ///     .set_limit(2).unwrap();
     ///
     /// let response = horizon_client.get_effects_for_ledger(&request).await;
