@@ -155,11 +155,11 @@ impl Request for DetailsRequest<SellingAsset, BuyingAsset> {
 }
 
 mod tests {
-    use crate::models::Request;
-    use super::{Asset, AssetType, DetailsRequest};
-
+    
     #[test]
     fn test_details_request() {
+        use crate::models::Request;
+        use super::{Asset, AssetType, DetailsRequest};
         let details_request = DetailsRequest::new()
             .set_buying_asset(AssetType::Native)
             .unwrap()

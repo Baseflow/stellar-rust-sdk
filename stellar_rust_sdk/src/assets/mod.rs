@@ -98,7 +98,6 @@ pub mod test {
         static CONTRACTS_AMOUNT: &str = "0.0000000";
         static BALANCES_AUTHORIZED: &str = "999.0000000";
         static BALANCES_UNAUTHORIZED: &str = "0.0000000";
-        static AUTHORIZED_TO_MAINTAIN_LIABILITIES_BALANCES: &str = "0.0000000";
         static AUTH_REQUIRED: &bool = &false;
         static AUTH_REVOCABLE: &bool = &false;
         static AUTH_IMMUTABLE: &bool = &false;

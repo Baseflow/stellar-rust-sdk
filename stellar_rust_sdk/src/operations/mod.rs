@@ -242,7 +242,7 @@ pub mod tests {
         const ID: &str = "2314987376641";
         const PAGING_TOKEN: &str = "2314987376641";
         const TRANSACTION_SUCCESFULL: bool = true;
-        const SOURCE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";;
+        const SOURCE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
         const TYPE: &str = "create_account";
         const TYPE_I: i64 = 0;
         const CREATED_AT: &str = "2024-06-11T21:36:12Z";

@@ -84,7 +84,6 @@ pub mod prelude {
 
 #[cfg(test)]
 pub mod tests {
-    use std::hash::Hash;
     use super::prelude::*;
     use crate::{horizon_client::HorizonClient, Paginatable};
     use base64::{engine::general_purpose, Engine};
@@ -107,10 +106,6 @@ pub mod tests {
         static BASE_RESERVE_IN_STROOPS: i32 = 100000000;
         static MAX_TX_SET_SIZE: i32 = 100;
         static PROTOCOL_VERSION: i32 = 0;
-        static HEADER_XDR: &str = "AAAAAGPZj1Nu5o0bJ7W4nyOvUxG3Vpok+vFAOtC1K2M7B76ZuZRHr9UdXKbTKiclfOjy72YZFJUkJPVcKT5htvorm1QAAAAAZmi4RwAAAAAAAAABAAAAAKgkzRi8nXUGTSmaW1uspDvDqi8yaTgVPYwvm7XLbfAzAAAAQK2SUxHSetvm4OwtnmhA7Tob9tjNodbrCrdoaxB7z2MIKwTuwuTH8nnbmQQSJ5BbAvGzpj1Dioh+dpbLDakYwQjfP2GYBKkv20BXGS3EPddI6neK3FK8SYzoBSTAFLgRGXNSJ+05hGEpEjdoewhEaqLJsJbgyYpGLa3aVp8F3SSEAAAAAg3gtrOnZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkBfXhAAAAAGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-
-        let hash = "f96c4021adc1ae496c662f4f97143e499a9548f541c64bb2401a1b1701de5150";
-        let prev_hash = "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99";
 
         // Initialize horizon client
         let horizon_client =
@@ -162,10 +157,6 @@ pub mod tests {
         static MAX_TX_SET_SIZE: &i32 = &100;
         static PROTOCOL_VERSION: &i32 = &0;
 
-        let id = "f96c4021adc1ae496c662f4f97143e499a9548f541c64bb2401a1b1701de5150";
-        let hash = "f96c4021adc1ae496c662f4f97143e499a9548f541c64bb2401a1b1701de5150";
-        let prev_hash = "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99";
-        let closed_at = "2024-02-06T17:32:26Z";
         let closed_at_timepoint = 1718138951;
 
         // Initialize horizon client
@@ -175,7 +166,7 @@ pub mod tests {
         // construct request
         let single_ledger_request = SingleLedgerRequest::new().set_sequence(2).unwrap();
 
-        let mut single_ledger_response = horizon_client
+        let single_ledger_response = horizon_client
             .get_single_ledger(&single_ledger_request)
             .await;
 
