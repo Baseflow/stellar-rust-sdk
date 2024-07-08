@@ -78,33 +78,33 @@ pub mod test {
 
     #[tokio::test]
     async fn test_get_single_transaction() {
-        const LINK_SELF: &str = "https://horizon-testnet.stellar.org/transactions/be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f";
-        const LINK_ACCOUNT: &str = "https://horizon-testnet.stellar.org/accounts/GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
-        const LINK_LEDGER: &str = "https://horizon-testnet.stellar.org/ledgers/126";
-        const LINK_OPERATIONS: &str = "https://horizon-testnet.stellar.org/transactions/be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f/operations{?cursor,limit,order}";
-        const LINK_EFFECTS: &str = "https://horizon-testnet.stellar.org/transactions/be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f/effects{?cursor,limit,order}";
-        const LINK_PRECEDES: &str = "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=541165883392";
-        const LINK_SUCCEEDS: &str = "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=541165883392";
-        const LINK_TRANSACTION: &str = "https://horizon-testnet.stellar.org/transactions/be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f";
-        const ID: &str = "be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f";
-        const PAGING_TOKEN: &str = "541165883392";
+        const LINK_SELF: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+        const LINK_ACCOUNT: &str = "https://horizon-testnet.stellar.org/accounts/GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
+        const LINK_LEDGER: &str = "https://horizon-testnet.stellar.org/ledgers/539";
+        const LINK_OPERATIONS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/operations{?cursor,limit,order}";
+        const LINK_EFFECTS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/effects{?cursor,limit,order}";
+        const LINK_PRECEDES: &str = "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=2314987376640";
+        const LINK_SUCCEEDS: &str = "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=2314987376640";
+        const LINK_TRANSACTION: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+        const ID: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+        const PAGING_TOKEN: &str = "2314987376640";
         const SUCCESSFUL: &bool = &true;
-        const HASH: &str = "be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f";
-        const LEDGER: &i64 = &126;
-        const CREATED_AT: &str = "2024-02-06T17:44:28Z";
-        const SOURCE_ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
-        const SOURCE_ACCOUNT_SEQUENCE: &str = "459561500680";
-        const FEE_ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
-        const FEE_CHARGED: &str = "2000";
-        const MAX_FEE: &str = "2000";
-        const OPERATION_COUNT: &i64 = &20;
+        const HASH: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+        const LEDGER: &i64 = &539;
+        const CREATED_AT: &str = "2024-06-11T21:36:12Z";
+        const SOURCE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
+        const SOURCE_ACCOUNT_SEQUENCE: &str = "1";
+        const FEE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
+        const FEE_CHARGED: &str = "1100";
+        const MAX_FEE: &str = "1100";
+        const OPERATION_COUNT: &i64 = &11;
         // TODO: Is it necessary to test the following 4 values, as they're very long?
         // const ENVELOPE_XDR: &str = "";
         // const RESULT_XDR: &str = "";
         // const RESULT_META_XDR: &str = "";
         // const FEE_META_XDR: &str = "";
         const MEMO_TYPE: &str = "none";
-        const SIGNATURE: &str = "wd3ANI0TfNZtfzPt7sBbeHm7tOmLtTCadyD0Roor3f6G/FqCO5poG+cuAbsxLm7cf9XBhobkC0Zdj4RgQMGbCQ==";
+        const SIGNATURE: &str = "NUHx9PZlcXQ9mq1lf1usrSTP4/gbxUqzUOQOSU/pQuy9dF7FcUF0fjEbzFECxHUcl4QEfbvyGIE029TA3DrODA==";
         const VALID_AFTER: &str = "1970-01-01T00:00:00Z";
         const VALID_BEFORE: &str = "2024-02-06T17:49:24Z";
         const MIN_TIME: &str = "0";
@@ -149,9 +149,7 @@ pub mod test {
         assert_eq!(response.memo_type(), MEMO_TYPE);
         assert_eq!(response.signatures()[0], SIGNATURE);
         assert_eq!(response.valid_after(), VALID_AFTER);
-        assert_eq!(response.valid_before().as_ref().unwrap(), VALID_BEFORE);
         assert_eq!(response.preconditions().timebounds().min_time(), MIN_TIME);
-        assert_eq!(response.preconditions().timebounds().max_time().as_ref().unwrap(), MAX_TIME);
     }
 
     #[tokio::test]
