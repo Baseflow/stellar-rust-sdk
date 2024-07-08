@@ -148,26 +148,26 @@ pub mod test {
         assert_eq!(response.operation_count(), OPERATION_COUNT);
         assert_eq!(response.memo_type(), MEMO_TYPE);
         assert_eq!(response.signatures()[0], SIGNATURE);
-        assert_eq!(response.valid_after(), VALID_AFTER);
-        assert_eq!(response.preconditions().timebounds().min_time(), MIN_TIME);
+        assert_eq!(response.valid_after().as_ref().unwrap(), VALID_AFTER);
+        assert_eq!(response.preconditions().as_ref().unwrap().timebounds().min_time(), MIN_TIME);
     }
 
     #[tokio::test]
     async fn test_get_all_transactions() {
         const LINK_SELF: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
         const LINK_ACCOUNT: &str = "https://horizon-testnet.stellar.org/accounts/GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
-        const LINK_LEDGER: &str = "https://horizon-testnet.stellar.org/ledgers/107";
+        const LINK_LEDGER: &str = "https://horizon-testnet.stellar.org/ledgers/539";
         const LINK_OPERATIONS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/operations{?cursor,limit,order}";
         const LINK_EFFECTS: &str =  "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/effects{?cursor,limit,order}";
-        const LINK_PRECEDES: &str = "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=459561504768";
-        const LINK_SUCCEEDS: &str = "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=459561504768";
+        const LINK_PRECEDES: &str = "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=2314987376640";
+        const LINK_SUCCEEDS: &str = "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=2314987376640";
         const LINK_TRANSACTION: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
         const ID: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
-        const PAGING_TOKEN: &str = "459561504768";
+        const PAGING_TOKEN: &str = "2314987376640";
         const SUCCESSFUL: &bool = &true;
         const HASH: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
-        const LEDGER: &i64 = &107;
-        const CREATED_AT: &str = "2024-02-06T17:42:48Z";
+        const LEDGER: &i64 = &539;
+        const CREATED_AT: &str = "2024-06-11T21:36:12Z";
         const SOURCE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
         const SOURCE_ACCOUNT_SEQUENCE: &str = "1";
         const FEE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
@@ -216,7 +216,7 @@ pub mod test {
         assert_eq!(record.operation_count(), OPERATION_COUNT);
         assert_eq!(record.memo_type(), MEMO_TYPE);
         assert_eq!(record.signatures()[0], SIGNATURE); // Check only the first signature of the vector
-        assert_eq!(record.valid_after(), VALID_AFTER);
-        assert_eq!(record.preconditions().timebounds().min_time(), MIN_TIME);
+        assert_eq!(record.valid_after().as_ref().unwrap(), VALID_AFTER);
+        assert_eq!(record.preconditions().as_ref().unwrap().timebounds().min_time(), MIN_TIME);
     }
 }

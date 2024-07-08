@@ -147,11 +147,11 @@ pub struct TransactionResponse {
         /// An array of signatures used to sign this transaction.
         signatures: Vec<String>,
         /// The date after which a transaction is valid. 
-        valid_after: String,
+        valid_after: Option<String>,
         /// The date before which a transaction is valid.
         valid_before: Option<String>,
         /// A set of transaction preconditions affecting its validity.
-        preconditions: Preconditions,
+        preconditions: Option<Preconditions>,
 }
 
 impl Response for TransactionResponse {
