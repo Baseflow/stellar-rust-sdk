@@ -66,28 +66,28 @@ pub mod test {
     #[tokio::test]
     async fn all_trades_request() {
         const LINK_SELF: &str = "";
-        const LINK_BASE: &str = "https://horizon-testnet.stellar.org/accounts/GB4MMSZ5FY3KOCMMN77DNJBSKXFZVRXMLM5SKKDIVGTWGR55DKJM7GSD";
-        const LINK_COUNTER: &str = "https://horizon-testnet.stellar.org/accounts/GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";
-        const LINK_OPERATION: &str = "https://horizon-testnet.stellar.org/operations/4754528817153";
-        const ID: &str = "4754528817153-0";
-        const PAGING_TOKEN: &str = "4754528817153-0";
-        const LEDGER_CLOSE_TIME: &str = "2024-02-06T19:10:19Z";
+        const LINK_BASE: &str = "https://horizon-testnet.stellar.org/accounts/GCUOMNFW7YG55YHY5S5W7FE247PWODUDUZ4SOVZFEON47KZ7AXFG6D6A";
+        const LINK_COUNTER: &str = "https://horizon-testnet.stellar.org/accounts/GBHRHA3KGRJBXBFER7VHI3WS5SKUXOP5TQ3YITVD7WJ2D3INGK62FZJR";
+        const LINK_OPERATION: &str = "https://horizon-testnet.stellar.org/operations/23944442687489";
+        const ID: &str = "23944442687489-0";
+        const PAGING_TOKEN: &str = "23944442687489-0";
+        const LEDGER_CLOSE_TIME: &str = "2024-06-12T04:58:59Z";
         const TRADE_TYPE: &str = "orderbook";
-        const BASE_OFFER_ID: &str = "4611690772956205057";
-        const BASE_ACCOUNT: &str = "GB4MMSZ5FY3KOCMMN77DNJBSKXFZVRXMLM5SKKDIVGTWGR55DKJM7GSD";
-        const BASE_AMOUNT: &str = "3842030179.4600000";
-        const BASE_ASSET_TYPE: &str = "credit_alphanum12";
-        const BASE_ASSET_CODE: &str = "USDCAllow";
-        const BASE_ASSET_ISSUER: &str = "GAWZGWFOURKXZ4XYXBGFADZM4QIG6BJNM74XIZCEIU3BHM62RN2MDEZN";
-        const COUNTER_OFFER_ID: &str = "1";
-        const COUNTER_ACCOUNT: &str = "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";
-        const COUNTER_AMOUNT: &str = "3842030179.4600000";
+        const BASE_OFFER_ID: &str = "20";
+        const BASE_ACCOUNT: &str = "GCUOMNFW7YG55YHY5S5W7FE247PWODUDUZ4SOVZFEON47KZ7AXFG6D6A";
+        const BASE_AMOUNT: &str = "3.6000000";
+        const BASE_ASSET_TYPE: &str = "credit_alphanum4";
+        const BASE_ASSET_CODE: &str = "XETH";
+        const BASE_ASSET_ISSUER: &str = "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI";
+        const COUNTER_OFFER_ID: &str = "21";
+        const COUNTER_ACCOUNT: &str = "GBHRHA3KGRJBXBFER7VHI3WS5SKUXOP5TQ3YITVD7WJ2D3INGK62FZJR";
+        const COUNTER_AMOUNT: &str = "1.0800000";
         const COUNTER_ASSET_TYPE: &str = "credit_alphanum4";
-        const COUNTER_ASSET_CODE: &str = "USDC";
-        const COUNTER_ASSET_ISSUER: &str = "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5";
-        const BASE_IS_SELLER: &bool = &false;
-        const PRICE_N: &str = "1";
-        const PRICE_R: &str = "1";
+        const COUNTER_ASSET_CODE: &str = "XUSD";
+        const COUNTER_ASSET_ISSUER: &str = "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI";
+        const BASE_IS_SELLER: &bool = &true;
+        const PRICE_N: &str = "3";
+        const PRICE_R: &str = "10";
 
         let all_trades_request = AllTradesRequest::new();
         
