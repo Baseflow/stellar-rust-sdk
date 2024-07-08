@@ -32,7 +32,7 @@ pub mod response;
 /// This variable is intended to be used internally by the request-building logic
 /// to ensure consistent and accurate path construction for liquidity pool related API calls.
 ///
-static LIQUIDITY_POOLS_PATH: &str = "liquidity_pools";
+pub(crate) static LIQUIDITY_POOLS_PATH: &str = "liquidity_pools";
 
 /// The `prelude` module of the `liquidity_pools` module.
 ///
