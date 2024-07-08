@@ -106,9 +106,7 @@ pub mod test {
         const MEMO_TYPE: &str = "none";
         const SIGNATURE: &str = "NUHx9PZlcXQ9mq1lf1usrSTP4/gbxUqzUOQOSU/pQuy9dF7FcUF0fjEbzFECxHUcl4QEfbvyGIE029TA3DrODA==";
         const VALID_AFTER: &str = "1970-01-01T00:00:00Z";
-        const VALID_BEFORE: &str = "2024-02-06T17:49:24Z";
         const MIN_TIME: &str = "0";
-        const MAX_TIME: &str = "1707241764";
 
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org"
