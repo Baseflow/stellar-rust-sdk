@@ -270,4 +270,70 @@ pub mod test {
         assert_eq!(response.price().as_ref().unwrap().numenator(), PRICE_N);
         assert_eq!(response.price().as_ref().unwrap().denominator(), PRICE_D);
     }
+
+    #[tokio::test]
+    async fn trades_for_offers_request() {
+        const OFFER_ID: &str = "0";
+        const LINK_SELF: &str = "";
+        const LINK_BASE: &str = "https://horizon-testnet.stellar.org/accounts/GCUOMNFW7YG55YHY5S5W7FE247PWODUDUZ4SOVZFEON47KZ7AXFG6D6A";
+        const LINK_COUNTER: &str = "https://horizon-testnet.stellar.org/accounts/GBHRHA3KGRJBXBFER7VHI3WS5SKUXOP5TQ3YITVD7WJ2D3INGK62FZJR";
+        const LINK_OPERATION: &str = "https://horizon-testnet.stellar.org/operations/23944442687489";
+        const ID: &str = "23944442687489-0";
+        const PAGING_TOKEN: &str = "23944442687489-0";
+        const LEDGER_CLOSE_TIME: &str = "2024-06-12T04:58:59Z";
+        const TRADE_TYPE: &str = "orderbook";
+        const BASE_OFFER_ID: &str = "20";
+        const BASE_ACCOUNT: &str = "GCUOMNFW7YG55YHY5S5W7FE247PWODUDUZ4SOVZFEON47KZ7AXFG6D6A";
+        const BASE_AMOUNT: &str = "3.6000000";
+        const BASE_ASSET_TYPE: &str = "credit_alphanum4";
+        const BASE_ASSET_CODE: &str = "XETH";
+        const BASE_ASSET_ISSUER: &str = "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI";
+        const COUNTER_OFFER_ID: &str = "21";
+        const COUNTER_ACCOUNT: &str = "GBHRHA3KGRJBXBFER7VHI3WS5SKUXOP5TQ3YITVD7WJ2D3INGK62FZJR";
+        const COUNTER_AMOUNT: &str = "1.0800000";
+        const COUNTER_ASSET_TYPE: &str = "credit_alphanum4";
+        const COUNTER_ASSET_CODE: &str = "XUSD";
+        const COUNTER_ASSET_ISSUER: &str = "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI";
+        const BASE_IS_SELLER: &bool = &true;
+        const PRICE_N: &str = "3";
+        const PRICE_D: &str = "10";
+
+        let trades_for_offer_request = TradesForOfferRequest::new()
+            .set_offer_id(OFFER_ID.to_string())
+            .unwrap();
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org"
+            .to_string())
+            .unwrap();
+        let trades_for_liquidity_pools_response = horizon_client
+            .get_trades_for_offer(&trades_for_offer_request)
+            .await;
+
+        assert!(trades_for_liquidity_pools_response.clone().is_ok());
+        let binding = trades_for_liquidity_pools_response.unwrap();
+        let response = &binding.embedded().records()[0];
+        assert_eq!(response.links().self_link().href().as_ref().unwrap(), LINK_SELF);
+        assert_eq!(response.links().base().href().as_ref().unwrap(), LINK_BASE);
+        assert_eq!(response.links().counter().href().as_ref().unwrap(), LINK_COUNTER);
+        assert_eq!(response.links().operation().href().as_ref().unwrap(), LINK_OPERATION);
+        assert_eq!(response.id(), ID);
+        assert_eq!(response.paging_token(), PAGING_TOKEN);
+        assert_eq!(response.ledger_close_time(), LEDGER_CLOSE_TIME);
+        assert_eq!(response.trade_type(), TRADE_TYPE);
+        assert_eq!(response.base_offer_id().as_ref().unwrap(), BASE_OFFER_ID);
+        assert_eq!(response.base_account().as_ref().unwrap(), BASE_ACCOUNT);
+        assert_eq!(response.base_amount(), BASE_AMOUNT);
+        assert_eq!(response.base_asset_type().as_ref().unwrap(), BASE_ASSET_TYPE);
+        assert_eq!(response.base_asset_code().as_ref().unwrap(), BASE_ASSET_CODE);
+        assert_eq!(response.base_asset_issuer().as_ref().unwrap(), BASE_ASSET_ISSUER);
+        assert_eq!(response.counter_offer_id(), COUNTER_OFFER_ID);
+        assert_eq!(response.counter_account(), COUNTER_ACCOUNT);
+        assert_eq!(response.counter_amount(), COUNTER_AMOUNT);
+        assert_eq!(response.counter_asset_type().as_ref().unwrap(), COUNTER_ASSET_TYPE);
+        assert_eq!(response.counter_asset_code().as_ref().unwrap(), COUNTER_ASSET_CODE);
+        assert_eq!(response.counter_asset_issuer().as_ref().unwrap(), COUNTER_ASSET_ISSUER);
+        assert_eq!(response.base_is_seller(), BASE_IS_SELLER);
+        assert_eq!(response.price().as_ref().unwrap().numenator(), PRICE_N);
+        assert_eq!(response.price().as_ref().unwrap().denominator(), PRICE_D);
+    }
 }
