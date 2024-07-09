@@ -212,6 +212,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_single_claimable_balance() {
+        static CLAIMABLE_BALANCE_ID: &str = "00000000fe3d8209ed9662e92f0d3a5c55068e18bd5e0697c3c6db6ac4c0870c6f3e0b38";
         static ID: &str = "00000000fe3d8209ed9662e92f0d3a5c55068e18bd5e0697c3c6db6ac4c0870c6f3e0b38";
         static ASSET: &str = "IOM:GBSUM7J4W2IH5LAMSQGI7Y2OZBV2BJB6EOK7TIK66DXNJUU4JAY36VR2";
         static AMOUNT: &str = "2.0000000";
@@ -226,10 +227,7 @@ mod tests {
             HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let single_claimable_balance_request = SingleClaimableBalanceRequest::new()
-            .set_claimable_balance_id(
-                "00000000fe3d8209ed9662e92f0d3a5c55068e18bd5e0697c3c6db6ac4c0870c6f3e0b38"
-                    .to_string(),
-            );
+            .set_claimable_balance_id(CLAIMABLE_BALANCE_ID.to_string());
 
         let single_claimable_balance_response = horizon_client
             .get_single_claimable_balance(&single_claimable_balance_request)
