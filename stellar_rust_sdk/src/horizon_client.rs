@@ -1205,6 +1205,14 @@ impl HorizonClient {
         self.get::<AllTradesResponse>(request).await
     }
 
+    // TODO: Documentation
+    pub async fn get_trades_for_offer(
+        &self,
+        request: &TradesForOfferRequest<TradeOfferId>,
+    ) -> Result<AllTradesResponse, String> {
+        self.get::<AllTradesResponse>(request).await
+    }
+    
     /// Retrieves a list of all operations for a specific liquidity pool from the Horizon server.
     ///
     /// This asynchronous method fetches a list of all operations for a specific liquidity pool from the Horizon server.
