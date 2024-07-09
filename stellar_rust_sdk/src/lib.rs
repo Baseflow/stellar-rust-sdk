@@ -15,23 +15,23 @@
 //! stabilization.
 //!
 //! #### Supported endpoints:
-//! ![67%](https://progress-bar.dev/67/?width=200)
+//! ![80%](https://progress-bar.dev/80/?width=200)
 //! * Accounts
 //! * Assets
-//! * Effects
 //! * Claimable balance
-//! * Ledgers
+//! * Effects
 //! * Fee stats
+//! * Ledgers
 //! * Liquidity pools
 //! * Operations
 //! * Offers
 //! * Orderbook
+//! * Trades
 //!
 //! #### Endpoints on the roadmap:
 //! * Paths
 //! * Payments
 //! * Trade aggregations
-//! * Trades
 //! * Transactions
 
 //!

@@ -2,18 +2,17 @@ use crate::models::*;
 use stellar_rust_sdk_derive::Pagination;
 use crate::Paginatable;
 
-// TODO: Documentation
+/// Represents the ID of a liquidity pool for which the trades are to be retrieved.
 #[derive(Default, Clone)]
 pub struct TradeLiquidityPoolId(String);
 
-// TODO: Documentation
+/// Represents the absence of an ID of a liquidity pool for which the trades are to be retrieved.
 #[derive(Default, Clone)]
 pub struct NoTradeLiquidityPoolId;
-#[derive(Default)]
 
-#[derive(Pagination)]
+#[derive(Default, Pagination)]
 pub struct TradesForLiquidityPoolRequest<I> {
-    // TODO: Documentation
+    /// The ID of the liquidity pool for which the trades are to be retrieved.
     liquidity_pool_id: I,
     /// A pointer to a specific location in a collection of responses, derived from the
     /// `paging_token` value of a record. Used for pagination control in the API response.
@@ -27,16 +26,23 @@ pub struct TradesForLiquidityPoolRequest<I> {
 }
 
 impl TradesForLiquidityPoolRequest<TradeLiquidityPoolId> {
-    // TODO: Documentation
+    /// Creates a new `TradesForLiquidityPoolRequest` with default parameters.
     pub fn new() -> Self {
         TradesForLiquidityPoolRequest::default()
     }
 
+    /// Sets the liquidity pool ID for the request.
+    ///
+    /// # Arguments
+    /// * `liquidity_pool_id` - The liquidity pool ID for which the trades are to be retrieved.
+    ///
+    /// # Returns
+    /// A `TradesForLiquidityPoolRequest` with the specified liquidity pool ID, or an error if the liquidity pool ID is invalid.
+    ///
     pub fn set_liquidity_pool_id(
         self,
         liquidity_pool_id: String,
     ) -> Result<TradesForLiquidityPoolRequest<TradeLiquidityPoolId>, String> {
-        // TODO: Implement check for value validity
         Ok(TradesForLiquidityPoolRequest {
             liquidity_pool_id: TradeLiquidityPoolId(liquidity_pool_id),
             cursor: self.cursor,

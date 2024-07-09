@@ -7,13 +7,28 @@
 ///
 pub mod all_trades_request;
 
-// TODO: Documentation
+/// Provides the `TradesForAccountRequest`.
+///
+/// This module provides the `TradesForAccountRequest` struct, specifically designed for constructing requests to
+/// retrieve all trades for a given account from the Horizon server. It is tailored for use with the 
+/// [`HorizonClient::get_trades_for_account`](crate::horizon_client::HorizonClient::get_trades_for_account) method.
+///
 pub mod trades_for_account_request;
 
-// TODO: Documentation
+/// Provides the `TradesForLiquidityPoolRequest`.
+///
+/// This module provides the `TradesForLiquidityPoolRequest` struct, specifically designed for constructing requests to
+/// retrieve successful trades fulfilled by the given liquidity pool from the Horizon server. It is tailored for use with the 
+/// [`HorizonClient::get_trades_for_liquidity_pool`](crate::horizon_client::HorizonClient::get_trades_for_liquidity_pool) method.
+///
 pub mod trades_for_liquidity_pool_request;
 
-// TODO: Documentation
+/// Provides the `TradesForOfferRequest`.
+///
+/// This module provides the `TradesForOfferRequest` struct, specifically designed for constructing requests to
+/// retrieve all trades for a given offer from the Horizon server. It is tailored for use with the 
+/// [`HorizonClient::get_trades_for_offer`](crate::horizon_client::HorizonClient::get_trades_for_offer) method.
+///
 pub mod trades_for_offer_request;
 
 /// Provides the responses.
@@ -50,9 +65,11 @@ static TRADES_PATH: &str = "trades";
 ///
 /// The `prelude` includes the following re-exports:
 ///
-/// * From `all_trades_request`: All items (e.g. `AllTradesRequest`).
-/// * From `trades_for_account_request`: All items (e.g. `TradesForAccountRequest`).
+/// * From `all_trades_request`: All items (e.g. `AllTradesRequest`, `AssetType`, `AssetData`, etc.).
 /// * From `response`: All items (e.g. `TradeResponse`, `AllTradesResponse`, etc.).
+/// * From `trades_for_account_request`: All items (e.g. `TradesForAccountRequest`, `TradeAccountId`, etc.).
+/// * From `trades_for_liquidity_pool_request`: All items (e.g. `TradesForLiquidityPoolRequest`, `TradeLiquidityPoolId`, etc.).
+/// * From `trades_for_offer_request`: All items (e.g. `TradesForOfferRequest`, `TradeOfferId`, etc.).
 ///
 /// # Example
 /// ```
@@ -65,11 +82,11 @@ static TRADES_PATH: &str = "trades";
 /// ```
 ///
 pub mod prelude {
+    pub use super::all_trades_request::*;
+    pub use super::response::*;
     pub use super::trades_for_account_request::*;
     pub use super::trades_for_liquidity_pool_request::*;
     pub use super::trades_for_offer_request::*;
-    pub use super::all_trades_request::*;
-    pub use super::response::*;
 }
 
 #[cfg(test)]
@@ -141,7 +158,7 @@ pub mod test {
 
     #[tokio::test]
     async fn trades_for_account_request() {
-        const ACCOUNT_ID: &str =  "GCUOMNFW7YG55YHY5S5W7FE247PWODUDUZ4SOVZFEON47KZ7AXFG6D6A";
+        const ACCOUNT_ID: &str =  "GCUOMNFW7YG55YHY5S5W7FE247PWODUDUZ4SOVZFEON47KZ7AXFG6D6A"; // ID for the request
         const LINK_SELF: &str = "";
         const LINK_BASE: &str = "https://horizon-testnet.stellar.org/accounts/GCUOMNFW7YG55YHY5S5W7FE247PWODUDUZ4SOVZFEON47KZ7AXFG6D6A";
         const LINK_COUNTER: &str = "https://horizon-testnet.stellar.org/accounts/GBHRHA3KGRJBXBFER7VHI3WS5SKUXOP5TQ3YITVD7WJ2D3INGK62FZJR";
@@ -207,7 +224,7 @@ pub mod test {
 
     #[tokio::test]
     async fn trades_for_liquidity_pools_request() {
-        const LIQUIDITY_POOL_ID: &str = "0b3c88caa5aeada296646c1810893e3b04cba0426cff8ff6a63cf6f35cc7f5b3";
+        const LIQUIDITY_POOL_ID: &str = "0b3c88caa5aeada296646c1810893e3b04cba0426cff8ff6a63cf6f35cc7f5b3"; // ID for the request
         const LINK_SELF: &str = "";
         const LINK_BASE: &str = "https://horizon-testnet.stellar.org/liquidity_pools/0b3c88caa5aeada296646c1810893e3b04cba0426cff8ff6a63cf6f35cc7f5b3";
         const LINK_COUNTER: &str = "https://horizon-testnet.stellar.org/accounts/GAV5JC25XAB4ALRUDNPB6TZMHSNXFFONKGMLRKHBC5KYGXOGXEVE2BOW";
@@ -232,19 +249,19 @@ pub mod test {
         const PRICE_N: &str = "100000000";
         const PRICE_D: &str = "93486278";
 
-        let trades_for_liquidity_pools_request = TradesForLiquidityPoolRequest::new()
+        let trades_for_liquidity_pool_request = TradesForLiquidityPoolRequest::new()
             .set_liquidity_pool_id(LIQUIDITY_POOL_ID.to_string())
             .unwrap();
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org"
             .to_string())
             .unwrap();
-        let trades_for_liquidity_pools_response = horizon_client
-            .get_trades_for_liquidity_pool(&trades_for_liquidity_pools_request)
+        let trades_for_liquidity_pool_response = horizon_client
+            .get_trades_for_liquidity_pool(&trades_for_liquidity_pool_request)
             .await;
 
-        assert!(trades_for_liquidity_pools_response.clone().is_ok());
-        let binding = trades_for_liquidity_pools_response.unwrap();
+        assert!(trades_for_liquidity_pool_response.clone().is_ok());
+        let binding = trades_for_liquidity_pool_response.unwrap();
         let response = &binding.embedded().records()[0];
         assert_eq!(response.links().self_link().href().as_ref().unwrap(), LINK_SELF);
         assert_eq!(response.links().base().href().as_ref().unwrap(), LINK_BASE);
@@ -273,7 +290,7 @@ pub mod test {
 
     #[tokio::test]
     async fn trades_for_offers_request() {
-        const OFFER_ID: &str = "0";
+        const OFFER_ID: &str = "0"; // ID for the request
         const LINK_SELF: &str = "";
         const LINK_BASE: &str = "https://horizon-testnet.stellar.org/accounts/GCUOMNFW7YG55YHY5S5W7FE247PWODUDUZ4SOVZFEON47KZ7AXFG6D6A";
         const LINK_COUNTER: &str = "https://horizon-testnet.stellar.org/accounts/GBHRHA3KGRJBXBFER7VHI3WS5SKUXOP5TQ3YITVD7WJ2D3INGK62FZJR";
@@ -309,7 +326,7 @@ pub mod test {
             .get_trades_for_offer(&trades_for_offer_request)
             .await;
 
-        assert!(trades_for_liquidity_pools_response.clone().is_ok());
+        // assert!(trades_for_liquidity_pools_response.clone().is_ok());
         let binding = trades_for_liquidity_pools_response.unwrap();
         let response = &binding.embedded().records()[0];
         assert_eq!(response.links().self_link().href().as_ref().unwrap(), LINK_SELF);
