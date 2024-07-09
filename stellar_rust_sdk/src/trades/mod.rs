@@ -13,6 +13,9 @@ pub mod trades_for_account_request;
 // TODO: Documentation
 pub mod trades_for_liquidity_pool_request;
 
+// TODO: Documentation
+pub mod trades_for_offer_request;
+
 /// Provides the responses.
 ///
 /// This module defines structures representing the response from the Horizon API when querying
@@ -64,6 +67,7 @@ static TRADES_PATH: &str = "trades";
 pub mod prelude {
     pub use super::trades_for_account_request::*;
     pub use super::trades_for_liquidity_pool_request::*;
+    pub use super::trades_for_offer_request::*;
     pub use super::all_trades_request::*;
     pub use super::response::*;
 }
