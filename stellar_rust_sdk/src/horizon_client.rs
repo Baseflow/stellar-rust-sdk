@@ -1152,10 +1152,10 @@ impl HorizonClient {
     /// # Returns
     ///
     /// On successful execution, returns a `Result` containing an [`AllTradesResponse`], which includes
-    /// the list of all offers obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    /// the list of all trades obtained from the Horizon server. If the request fails, it returns an error within `Result`.
     ///
     /// # Usage
-    /// To use this method, create an instance of [`AllOffersRequest`] and set any desired
+    /// To use this method, create an instance of [`AllTradesRequest`] and set any desired
     /// filters or parameters.
     ///
     /// ```
@@ -1189,7 +1189,50 @@ impl HorizonClient {
         self.get::<AllTradesResponse>(request).await
     }
 
-    // TODO: Documentation
+    /// Retrieves a list of all trades for a given account from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all trades for a given account from the Horizon server.
+    /// It requires an [`TradesForAccountRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`TradesForAccountRequest`] instance, containing the
+    ///     parameters for the trades request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`AllTradesResponse`], which includes
+    /// the list of all trades obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`TradesForAccountRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::trades::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = TradesForAccountRequest::new()
+    ///    .set_account_id("GCUOMNFW7YG55YHY5S5W7FE247PWODUDUZ4SOVZFEON47KZ7AXFG6D6A".to_string())
+    ///    .unwrap();
+    ///
+    /// let response = horizon_client.get_trades_for_account(&request).await;
+    ///
+    /// // Access the trades
+    /// if let Ok(trades_response) = response {
+    ///     for trade in trades_response.embedded().records() {
+    ///         println!("Trade ID: {}", trade.id());
+    ///         // Further processing...
+    ///     }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_trades_for_account(
         &self,
         request: &TradesForAccountRequest<TradeAccountId>,
@@ -1197,7 +1240,50 @@ impl HorizonClient {
         self.get::<AllTradesResponse>(request).await
     }
 
-    // TODO: Documentation
+    /// Retrieves a list of all successful trades fulfilled by the given liquidity pool from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all successful trades fulfilled by the given liquidity pool
+    /// from the Horizon server. It requires an [`TradesForLiquidityPoolRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`TradesForLiquidityPoolRequest`] instance, containing the
+    ///     parameters for the trades request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`AllTradesResponse`], which includes
+    /// the list of all trades obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`TradesForLiquidityPoolRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::trades::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = TradesForLiquidityPoolRequest::new()
+    ///    .set_liquidity_pool_id("0b3c88caa5aeada296646c1810893e3b04cba0426cff8ff6a63cf6f35cc7f5b3".to_string())
+    ///    .unwrap();
+    ///
+    /// let response = horizon_client.get_trades_for_liquidity_pool(&request).await;
+    ///
+    /// // Access the trades
+    /// if let Ok(trades_response) = response {
+    ///     for trade in trades_response.embedded().records() {
+    ///         println!("Trade ID: {}", trade.id());
+    ///         // Further processing...
+    ///     }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_trades_for_liquidity_pool(
         &self,
         request: &TradesForLiquidityPoolRequest<TradeLiquidityPoolId>,
@@ -1205,7 +1291,50 @@ impl HorizonClient {
         self.get::<AllTradesResponse>(request).await
     }
 
-    // TODO: Documentation
+    /// Retrieves a list of all trades for a given offer from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all trades for a given offer from the Horizon server.
+    /// It requires an [`TradesForOfferRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`TradesForOfferRequest`] instance, containing the
+    ///     parameters for the trades request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`AllTradesResponse`], which includes
+    /// the list of all trades obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`TradesForOfferRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::trades::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = TradesForOfferRequest::new()
+    ///    .set_offer_id("42".to_string())
+    ///    .unwrap();
+    ///
+    /// let response = horizon_client.get_trades_for_offer(&request).await;
+    ///
+    /// // Access the trades
+    /// if let Ok(trades_response) = response {
+    ///     for trade in trades_response.embedded().records() {
+    ///         println!("Trade ID: {}", trade.id());
+    ///         // Further processing...
+    ///     }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_trades_for_offer(
         &self,
         request: &TradesForOfferRequest<TradeOfferId>,

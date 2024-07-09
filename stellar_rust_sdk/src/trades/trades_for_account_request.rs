@@ -2,18 +2,18 @@ use crate::models::*;
 use stellar_rust_sdk_derive::Pagination;
 use crate::Paginatable;
 
-// TODO: Documentation
+/// Represents the ID of an account for which the trades are to be retrieved.
 #[derive(Default, Clone)]
 pub struct TradeAccountId(String);
 
-// TODO: Documentation
+/// Represents the absence of the ID of an account for which the trades are to be retrieved.
 #[derive(Default, Clone)]
 pub struct NoTradeAccountId;
 #[derive(Default)]
 
 #[derive(Pagination)]
 pub struct TradesForAccountRequest<I> {
-    // TODO: Documentation
+    /// The ID of the account for which the trades are to be retrieved.
     account_id: I,
     /// A pointer to a specific location in a collection of responses, derived from the
     /// `paging_token` value of a record. Used for pagination control in the API response.
@@ -27,11 +27,19 @@ pub struct TradesForAccountRequest<I> {
 }
 
 impl TradesForAccountRequest<NoTradeAccountId> {
-    // TODO: Documentation
+    /// Creates a new `TradesForAccountRequest` with default parameters.
     pub fn new() -> Self {
         TradesForAccountRequest::default()
     }
 
+    /// Sets the account ID for the request.
+    ///
+    /// # Arguments
+    /// * `account_id` - The account ID for which the trades are to be retrieved.
+    ///
+    /// # Returns
+    /// A `TradesForAccountRequest` with the specified account ID, or an error if the account ID is invalid.
+    ///
     pub fn set_account_id(
         self,
         account_id: String,

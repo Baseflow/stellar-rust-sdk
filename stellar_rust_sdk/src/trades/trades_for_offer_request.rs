@@ -2,18 +2,17 @@ use crate::models::*;
 use stellar_rust_sdk_derive::Pagination;
 use crate::Paginatable;
 
-// TODO: Documentation
+/// Represents the ID of an offer for which the trades are to be retrieved.
 #[derive(Default, Clone)]
 pub struct TradeOfferId(String);
 
-// TODO: Documentation
+/// Represents the absence of an ID of an offer for which the trades are to be retrieved.
 #[derive(Default, Clone)]
 pub struct NoTradeOfferId;
-#[derive(Default)]
 
-#[derive(Pagination)]
+#[derive(Default, Pagination)]
 pub struct TradesForOfferRequest<I> {
-    // TODO: Documentation
+    /// The ID of the offer for which the trades are to be retrieved.
     offer_id: I,
     /// A pointer to a specific location in a collection of responses, derived from the
     /// `paging_token` value of a record. Used for pagination control in the API response.
@@ -27,16 +26,23 @@ pub struct TradesForOfferRequest<I> {
 }
 
 impl TradesForOfferRequest<TradeOfferId> {
-    // TODO: Documentation
+    /// Creates a new `TradesForOfferRequest` with default parameters.
     pub fn new() -> Self {
         TradesForOfferRequest::default()
     }
 
+    /// Sets the offer ID for the request.
+    ///
+    /// # Arguments
+    /// * `offer_id` - The offer ID for which the trades are to be retrieved.
+    ///
+    /// # Returns
+    /// A `TradesForOfferRequest` with the specified offer ID, or an error if the offer ID is invalid.
+    ///
     pub fn set_offer_id(
         self,
         offer_id: String,
     ) -> Result<TradesForOfferRequest<TradeOfferId>, String> {
-        // TODO: Implement check for value validity
         Ok(TradesForOfferRequest {
             offer_id: TradeOfferId(offer_id),
             cursor: self.cursor,
