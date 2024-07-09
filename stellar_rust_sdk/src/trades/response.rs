@@ -75,9 +75,9 @@ pub struct TradeResponse {
     // The base liquidity pool ID, if this trade was executed against a liquidity pool.
     base_liquidity_pool_id: Option<String>,
     // The base offer ID.
-    base_offer_id: String,
+    base_offer_id: Option<String>,
     // The account ID of the base party for this trade.
-    base_account: String,
+    base_account: Option<String>,
     // The amount of the base asset that was moved from `base_account` to `counter_account`.
     base_amount: String,
     // The type for the base asset. Either `native`, `credit_alphanum4`, or `credit_alphanum12`.

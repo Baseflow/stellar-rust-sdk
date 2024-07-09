@@ -36,10 +36,7 @@ impl TradesForLiquidityPoolRequest<TradeLiquidityPoolId> {
         self,
         liquidity_pool_id: String,
     ) -> Result<TradesForLiquidityPoolRequest<TradeLiquidityPoolId>, String> {
-        if let Err(e) = is_public_key(&liquidity_pool_id) {
-            return Err(e.to_string());
-        }
-
+        // TODO: Implement check for value validity
         Ok(TradesForLiquidityPoolRequest {
             liquidity_pool_id: TradeLiquidityPoolId(liquidity_pool_id),
             cursor: self.cursor,
