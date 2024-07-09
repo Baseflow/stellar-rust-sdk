@@ -42,7 +42,7 @@ pub mod response;
 /// This variable is intended to be used internally by the request-building logic
 /// to ensure consistent and accurate path construction for offer-related API calls.
 ///
-static OFFERS_PATH: &str = "offers";
+pub(crate) static OFFERS_PATH: &str = "offers";
 
 /// The `prelude` module of the `offers` module.
 ///
