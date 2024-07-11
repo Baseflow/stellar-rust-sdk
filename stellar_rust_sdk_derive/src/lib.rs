@@ -7,9 +7,9 @@ use syn::{parse_macro_input, DeriveInput};
 pub fn pagination_macro(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let struct_name = &input.ident;
-
+    let (impl_generics, type_generics, where_clause) = input.generics.split_for_impl();
     let expanded = quote! {
-        impl Paginatable for #struct_name {
+        impl #impl_generics Paginatable for #struct_name #type_generics #where_clause {
             fn set_cursor(self, cursor: u32) -> Result<Self, String> {
                 // Always accept the cursor since it's non-optional in the setter
                 if cursor < 1 {
