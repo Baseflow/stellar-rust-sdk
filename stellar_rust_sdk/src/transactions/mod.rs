@@ -18,6 +18,9 @@ pub mod single_transaction_request;
 ///
 pub mod all_transactions_request;
 
+// TODO: Documentation
+pub mod transactions_for_account_request;
+
 /// Provides the responses.
 ///
 /// This module defines structures representing the response from the Horizon API when querying
