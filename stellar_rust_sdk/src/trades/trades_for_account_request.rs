@@ -9,9 +9,8 @@ pub struct TradeAccountId(String);
 /// Represents the absence of the ID of an account for which the trades are to be retrieved.
 #[derive(Default, Clone)]
 pub struct NoTradeAccountId;
-#[derive(Default)]
 
-#[derive(Pagination)]
+#[derive(Default, Pagination)]
 pub struct TradesForAccountRequest<I> {
     /// The ID of the account for which the trades are to be retrieved.
     account_id: I,
