@@ -71,6 +71,7 @@ static TRANSACTIONS_PATH: &str = "transactions";
 pub mod prelude {
     pub use super::single_transaction_request::*;
     pub use super::all_transactions_request::*;
+    pub use super::transactions_for_account_request::*;
     pub use super::response::*;
 }
 
@@ -79,37 +80,38 @@ pub mod test {
     use super::prelude::*;
     use crate::horizon_client::HorizonClient;
 
+    const LINK_SELF: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+    const LINK_ACCOUNT: &str = "https://horizon-testnet.stellar.org/accounts/GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
+    const LINK_LEDGER: &str = "https://horizon-testnet.stellar.org/ledgers/539";
+    const LINK_OPERATIONS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/operations{?cursor,limit,order}";
+    const LINK_EFFECTS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/effects{?cursor,limit,order}";
+    const LINK_PRECEDES: &str = "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=2314987376640";
+    const LINK_SUCCEEDS: &str = "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=2314987376640";
+    const LINK_TRANSACTION: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+    const ID: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+    const PAGING_TOKEN: &str = "2314987376640";
+    const SUCCESSFUL: &bool = &true;
+    const HASH: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+    const LEDGER: &i64 = &539;
+    const CREATED_AT: &str = "2024-06-11T21:36:12Z";
+    const SOURCE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
+    const SOURCE_ACCOUNT_SEQUENCE: &str = "1";
+    const FEE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
+    const FEE_CHARGED: &str = "1100";
+    const MAX_FEE: &str = "1100";
+    const OPERATION_COUNT: &i64 = &11;
+    // TODO: Is it necessary to test the following 4 values, as they're very long?
+    // const ENVELOPE_XDR: &str = "";
+    // const RESULT_XDR: &str = "";
+    // const RESULT_META_XDR: &str = "";
+    // const FEE_META_XDR: &str = "";
+    const MEMO_TYPE: &str = "none";
+    const SIGNATURE: &str = "NUHx9PZlcXQ9mq1lf1usrSTP4/gbxUqzUOQOSU/pQuy9dF7FcUF0fjEbzFECxHUcl4QEfbvyGIE029TA3DrODA==";
+    const VALID_AFTER: &str = "1970-01-01T00:00:00Z";
+    const MIN_TIME: &str = "0";
+
     #[tokio::test]
     async fn test_get_single_transaction() {
-        const LINK_SELF: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
-        const LINK_ACCOUNT: &str = "https://horizon-testnet.stellar.org/accounts/GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
-        const LINK_LEDGER: &str = "https://horizon-testnet.stellar.org/ledgers/539";
-        const LINK_OPERATIONS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/operations{?cursor,limit,order}";
-        const LINK_EFFECTS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/effects{?cursor,limit,order}";
-        const LINK_PRECEDES: &str = "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=2314987376640";
-        const LINK_SUCCEEDS: &str = "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=2314987376640";
-        const LINK_TRANSACTION: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
-        const ID: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
-        const PAGING_TOKEN: &str = "2314987376640";
-        const SUCCESSFUL: &bool = &true;
-        const HASH: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
-        const LEDGER: &i64 = &539;
-        const CREATED_AT: &str = "2024-06-11T21:36:12Z";
-        const SOURCE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
-        const SOURCE_ACCOUNT_SEQUENCE: &str = "1";
-        const FEE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
-        const FEE_CHARGED: &str = "1100";
-        const MAX_FEE: &str = "1100";
-        const OPERATION_COUNT: &i64 = &11;
-        // TODO: Is it necessary to test the following 4 values, as they're very long?
-        // const ENVELOPE_XDR: &str = "";
-        // const RESULT_XDR: &str = "";
-        // const RESULT_META_XDR: &str = "";
-        // const FEE_META_XDR: &str = "";
-        const MEMO_TYPE: &str = "none";
-        const SIGNATURE: &str = "NUHx9PZlcXQ9mq1lf1usrSTP4/gbxUqzUOQOSU/pQuy9dF7FcUF0fjEbzFECxHUcl4QEfbvyGIE029TA3DrODA==";
-        const VALID_AFTER: &str = "1970-01-01T00:00:00Z";
-        const MIN_TIME: &str = "0";
 
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org"
@@ -155,31 +157,6 @@ pub mod test {
 
     #[tokio::test]
     async fn test_get_all_transactions() {
-        const LINK_SELF: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
-        const LINK_ACCOUNT: &str = "https://horizon-testnet.stellar.org/accounts/GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
-        const LINK_LEDGER: &str = "https://horizon-testnet.stellar.org/ledgers/539";
-        const LINK_OPERATIONS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/operations{?cursor,limit,order}";
-        const LINK_EFFECTS: &str =  "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/effects{?cursor,limit,order}";
-        const LINK_PRECEDES: &str = "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=2314987376640";
-        const LINK_SUCCEEDS: &str = "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=2314987376640";
-        const LINK_TRANSACTION: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
-        const ID: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
-        const PAGING_TOKEN: &str = "2314987376640";
-        const SUCCESSFUL: &bool = &true;
-        const HASH: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
-        const LEDGER: &i64 = &539;
-        const CREATED_AT: &str = "2024-06-11T21:36:12Z";
-        const SOURCE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
-        const SOURCE_ACCOUNT_SEQUENCE: &str = "1";
-        const FEE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
-        const FEE_CHARGED: &str = "1100";
-        const MAX_FEE: &str = "1100";
-        const OPERATION_COUNT: &i64 = &11;
-        const MEMO_TYPE: &str = "none";
-        const SIGNATURE: &str = "NUHx9PZlcXQ9mq1lf1usrSTP4/gbxUqzUOQOSU/pQuy9dF7FcUF0fjEbzFECxHUcl4QEfbvyGIE029TA3DrODA==";
-        const VALID_AFTER: &str = "1970-01-01T00:00:00Z";
-        const MIN_TIME: &str = "0";
-
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org"
             .to_string())
@@ -194,6 +171,51 @@ pub mod test {
 
         assert!(all_transactions_response.clone().is_ok());
         let binding = all_transactions_response.unwrap();
+        let record = &binding.embedded().records()[0];
+        assert_eq!(record.links().self_link().href().as_ref().unwrap(), LINK_SELF);
+        assert_eq!(record.links().account().href().as_ref().unwrap(), LINK_ACCOUNT);
+        assert_eq!(record.links().ledger().href().as_ref().unwrap(), LINK_LEDGER);
+        assert_eq!(record.links().operations().href().as_ref().unwrap(), LINK_OPERATIONS);
+        assert_eq!(record.links().effects().href().as_ref().unwrap(), LINK_EFFECTS);
+        assert_eq!(record.links().precedes().href().as_ref().unwrap(), LINK_PRECEDES);
+        assert_eq!(record.links().succeeds().href().as_ref().unwrap(), LINK_SUCCEEDS);
+        assert_eq!(record.links().transaction().href().as_ref().unwrap(), LINK_TRANSACTION);
+        assert_eq!(record.id(), ID);
+        assert_eq!(record.paging_token(), PAGING_TOKEN);
+        assert_eq!(record.successful(), SUCCESSFUL);
+        assert_eq!(record.hash(), HASH);
+        assert_eq!(record.ledger(), LEDGER);
+        assert_eq!(record.created_at(), CREATED_AT);
+        assert_eq!(record.source_account(), SOURCE_ACCOUNT);
+        assert_eq!(record.source_account_sequence(), SOURCE_ACCOUNT_SEQUENCE);
+        assert_eq!(record.fee_account(), FEE_ACCOUNT);
+        assert_eq!(record.fee_charged(), FEE_CHARGED);
+        assert_eq!(record.max_fee(), MAX_FEE);
+        assert_eq!(record.operation_count(), OPERATION_COUNT);
+        assert_eq!(record.memo_type(), MEMO_TYPE);
+        assert_eq!(record.signatures()[0], SIGNATURE); // Check only the first signature of the vector
+        assert_eq!(record.valid_after().as_ref().unwrap(), VALID_AFTER);
+        assert_eq!(record.preconditions().as_ref().unwrap().timebounds().min_time(), MIN_TIME);
+    }
+
+    #[tokio::test]
+    async fn test_get_transactions_for_account() {
+
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org"
+            .to_string())
+            .unwrap();
+
+        let transactions_for_account_request = TransactionsForAccountRequest::new()
+            .set_account_id("GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H".to_string())
+            .unwrap();
+
+        let transactions_for_account_response = horizon_client
+            .get_transactions_for_account(&transactions_for_account_request)
+            .await;
+
+        assert!(transactions_for_account_response.clone().is_ok());
+        let binding = transactions_for_account_response.unwrap();
         let record = &binding.embedded().records()[0];
         assert_eq!(record.links().self_link().href().as_ref().unwrap(), LINK_SELF);
         assert_eq!(record.links().account().href().as_ref().unwrap(), LINK_ACCOUNT);

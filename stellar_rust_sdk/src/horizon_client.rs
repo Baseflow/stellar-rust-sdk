@@ -1645,7 +1645,19 @@ impl HorizonClient {
     ) -> Result<AllTransactionsResponse, String> {
         self.get::<AllTransactionsResponse>(request).await
     }
+    
+    // TODO: Documentation
+    pub async fn get_transactions_for_account(
+        &self,
+        request: &TransactionsForAccountRequest<TransactionsAccountId>,
+    ) -> Result<AllTransactionsResponse, String> {
+        self.get::<AllTransactionsResponse>(request).await
+    }
 }
+    
+
+
+
 
 /// Handles the response received from an HTTP request made to the Horizon server.
 ///
