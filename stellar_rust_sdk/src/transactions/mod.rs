@@ -24,6 +24,10 @@ pub mod transactions_for_account_request;
 // TODO: Documentation
 pub mod transactions_for_ledger_request;
 
+// TODO: Documentation
+pub mod transactions_for_liquidity_pool_request;
+
+
 /// Provides the responses.
 ///
 /// This module defines structures representing the response from the Horizon API when querying
@@ -76,6 +80,7 @@ pub mod prelude {
     pub use super::all_transactions_request::*;
     pub use super::transactions_for_account_request::*;
     pub use super::transactions_for_ledger_request::*;
+    pub use super::transactions_for_liquidity_pool_request::*;
     pub use super::response::*;
 }
 
