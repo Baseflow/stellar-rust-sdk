@@ -43,7 +43,7 @@ pub mod single_ledger_request;
 /// This variable is intended to be used internally by the request-building logic
 /// to ensure consistent and accurate path construction for ledger-related API calls.
 ///
-static LEDGERS_PATH: &str = "ledgers";
+pub(crate) static LEDGERS_PATH: &str = "ledgers";
 
 /// The `prelude` module for the `ledgers` module in the Stellar Horizon Rust SDK.
 ///
