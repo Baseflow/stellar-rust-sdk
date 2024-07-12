@@ -246,4 +246,53 @@ pub mod test {
         assert_eq!(record.valid_after().as_ref().unwrap(), VALID_AFTER);
         assert_eq!(record.preconditions().as_ref().unwrap().timebounds().min_time(), MIN_TIME);
     }
+
+    #[tokio::test]
+    async fn test_get_transactions_for_ledger() {
+        use crate::{models::*, BuildQueryParametersExt, Paginatable};
+
+        const LEDGER_SEQUENCE: &str = "539";
+
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org"
+            .to_string())
+            .unwrap();
+
+        let transactions_for_ledger_request = TransactionsForLedgerRequest::new()
+            .set_ledger_sequence(LEDGER_SEQUENCE.to_string())
+            .unwrap()
+            .set_include_failed(true).unwrap();
+
+        let transactions_for_ledger_response = horizon_client
+            .get_transactions_for_ledger(&transactions_for_ledger_request)
+            .await;
+
+        assert!(transactions_for_ledger_response.clone().is_ok());
+        let binding = transactions_for_ledger_response.unwrap();
+        let record = &binding.embedded().records()[0];
+        assert_eq!(record.links().self_link().href().as_ref().unwrap(), LINK_SELF);
+        assert_eq!(record.links().account().href().as_ref().unwrap(), LINK_ACCOUNT);
+        assert_eq!(record.links().ledger().href().as_ref().unwrap(), LINK_LEDGER);
+        assert_eq!(record.links().operations().href().as_ref().unwrap(), LINK_OPERATIONS);
+        assert_eq!(record.links().effects().href().as_ref().unwrap(), LINK_EFFECTS);
+        assert_eq!(record.links().precedes().href().as_ref().unwrap(), LINK_PRECEDES);
+        assert_eq!(record.links().succeeds().href().as_ref().unwrap(), LINK_SUCCEEDS);
+        assert_eq!(record.links().transaction().href().as_ref().unwrap(), LINK_TRANSACTION);
+        assert_eq!(record.id(), ID);
+        assert_eq!(record.paging_token(), PAGING_TOKEN);
+        assert_eq!(record.successful(), SUCCESSFUL);
+        assert_eq!(record.hash(), HASH);
+        assert_eq!(record.ledger(), LEDGER);
+        assert_eq!(record.created_at(), CREATED_AT);
+        assert_eq!(record.source_account(), SOURCE_ACCOUNT);
+        assert_eq!(record.source_account_sequence(), SOURCE_ACCOUNT_SEQUENCE);
+        assert_eq!(record.fee_account(), FEE_ACCOUNT);
+        assert_eq!(record.fee_charged(), FEE_CHARGED);
+        assert_eq!(record.max_fee(), MAX_FEE);
+        assert_eq!(record.operation_count(), OPERATION_COUNT);
+        assert_eq!(record.memo_type(), MEMO_TYPE);
+        assert_eq!(record.signatures()[0], SIGNATURE); // Check only the first signature of the vector
+        assert_eq!(record.valid_after().as_ref().unwrap(), VALID_AFTER);
+        assert_eq!(record.preconditions().as_ref().unwrap().timebounds().min_time(), MIN_TIME);
+    }
 }
