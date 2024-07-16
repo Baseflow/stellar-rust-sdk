@@ -2,11 +2,11 @@ use crate::{models::*, BuildQueryParametersExt};
 use stellar_rust_sdk_derive::Pagination;
 use crate::Paginatable;
 
-// TODO: Documentation
+/// Represents the ID of a liquidity pool for which the transactions are to be retrieved.
 #[derive(Default, Clone)]
 pub struct TransactionsLiquidityPoolId(String);
 
-// TODO: Documentation
+/// Represents the absence of an ID of a liquidity pool for which the transactions are to be retrieved.
 #[derive(Default, Clone)]
 pub struct NoTransactionsLiquidityPoolId;
 
@@ -56,6 +56,15 @@ impl TransactionsForLiquidityPoolRequest<NoTransactionsLiquidityPoolId> {
 }
 
 impl TransactionsForLiquidityPoolRequest<TransactionsLiquidityPoolId> {
+    /// Sets the `include_failed` field for the request. Can only be set on a request that
+    /// has a set liquidity pool id.
+    ///
+    /// # Arguments
+    /// * `include_failed` - A `bool` to indicate whether or not to include failed operations.
+    ///
+    /// # Returns
+    /// A `TransactionsForLiquidityPoolRequest` with the updated `include_failed` field.
+    ///
     pub fn set_include_failed(
         self,
         include_failed: bool,
@@ -84,7 +93,8 @@ impl Request for TransactionsForLiquidityPoolRequest<TransactionsLiquidityPoolId
     }
 
     fn build_url(&self, base_url: &str) -> String {
-        // TODO: Documentation
+        // This URL comprises paths and query parameters.
+        // Additionally, this request uses the API endpoint for `liquidity_pools`.
         let liquidity_pool_id = &self.liquidity_pool_id.0;
         use crate::liquidity_pools::LIQUIDITY_POOLS_PATH;
         format!(

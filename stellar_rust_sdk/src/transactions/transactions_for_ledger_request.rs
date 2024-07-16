@@ -2,17 +2,17 @@ use crate::{models::*, BuildQueryParametersExt};
 use stellar_rust_sdk_derive::Pagination;
 use crate::Paginatable;
 
-// TODO: Documentation
+/// Represents the ID of a ledger for which the transactions are to be retrieved.
 #[derive(Default, Clone)]
 pub struct TransactionsLedgerId(String);
 
-// TODO: Documentation
+/// Represents the absence of an ID of a ledger for which the transactions are to be retrieved.
 #[derive(Default, Clone)]
 pub struct NoTransactionsLedgerId;
 
 #[derive(Default, Pagination)]
 pub struct TransactionsForLedgerRequest<S> {
-    /// The ID of the account for which the transactions are to be retrieved.
+    /// The ID of the ledger for which the transactions are to be retrieved.
     ledger_sequence: S,
     // Indicates whether or not to include failed operations in the response.
     include_failed: Option<bool>,
@@ -33,13 +33,13 @@ impl TransactionsForLedgerRequest<NoTransactionsLedgerId> {
         TransactionsForLedgerRequest::default()
     }
 
-    /// Sets the account ID for the request.
+    /// Sets the ledger ID for the request.
     ///
     /// # Arguments
-    /// * `account_id` - The account ID for which the transactions are to be retrieved.
+    /// * `ledger_id` - The ledger ID for which the transactions are to be retrieved.
     ///
     /// # Returns
-    /// A `TransactionsForAccountRequest` with the specified account ID, or an error if the account ID is invalid.
+    /// A `TransactionsForLedgerRequest` with the specified ledger ID.
     ///
     pub fn set_ledger_sequence(
         self,
@@ -56,6 +56,15 @@ impl TransactionsForLedgerRequest<NoTransactionsLedgerId> {
 }
 
 impl TransactionsForLedgerRequest<TransactionsLedgerId> {
+    /// Sets the `include_failed` field for the request. Can only be set on a request that
+    /// has a set ledger id.
+    ///
+    /// # Arguments
+    /// * `include_failed` - A `bool` to indicate whether or not to include failed operations.
+    ///
+    /// # Returns
+    /// A `TransactionsForLedgerRequest` with the updated `include_failed` field.
+    ///
     pub fn set_include_failed(
         self,
         include_failed: bool,
@@ -84,7 +93,8 @@ impl Request for TransactionsForLedgerRequest<TransactionsLedgerId> {
     }
 
     fn build_url(&self, base_url: &str) -> String {
-        // TODO: Documentation
+        // This URL comprises paths and query parameters.
+        // Additionally, this request uses the API endpoint for `ledgers`.
         let ledger_sequence = &self.ledger_sequence.0;
         use crate::ledgers::LEDGERS_PATH;
         format!(

@@ -2,11 +2,11 @@ use crate::{models::*, BuildQueryParametersExt};
 use stellar_rust_sdk_derive::Pagination;
 use crate::Paginatable;
 
-// TODO: Documentation
+/// Represents the ID of an account for which the transactions are to be retrieved.
 #[derive(Default, Clone)]
 pub struct TransactionsAccountId(String);
 
-// TODO: Documentation
+/// Represents the absence of an ID of an account for which the transactions are to be retrieved.
 #[derive(Default, Clone)]
 pub struct NoTransactionsAccountId;
 
@@ -56,6 +56,15 @@ impl TransactionsForAccountRequest<NoTransactionsAccountId> {
 }
 
 impl TransactionsForAccountRequest<TransactionsAccountId> {
+    /// Sets the `include_failed` field for the request. Can only be set on a request that
+    /// has a set account id.
+    ///
+    /// # Arguments
+    /// * `include_failed` - A `bool` to indicate whether or not to include failed operations.
+    ///
+    /// # Returns
+    /// A `TransactionsForAccountRequest` with the updated `include_failed` field.
+    ///
     pub fn set_include_failed(
         self,
         include_failed: bool,
@@ -84,7 +93,8 @@ impl Request for TransactionsForAccountRequest<TransactionsAccountId> {
     }
 
     fn build_url(&self, base_url: &str) -> String {
-        // TODO: Documentation
+        // This URL comprises paths and query parameters.
+        // Additionally, this request uses the API endpoint for `accounts`.
         let account_id = &self.account_id.0;
         use crate::accounts::ACCOUNTS_PATH;
         format!(

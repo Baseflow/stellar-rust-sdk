@@ -1646,7 +1646,52 @@ impl HorizonClient {
         self.get::<AllTransactionsResponse>(request).await
     }
     
-    // TODO: Documentation
+    /// Retrieves a list of all transactions for a given account from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all transactions for a given account from
+    /// the Horizon server. It requires an [`TransactionsForAccountRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`TransactionsForAccountRequest`] instance, containing the
+    /// parameters for the transactions request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`AllTransactionsResponse`], which includes
+    /// the list of all transactions obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`TransactionsForAccountRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::transactions::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// # use stellar_rust_sdk_derive::Pagination;
+    /// # use stellar_rs::Paginatable;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = TransactionsForAccountRequest::new()
+    ///     .set_account_id("GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H".to_string()).unwrap()
+    ///     .set_include_failed(true).unwrap();
+    ///
+    /// let response = horizon_client.get_transactions_for_account(&request).await;
+    ///
+    /// // Access the transactions
+    /// if let Ok(transactions_response) = response {
+    ///     for transaction in transactions_response.embedded().records() {
+    ///         println!("Transaction ID: {}", transaction.id());
+    ///         // Further processing...
+    ///     }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_transactions_for_account(
         &self,
         request: &TransactionsForAccountRequest<TransactionsAccountId>,
@@ -1654,7 +1699,52 @@ impl HorizonClient {
         self.get::<AllTransactionsResponse>(request).await
     }
     
-    // TODO: Documentation
+    /// Retrieves a list of all transactions in a given ledger from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all transactions in a given ledger from
+    /// the Horizon server. It requires an [`TransactionsForLedgerRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`TransactionsForLedgerRequest`] instance, containing the
+    /// parameters for the transactions request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`AllTransactionsResponse`], which includes
+    /// the list of all transactions obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`TransactionsForLedgerRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::transactions::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// # use stellar_rust_sdk_derive::Pagination;
+    /// # use stellar_rs::Paginatable;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = TransactionsForLedgerRequest::new()
+    ///     .set_ledger_sequence("539".to_string()).unwrap()
+    ///     .set_include_failed(true).unwrap();
+    ///
+    /// let response = horizon_client.get_transactions_for_ledger(&request).await;
+    ///
+    /// // Access the transactions
+    /// if let Ok(transactions_response) = response {
+    ///     for transaction in transactions_response.embedded().records() {
+    ///         println!("Transaction ID: {}", transaction.id());
+    ///         // Further processing...
+    ///     }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_transactions_for_ledger(
         &self,
         request: &TransactionsForLedgerRequest<TransactionsLedgerId>,
@@ -1662,7 +1752,52 @@ impl HorizonClient {
         self.get::<AllTransactionsResponse>(request).await
     }
 
-    // TODO: Documentation
+    /// Retrieves a list of all transactions referencing a given liquidity pool from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all transactions referencing a given liquidity pool from
+    /// the Horizon server. It requires an [`TransactionsForLiquidityPoolRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`TransactionsForLiquidityPoolRequest`] instance, containing the
+    /// parameters for the transactions request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`AllTransactionsResponse`], which includes
+    /// the list of all transactions obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`TransactionsForLiquidityPoolRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::transactions::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// # use stellar_rust_sdk_derive::Pagination;
+    /// # use stellar_rs::Paginatable;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = TransactionsForLiquidityPoolRequest::new()
+    ///     .set_liquidity_pool_id("0066b15f5d0dc0be771209c33f3e4126383e58183a598eae8b3813024c6a6d10".to_string()).unwrap()
+    ///     .set_include_failed(true).unwrap();
+    ///
+    /// let response = horizon_client.get_transactions_for_liquidity_pool(&request).await;
+    ///
+    /// // Access the transactions
+    /// if let Ok(transactions_response) = response {
+    ///     for transaction in transactions_response.embedded().records() {
+    ///         println!("Transaction ID: {}", transaction.id());
+    ///         // Further processing...
+    ///     }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_transactions_for_liquidity_pool(
         &self,
         request: &TransactionsForLiquidityPoolRequest<TransactionsLiquidityPoolId>,
