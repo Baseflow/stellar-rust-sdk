@@ -33,6 +33,7 @@ use crate::{
         details_request::{BuyingAsset, DetailsRequest, SellingAsset},
         response::DetailsResponse,
     },
+    trade_aggregations::prelude::*,
     transactions::prelude::*,
     trades::prelude::*,
 };
@@ -1139,6 +1140,15 @@ impl HorizonClient {
     ) -> Result<DetailsResponse, String> {
         self.get::<DetailsResponse>(request).await
     }
+
+    // TODO: Documentation
+    pub async fn get_trade_aggregations(
+        &self,
+        request: &TradeAggregationsRequest,
+    ) -> Result<AllTradeAggregationsResponse, String> {
+        self.get::<AllTradeAggregationsResponse>(request).await
+    }
+
 
     /// Retrieves a list of all trades from the Horizon server.
     ///
