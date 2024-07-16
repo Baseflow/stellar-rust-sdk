@@ -45,10 +45,6 @@ impl TransactionsForLiquidityPoolRequest<NoTransactionsLiquidityPoolId> {
         self,
         liquidity_pool_id: String,
     ) -> Result<TransactionsForLiquidityPoolRequest<TransactionsLiquidityPoolId>, String> {
-        if let Err(e) = is_public_key(&liquidity_pool_id) {
-            return Err(e.to_string());
-        }
-
         Ok(TransactionsForLiquidityPoolRequest {
             liquidity_pool_id: TransactionsLiquidityPoolId(liquidity_pool_id),
             include_failed: self.include_failed,
