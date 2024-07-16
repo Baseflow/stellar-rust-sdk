@@ -508,6 +508,9 @@ pub mod operations;
 /// 
 pub mod order_book;
 
+// TODO: Documentation
+pub mod trade_aggregations;
+
 /// Provides `Request` and `Response` structs for retrieving transactions.
 ///
 /// This module provides a set of specialized request and response structures designed for
