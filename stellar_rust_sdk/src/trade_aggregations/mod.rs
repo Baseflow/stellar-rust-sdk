@@ -2,7 +2,7 @@
 pub mod trade_aggregations_request;
 
 // TODO: Documentation
-static TRADES_PATH: &str = "trades";
+static TRADE_AGGREGATIONS_PATH: &str = "trade_aggregations";
 
 // TODO: Documentation
 pub mod prelude {
