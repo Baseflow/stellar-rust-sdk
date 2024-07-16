@@ -18,13 +18,35 @@ pub mod single_transaction_request;
 ///
 pub mod all_transactions_request;
 
-// TODO: Documentation
+/// Provides the `TransactionsForAccountRequest`.
+///
+/// # Usage
+/// This module provides the `TransactionsForAccountRequest` struct, specifically designed for
+/// constructing requests to query information about all successful transactions for a given account from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_transactions_for_account`](crate::horizon_client::HorizonClient::get_transactions_for_account)
+/// method.
+///
 pub mod transactions_for_account_request;
 
-// TODO: Documentation
+/// Provides the `TransactionsForLedgersRequest`.
+///
+/// # Usage
+/// This module provides the `TransactionsForLedgersRequest` struct, specifically designed for
+/// constructing requests to query information about all successful transactions in a given ledger from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_transactions_for_ledger`](crate::horizon_client::HorizonClient::get_transactions_for_ledger)
+/// method.
+///
 pub mod transactions_for_ledger_request;
 
-// TODO: Documentation
+/// Provides the `TransactionsForLiquidityPoolRequest`.
+///
+/// # Usage
+/// This module provides the `TransactionsForLiquidityPoolRequest` struct, specifically designed for
+/// constructing requests to query information about all successful transactions referencing 
+/// a given liquidity pool from the Horizon server. 
+/// It is tailored for use with the [`HorizonClient::get_transactions_for_liquidity_pool`](crate::horizon_client::HorizonClient::get_transactions_for_liquidity_pool)
+/// method.
+///
 pub mod transactions_for_liquidity_pool_request;
 
 
@@ -121,7 +143,6 @@ pub mod test {
 
     #[tokio::test]
     async fn test_get_single_transaction() {
-
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org"
             .to_string())
@@ -172,7 +193,8 @@ pub mod test {
             .unwrap();
 
         let all_transactions_request = AllTransactionsRequest::new()
-            .set_include_failed(true).unwrap();
+            .set_include_failed(true)
+            .unwrap();
 
         let all_transactions_response = horizon_client
             .get_all_transactions(&all_transactions_request)
@@ -209,7 +231,6 @@ pub mod test {
 
     #[tokio::test]
     async fn test_get_transactions_for_account() {
-
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org"
             .to_string())
@@ -217,6 +238,8 @@ pub mod test {
 
         let transactions_for_account_request = TransactionsForAccountRequest::new()
             .set_account_id("GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H".to_string())
+            .unwrap()
+            .set_include_failed(true)
             .unwrap();
 
         let transactions_for_account_response = horizon_client
@@ -254,8 +277,6 @@ pub mod test {
 
     #[tokio::test]
     async fn test_get_transactions_for_ledger() {
-        use crate::{models::*, BuildQueryParametersExt, Paginatable};
-
         const LEDGER_SEQUENCE: &str = "539";
 
         let horizon_client =
@@ -266,7 +287,8 @@ pub mod test {
         let transactions_for_ledger_request = TransactionsForLedgerRequest::new()
             .set_ledger_sequence(LEDGER_SEQUENCE.to_string())
             .unwrap()
-            .set_include_failed(true).unwrap();
+            .set_include_failed(true)
+            .unwrap();
 
         let transactions_for_ledger_response = horizon_client
             .get_transactions_for_ledger(&transactions_for_ledger_request)
