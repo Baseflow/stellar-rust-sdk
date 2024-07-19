@@ -4,7 +4,7 @@ use crate::{models::*, BuildQueryParametersExt};
 #[derive(PartialEq, Debug, Default)]
 pub struct TradeAsset(AssetType);
 
-// Contains the details of a non-native asset.
+/// Contains the details of a non-native asset.
 #[derive(PartialEq, Debug, Default)]
 pub struct AssetData {
     pub asset_code: String,
@@ -23,7 +23,7 @@ pub enum AssetType {
     Alphanumeric12(AssetData),
 }
 
-// TODO: Documentation
+/// Represents the supported segment duration times in milliseconds. 
 #[derive(PartialEq, Debug, Default)]
 pub enum Resolution {
     #[default]
@@ -37,29 +37,55 @@ pub enum Resolution {
 impl std::fmt::Display for Resolution {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Resolution::Value60000 => write!(f, "60000"),
-            Resolution::Value300000 => write!(f, "300000"),
-            Resolution::Value900000 => write!(f, "900000"),
-            Resolution::Value3600000 => write!(f, "3600000"),
-            Resolution::Value604800000 => write!(f, "604800000"),
+            Resolution::Value60000 => write!(f, "60000"), // 1 minute
+            Resolution::Value300000 => write!(f, "300000"), // 5 minutes
+            Resolution::Value900000 => write!(f, "900000"), // 15 minutes
+            Resolution::Value3600000 => write!(f, "3600000"), // 1 day
+            Resolution::Value604800000 => write!(f, "604800000"), // 1 week
         }
     }
 }
 
-// TODO: Documentation
+/// Represents a request to list trade aggregations from the Stellar Horizon API.
+///
+/// This structure is used to construct a query to retrieve a comprehensive list of trade aggregations, which will be filtered
+/// by the mandatory base asset, counter asset and resolution fields. Additional filters such as start time, end time, limit
+/// and order can be supplied. It adheres to the structure and parameters required by the Horizon API for retrieving a 
+/// <a href="https://developers.stellar.org/docs/data/horizon/api-reference/list-trade-aggregations">list of trade aggregations</a>.
+///
+/// # Usage
+///
+/// Create an instance of this struct and set the desired query parameters to filter the list of trade aggregations.
+/// Pass this request object to the [`HorizonClient::get_trade_aggregations`](crate::horizon_client::HorizonClient::get_trade_aggregations)
+/// method to fetch the corresponding data from the Horizon API.
+///
+/// # Example
+/// ```
+/// use stellar_rs::{trade_aggregations::prelude::*, models::*, Paginatable};
+///
+/// let request = TradeAggregationsRequest::new()
+///     .set_base_asset(AssetType::Native).unwrap() // Optional selling asset filter
+///     .set_counter_asset(AssetType::Alphanumeric4(AssetData{
+///        asset_issuer: "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI".to_string(),
+///        asset_code: "XETH".to_string(),
+///     })).unwrap()
+///     .set_limit(100).unwrap() // Optional limit for response records
+///     .set_order(Order::Desc); // Optional order of records
+///
+/// // Use with HorizonClient::get_trade_aggregations
+/// ```
+///
 #[derive(PartialEq, Default)]
 pub struct TradeAggregationsRequest {
     /// The base asset of the trade aggregation.
     pub base_asset: TradeAsset,
     /// The counter asset of the trade.
     pub counter_asset: TradeAsset,
-    // TODO: Documentation
-    // TODO: test if this field is optional
+    // The lower time boundary represented as milliseconds since epoch. Optional.
     pub start_time: Option<i64>,
-    // TODO: Documentation
-    // TODO: test if this field is optional
+    // The upper time boundary represented as milliseconds since epoch. Optional.
     pub end_time: Option<i64>,
-    // TODO: Documentation
+    // TThe segment duration represented as milliseconds.
     pub resolution: String,
     /// Specifies the maximum number of records to be returned in a single response.
     /// The range for this parameter is from 1 to 200. The default value is set to 10.
@@ -119,7 +145,12 @@ impl TradeAggregationsRequest {
         })
     }
 
-    // TODO: Documentation
+    /// Specifies the start time in the request.
+    ///
+    /// # Arguments
+    ///
+    /// * `start_time` - The lower time boundary represented as milliseconds since epoch.
+    ///
     pub fn set_start_time(
         self,
         start_time: Option<i64>,
@@ -130,7 +161,12 @@ impl TradeAggregationsRequest {
         })
     }
 
-    // TODO: Documentation
+    /// Specifies the end time in the request.
+    ///
+    /// # Arguments
+    ///
+    /// * `end_time` - The upper time boundary represented as milliseconds since epoch.
+    ///
     pub fn set_end_time(
         self,
         end_time: Option<i64>,
@@ -141,7 +177,12 @@ impl TradeAggregationsRequest {
         })
     }
 
-    // TODO: Documentation
+    /// Specifies the resolution in the request.
+    ///
+    /// # Arguments
+    ///
+    /// * `resolution` - The segment duration represented as milliseconds.
+    ///
     pub fn set_resolution(
         self,
         resolution: String,
@@ -152,7 +193,12 @@ impl TradeAggregationsRequest {
         })
     }
 
-    // TODO: Documentation
+    /// Specifies the maximum number of records to be returned.
+    ///
+    /// # Arguments
+    ///
+    /// * `limit` - The maximum number of records.
+    ///
     pub fn set_limit(self, limit: u8) -> Result<Self, String> {
         // Validate limit if necessary
         if !(1..=200).contains(&limit) {
@@ -162,17 +208,20 @@ impl TradeAggregationsRequest {
         }
     }
 
-    // TODO: Documentation
+    /// Specifies the order of records in the record.
+    /// Valid options are [`Order::Asc`] (ascending)
+    /// and [`Order::Desc`] (descending). If not specified, it defaults to ascending.    /// # Arguments
+    ///
+    /// * `order` - A variant of the  [`Order`] enum.
+    ///
     pub fn set_order(self, order: Order) -> Result<Self, String> {
         // No validation required for setting the order in this context
         Ok(Self { order: Some(order), ..self })
     }
-
 }
 
 impl Request for TradeAggregationsRequest {
     fn get_query_parameters(&self) -> String {
-        // TODO: Documentation - describe query parameters string construction
         let mut asset_parameters: Vec<String> = Vec::new();
         match &self.base_asset.0 {
             AssetType::Native => {

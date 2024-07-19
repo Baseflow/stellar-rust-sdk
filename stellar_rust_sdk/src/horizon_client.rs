@@ -1141,14 +1141,50 @@ impl HorizonClient {
         self.get::<DetailsResponse>(request).await
     }
 
-    // TODO: Documentation
+    /// Retrieves a list of trade aggregations from the Horizon server.
+    /// 
+    /// This asynchronous method fetches a list of trade aggregations from the Horizon server.
+    /// It requires a [`TradeAggregationsRequest`] to specify the parameters for the trade aggregations request.
+    /// 
+    /// # Arguments
+    /// * `request` - A reference to a [`TradeAggregationsRequest`] instance, containing the parameters for the order book details request.
+    /// 
+    /// # Returns
+    /// 
+    /// On successful execution, returns a `Result` containing a [`AllTradeAggregationsResponse`], which includes the list of order book details obtained from the Horizon server.
+    /// If the request fails, it returns an error within `Result`.
+    /// 
+    /// # Usage
+    /// To use this method, create an instance of [`TradeAggregationsRequest`] and set any desired filters or parameters.
+    /// 
+    /// ```rust
+    /// use stellar_rs::horizon_client::HorizonClient;
+    /// use stellar_rs::trade_aggregations::prelude::*;
+    /// use stellar_rs::models::Request;
+    /// 
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+    /// 
+    /// // Example: Fetching trade aggregations
+    /// let request = TradeAggregationsRequest::new()
+    ///     .set_base_asset(AssetType::Native).unwrap()
+    ///     .set_counter_asset(AssetType::Alphanumeric4(AssetData {
+    ///         asset_code: "USDC".to_string(),
+    ///         asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string(),
+    ///     })).unwrap();
+    /// let response = horizon_client.get_trade_aggregations(&request).await?;
+    /// 
+    /// // Process the response...
+    /// # Ok(())
+    /// # }
+    /// ```
+    /// 
     pub async fn get_trade_aggregations(
         &self,
         request: &TradeAggregationsRequest,
     ) -> Result<AllTradeAggregationsResponse, String> {
         self.get::<AllTradeAggregationsResponse>(request).await
     }
-
 
     /// Retrieves a list of all trades from the Horizon server.
     ///

@@ -508,7 +508,44 @@ pub mod operations;
 /// 
 pub mod order_book;
 
-// TODO: Documentation
+/// Provides `Request` and `Response` structs for retrieving trade aggregation details.
+/// 
+/// The `trade_aggregations` module in the Stellar Horizon SDK includes structures and methods that facilitate
+/// querying trade aggregations data from the Horizon server.
+/// 
+/// # Usage
+/// 
+/// This module is used to construct requests for trade aggregations related data and to parse the responses
+/// received from the Horizon server. It includes request and response structures for querying
+/// trade aggregations.
+/// 
+/// # Example
+/// 
+/// To use this module, you can create an instance of a request struct, such as `TradeAggregationsRequest`,
+/// set any desired query parameters, and pass the request to the `HorizonClient`. The client will
+/// then execute the request and return the corresponding response struct, like `AllTradeAggregationsResponse`.
+/// 
+/// ```rust
+/// use stellar_rs::horizon_client::HorizonClient;
+/// use stellar_rs::trade_aggregations::prelude::*;
+/// use stellar_rs::models::Request;
+/// 
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// 
+/// // Example: Fetching trade aggregations
+/// let request = TradeAggregationsRequest::new()
+///     .set_base_asset(AssetType::Native).unwrap()
+///     .set_counter_asset(AssetType::Alphanumeric4(AssetData {
+///         asset_code: "USDC".to_string(),
+///         asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string(),
+///     })).unwrap();
+/// let response = horizon_client.get_trade_aggregations(&request).await?;
+/// 
+/// // Process the response...
+/// # Ok(())
+/// # }
+/// ```
 pub mod trade_aggregations;
 
 /// Provides `Request` and `Response` structs for retrieving transactions.
