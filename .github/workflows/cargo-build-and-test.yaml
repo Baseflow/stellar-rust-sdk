@@ -25,12 +25,12 @@ jobs:
           curl -sL https://github.com/mozilla/grcov/releases/download/v0.8.10/grcov-x86_64-unknown-linux-gnu.tar.bz2 | tar jxf - -C "${HOME}/.local/bin"
           echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: cargo update
-        run: cargo update --manifest-path=stellar_rust_sdk/Cargo.toml
+        run: cargo update
       - name: cargo test
         run: |
           mkdir -p ./coverage
-          CARGO_INCREMENTAL=0 RUSTFLAGS='-Cinstrument-coverage' LLVM_PROFILE_FILE='cargo-test-%p-%m.profraw' cargo test --manifest-path=stellar_rust_sdk/Cargo.toml
-          grcov . --binary-path ./stellar_rust_sdk/target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --ignore '../*' --ignore "/*" -o ./coverage/tests.lcov
+          CARGO_INCREMENTAL=0 RUSTFLAGS='-Cinstrument-coverage' LLVM_PROFILE_FILE='cargo-test-%p-%m.profraw' cargo test
+          grcov . --binary-path ./target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --ignore '../*' --ignore "/*" -o ./coverage/tests.lcov
       - name: Check test coverage
         uses: tluijken/code-coverage-threshold@v1
         with:
@@ -66,4 +66,3 @@ jobs:
       with:
           registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
           args: --allow-dirty
-          path: stellar_rust_sdk
