@@ -14,12 +14,12 @@ pub mod tests {
         use crate::horizon_client;
         use crate::order_book::prelude::{Asset, AssetType, DetailsRequest};
 
-        const BIDS_N: &u32 = &6;
+        const BIDS_N: &u32 = &5;
         const BIDS_D: &u32 = &1;
-        const BIDS_PRICE: &str = "6.0000000";
-        const ASKS_N: &u32 = &7;
-        const ASKS_D: &u32 = &1;
-        const ASKS_PRICE: &str = "7.0000000";
+        const BIDS_PRICE: &str = "5.0000000";
+        const ASKS_N: &u32 = &10000000;
+        const ASKS_D: &u32 = &1666667;
+        const ASKS_PRICE: &str = "5.9999988";
         const BASE_ASSET_TYPE: &str = "native";
         const BASE_ASSET_CODE: &str = "IOM";
         const BASE_ASSET_ISSUER: &str = "GCDE6MVFIOYF7YZCSVA6V7MDCFTNWMIOF5PQU3DWPH27AHNX4ERY6AKS";
