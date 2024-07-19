@@ -235,6 +235,7 @@ impl std::fmt::Display for Order {
 #[derive(Default)]
 pub enum IncludeFailed {
     True,
+    #[default]
     False,
 }
 

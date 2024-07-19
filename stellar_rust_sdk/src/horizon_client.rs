@@ -1,26 +1,17 @@
 use crate::{
-    accounts::prelude::*,
-    assets::prelude::{AllAssetsRequest, AllAssetsResponse},
-    claimable_balances::{
+    accounts::prelude::*, assets::prelude::{AllAssetsRequest, AllAssetsResponse}, claimable_balances::{
         all_claimable_balances_request::AllClaimableBalancesRequest,
         prelude::{AllClaimableBalancesResponse, ClaimableBalance},
         single_claimable_balance_request::{ClaimableBalanceId, SingleClaimableBalanceRequest},
-    },
-    effects::prelude::*,
-    fee_stats::{fee_stats_request::FeeStatsRequest, response::FeeStatsResponse},
-    ledgers::{
+    }, effects::prelude::*, fee_stats::{fee_stats_request::FeeStatsRequest, response::FeeStatsResponse}, ledgers::{
         prelude::{Ledger, LedgersRequest, LedgersResponse, SingleLedgerRequest},
         single_ledger_request::Sequence,
-    },
-    liquidity_pools::{
+    }, liquidity_pools::{
         all_liquidity_pools_request::AllLiquidityPoolsRequest,
         prelude::{
             AllLiquidityPoolsResponse, LiquidityPool, LiquidityPoolId, SingleLiquidityPoolRequest,
         },
-    },
-    models::{Request, Response},
-    offers::prelude::*,
-    operations::{
+    }, models::{Request, Response}, offers::prelude::*, operations::{
         operations_for_account_request::OperationsForAccountRequest,
         prelude::{
             AllOperationsRequest, OperationResponse, OperationsForLedgerRequest,
@@ -28,14 +19,14 @@ use crate::{
         },
         response::Operation,
         single_operation_request::{OperationId, SingleOperationRequest},
-    },
-    order_book::{
+    }, order_book::{
         details_request::{BuyingAsset, DetailsRequest, SellingAsset},
         response::DetailsResponse,
     },
     trade_aggregations::prelude::*,
     transactions::prelude::*,
     trades::prelude::*,
+    payments::prelude::*
 };
 use reqwest;
 use url::Url;
@@ -1142,29 +1133,29 @@ impl HorizonClient {
     }
 
     /// Retrieves a list of trade aggregations from the Horizon server.
-    /// 
+    ///
     /// This asynchronous method fetches a list of trade aggregations from the Horizon server.
     /// It requires a [`TradeAggregationsRequest`] to specify the parameters for the trade aggregations request.
-    /// 
+    ///
     /// # Arguments
     /// * `request` - A reference to a [`TradeAggregationsRequest`] instance, containing the parameters for the order book details request.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// On successful execution, returns a `Result` containing a [`AllTradeAggregationsResponse`], which includes the list of order book details obtained from the Horizon server.
     /// If the request fails, it returns an error within `Result`.
-    /// 
+    ///
     /// # Usage
     /// To use this method, create an instance of [`TradeAggregationsRequest`] and set any desired filters or parameters.
-    /// 
+    ///
     /// ```rust
     /// use stellar_rs::horizon_client::HorizonClient;
     /// use stellar_rs::trade_aggregations::prelude::*;
     /// use stellar_rs::models::Request;
-    /// 
+    ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
-    /// 
+    ///
     /// // Example: Fetching trade aggregations
     /// let request = TradeAggregationsRequest::new()
     ///     .set_base_asset(AssetType::Native).unwrap()
@@ -1174,12 +1165,12 @@ impl HorizonClient {
     ///     })).unwrap()
     ///     .set_resolution(Resolution(ResolutionData::Duration604800000)).unwrap();
     /// let response = horizon_client.get_trade_aggregations(&request).await?;
-    /// 
+    ///
     /// // Process the response...
     /// # Ok(())
     /// # }
     /// ```
-    /// 
+    ///
     pub async fn get_trade_aggregations(
         &self,
         request: &TradeAggregationsRequest<BaseAsset, CounterAsset, Resolution>,
@@ -1388,7 +1379,7 @@ impl HorizonClient {
     ) -> Result<AllTradesResponse, String> {
         self.get::<AllTradesResponse>(request).await
     }
-    
+
     /// Retrieves a list of all operations for a specific liquidity pool from the Horizon server.
     ///
     /// This asynchronous method fetches a list of all operations for a specific liquidity pool from the Horizon server.
@@ -1692,7 +1683,7 @@ impl HorizonClient {
     ) -> Result<AllTransactionsResponse, String> {
         self.get::<AllTransactionsResponse>(request).await
     }
-    
+
     /// Retrieves a list of all transactions for a given account from the Horizon server.
     ///
     /// This asynchronous method fetches a list of all transactions for a given account from
@@ -1745,7 +1736,7 @@ impl HorizonClient {
     ) -> Result<AllTransactionsResponse, String> {
         self.get::<AllTransactionsResponse>(request).await
     }
-    
+
     /// Retrieves a list of all transactions in a given ledger from the Horizon server.
     ///
     /// This asynchronous method fetches a list of all transactions in a given ledger from
