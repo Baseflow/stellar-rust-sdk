@@ -1,13 +1,59 @@
-// TODO: Documentation
+/// Provides the `TradeAggregationsRequest`.
+///
+/// This module provides the `TradeAggregationsRequest` struct, specifically designed for
+/// constructing requests to query information about trade aggregations from the Horizon
+/// server. It is tailored for use with the [`HorizonClient::get_trade_aggregations`](crate::horizon_client::HorizonClient::get_trade_aggregations)
+/// method.
+///
 pub mod trade_aggregations_request;
 
-// TODO: Documentation
+/// Provides the response.
+///
+/// This module defines structures representing the response from the Horizon API when querying
+/// for trade aggregations. The structures are designed to deserialize the JSON response into Rust
+/// objects, enabling straightforward access to various details of a single Stellar account.
+///
+/// These structures are equipped with serialization capabilities to handle the JSON data from the
+/// Horizon server and with getter methods for easy field access.
+///
 pub mod response;
 
-// TODO: Documentation
+/// The base path for trade aggregations related endpoints in the Horizon API.
+///
+/// # Usage
+/// This variable is intended to be used internally by the request-building logic
+/// to ensure consistent and accurate path construction for trade aggregations related API calls.
+///
 static TRADE_AGGREGATIONS_PATH: &str = "trade_aggregations";
 
-// TODO: Documentation
+/// The `prelude` module of the `trade aggregations` module.
+///
+/// This module serves as a convenience for users of the Horizon Rust SDK, allowing for easy and
+/// ergonomic import of the most commonly used items across various modules. It re-exports
+/// key structs and traits from the sibling modules, simplifying access to these components
+/// when using the library.
+///
+/// By importing the contents of `prelude`, users can conveniently access the primary
+/// functionalities of the trade aggregations related modules without needing to import each item
+/// individually.
+///
+/// # Contents
+///
+/// The `prelude` includes the following re-exports:
+///
+/// * From `trade_aggregations_request`: All items (e.g. `TradeAggregationsRequest`, `Resolution`, etc.).
+/// * From `response`: All items (e.g. `AllTradeAggregationsResponse`, `TradeAggregationResponse`, etc.).
+///
+/// # Example
+/// ```
+/// # use crate::stellar_rs::models::*;
+/// // Import the contents of the offers prelude
+/// use stellar_rs::trade_aggregations::prelude::*;
+///
+/// // Now you can directly use TradeAggregationsRequest.
+/// let trade_aggregations_request = TradeAggregationsRequest::new();
+/// ```
+///
 pub mod prelude {
     pub use super::trade_aggregations_request::*;
     pub use super::response::*;
