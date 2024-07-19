@@ -29,17 +29,17 @@ impl Response for AllTradeAggregationsResponse {
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct Ratio {
     /// The numenator.
-    #[serde(rename = "N")]
-    numenator: u32,
+    #[serde(rename = "n")]
+    numenator: String,
     /// The denominator.
-    #[serde(rename = "D")]
-    denominator: u32,
+    #[serde(rename = "d")]
+    denominator: String,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct TradeAggregationResponse {
-    timestamp: i64,
-    trade_count: u32,
+    timestamp: String,
+    trade_count: String,
     base_volume: String,
     counter_volume: String,
     avg: String,
