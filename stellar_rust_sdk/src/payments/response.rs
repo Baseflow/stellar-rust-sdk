@@ -1,7 +1,7 @@
 use derive_getters::Getters;
 use serde::{Deserialize, Serialize};
-use crate::liquidity_pools::prelude::LiquidityPool;
 use crate::models::prelude::{Embedded, ResponseLinks};
+use crate::models::Response;
 
 /// Represents the response from the Horizon server when querying for all payments.
 ///
@@ -16,7 +16,7 @@ pub struct AllPaymentsResponse {
     pub links: ResponseLinks,
     /// The embedded records of liquidity pools.
     #[serde(rename = "_embedded")]
-    pub embedded: Embedded<LiquidityPool>,
+    pub embedded: Embedded<Payment>,
 }
 
 /// Represents the payment record in the Horizon API response.
@@ -38,4 +38,10 @@ pub struct Payment {
     pub starting_balance: String,
     pub funder: String,
     pub account: String,
+}
+
+impl Response for AllPaymentsResponse {
+    fn from_json(json: String) -> Result<Self, String> {
+        serde_json::from_str(&json).map_err(|e| e.to_string())
+    }
 }

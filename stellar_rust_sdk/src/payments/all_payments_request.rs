@@ -1,3 +1,4 @@
+use crate::{models::*, BuildQueryParametersExt, Paginatable};
 use stellar_rust_sdk_derive::Pagination;
 use crate::models::{IncludeFailed, Order, Request};
 
@@ -40,9 +41,21 @@ impl AllPaymentsRequest {
 
 impl Request for AllPaymentsRequest {
     fn get_query_parameters(&self) -> String {
-        
+        let mut params = String::new();
+        if let Some(cursor) = self.cursor {
+            params.push_str(&format!("cursor={}&", cursor));
+        }
+        if let Some(limit) = self.limit {
+            params.push_str(&format!("limit={}&", limit));
+        }
+        if let Some(order) = &self.order {
+            params.push_str(&format!("order={}&", order));
+        }
+        params.push_str(&format!("include_failed={}", self.include_failed));
+        params
     }
 
     fn build_url(&self, base_url: &str) -> String {
+        format!("{}/payments?{}", base_url, self.get_query_parameters())
     }
 }
