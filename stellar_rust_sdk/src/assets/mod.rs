@@ -81,10 +81,8 @@ pub mod test {
     #[tokio::test]
     async fn test_get_all_assets() {
         static ASSET_TYPE: &str = "credit_alphanum4";
-        static ASSET_CODE: &str = "006";
-        static ASSET_ISSUER: &str = "GCN4ALWVHURX3D64AQ3PD7VFOLLKHMEFOG3Y4A4DKOTV256IZNJG3IKB";
-        static PAGING_TOKEN: &str =
-            "006_GCN4ALWVHURX3D64AQ3PD7VFOLLKHMEFOG3Y4A4DKOTV256IZNJG3IKB_credit_alphanum4";
+        static ASSET_CODE: &str = "004";
+        static ASSET_ISSUER: &str = "GDJUV2K6YBYUTI6GAA6P6BKVBQQDIOBZYDV2YOWOZI35LLSVMO6J4K7B";
         static NUM_ACCOUNTS: &u32 = &1;
         static NUM_CLAIMABLE_BALANCES: &u32 = &0;
         static NUM_LIQUIDITY_POOLS: &u32 = &0;
@@ -119,7 +117,6 @@ pub mod test {
         assert_eq!(response.asset_type(), ASSET_TYPE);
         assert_eq!(response.asset_code(), ASSET_CODE);
         assert_eq!(response.asset_issuer(), ASSET_ISSUER);
-        assert_eq!(response.paging_token(), PAGING_TOKEN);
         assert_eq!(
             response.paging_token(),
             &format!("{}_{}_{}", ASSET_CODE, ASSET_ISSUER, ASSET_TYPE)
