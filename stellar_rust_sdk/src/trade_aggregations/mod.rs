@@ -70,7 +70,6 @@ pub mod test {
         const BASE_ASSET_CODE: &str = "XETH";
         const COUNTER_ASSET_ACCOUNT: &str = "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI";
         const COUNTER_ASSET_CODE: &str = "XUSD";
-        const RESOLUTION: &str = &"604800000";
         // Response constants
         const TIMESTAMP: &str = "1717632000000";
         const TRADE_COUNT: &str = "39";
@@ -106,7 +105,7 @@ pub mod test {
                 asset_code: COUNTER_ASSET_CODE.to_string(),
             }))
             .unwrap()
-            .set_resolution(RESOLUTION.to_string())
+            .set_resolution(Resolution(ResolutionData::Value604800000))
             .unwrap();
 
         let trade_aggregations_response = horizon_client
@@ -115,6 +114,7 @@ pub mod test {
 
         assert!(trade_aggregations_response.clone().is_ok());
         let binding = trade_aggregations_response.unwrap();
+
         let response = &binding.embedded().records()[0];
         assert_eq!(response.timestamp(), TIMESTAMP);
         assert_eq!(response.trade_count(), TRADE_COUNT);
