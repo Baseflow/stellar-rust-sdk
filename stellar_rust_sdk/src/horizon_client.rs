@@ -1171,7 +1171,8 @@ impl HorizonClient {
     ///     .set_counter_asset(AssetType::Alphanumeric4(AssetData {
     ///         asset_code: "USDC".to_string(),
     ///         asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string(),
-    ///     })).unwrap();
+    ///     })).unwrap()
+    ///     .set_resolution(Resolution(ResolutionData::Value604800000)).unwrap();
     /// let response = horizon_client.get_trade_aggregations(&request).await?;
     /// 
     /// // Process the response...
@@ -1181,7 +1182,7 @@ impl HorizonClient {
     /// 
     pub async fn get_trade_aggregations(
         &self,
-        request: &TradeAggregationsRequest,
+        request: &TradeAggregationsRequest<BaseAsset, CounterAsset, Resolution>,
     ) -> Result<AllTradeAggregationsResponse, String> {
         self.get::<AllTradeAggregationsResponse>(request).await
     }

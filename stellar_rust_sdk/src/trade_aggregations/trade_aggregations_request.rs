@@ -1,8 +1,20 @@
 use crate::{models::*, BuildQueryParametersExt};
 
-/// Represents the base and counter assets. Contains an enum of one of the possible asset types.
-#[derive(PartialEq, Debug, Default)]
-pub struct TradeAsset(AssetType);
+/// Represents the base asset. Contains an enum of one of the possible asset types.
+#[derive(PartialEq, Debug)]
+pub struct BaseAsset(AssetType);
+
+/// Represents the absence of a base asset.
+#[derive(PartialEq, Debug)]
+pub struct NoBaseAsset;
+
+/// Represents the counter asset. Contains an enum of one of the possible asset types.
+#[derive(PartialEq, Debug)]
+pub struct CounterAsset(AssetType);
+
+/// Represents the absence of a counter asset.
+#[derive(PartialEq, Debug)]
+pub struct NoCounterAsset;
 
 /// Contains the details of a non-native asset.
 #[derive(PartialEq, Debug, Default)]
@@ -12,10 +24,10 @@ pub struct AssetData {
 }
 
 /// Represents the asset type of an asset.
-#[derive(PartialEq, Debug, Default)]
+#[derive(PartialEq, Debug)]
 pub enum AssetType {
     /// A native asset_type type. It holds no value.
-    #[default]
+    // #[default]
     Native,
     /// An alphanumeric 4 asset_type type. It holds an Asset struct with asset code and asset issuer.
     Alphanumeric4(AssetData),
@@ -23,9 +35,17 @@ pub enum AssetType {
     Alphanumeric12(AssetData),
 }
 
+/// Represents the abcense of a resolution value.
+#[derive(Default, Clone)]
+pub struct NoResolution;
+
+/// Represents the resolution value. It can contain a [`ResolutionData`] enum type.
+#[derive(Default, Clone)]
+pub struct Resolution(pub ResolutionData);
+
 /// Represents the supported segment duration times in milliseconds. 
-#[derive(PartialEq, Debug, Default)]
-pub enum Resolution {
+#[derive(PartialEq, Debug, Default, Clone)]
+pub enum ResolutionData {
     #[default]
     Value60000,
     Value300000,
@@ -34,14 +54,14 @@ pub enum Resolution {
     Value604800000,
 }
 
-impl std::fmt::Display for Resolution {
+impl std::fmt::Display for ResolutionData {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Resolution::Value60000 => write!(f, "60000"), // 1 minute
-            Resolution::Value300000 => write!(f, "300000"), // 5 minutes
-            Resolution::Value900000 => write!(f, "900000"), // 15 minutes
-            Resolution::Value3600000 => write!(f, "3600000"), // 1 day
-            Resolution::Value604800000 => write!(f, "604800000"), // 1 week
+            ResolutionData::Value60000 => write!(f, "60000"), // 1 minute
+            ResolutionData::Value300000 => write!(f, "300000"), // 5 minutes
+            ResolutionData::Value900000 => write!(f, "900000"), // 15 minutes
+            ResolutionData::Value3600000 => write!(f, "3600000"), // 1 day
+            ResolutionData::Value604800000 => write!(f, "604800000"), // 1 week
         }
     }
 }
@@ -64,11 +84,12 @@ impl std::fmt::Display for Resolution {
 /// use stellar_rs::{trade_aggregations::prelude::*, models::*, Paginatable};
 ///
 /// let request = TradeAggregationsRequest::new()
-///     .set_base_asset(AssetType::Native).unwrap() // Optional selling asset filter
+///     .set_base_asset(AssetType::Native).unwrap()
 ///     .set_counter_asset(AssetType::Alphanumeric4(AssetData{
 ///        asset_issuer: "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI".to_string(),
 ///        asset_code: "XETH".to_string(),
 ///     })).unwrap()
+///     .set_resolution(Resolution(ResolutionData::Value604800000)).unwrap()
 ///     .set_limit(100).unwrap() // Optional limit for response records
 ///     .set_order(Order::Desc); // Optional order of records
 ///
@@ -76,17 +97,17 @@ impl std::fmt::Display for Resolution {
 /// ```
 ///
 #[derive(PartialEq, Default)]
-pub struct TradeAggregationsRequest {
+pub struct TradeAggregationsRequest<B = NoBaseAsset, C = NoCounterAsset, R = NoResolution> {
     /// The base asset of the trade aggregation.
-    pub base_asset: TradeAsset,
+    pub base_asset: B,
     /// The counter asset of the trade.
-    pub counter_asset: TradeAsset,
+    pub counter_asset: C,
     // The lower time boundary represented as milliseconds since epoch. Optional.
     pub start_time: Option<i64>,
     // The upper time boundary represented as milliseconds since epoch. Optional.
     pub end_time: Option<i64>,
-    // TThe segment duration represented as milliseconds.
-    pub resolution: String,
+    // The segment duration represented as milliseconds. It must contain one of the `ResolutionData` enum types.
+    pub resolution: R,
     /// Specifies the maximum number of records to be returned in a single response.
     /// The range for this parameter is from 1 to 200. The default value is set to 10.
     pub limit: Option<u8>,
@@ -95,12 +116,22 @@ pub struct TradeAggregationsRequest {
     pub order: Option<Order>,
 }
 
-impl TradeAggregationsRequest {
-    /// Creates a new `TradeAggregationsRequest` with default parameters.
+impl TradeAggregationsRequest<NoBaseAsset, NoCounterAsset, NoResolution> {
+    // Constructor with default values
     pub fn new() -> Self {
-        TradeAggregationsRequest::default()
+        TradeAggregationsRequest {
+            base_asset: NoBaseAsset,
+            counter_asset: NoCounterAsset,
+            resolution: NoResolution,
+            start_time: None,
+            end_time: None,
+            limit: None,
+            order: None,
+        }
     }
+}
 
+impl<B, C, R> TradeAggregationsRequest<B, C, R> {
     /// Specifies the base asset in the request.
     ///
     /// # Arguments
@@ -112,14 +143,20 @@ impl TradeAggregationsRequest {
     ///
     /// # Returns
     ///
-    /// The updated `TradeAggregationsRequest` with the base asset set.    
+    /// The updated `TradeAggregationsRequest` with the base asset set.
+    ///    
     pub fn set_base_asset(
         self,
         base_asset: AssetType,
-    ) -> Result<TradeAggregationsRequest, String> {
+    ) -> Result<TradeAggregationsRequest<BaseAsset, C, R>, String> {
         Ok(TradeAggregationsRequest {
-            base_asset: TradeAsset(base_asset),
-            ..self
+            base_asset: BaseAsset(base_asset),
+            counter_asset: self.counter_asset,
+            start_time: self.start_time,
+            end_time: self.end_time,
+            resolution: self.resolution,
+            limit: self.limit,
+            order: self.order,
         })
     }
 
@@ -134,14 +171,45 @@ impl TradeAggregationsRequest {
     ///
     /// # Returns
     ///
-    /// The updated `TradeAggregationsRequest` with the counter asset set.    
+    /// The updated `TradeAggregationsRequest` with the counter asset set.
+    ///  
     pub fn set_counter_asset(
         self,
         counter_asset: AssetType,
-    ) -> Result<TradeAggregationsRequest, String> {
+    ) -> Result<TradeAggregationsRequest<B, CounterAsset, R>, String> {
         Ok(TradeAggregationsRequest {
-            counter_asset: TradeAsset(counter_asset),
-            ..self
+            base_asset: self.base_asset,
+            counter_asset: CounterAsset(counter_asset),
+            start_time: self.start_time,
+            end_time: self.end_time,
+            resolution: self.resolution,
+            limit: self.limit,
+            order: self.order,
+        })
+    }
+
+    /// Specifies the resolution in the request.
+    ///
+    /// # Arguments
+    ///
+    /// * `resolution` - The segment duration represented as milliseconds.
+    ///
+    /// # Returns
+    ///
+    /// The updated `TradeAggregationsRequest` with the resolution set.
+    ///  
+    pub fn set_resolution(
+        self,
+        resolution: Resolution,
+    ) -> Result<TradeAggregationsRequest<B, C, Resolution>, String> {
+        Ok(TradeAggregationsRequest {
+            base_asset: self.base_asset,
+            counter_asset: self.counter_asset,
+            start_time: self.start_time,
+            end_time: self.end_time,
+            resolution,
+            limit: self.limit,
+            order: self.order,
         })
     }
 
@@ -151,11 +219,8 @@ impl TradeAggregationsRequest {
     ///
     /// * `start_time` - The lower time boundary represented as milliseconds since epoch.
     ///
-    pub fn set_start_time(
-        self,
-        start_time: Option<i64>,
-    ) -> Result<TradeAggregationsRequest, String> {
-        Ok(TradeAggregationsRequest {
+    pub fn set_start_time(self, start_time: Option<i64>) -> Result<Self, String> {
+        Ok(Self {
             start_time,
             ..self
         })
@@ -167,28 +232,9 @@ impl TradeAggregationsRequest {
     ///
     /// * `end_time` - The upper time boundary represented as milliseconds since epoch.
     ///
-    pub fn set_end_time(
-        self,
-        end_time: Option<i64>,
-    ) -> Result<TradeAggregationsRequest, String> {
-        Ok(TradeAggregationsRequest {
+    pub fn set_end_time(self, end_time: Option<i64>) -> Result<Self, String> {
+        Ok(Self {
             end_time,
-            ..self
-        })
-    }
-
-    /// Specifies the resolution in the request.
-    ///
-    /// # Arguments
-    ///
-    /// * `resolution` - The segment duration represented as milliseconds.
-    ///
-    pub fn set_resolution(
-        self,
-        resolution: String,
-    ) -> Result<TradeAggregationsRequest, String> {
-        Ok(TradeAggregationsRequest {
-            resolution,
             ..self
         })
     }
@@ -220,7 +266,7 @@ impl TradeAggregationsRequest {
     }
 }
 
-impl Request for TradeAggregationsRequest {
+impl Request for TradeAggregationsRequest<BaseAsset, CounterAsset, Resolution> {
     fn get_query_parameters(&self) -> String {
         let mut asset_parameters: Vec<String> = Vec::new();
         match &self.base_asset.0 {
@@ -257,7 +303,7 @@ impl Request for TradeAggregationsRequest {
 
         vec![
             Some(asset_parameters.join("")),
-            Some(format!("resolution={}", self.resolution)),
+            Some(format!("resolution={}", self.resolution.0)),
             self.start_time.as_ref().map(|s| format!("start_time={}", s)),
             self.end_time.as_ref().map(|e| format!("end_time={}", e)),
             self.limit.as_ref().map(|l| format!("limit={}", l)),
