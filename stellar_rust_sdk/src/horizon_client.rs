@@ -1842,6 +1842,20 @@ impl HorizonClient {
     ) -> Result<AllTransactionsResponse, String> {
         self.get::<AllTransactionsResponse>(request).await
     }
+
+    pub async fn get_all_payments(
+        &self,
+        request: &AllPaymentsRequest,
+    ) -> Result<PaymentsResponse, String> {
+        self.get::<PaymentsResponse>(request).await
+    }
+
+    pub async fn get_payments_for_account(
+        &self,
+        request: &PaymentsForAccountRequest,
+    ) -> Result<PaymentsResponse, String> {
+        self.get::<PaymentsResponse>(request).await
+    }
 }
 
 /// Handles the response received from an HTTP request made to the Horizon server.

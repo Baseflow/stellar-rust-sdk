@@ -56,6 +56,6 @@ impl Request for AllPaymentsRequest {
     }
 
     fn build_url(&self, base_url: &str) -> String {
-        format!("{}/payments?{}", base_url, self.get_query_parameters())
+        format! ("{}/payments?{}", base_url, self.get_query_parameters())
     }
 }
