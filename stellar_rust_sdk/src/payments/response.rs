@@ -10,7 +10,7 @@ use crate::models::Response;
 /// embedded records of payments.
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 #[serde(rename_all = "camelCase")]
-pub struct AllPaymentsResponse {
+pub struct PaymentsResponse {
     /// The links to the current, next, and previous pages of the response.
     #[serde(rename = "_links")]
     pub links: ResponseLinks,
@@ -25,22 +25,23 @@ pub struct AllPaymentsResponse {
 /// transaction success status, source account, type, creation date, transaction hash, starting balance,
 /// funder, and account.
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
 pub struct Payment {
     pub id: String,
     pub paging_token: String,
     pub transaction_successful: bool,
     pub source_account: String,
+    #[serde(rename = "type")]
     pub type_field: String,
     pub type_i: i64,
     pub created_at: String,
     pub transaction_hash: String,
+    #[serde(rename = "starting_balance")]
     pub starting_balance: String,
     pub funder: String,
     pub account: String,
 }
 
-impl Response for AllPaymentsResponse {
+impl Response for PaymentsResponse {
     fn from_json(json: String) -> Result<Self, String> {
         serde_json::from_str(&json).map_err(|e| e.to_string())
     }
