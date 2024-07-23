@@ -1,6 +1,6 @@
+use crate::models::{IncludeFailed, Order, Request};
 use crate::Paginatable;
 use stellar_rust_sdk_derive::Pagination;
-use crate::models::{IncludeFailed, Order, Request};
 
 #[derive(Default, Pagination)]
 pub struct PaymentsForLedgerRequest {
@@ -31,10 +31,10 @@ impl PaymentsForLedgerRequest {
     }
 
     /// Sets the Stellar address of the account for which you want to retrieve payments.
-    /// 
+    ///
     /// # Arguments
     /// * `account_id` - The Stellar address of the account for which you want to retrieve payments.
-    /// 
+    ///
     pub fn set_ledger_sequence(mut self, ledger_sequence: String) -> PaymentsForLedgerRequest {
         self.ledger_sequence = Some(ledger_sequence);
         self
@@ -70,7 +70,11 @@ impl Request for PaymentsForLedgerRequest {
     fn build_url(&self, base_url: &str) -> String {
         let binding = "".to_string();
         let ledger_sequence = self.ledger_sequence.as_ref().unwrap_or(&binding);
-        println! ("{}/ledgers/{}/payments?{}", base_url, ledger_sequence, self.get_query_parameters());
-        format!  ("{}/ledgers/{}/payments?{}", base_url, ledger_sequence, self.get_query_parameters())
+        format!(
+            "{}/ledgers/{}/payments?{}",
+            base_url,
+            ledger_sequence,
+            self.get_query_parameters()
+        )
     }
 }

@@ -1,6 +1,6 @@
+use crate::models::{IncludeFailed, Order, Request};
 use crate::{models::*, BuildQueryParametersExt, Paginatable};
 use stellar_rust_sdk_derive::Pagination;
-use crate::models::{IncludeFailed, Order, Request};
 
 #[derive(Default, Pagination)]
 pub struct AllPaymentsRequest {
@@ -43,6 +43,6 @@ impl Request for AllPaymentsRequest {
     }
 
     fn build_url(&self, base_url: &str) -> String {
-        format! ("{}/payments?{}", base_url, self.get_query_parameters())
+        format!("{}/payments?{}", base_url, self.get_query_parameters())
     }
 }

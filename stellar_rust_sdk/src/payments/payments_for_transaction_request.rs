@@ -29,11 +29,14 @@ impl PaymentsForTransactionRequest {
     }
 
     /// Sets the transaction hash of the transaction for which you want to retrieve payments.
-    /// 
+    ///
     /// # Arguments
     /// * `transaction_hash` - The transaction hash of the transaction for which you want to retrieve payments.
     ///
-    pub fn set_transaction_hash(mut self, transaction_hash: String) -> PaymentsForTransactionRequest {
+    pub fn set_transaction_hash(
+        mut self,
+        transaction_hash: String,
+    ) -> PaymentsForTransactionRequest {
         self.transaction_hash = Some(transaction_hash);
         self
     }
@@ -57,12 +60,6 @@ impl Request for PaymentsForTransactionRequest {
     fn build_url(&self, base_url: &str) -> String {
         let binding = "".to_string();
         let transaction_hash = self.transaction_hash.as_ref().unwrap_or(&binding);
-        println!(
-            "{}/transactions/{}/payments?{}",
-            base_url,
-            transaction_hash,
-            self.get_query_parameters()
-        );
         format!(
             "{}/transactions/{}/payments?{}",
             base_url,

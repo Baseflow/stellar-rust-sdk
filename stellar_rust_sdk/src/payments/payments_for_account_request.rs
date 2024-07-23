@@ -1,6 +1,6 @@
+use crate::models::{IncludeFailed, Order, Request};
 use crate::Paginatable;
 use stellar_rust_sdk_derive::Pagination;
-use crate::models::{IncludeFailed, Order, Request};
 
 #[derive(Default, Pagination)]
 pub struct PaymentsForAccountRequest {
@@ -31,22 +31,25 @@ impl PaymentsForAccountRequest {
     }
 
     /// Sets the Stellar address of the account for which you want to retrieve payments.
-    /// 
+    ///
     /// # Arguments
     /// * `account_id` - The Stellar address of the account for which you want to retrieve payments.
-    /// 
+    ///
     pub fn set_account_id(mut self, account_id: String) -> PaymentsForAccountRequest {
         self.account_id = Some(account_id);
         self
     }
 
     /// Sets a pointer to a specific location in a collection of responses, derived from the
-    /// 
+    ///
     /// # Arguments
     /// * `cursor` - A pointer to a specific location in a collection of responses, derived from the
     ///  `paging_token` value of a record. Used for pagination control in the API response.
-    /// 
-    pub fn set_include_failed(mut self, include_failed: IncludeFailed) -> PaymentsForAccountRequest {
+    ///
+    pub fn set_include_failed(
+        mut self,
+        include_failed: IncludeFailed,
+    ) -> PaymentsForAccountRequest {
         self.include_failed = include_failed;
         self
     }
@@ -74,7 +77,11 @@ impl Request for PaymentsForAccountRequest {
     fn build_url(&self, base_url: &str) -> String {
         let binding = "".to_string();
         let account_id = self.account_id.as_ref().unwrap_or(&binding);
-        println! ("{}/accounts/{}/payments?{}", base_url, account_id, self.get_query_parameters());
-        format!  ("{}/accounts/{}/payments?{}", base_url, account_id, self.get_query_parameters())
+        format!(
+            "{}/accounts/{}/payments?{}",
+            base_url,
+            account_id,
+            self.get_query_parameters()
+        )
     }
 }
