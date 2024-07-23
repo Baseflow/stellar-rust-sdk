@@ -3,9 +3,9 @@ use stellar_rust_sdk_derive::Pagination;
 use crate::models::{IncludeFailed, Order, Request};
 
 #[derive(Default, Pagination)]
-pub struct PaymentsForAccountRequest {
+pub struct PaymentsForLedgerRequest {
     /// The Stellar address of the account for which you want to retrieve payments.
-    account_id: Option<String>,
+    ledger_sequence: Option<String>,
     /// A pointer to a specific location in a collection of responses, derived from the
     ///  `paging_token` value of a record. Used for pagination control in the API response.
     cursor: Option<u32>,
@@ -18,11 +18,11 @@ pub struct PaymentsForAccountRequest {
     include_failed: IncludeFailed,
 }
 
-impl PaymentsForAccountRequest {
+impl PaymentsForLedgerRequest {
     /// Creates a new `PaymentsForAccountRequest` with default parameters.
-    pub fn new() -> PaymentsForAccountRequest {
-        PaymentsForAccountRequest {
-            account_id: None,
+    pub fn new() -> PaymentsForLedgerRequest {
+        PaymentsForLedgerRequest {
+            ledger_sequence: None,
             cursor: None,
             limit: None,
             order: None,
@@ -35,24 +35,23 @@ impl PaymentsForAccountRequest {
     /// # Arguments
     /// * `account_id` - The Stellar address of the account for which you want to retrieve payments.
     /// 
-    pub fn set_account_id(mut self, account_id: String) -> PaymentsForAccountRequest {
-        self.account_id = Some(account_id);
+    pub fn set_ledger_sequence(mut self, ledger_sequence: String) -> PaymentsForLedgerRequest {
+        self.ledger_sequence = Some(ledger_sequence);
         self
     }
 
-    /// Sets a pointer to a specific location in a collection of responses, derived from the
-    /// 
+    /// Sets whether to include failed operations in the response.
+    ///
     /// # Arguments
-    /// * `cursor` - A pointer to a specific location in a collection of responses, derived from the
-    ///  `paging_token` value of a record. Used for pagination control in the API response.
-    /// 
-    pub fn set_include_failed(mut self, include_failed: IncludeFailed) -> PaymentsForAccountRequest {
+    /// * `include_failed` - A boolean value that determines whether to include failed operations in the response.
+    ///
+    pub fn set_include_failed(mut self, include_failed: IncludeFailed) -> PaymentsForLedgerRequest {
         self.include_failed = include_failed;
         self
     }
 }
 
-impl Request for PaymentsForAccountRequest {
+impl Request for PaymentsForLedgerRequest {
     fn get_query_parameters(&self) -> String {
         let mut params = String::new();
         if let Some(cursor) = self.cursor {
@@ -64,17 +63,14 @@ impl Request for PaymentsForAccountRequest {
         if let Some(order) = &self.order {
             params.push_str(&format!("order={}&", order));
         }
-        // if let Some(account_id) = &self.account_id {
-        //     params.push_str(&format!("account_id={}&", account_id));
-        // }
         params.push_str(&format!("include_failed={}", self.include_failed));
         params
     }
 
     fn build_url(&self, base_url: &str) -> String {
         let binding = "".to_string();
-        let account_id = self.account_id.as_ref().unwrap_or(&binding);
-        println! ("{}/accounts/{}/payments?{}", base_url, account_id, self.get_query_parameters());
-        format!  ("{}/accounts/{}/payments?{}", base_url, account_id, self.get_query_parameters())
+        let ledger_sequence = self.ledger_sequence.as_ref().unwrap_or(&binding);
+        println! ("{}/ledgers/{}/payments?{}", base_url, ledger_sequence, self.get_query_parameters());
+        format!  ("{}/ledgers/{}/payments?{}", base_url, ledger_sequence, self.get_query_parameters())
     }
 }

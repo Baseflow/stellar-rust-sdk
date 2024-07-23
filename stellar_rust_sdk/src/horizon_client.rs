@@ -1,17 +1,26 @@
 use crate::{
-    accounts::prelude::*, assets::prelude::{AllAssetsRequest, AllAssetsResponse}, claimable_balances::{
+    accounts::prelude::*,
+    assets::prelude::{AllAssetsRequest, AllAssetsResponse},
+    claimable_balances::{
         all_claimable_balances_request::AllClaimableBalancesRequest,
         prelude::{AllClaimableBalancesResponse, ClaimableBalance},
         single_claimable_balance_request::{ClaimableBalanceId, SingleClaimableBalanceRequest},
-    }, effects::prelude::*, fee_stats::{fee_stats_request::FeeStatsRequest, response::FeeStatsResponse}, ledgers::{
+    },
+    effects::prelude::*,
+    fee_stats::{fee_stats_request::FeeStatsRequest, response::FeeStatsResponse},
+    ledgers::{
         prelude::{Ledger, LedgersRequest, LedgersResponse, SingleLedgerRequest},
         single_ledger_request::Sequence,
-    }, liquidity_pools::{
+    },
+    liquidity_pools::{
         all_liquidity_pools_request::AllLiquidityPoolsRequest,
         prelude::{
             AllLiquidityPoolsResponse, LiquidityPool, LiquidityPoolId, SingleLiquidityPoolRequest,
         },
-    }, models::{Request, Response}, offers::prelude::*, operations::{
+    },
+    models::{Request, Response},
+    offers::prelude::*,
+    operations::{
         operations_for_account_request::OperationsForAccountRequest,
         prelude::{
             AllOperationsRequest, OperationResponse, OperationsForLedgerRequest,
@@ -19,7 +28,8 @@ use crate::{
         },
         response::Operation,
         single_operation_request::{OperationId, SingleOperationRequest},
-    }, order_book::{
+    },
+    order_book::{
         details_request::{BuyingAsset, DetailsRequest, SellingAsset},
         response::DetailsResponse,
     },
@@ -1084,26 +1094,26 @@ impl HorizonClient {
     }
 
     /// Retrieves a list of order book details from the Horizon server.
-    /// 
+    ///
     /// This asynchronous method fetches a list of order book details from the Horizon server.
     /// It requires a [`DetailsRequest`] to specify the parameters for the order book details request.
-    /// 
+    ///
     /// # Arguments
     /// * `request` - A reference to a [`DetailsRequest`] instance, containing the parameters for the order book details request.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// On successful execution, returns a `Result` containing a [`DetailsResponse`], which includes the list of order book details obtained from the Horizon server.
     /// If the request fails, it returns an error within `Result`.
-    /// 
+    ///
     /// # Usage
     /// To use this method, create an instance of [`DetailsRequest`] and set any desired filters or parameters.
-    /// 
+    ///
     /// ```
     /// # use stellar_rs::order_book::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// 
+    ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
     /// # let horizon_client = HorizonClient::new(base_url)
@@ -1117,14 +1127,14 @@ impl HorizonClient {
     /// #         .to_string(),
     /// # }))
     /// # .unwrap();
-    /// 
+    ///
     /// let response = horizon_client.get_order_book_details(&details_request).await;
-    /// 
+    ///
     /// assert!(response.is_ok());
     /// # Ok({})
     /// # }
     /// ```
-    /// 
+    ///
     pub async fn get_order_book_details(
         &self,
         request: &DetailsRequest<SellingAsset, BuyingAsset>,
@@ -1613,7 +1623,7 @@ impl HorizonClient {
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_single_transaction(&request).await;
-    /// 
+    ///
     /// // Access the details of the claimable balance
     /// if let Ok(transaction_response) = response {
     ///     println!("Created at: {}", transaction_response.created_at());
@@ -1630,7 +1640,6 @@ impl HorizonClient {
     ) -> Result<TransactionResponse, String> {
         self.get::<TransactionResponse>(request).await
     }
-
 
     /// Retrieves a list of all transactions from the Horizon server.
     ///
@@ -1853,6 +1862,13 @@ impl HorizonClient {
     pub async fn get_payments_for_account(
         &self,
         request: &PaymentsForAccountRequest,
+    ) -> Result<PaymentsResponse, String> {
+        self.get::<PaymentsResponse>(request).await
+    }
+
+    pub async fn get_payments_for_ledger(
+        &self,
+        request: &PaymentsForLedgerRequest,
     ) -> Result<PaymentsResponse, String> {
         self.get::<PaymentsResponse>(request).await
     }

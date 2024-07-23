@@ -36,7 +36,13 @@ pub struct Payment {
     pub transaction_hash: String,
     pub starting_balance: Option<String>,
     pub funder: Option<String>,
-    pub account: String,
+    pub account: Option<String>,
+    pub asset_type: Option<String>,
+    pub asset_code: Option<String>,
+    pub asset_issuer: Option<String>,
+    pub from: Option<String>,
+    pub to: Option<String>,
+    pub amount: Option<String>,
 }
 
 impl Response for PaymentsResponse {
