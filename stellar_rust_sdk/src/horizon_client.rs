@@ -1852,6 +1852,51 @@ impl HorizonClient {
         self.get::<AllTransactionsResponse>(request).await
     }
 
+    /// Retrieves a list of all payments from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all payments from the Horizon server.
+    /// It requires an [`AllPaymentsRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`AllPaymentsRequest`] instance, containing the
+    /// parameters for the payments request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing a [`PaymentsResponse`], which includes
+    /// the list of all payments obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`AllPaymentsRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::payments::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// # use stellar_rust_sdk_derive::Pagination;
+    /// # use stellar_rs::Paginatable;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = AllPaymentsRequest::new()
+    ///  .set_limit(2).unwrap();
+    ///
+    /// let response = horizon_client.get_all_payments(&request).await;
+    ///
+    /// // Access the payments
+    /// if let Ok(payments_response) = response {
+    ///    for payment in payments_response.embedded().records() {
+    ///       println!("Payment ID: {}", payment.id());
+    ///      // Further processing...
+    /// }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_all_payments(
         &self,
         request: &AllPaymentsRequest,
@@ -1859,6 +1904,51 @@ impl HorizonClient {
         self.get::<PaymentsResponse>(request).await
     }
 
+    /// Retrieves a list of all payments for an account from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all payments for an account from the Horizon server.
+    /// It requires an [`PaymentsForAccountRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`PaymentsForAccountRequest`] instance, containing the
+    /// parameters for the payments for account request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing a [`PaymentsResponse`], which includes
+    /// the list of all payments obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`PaymentsForAccountRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::payments::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// # use stellar_rust_sdk_derive::Pagination;
+    /// # use stellar_rs::Paginatable;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = PaymentsForAccountRequest::new()
+    ///  .set_limit(2).unwrap();
+    ///
+    /// let response = horizon_client.get_payments_for_account(&request).await;
+    ///
+    /// // Access the payments
+    /// if let Ok(payments_response) = response {
+    ///   for payment in payments_response.embedded().records() {
+    ///   println!("Payment ID: {}", payment.id());
+    /// // Further processing...
+    /// }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_payments_for_account(
         &self,
         request: &PaymentsForAccountRequest,
@@ -1866,6 +1956,52 @@ impl HorizonClient {
         self.get::<PaymentsResponse>(request).await
     }
 
+    /// Retrieves a list of all payments for a specific ledger from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all payments for a specific ledger from the Horizon server.
+    /// It requires an [`PaymentsForLedgerRequest`] to specify the ledger sequence number and optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`PaymentsForLedgerRequest`] instance, containing the
+    /// parameters for the payments for ledger request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing a [`PaymentsResponse`], which includes
+    /// the list of all payments obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`PaymentsForLedgerRequest`] and set the ledger sequence number and any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::payments::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// # use stellar_rust_sdk_derive::Pagination;
+    /// # use stellar_rs::Paginatable;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = PaymentsForLedgerRequest::new()
+    /// .set_ledger_sequence(12345678);
+    ///
+    /// let response = horizon_client.get_payments_for_ledger(&request).await;
+    ///
+    /// // Access the payments
+    /// if let Ok(payments_response) = response {
+    /// for payment in payments_response.embedded().records() {
+    /// println!("Payment ID: {}", payment.id());
+    ///
+    /// // Further processing...
+    /// }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_payments_for_ledger(
         &self,
         request: &PaymentsForLedgerRequest,
@@ -1873,6 +2009,52 @@ impl HorizonClient {
         self.get::<PaymentsResponse>(request).await
     }
 
+    /// Retrieves a list of all payments for a specific transaction from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all payments for a specific transaction from the Horizon server.
+    /// It requires an [`PaymentsForTransactionRequest`] to specify the transaction hash and optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`PaymentsForTransactionRequest`] instance, containing the
+    /// parameters for the payments for transaction request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing a [`PaymentsResponse`], which includes
+    /// the list of all payments obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`PaymentsForTransactionRequest`] and set the transaction hash and any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::payments::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// # use stellar_rust_sdk_derive::Pagination;
+    /// # use stellar_rs::Paginatable;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = PaymentsForTransactionRequest::new()
+    /// .set_transaction_hash("be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f".to_string());
+    ///
+    /// let response = horizon_client.get_payments_for_transaction(&request).await;
+    ///
+    /// // Access the payments
+    /// if let Ok(payments_response) = response {
+    /// for payment in payments_response.embedded().records() {
+    /// println!("Payment ID: {}", payment.id());
+    ///
+    /// // Further processing...
+    /// }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_payments_for_transaction(
         &self,
         request: &PaymentsForTransactionRequest,
