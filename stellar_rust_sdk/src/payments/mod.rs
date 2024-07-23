@@ -1,8 +1,49 @@
-mod all_payments_request;
-mod payments_for_account_request;
-mod payments_for_ledger_request;
-mod payments_for_transaction_request;
-mod response;
+/// Provides the `AllPaymentsRequest` struct to build the request for the `/payments` endpoint
+/// 
+/// # Usage
+/// This module provides the `AllPaymentsRequest` struct, specifically for constructing requests to query information
+/// about all payments made on the Stellar network. It is tailored for use in the `HorizonClient::get_all_payments` function.
+pub mod all_payments_request;
+
+/// Provides the `PaymentsForAccountRequest` struct to build the request for the `/accounts/{account_id}/payments` endpoint
+/// 
+/// # Usage
+/// This module provides the `PaymentsForAccountRequest` struct, specifically for constructing requests to query information
+/// about payments made to a specific account on the Stellar network. It is tailored for use in the `HorizonClient::get_payments_for_account` function.
+/// 
+pub mod payments_for_account_request;
+
+/// Provides the `PaymentsForLedgerRequest` struct to build the request for the `/ledgers/{ledger_sequence}/payments` endpoint
+/// 
+/// # Usage
+/// This module provides the `PaymentsForLedgerRequest` struct, specifically for constructing requests to query information
+/// about payments made in a specific ledger on the Stellar network. It is tailored for use in the `HorizonClient::get_payments_for_ledger` function.
+///
+pub mod payments_for_ledger_request;
+
+/// Provides the `PaymentsForTransactionRequest` struct to build the request for the `/transactions/{transaction_hash}/payments` endpoint
+/// 
+/// # Usage
+/// This module provides the `PaymentsForTransactionRequest` struct, specifically for constructing requests to query information
+/// about payments made in a specific transaction on the Stellar network. It is tailored for use in the `HorizonClient::get_payments_for_transaction` function.
+/// 
+pub mod payments_for_transaction_request;
+
+/// Provides the `PaymentsResponse` struct to parse the response from the Horizon server when querying for payments
+/// 
+/// This module defines structures representing the response from the Horizon API when querying
+/// for payments. The structures are designed to deserialize the JSON response into Rust
+/// objects, enabling straightforward access to various details of a single transaction.
+/// Some fields are optional because not every payment response is exactly alike, but not different enough to warrent
+/// different response structs for each type of payment.
+/// 
+/// # Usage
+/// This module provides the `PaymentsResponse` struct, which represents the response from the Horizon server when querying for payments.
+/// It includes the links to the current, next, and previous pages of the response, as well as the embedded records of payments.
+/// 
+pub mod response;
+
+static PAYMENTS_PATH: &str = "payments";
 
 pub mod prelude {
     pub use super::all_payments_request::*;

@@ -1,4 +1,5 @@
 use crate::models::{IncludeFailed, Order, Request};
+use crate::payments::PAYMENTS_PATH;
 use crate::Paginatable;
 use stellar_rust_sdk_derive::Pagination;
 
@@ -71,9 +72,10 @@ impl Request for PaymentsForLedgerRequest {
         let binding = "".to_string();
         let ledger_sequence = self.ledger_sequence.as_ref().unwrap_or(&binding);
         format!(
-            "{}/ledgers/{}/payments?{}",
+            "{}/ledgers/{}/{}?{}",
             base_url,
             ledger_sequence,
+            PAYMENTS_PATH,
             self.get_query_parameters()
         )
     }
