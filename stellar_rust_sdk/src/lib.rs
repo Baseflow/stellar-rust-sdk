@@ -15,7 +15,7 @@
 //! stabilization.
 //!
 //! #### Supported endpoints:
-//! ![80%](https://progress-bar.dev/80/?width=200)
+//! ![86%](https://progress-bar.dev/67/?width=200)
 //! * Accounts
 //! * Assets
 //! * Claimable balance
@@ -26,12 +26,12 @@
 //! * Operations
 //! * Offers
 //! * Orderbook
+//! * Payments
 //! * Trades
 //! * Trade aggregations
 //!
 //! #### Endpoints on the roadmap:
 //! * Paths
-//! * Payments
 //! * Transactions
 
 //!
@@ -509,30 +509,30 @@ pub mod operations;
 pub mod order_book;
 
 /// Provides `Request` and `Response` structs for retrieving trade aggregation details.
-/// 
+///
 /// The `trade_aggregations` module in the Stellar Horizon SDK includes structures and methods that facilitate
 /// querying trade aggregations data from the Horizon server.
-/// 
+///
 /// # Usage
-/// 
+///
 /// This module is used to construct requests for trade aggregations related data and to parse the responses
 /// received from the Horizon server. It includes request and response structures for querying
 /// trade aggregations.
-/// 
+///
 /// # Example
-/// 
+///
 /// To use this module, you can create an instance of a request struct, such as `TradeAggregationsRequest`,
 /// set any desired query parameters, and pass the request to the `HorizonClient`. The client will
 /// then execute the request and return the corresponding response struct, like `AllTradeAggregationsResponse`.
-/// 
+///
 /// ```rust
 /// use stellar_rs::horizon_client::HorizonClient;
 /// use stellar_rs::trade_aggregations::prelude::*;
 /// use stellar_rs::models::Request;
-/// 
+///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
-/// 
+///
 /// // Example: Fetching trade aggregations
 /// let request = TradeAggregationsRequest::new()
 ///     .set_base_asset(AssetType::Native).unwrap()
@@ -542,7 +542,7 @@ pub mod order_book;
 ///     })).unwrap()
 ///     .set_resolution(Resolution(ResolutionData::Duration604800000)).unwrap();
 /// let response = horizon_client.get_trade_aggregations(&request).await?;
-/// 
+///
 /// // Process the response...
 /// # Ok(())
 /// # }
@@ -632,6 +632,47 @@ pub mod transactions;
 ///
 pub mod trades;
 
+/// Provides `Request` and `Response` structs for retrieving payments.
+///
+/// This module provides a set of specialized request and response structures designed for
+/// interacting with the payment-related endpoints of the Horizon server. These structures
+/// facilitate the construction of requests to query trade data and the interpretation of
+/// the corresponding responses.
+///
+/// # Usage
+///
+/// This module is intended to be used in conjunction with the [`HorizonClient`](crate::horizon_client::HorizonClient)
+/// for making specific payment-related API calls to the Horizon server. The request
+/// structures are designed to be passed to the client's methods, which handle the
+/// communication with the server and return the corresponding response structures.
+///
+/// /// # Example
+///
+/// To use this module, you can create an instance of a request struct, such as
+/// `AllPaymentsRequest`, set any desired query parameters, and pass the request to the
+/// `HorizonClient`. The client will then execute the request and return the corresponding
+/// response struct, like `AllPaymentsResponse`.
+///
+/// ```rust
+/// use stellar_rs::horizon_client::HorizonClient;
+/// use stellar_rs::payments::prelude::*;
+/// use stellar_rs::models::Request;
+///
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+///
+/// // Example: Fetching all payments
+/// let all_payments_request = AllPaymentsRequest::new();
+///
+/// let all_payments_response = horizon_client.get_all_payments(&all_payments_request).await?;
+///
+/// // Process the responses...
+/// # Ok(())
+/// # }
+/// ```
+///
+pub mod payments;
+
 /// Contains core data structures and traits.
 ///
 /// This module is used by the Stellar Rust SDK to interact with the Horizon API.
@@ -643,7 +684,6 @@ pub mod trades;
 /// of the Horizon API, allowing developers to work with high-level Rust constructs
 /// instead of raw HTTP requests and JSON responses.
 pub mod models;
-mod payments;
 
 /// Extension trait for building query parameter strings from a vector of optional values.
 ///

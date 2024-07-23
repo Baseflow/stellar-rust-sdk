@@ -1,4 +1,5 @@
 use crate::models::{IncludeFailed, Order, Request};
+use crate::payments::PAYMENTS_PATH;
 use crate::Paginatable;
 use stellar_rust_sdk_derive::Pagination;
 
@@ -75,9 +76,10 @@ impl Request for PaymentsForAccountRequest {
         let binding = "".to_string();
         let account_id = self.account_id.as_ref().unwrap_or(&binding);
         format!(
-            "{}/accounts/{}/payments?{}",
+            "{}/accounts/{}/{}?{}",
             base_url,
             account_id,
+            PAYMENTS_PATH,
             self.get_query_parameters()
         )
     }

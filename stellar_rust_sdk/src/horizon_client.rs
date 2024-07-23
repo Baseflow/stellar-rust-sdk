@@ -1986,7 +1986,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = PaymentsForLedgerRequest::new()
-    /// .set_ledger_sequence(12345678);
+    /// .set_ledger_sequence("48483".to_string());
     ///
     /// let response = horizon_client.get_payments_for_ledger(&request).await;
     ///
