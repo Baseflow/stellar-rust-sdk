@@ -13,8 +13,6 @@ pub struct AllPaymentsRequest {
     /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
     ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
     order: Option<Order>,
-    /// A boolean value that determines whether failed transactions should be included in the response.
-    include_failed: IncludeFailed,
 }
 
 impl AllPaymentsRequest {
@@ -24,24 +22,14 @@ impl AllPaymentsRequest {
             cursor: None,
             limit: None,
             order: None,
-            include_failed: IncludeFailed::False,
         }
-    }
-
-    /// Sets whether failed transactions should be included in the response.
-    ///
-    /// # Arguments
-    /// * `include_failed` - An [`IncludeFailed`] value representing whether failed transactions should be included in the response.
-    ///
-    pub fn include_failed(mut self, include_failed: IncludeFailed) -> AllPaymentsRequest {
-        self.include_failed = include_failed;
-        self
     }
 }
 
 impl Request for AllPaymentsRequest {
     fn get_query_parameters(&self) -> String {
         let mut params = String::new();
+
         if let Some(cursor) = self.cursor {
             params.push_str(&format!("cursor={}&", cursor));
         }
@@ -51,7 +39,6 @@ impl Request for AllPaymentsRequest {
         if let Some(order) = &self.order {
             params.push_str(&format!("order={}&", order));
         }
-        params.push_str(&format!("include_failed={}", self.include_failed));
         params
     }
 

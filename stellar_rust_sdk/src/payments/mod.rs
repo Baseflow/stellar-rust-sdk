@@ -1,12 +1,14 @@
 mod all_payments_request;
 mod payments_for_account_request;
 mod payments_for_ledger_request;
+mod payments_for_transaction_request;
 mod response;
 
 pub mod prelude {
     pub use super::all_payments_request::*;
     pub use super::payments_for_account_request::*;
     pub use super::payments_for_ledger_request::*;
+    pub use super::payments_for_transaction_request::*;
     pub use super::response::*;
 }
 
