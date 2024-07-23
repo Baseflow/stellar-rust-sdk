@@ -9,7 +9,6 @@ use crate::models::Response;
 /// It includes the links to the current, next, and previous pages of the response, as well as the
 /// embedded records of payments.
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
-#[serde(rename_all = "camelCase")]
 pub struct PaymentsResponse {
     /// The links to the current, next, and previous pages of the response.
     #[serde(rename = "_links")]
@@ -35,9 +34,8 @@ pub struct Payment {
     pub type_i: i64,
     pub created_at: String,
     pub transaction_hash: String,
-    #[serde(rename = "starting_balance")]
-    pub starting_balance: String,
-    pub funder: String,
+    pub starting_balance: Option<String>,
+    pub funder: Option<String>,
     pub account: String,
 }
 
