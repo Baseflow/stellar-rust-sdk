@@ -77,8 +77,6 @@ pub mod test {
             .get_payments_for_account(&payments_for_account_request)
             .await;
 
-        println!("{:?}", response);
-
         assert!(response.is_ok());
         let binding = response.unwrap();
         let response = &binding.embedded().records()[0];
@@ -129,8 +127,6 @@ pub mod test {
             .get_payments_for_ledger(&payments_for_ledger_request)
             .await;
 
-        println!("{:?}", response);
-
         assert!(response.is_ok());
         let binding = response.unwrap();
         let response = &binding.embedded().records()[0];
@@ -148,5 +144,41 @@ pub mod test {
         assert_eq!(response.from().as_deref(), Some(FROM));
         assert_eq!(response.to().as_deref(), Some(TO));
         assert_eq!(response.amount().as_deref(), Some(AMOUNT));
+    }
+
+    #[tokio::test]
+    async fn test_get_payments_for_transaction() {
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        let payments_for_transaction_request: PaymentsForTransactionRequest =
+            PaymentsForTransactionRequest::new()
+                .set_transaction_hash(
+                    "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020".to_string(),
+                )
+                .set_limit(1)
+                .unwrap();
+
+        let response: Result<PaymentsResponse, String> = horizon_client
+            .get_payments_for_transaction(&payments_for_transaction_request)
+            .await;
+
+        assert!(response.is_ok());
+        let binding = response.unwrap();
+        let response = &binding.embedded().records()[0];
+        assert_eq!(response.id(), ID);
+        assert_eq!(response.paging_token(), PAGING_TOKEN);
+        assert_eq!(response.transaction_successful(), TRANSACTION_SUCCESSFUL);
+        assert_eq!(response.source_account(), SOURCE_ACCOUNT);
+        assert_eq!(response.type_field(), TYPE);
+        assert_eq!(response.type_i(), TYPE_I);
+        assert_eq!(response.created_at(), CREATED_AT);
+        assert_eq!(response.transaction_hash(), TRANSACTION_HASH);
+        assert_eq!(
+            response.starting_balance().as_deref(),
+            Some(STARTING_BALANCE)
+        );
+        assert_eq!(response.funder().as_deref(), Some(FUNDER));
+        assert_eq!(response.account().as_deref(), Some(ACCOUNT));
     }
 }
