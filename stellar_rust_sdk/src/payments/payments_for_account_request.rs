@@ -67,9 +67,6 @@ impl Request for PaymentsForAccountRequest {
         if let Some(order) = &self.order {
             params.push_str(&format!("order={}&", order));
         }
-        // if let Some(account_id) = &self.account_id {
-        //     params.push_str(&format!("account_id={}&", account_id));
-        // }
         params.push_str(&format!("include_failed={}", self.include_failed));
         params
     }
