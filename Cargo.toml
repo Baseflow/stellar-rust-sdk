@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "stellar_rust_sdk",
+    "stellar_rust_sdk_derive"
+]
+resolver = "2"
