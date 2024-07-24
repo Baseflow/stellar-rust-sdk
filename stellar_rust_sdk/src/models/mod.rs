@@ -217,7 +217,7 @@ impl std::fmt::Display for Asset<IssuedAsset> {
 /// * `Asc` - Indicates ascending order.
 /// * `Desc` - Indicates descending order.
 ///
-#[derive(PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum Order {
     Asc,
     Desc,
