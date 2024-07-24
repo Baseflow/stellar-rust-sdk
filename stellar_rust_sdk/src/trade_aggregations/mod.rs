@@ -63,49 +63,98 @@ pub mod prelude {
 pub mod test {
     use crate::{trade_aggregations::prelude::*, horizon_client::HorizonClient};
 
+    // Request constants.
+    const BASE_ASSET_ACCOUNT: &str = "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI";
+    const BASE_ASSET_CODE: &str = "XETH";
+    const COUNTER_ASSET_ACCOUNT: &str = "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI";
+    const COUNTER_ASSET_CODE: &str = "XUSD";
+
+    // Response constants.
+    const TIMESTAMP: &str = "1717632000000";
+    const TRADE_COUNT: &str = "39";
+    const BASE_VOLUME: &str = "66.7280000";
+    const COUNTER_VOLUME: &str = "51.0800000";
+    const AVG: &str = "0.7654957";
+    const HIGH: &str = "10.0000000";
+    const HIGH_N: &str = "10";
+    const HIGH_D: &str = "1";
+    const LOW: &str = "0.1000000";
+    const LOW_N: &str = "1";
+    const LOW_D: &str = "10";
+    const OPEN: &str = "0.3000000";
+    const OPEN_N: &str = "3";
+    const OPEN_D: &str = "10";
+    const CLOSE: &str = "10.0000000";
+    const CLOSE_N: &str = "10";
+    const CLOSE_D: &str = "1";
+
+    #[tokio::test]
+    async fn test_set_offset() {
+        // Create the base of a valid request which can be cloned by the individual tests.
+        let request = TradeAggregationsRequest::new()
+        .set_base_asset(AssetType::Alphanumeric4(AssetData{
+            asset_issuer: BASE_ASSET_ACCOUNT.to_string(),
+            asset_code: BASE_ASSET_CODE.to_string()}))
+        .unwrap()
+        .set_counter_asset(AssetType::Alphanumeric4(AssetData{
+            asset_issuer: COUNTER_ASSET_ACCOUNT.to_string(),
+            asset_code: COUNTER_ASSET_CODE.to_string()}))
+        .unwrap();
+
+        // Check if an error is returned when trying to set an offset, when the resolution is smaller than an hour.
+        let result = request
+            .clone()
+            .set_resolution(Resolution(ResolutionData::Duration60000))
+            .unwrap()
+            .set_offset(60000);
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "Resolution must be greater than 1 hour when setting offset.");
+
+        // Check if an error is returned when passing unwhole hours in milliseconds.
+        let result = request
+            .clone()
+            .set_resolution(Resolution(ResolutionData::Duration604800000))
+            .unwrap()
+            .set_offset(3999999);
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "Offset must be in whole hours.");
+
+        // Check if an error is returned if the offset is greater than the set resolution.
+        let result = request
+            .clone()
+            .set_resolution(Resolution(ResolutionData::Duration3600000)) // 1 hour
+            .unwrap()
+            .set_offset(7200000); // 2 hours
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "Offset must be smaller than the resolution.");
+
+        // Check if an error is returned if the offset is greater than 24 hours.
+        let result = request
+            .clone()
+            .set_resolution(Resolution(ResolutionData::Duration604800000))
+            .unwrap()
+            .set_offset(604800000); // 1 week
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "Offset must be smaller than 24 hours.");
+    }
+
     #[tokio::test]
     async fn test_get_trade_aggregations() {
-        // Request constants
-        const BASE_ASSET_ACCOUNT: &str = "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI";
-        const BASE_ASSET_CODE: &str = "XETH";
-        const COUNTER_ASSET_ACCOUNT: &str = "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI";
-        const COUNTER_ASSET_CODE: &str = "XUSD";
-        // Response constants
-        const TIMESTAMP: &str = "1717632000000";
-        const TRADE_COUNT: &str = "39";
-        const BASE_VOLUME: &str = "66.7280000";
-        const COUNTER_VOLUME: &str = "51.0800000";
-        const AVG: &str = "0.7654957";
-        const HIGH: &str = "10.0000000";
-        const HIGH_N: &str = "10";
-        const HIGH_D: &str = "1";
-        const LOW: &str = "0.1000000";
-        const LOW_N: &str = "1";
-        const LOW_D: &str = "10";
-        const OPEN: &str = "0.3000000";
-        const OPEN_N: &str = "3";
-        const OPEN_D: &str = "10";
-        const CLOSE: &str = "10.0000000";
-        const CLOSE_N: &str = "10";
-        const CLOSE_D: &str = "1";
-        
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org"
                 .to_string())
                 .unwrap();
-        
+
         let trade_aggregations_request = TradeAggregationsRequest::new()
             .set_base_asset(AssetType::Alphanumeric4(AssetData{
                 asset_issuer: BASE_ASSET_ACCOUNT.to_string(),
-                asset_code: BASE_ASSET_CODE.to_string(),
-            }))
+                asset_code: BASE_ASSET_CODE.to_string()}))
             .unwrap()
             .set_counter_asset(AssetType::Alphanumeric4(AssetData{
                 asset_issuer: COUNTER_ASSET_ACCOUNT.to_string(),
-                asset_code: COUNTER_ASSET_CODE.to_string(),
-            }))
+                asset_code: COUNTER_ASSET_CODE.to_string()}))
             .unwrap()
-            .set_resolution(Resolution(ResolutionData::Value604800000))
+            .set_resolution(Resolution(ResolutionData::Duration604800000))
             .unwrap();
 
         let trade_aggregations_response = horizon_client
