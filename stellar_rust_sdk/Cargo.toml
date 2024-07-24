@@ -14,8 +14,7 @@ keywords = ["Stellar", "SDK", "Horizon", "Blockchain", "Cryptocurrency"]
 categories = [
     "cryptography",
     "network-programming",
-    "blockchain",
-    "cryptocurrency",
+    "cryptography::cryptocurrencies"
 ]
 autobenches = true
 
