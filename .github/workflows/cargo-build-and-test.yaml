@@ -56,8 +56,8 @@ jobs:
         useConfigFile: true
     - name: "Overwrite version numbers"
       run: |
-        awk 'NR==1,/version = "0.1.0"/{sub(/version = "0.1.0"/, "version = \"'$GitVersion_SemVer'\"")} 1' stellar_rust_sdk_derive/Cargo.toml > stellar_rust_sdk_derive/Cargo.tmp && mv stellar_rust_sdk_derive/Cargo.tmp stellar_rust_sdk_derive/Cargo.toml
-        awk 'NR==1,/version = "0.1.0"/{sub(/version = "0.1.0"/, "version = \"'$GitVersion_SemVer'\"")} 1' stellar_rust_sdk/Cargo.toml > stellar_rust_sdk/Cargo.tmp && mv stellar_rust_sdk/Cargo.tmp stellar_rust_sdk/Cargo.toml
+        awk 'NR==1,/version = "0.1.0"/{sub(/version = "0.1.0"/, "version = \"'$GitVersion_SemVer'\"")}1' stellar_rust_sdk_derive/Cargo.toml > stellar_rust_sdk_derive/Cargo.tmp && mv stellar_rust_sdk_derive/Cargo.tmp stellar_rust_sdk_derive/Cargo.toml
+        awk 'NR==1,/version = "0.1.0"/{sub(/version = "0.1.0"/, "version = \"'$GitVersion_SemVer'\"")}1' stellar_rust_sdk/Cargo.toml > stellar_rust_sdk/Cargo.tmp && mv stellar_rust_sdk/Cargo.tmp stellar_rust_sdk/Cargo.toml
     - name: Publish to crates.io
       run: |
         cargo publish --token ${CRATES_TOKEN} --allow-dirty --manifest-path=stellar_rust_sdk_derive/Cargo.toml && \
