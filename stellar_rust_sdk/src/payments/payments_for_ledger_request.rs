@@ -1,6 +1,6 @@
 use crate::models::{IncludeFailed, Order, Request};
 use crate::payments::PAYMENTS_PATH;
-use crate::Paginatable;
+use crate::{BuildQueryParametersExt, Paginatable};
 use stellar_rust_sdk_derive::Pagination;
 
 #[derive(Default, Pagination)]
@@ -16,7 +16,7 @@ pub struct PaymentsForLedgerRequest {
     /// and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
     order: Option<Order>,
     /// A boolean value that determines whether failed transactions should be included in the response.
-    include_failed: IncludeFailed,
+    include_failed: Option<IncludeFailed>,
 }
 
 impl PaymentsForLedgerRequest {
@@ -27,7 +27,7 @@ impl PaymentsForLedgerRequest {
             cursor: None,
             limit: None,
             order: None,
-            include_failed: IncludeFailed::False,
+            include_failed: Option::from(IncludeFailed::False),
         }
     }
 
@@ -47,7 +47,7 @@ impl PaymentsForLedgerRequest {
     /// * `include_failed` - A boolean value that determines whether to include failed operations in the response.
     ///
     pub fn set_include_failed(mut self, include_failed: IncludeFailed) -> PaymentsForLedgerRequest {
-        self.include_failed = include_failed;
+        self.include_failed = Option::from(include_failed);
         self
     }
 }
@@ -59,8 +59,7 @@ impl Request for PaymentsForLedgerRequest {
             self.cursor.as_ref().map(|c| format!("cursor={}", c)),
             self.limit.as_ref().map(|l| format!("limit={}", l)),
             self.order.as_ref().map(|o| format!("order={}", o)),
-        ]
-            .build_query_parameters()
+        ].build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {
