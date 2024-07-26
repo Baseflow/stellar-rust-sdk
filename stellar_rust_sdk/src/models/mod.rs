@@ -238,15 +238,6 @@ pub enum IncludeFailed {
     #[default]
     False,
 }
-//
-// impl AsRef<str> for IncludeFailed {
-//     fn as_ref(&self) -> &str {
-//         match self {
-//             IncludeFailed::True => "true",
-//             IncludeFailed::False => "false",
-//         }
-//     }
-// }
 
 impl std::fmt::Display for IncludeFailed {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
