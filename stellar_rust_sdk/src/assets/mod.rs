@@ -81,20 +81,20 @@ pub mod test {
     #[tokio::test]
     async fn test_get_all_assets() {
         static ASSET_TYPE: &str = "credit_alphanum4";
-        static ASSET_CODE: &str = "004";
-        static ASSET_ISSUER: &str = "GDJUV2K6YBYUTI6GAA6P6BKVBQQDIOBZYDV2YOWOZI35LLSVMO6J4K7B";
+        static ASSET_CODE: &str = "001";
+        static ASSET_ISSUER: &str = "GAIX6Y5CRIH7A67IWGM26J6KIVPNXBHDPUP6KNHYSKFJ6VWABJKZYMKA";
         static NUM_ACCOUNTS: &u32 = &1;
         static NUM_CLAIMABLE_BALANCES: &u32 = &0;
         static NUM_LIQUIDITY_POOLS: &u32 = &0;
 
-        static AMOUNT: &str = "999.0000000";
+        static AMOUNT: &str = "10.0000000";
         static AUTHORIZED: &u32 = &1;
         static AUTHORIZED_TO_MAINTAIN_LIABILITIES: &u32 = &0;
         static UNAUTHORIZED: &u32 = &0;
         static CLAIMABLE_BALANCES_AMOUNT: &str = "0.0000000";
         static LIQUIDITY_POOLS_AMOUNT: &str = "0.0000000";
         static CONTRACTS_AMOUNT: &str = "0.0000000";
-        static BALANCES_AUTHORIZED: &str = "999.0000000";
+        static BALANCES_AUTHORIZED: &str = "10.0000000";
         static BALANCES_UNAUTHORIZED: &str = "0.0000000";
         static AUTH_REQUIRED: &bool = &false;
         static AUTH_REVOCABLE: &bool = &false;
