@@ -27,11 +27,11 @@
 //! * Offers
 //! * Orderbook
 //! * Trades
+//! * Trade aggregations
 //!
 //! #### Endpoints on the roadmap:
 //! * Paths
 //! * Payments
-//! * Trade aggregations
 //! * Transactions
 
 //!
