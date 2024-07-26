@@ -15,7 +15,7 @@
 //! stabilization.
 //!
 //! #### Supported endpoints:
-//! ![86%](https://progress-bar.dev/67/?width=200)
+//! ![86%](https://progress-bar.dev/86/?width=200)
 //! * Accounts
 //! * Assets
 //! * Claimable balance
@@ -205,7 +205,7 @@ pub mod claimable_balances;
 ///
 /// let base_url = "https://horizon-testnet.stellar.org".to_string();
 /// let horizon_client = HorizonClient::new(base_url)
-///     .expect("Failed to create Horizon Client");;
+///     .expect("Failed to create Horizon Client");
 /// ```
 ///
 /// # Using the `HorizonClient`
@@ -220,7 +220,7 @@ pub mod claimable_balances;
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
 /// # let horizon_client = HorizonClient::new(base_url)
-/// #    .expect("Failed to create Horizon Client");;
+/// #    .expect("Failed to create Horizon Client");
 /// let all_assets_request = AllAssetsRequest::new();
 /// let accounts_response = horizon_client
 ///     .get_all_assets(&all_assets_request)
