@@ -161,7 +161,7 @@ pub mod test {
             .get_trade_aggregations(&trade_aggregations_request)
             .await;
 
-        assert!(trade_aggregations_response.clone().is_ok());
+        // assert!(trade_aggregations_response.clone().is_ok());
         let binding = trade_aggregations_response.unwrap();
 
         let response = &binding.embedded().records()[0];
@@ -182,5 +182,69 @@ pub mod test {
         assert_eq!(response.close(), CLOSE);
         assert_eq!(response.close_ratio().numenator(), CLOSE_N);
         assert_eq!(response.close_ratio().denominator(), CLOSE_D);
+    }
+
+    #[tokio::test]
+    async fn test_asset_query_parameters() {
+        use crate::models::*;
+        // Test if different combinations of asset types result in a valid RESTful query. The `Native` asset, for example,
+        // has a different amount of parameters than the alphanumeric types. The separators should always be correct, whatever
+        // the combination.
+
+        // Test 2 different, non-native, asset types.
+        let request = TradeAggregationsRequest::new()
+            .set_base_asset(AssetType::Alphanumeric4(AssetData{
+                asset_issuer: "baseissuer".to_string(),
+                asset_code: "basecode".to_string()}))
+                .unwrap()
+            .set_counter_asset(AssetType::Alphanumeric12(AssetData{
+                asset_issuer: "counterissuer".to_string(),
+                asset_code: "countercode".to_string()}))
+            .unwrap()
+            .set_resolution(Resolution(ResolutionData::Duration604800000))
+            .unwrap();
+        assert_eq!(request.get_query_parameters(),
+            "?base_asset_type=credit_alphanum4&base_asset_code=basecode&base_asset_issuer=baseissuer&counter_asset_type=credit_alphanum12&counter_asset_code=countercode&counter_asset_issuer=counterissuer&resolution=604800000"
+        );
+
+        // Test 1 native, 1 non-native asset type.
+        let request = TradeAggregationsRequest::new()
+            .set_counter_asset(AssetType::Native)
+            .unwrap()
+            .set_base_asset(AssetType::Alphanumeric12(AssetData{
+                asset_issuer: "counterissuer".to_string(),
+                asset_code: "countercode".to_string()}))
+            .unwrap()
+            .set_resolution(Resolution(ResolutionData::Duration604800000))
+            .unwrap();
+        assert_eq!(request.get_query_parameters(),
+            "?base_asset_type=credit_alphanum12&base_asset_code=countercode&base_asset_issuer=counterissuer&counter_asset_type=native&resolution=604800000"
+        );
+
+        // Test 1 non-native, 1 native asset type.
+        let request = TradeAggregationsRequest::new()
+            .set_base_asset(AssetType::Alphanumeric4(AssetData{
+                asset_issuer: "counterissuer".to_string(),
+                asset_code: "countercode".to_string()}))
+            .unwrap()
+            .set_resolution(Resolution(ResolutionData::Duration604800000))
+            .unwrap()
+            .set_counter_asset(AssetType::Native)
+            .unwrap();
+        assert_eq!(request.get_query_parameters(),
+            "?base_asset_type=credit_alphanum4&base_asset_code=countercode&base_asset_issuer=counterissuer&counter_asset_type=native&resolution=604800000"
+        );
+
+        // Test 2 non-native asset types.
+        let request = TradeAggregationsRequest::new()
+            .set_base_asset(AssetType::Native)
+            .unwrap()
+            .set_resolution(Resolution(ResolutionData::Duration604800000))
+            .unwrap()
+            .set_counter_asset(AssetType::Native)
+            .unwrap();
+        assert_eq!(request.get_query_parameters(),
+            "?base_asset_type=native&counter_asset_type=native&resolution=604800000"
+        );
     }
 }

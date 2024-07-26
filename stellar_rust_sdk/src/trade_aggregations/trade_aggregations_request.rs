@@ -317,44 +317,39 @@ impl <B, C> TradeAggregationsRequest<B, C, Resolution> {
     }
 }
 
-
 impl Request for TradeAggregationsRequest<BaseAsset, CounterAsset, Resolution> {
     fn get_query_parameters(&self) -> String {
-        let mut asset_parameters: Vec<String> = Vec::new();
-        match &self.base_asset.0 {
-            AssetType::Native => {
-                asset_parameters.push(format!("base_asset_type=native"));
-            }
-            AssetType::Alphanumeric4(asset) => {
-                asset_parameters.push(format!("base_asset_type=credit_alphanum4"));
-                asset_parameters.push(format!("&base_asset_code={}", asset.asset_code));
-                asset_parameters.push(format!("&base_asset_issuer={}", asset.asset_issuer));
-            }
-            AssetType::Alphanumeric12(asset) => {
-                asset_parameters.push(format!("base_asset_type=credit_alphanum12"));
-                asset_parameters.push(format!("&base_asset_code={}", asset.asset_code));
-                asset_parameters.push(format!("&base_asset_issuer={}", asset.asset_issuer));
-            }
-        }
-
-        match &self.counter_asset.0 {
-            AssetType::Native => {
-                asset_parameters.push(format!("&counter_asset_type=native"));
-            }
-            AssetType::Alphanumeric4(asset) => {
-                asset_parameters.push(format!("&counter_asset_type=credit_alphanum4"));
-                asset_parameters.push(format!("&counter_asset_code={}", asset.asset_code));
-                asset_parameters.push(format!("&counter_asset_issuer={}", asset.asset_issuer));
-            }
-            AssetType::Alphanumeric12(asset) => {
-                asset_parameters.push(format!("&counter_asset_type=credit_alphanum12"));
-                asset_parameters.push(format!("&counter_asset_code={}", asset.asset_code));
-                asset_parameters.push(format!("&counter_asset_issuer={}", asset.asset_issuer));
-            }
-        }
+        let asset_parameters =
+            vec![&self.base_asset.0, &self.counter_asset.0]
+                .iter()
+                .enumerate()
+                .fold(Vec::new(), |mut parameters, (i, asset)| {
+                    let asset_type_prefix = if i == 0 { "base_asset_type=" } // no `&` for `base_asset_type`, as the query begins with `?`
+                        else { "&counter_asset_type=" };
+                    match asset {
+                        AssetType::Native => parameters.push(format!("{}native", asset_type_prefix)),
+                        AssetType::Alphanumeric4(asset_data) | AssetType::Alphanumeric12(asset_data) => {
+                            let asset_type = match asset {
+                                AssetType::Alphanumeric4(_) => "credit_alphanum4",
+                                AssetType::Alphanumeric12(_) => "credit_alphanum12",
+                                _ => "", // should not be reached
+                            };
+                            let asset_issuer_prefix = if i == 0 { "&base_asset_issuer=" } else { "&counter_asset_issuer=" };
+                            let asset_code_prefix = if i == 0 { "&base_asset_code=" } else { "&counter_asset_code=" };
+                            parameters.push(format!(
+                                "{}{}{}{}{}{}",
+                                 asset_type_prefix, asset_type,
+                                 asset_code_prefix, asset_data.asset_code,
+                                 asset_issuer_prefix, asset_data.asset_issuer
+                            ));
+                        }
+                    }
+                    parameters
+                })
+            .join("");
 
         vec![
-            Some(asset_parameters.join("")),
+            Some(asset_parameters),
             Some(format!("resolution={}", self.resolution.0)),
             self.start_time.as_ref().map(|s| format!("start_time={}", s)),
             self.end_time.as_ref().map(|e| format!("end_time={}", e)),
@@ -372,3 +367,6 @@ impl Request for TradeAggregationsRequest<BaseAsset, CounterAsset, Resolution> {
         )
     }
 }
+
+
+
