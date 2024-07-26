@@ -1,6 +1,6 @@
 use crate::models::{Order, Request};
 use crate::payments::PAYMENTS_PATH;
-use crate::Paginatable;
+use crate::{BuildQueryParametersExt, Paginatable};
 use stellar_rust_sdk_derive::Pagination;
 
 #[derive(Default, Pagination)]
@@ -45,17 +45,12 @@ impl PaymentsForTransactionRequest {
 
 impl Request for PaymentsForTransactionRequest {
     fn get_query_parameters(&self) -> String {
-        let mut params = String::new();
-        if let Some(cursor) = self.cursor {
-            params.push_str(&format!("cursor={}&", cursor));
-        }
-        if let Some(limit) = self.limit {
-            params.push_str(&format!("limit={}&", limit));
-        }
-        if let Some(order) = &self.order {
-            params.push_str(&format!("order={}&", order));
-        }
-        params
+        vec![
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+        ]
+            .build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {

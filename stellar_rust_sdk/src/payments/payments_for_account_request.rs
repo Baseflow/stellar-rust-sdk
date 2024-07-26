@@ -58,18 +58,13 @@ impl PaymentsForAccountRequest {
 
 impl Request for PaymentsForAccountRequest {
     fn get_query_parameters(&self) -> String {
-        let mut params = String::new();
-        if let Some(cursor) = self.cursor {
-            params.push_str(&format!("cursor={}&", cursor));
-        }
-        if let Some(limit) = self.limit {
-            params.push_str(&format!("limit={}&", limit));
-        }
-        if let Some(order) = &self.order {
-            params.push_str(&format!("order={}&", order));
-        }
-        params.push_str(&format!("include_failed={}", self.include_failed));
-        params
+        vec![
+            self.include_failed.as_ref().map(|s| format!("include_failed={}", s)),
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+        ]
+            .build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {
