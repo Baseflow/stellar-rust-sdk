@@ -1112,16 +1112,18 @@ impl HorizonClient {
     /// ```
     /// # use stellar_rs::order_book::prelude::*;
     /// # use stellar_rs::models::Request;
-    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// # use stellar_rs::horizon_client::HorizonClient;    ///
+    /// #
+    /// use stellar_rs::models::prelude::{AssetData, AssetType};
     ///
-    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// async fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// # let details_request = DetailsRequest::new()
     /// # .set_buying_asset(AssetType::Native)
     /// # .unwrap()
-    /// # .set_selling_asset(AssetType::Alphanumeric4(Asset {
+    /// # .set_selling_asset(AssetType::Alphanumeric4(AssetData {
     /// #     asset_code: "USDC".to_string(),
     /// #     asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
     /// #         .to_string(),
@@ -1160,6 +1162,7 @@ impl HorizonClient {
     ///
     /// ```rust
     /// use stellar_rs::horizon_client::HorizonClient;
+    /// use stellar_rs::models::prelude::{AssetData, AssetType};
     /// use stellar_rs::trade_aggregations::prelude::*;
     /// use stellar_rs::models::Request;
     ///

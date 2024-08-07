@@ -62,6 +62,7 @@ pub mod prelude {
 #[cfg(test)]
 pub mod test {
     use crate::{trade_aggregations::prelude::*, horizon_client::HorizonClient};
+    use crate::models::prelude::{AssetData, AssetType};
 
     // Request constants.
     const BASE_ASSET_ACCOUNT: &str = "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI";
