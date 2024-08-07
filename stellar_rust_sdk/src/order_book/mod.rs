@@ -9,10 +9,12 @@ pub mod prelude {
 }
 
 pub mod tests {
+    use crate::models::prelude::{AssetData, AssetType};
+    use crate::order_book::prelude::DetailsRequest;
+
     #[tokio::test]
     async fn get_order_bookdetails() {
         use crate::horizon_client;
-        use crate::order_book::prelude::{Asset, AssetType, DetailsRequest};
 
         const BIDS_N: &u32 = &3;
         const BIDS_D: &u32 = &2;
@@ -32,7 +34,7 @@ pub mod tests {
         let details_request = DetailsRequest::new()
             .set_selling_asset(AssetType::Native)
             .unwrap()
-            .set_buying_asset(AssetType::Alphanumeric4(Asset {
+            .set_buying_asset(AssetType::Alphanumeric4(AssetData {
                 asset_code: "IOM".to_string(),
                 asset_issuer: "GCDE6MVFIOYF7YZCSVA6V7MDCFTNWMIOF5PQU3DWPH27AHNX4ERY6AKS"
                     .to_string(),
