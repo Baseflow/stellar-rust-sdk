@@ -1,7 +1,9 @@
 mod response_models;
+mod request_models;
 
 pub mod prelude {
     pub use super::response_models::*;
+    pub use super::request_models::*;
     pub use super::Request;
     pub use super::Response;
 }

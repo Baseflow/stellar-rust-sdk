@@ -1,25 +1,9 @@
+use crate::models::prelude::AssetType;
 use crate::models::Request;
 pub struct SellingAsset(AssetType);
 pub struct NoSellingAsset;
 pub struct BuyingAsset(AssetType);
 pub struct NoBuyingAsset;
-
-#[derive(PartialEq, Debug)]
-pub struct Asset {
-    pub asset_code: String,
-    pub asset_issuer: String,
-}
-
-/// Represents the asset type of an asset.
-#[derive(PartialEq, Debug)]
-pub enum AssetType {
-    /// A native asset_type type. It holds no Value
-    Native,
-    /// An alphanumeric 4 asset_type type. It holds a Asset struct with asset code and asset issuer.
-    Alphanumeric4(Asset),
-    /// An alphanumeric 12 asset_type type. It holds a Asset struct with asset code and asset issuer.
-    Alphanumeric12(Asset),
-}
 
 /// Represents the request for the details of an order book.
 #[derive(PartialEq, Debug)]
@@ -155,11 +139,12 @@ impl Request for DetailsRequest<SellingAsset, BuyingAsset> {
 }
 
 mod tests {
-    
+    use crate::models::prelude::{AssetData, AssetType};
+
     #[test]
     fn test_details_request() {
         use crate::models::Request;
-        use super::{Asset, AssetType, DetailsRequest};
+        use super::{DetailsRequest};
         let details_request = DetailsRequest::new()
             .set_buying_asset(AssetType::Native)
             .unwrap()
@@ -174,7 +159,7 @@ mod tests {
         let details_request = DetailsRequest::new()
             .set_buying_asset(AssetType::Native)
             .unwrap()
-            .set_selling_asset(AssetType::Alphanumeric4(Asset {
+            .set_selling_asset(AssetType::Alphanumeric4(AssetData {
                 asset_code: "USDC".to_string(),
                 asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string(),
             }))
