@@ -18,7 +18,7 @@ use crate::{
             AllLiquidityPoolsResponse, LiquidityPool, LiquidityPoolId, SingleLiquidityPoolRequest,
         },
     },
-    models::{Request, Response},
+    models::{Request, PostRequest, Response},
     offers::prelude::*,
     operations::{
         operations_for_account_request::OperationsForAccountRequest,
@@ -71,6 +71,73 @@ impl HorizonClient {
         Ok(Self { base_url })
     }
 
+    /// Sends a GET request to the Horizon server and retrieves a specified response type.
+    ///
+    /// This internal asynchronous method is designed to handle various GET requests to the
+    /// Horizon server. It is generic over the response type, allowing for flexibility in
+    /// handling different types of responses as dictated by the caller. This method performs
+    /// key tasks such as request validation, URL construction, sending the request, and
+    /// processing the received response.
+    ///
+    /// # Type Parameters
+    ///
+    /// * `Response` - Defines the expected response type. This type must implement the
+    /// [`Response`] trait.
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - A reference to an object implementing the [`Request`] trait. It contains
+    /// specific details about the GET request to be sent.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing the response of type [`Response`] if the request is
+    /// successful. In case of failure (e.g., network issues, server errors), it returns an
+    /// error encapsulated as a `String`.
+    ///
+    /// # Example Usage
+    ///
+    /// This function is typically not called directly but through other specific methods of
+    /// the `HorizonClient` that define the type of request and response.
+    ///
+    /// # Remarks
+    ///
+    /// As a core utility function within `HorizonClient`, it centralizes the logic of sending
+    /// GET requests and handling responses. Modifications or enhancements to the request or
+    /// response handling logic should be implemented here to maintain consistency across the
+    /// client's interface.
+    ///
+    async fn get<R: Response>(&self, request: &impl Request) -> Result<R, String> {
+        // Construct the URL with potential query parameters.
+        let url = request.build_url(&self.base_url);
+
+        // Send the request and await the response.
+        let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
+
+        // Process the response and return the result.
+        let result: R = handle_response(response).await?;
+
+        Ok(result)
+    }
+
+    // TODO: Documentation
+    async fn post<R: Response>(&self, request: &impl PostRequest) -> Result<R, String> {
+        // Construct the URL with potential query parameters.
+        let url = request.build_url(&self.base_url);
+
+        // Send the request and await the response.
+        let response = reqwest::Client::new()
+            .post(&url)
+            .form(&request.get_body())
+            .send()
+            .await.map_err(|e| e.to_string())?;
+
+        // Process the response and return the result.
+        let result: R = handle_response(response).await?;
+        
+        Ok(result)
+    }
+ 
     /// Retrieves a list of accounts filtered by specific criteria.
     ///
     /// This method retrieves a list of accounts from the Horizon server, filtering the results
@@ -1523,53 +1590,6 @@ impl HorizonClient {
         self.get::<AllTradesResponse>(request).await
     }
 
-    /// Sends a GET request to the Horizon server and retrieves a specified response type.
-    ///
-    /// This internal asynchronous method is designed to handle various GET requests to the
-    /// Horizon server. It is generic over the response type, allowing for flexibility in
-    /// handling different types of responses as dictated by the caller. This method performs
-    /// key tasks such as request validation, URL construction, sending the request, and
-    /// processing the received response.
-    ///
-    /// # Type Parameters
-    ///
-    /// * `Response` - Defines the expected response type. This type must implement the
-    /// [`Response`] trait.
-    ///
-    /// # Arguments
-    ///
-    /// * `request` - A reference to an object implementing the [`Request`] trait. It contains
-    /// specific details about the GET request to be sent.
-    ///
-    /// # Returns
-    ///
-    /// Returns a `Result` containing the response of type [`Response`] if the request is
-    /// successful. In case of failure (e.g., network issues, server errors), it returns an
-    /// error encapsulated as a `String`.
-    ///
-    /// # Example Usage
-    ///
-    /// This function is typically not called directly but through other specific methods of
-    /// the `HorizonClient` that define the type of request and response.
-    ///
-    /// # Remarks
-    ///
-    /// As a core utility function within `HorizonClient`, it centralizes the logic of sending
-    /// GET requests and handling responses. Modifications or enhancements to the request or
-    /// response handling logic should be implemented here to maintain consistency across the
-    /// client's interface.
-    ///
-    async fn get<R: Response>(&self, request: &impl Request) -> Result<R, String> {
-        // Construct the URL with potential query parameters.
-        let url = request.build_url(&self.base_url);
-
-        // Send the request and await the response.
-        let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
-
-        // Process the response and return the result.
-        let result: R = handle_response(response).await?;
-        Ok(result)
-    }
 
     /// Fetches all liquidity pools from the Stellar Horizon API.
     ///
@@ -2127,6 +2147,14 @@ impl HorizonClient {
         request: &PaymentsForTransactionRequest,
     ) -> Result<PaymentsResponse, String> {
         self.get::<PaymentsResponse>(request).await
+    }
+
+    // TODO: Documentation
+    pub async fn post_transaction(
+        &self,
+        request: &PostTransactionRequest<TransactionEnvelope>,
+    ) -> Result<TransactionResponse, String> {
+        self.post::<TransactionResponse>(request).await
     }
 }
 
