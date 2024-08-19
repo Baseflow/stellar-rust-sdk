@@ -14,9 +14,9 @@ pub mod tests {
         use crate::horizon_client;
         use crate::order_book::prelude::{Asset, AssetType, DetailsRequest};
 
-        const BIDS_N: &u32 = &3;
-        const BIDS_D: &u32 = &2;
-        const BIDS_PRICE: &str = "1.5000000";
+        const BIDS_N: &u32 = &1;
+        const BIDS_D: &u32 = &5;
+        const BIDS_PRICE: &str = "0.2000000";
         const ASKS_N: &u32 = &5;
         const ASKS_D: &u32 = &1;
         const ASKS_PRICE: &str = "5.0000000";
