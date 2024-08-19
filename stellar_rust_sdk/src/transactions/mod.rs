@@ -8,7 +8,13 @@
 ///
 pub mod single_transaction_request;
 
-// TODO: Documentation
+/// Provides the `PostTransactionRequest`.
+///
+/// # Usage
+/// This module provides the `PostTransactionRequest` struct, specifically designed for
+/// constructing requests to post a new transaction to the Horizon server.
+/// It is tailored for use with the [`HorizonClient::post_transaction`](crate::horizon_client::HorizonClient::post_transaction) method.
+///
 pub mod post_transaction_request;
 
 /// Provides the `AllTransactionsRequest`.
@@ -87,7 +93,11 @@ pub(crate) static TRANSACTIONS_PATH: &str = "transactions";
 /// The `prelude` includes the following re-exports:
 ///
 /// * From `single_transaction_request`: All items (e.g. `SingleTransactionRequest`).
+/// * From `post_transaction_request`: All items (e.g. `PostTransactionRequest`, `TransactionEnvelope`, `NoTransactionEnvelope`).
 /// * From `all_transactions_request`: All items (e.g. `AllTransactionsRequest`).
+/// * From `transactions_for_account_request`: All items (e.g. `TransactionsForAccountRequest`, `TransactionsAccountId`, etc.).
+/// * From `transactions_for_ledger_request`: All items (e.g. `TransactionsForLedgerRequest`, `TransactionsLedgerId`, etc.).
+/// * From `transactions_for_liquidity_pool_request`: All items (e.g. `TransactionsForLiquidityPoolRequest`, `TransactionsLiquidityPoolId`, etc.).
 /// * From `response`: All items (e.g. `SingleTransactionResponse`, `Preconditions`, etc.).
 ///
 /// # Example
@@ -556,22 +566,72 @@ pub mod test {
     }
 
     #[tokio::test]
-    async fn test_post() {
+    async fn test_post_transaction() {
+        const REQUEST_XDR: &str = "AAAAAgAAAABi/B0L0JGythwN1lY0aypo19NHxvLCyO5tBEcCVvwF9wAABEwAAAAAAAAAAQAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAAAQfdFrLDgzSIIugR73qs8U0ZiKbwBUclTTPh5thlbgnAFjRXhdigAAAAAAAAAAAAAAAAAA3b5KF6uk1w1fSKYLrzR8gF2lB+AHAi6oU6CaWhunAskAAAAXSHboAAAAAAAAAAAAAAAAAHfmNeMLin2aTUfxa530ZRn4zwRu7ROAQfUJeJco8HSCAAHGv1JjQAAAAAAAAAAAAAAAAAAAlRt2go9sp7E1a5ZWvr7vin4UPrFQThpQax1lOFm33AAAABdIdugAAAAAAAAAAAAAAAAAmv+knlR6JR2VqWeU0k/4FgvZ/tSV5DEY4gu0iOTKgpUAAAAXSHboAAAAAAAAAAAAAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAAF0h26AAAAAABAAAAAACVG3aCj2ynsTVrlla+vu+KfhQ+sVBOGlBrHWU4WbfcAAAABgAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bf/////////8AAAABAAAAAJr/pJ5UeiUdlalnlNJP+BYL2f7UleQxGOILtIjkyoKVAAAABgAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bf/////////8AAAABAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAAAQAAAAAAlRt2go9sp7E1a5ZWvr7vin4UPrFQThpQax1lOFm33AAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAJGE5yoAAAAAABAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAAAQAAAACa/6SeVHolHZWpZ5TST/gWC9n+1JXkMRjiC7SI5MqClQAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAJGE5yoAAAAAAAAAAAAAAAAABKBB+2UBMP/abwcm/M1TXO+/JQWhPwkalgqizKmXyRIQx7qh6aAFYAAAAAAAAAAARW/AX3AAAAQDVB8fT2ZXF0PZqtZX9brK0kz+P4G8VKs1DkDklP6ULsvXRexXFBdH4xG8xRAsR1HJeEBH278hiBNNvUwNw6zgzGYc0bAAAAQLgZUU/oYGL7frWDQhJHhCQu9JmfqN03PrJq4/cJrN1OSUWXnmLc94sv8m2L+cxl2p0skr2Jxy+vt1Lcxkv7wAI4WbfcAAAAQHvZEVqlygIProf3jVTZohDWm2WUNrFAFXf1LctTqDCQBHph14Eo+APwrTURLLYTIvNoXeGzBKbL03SsOARWcQLkyoKVAAAAQHAvKv2/Ro4+cNh6bKQO/G9NNiUozYysGwG1GvJQkFjwy/OTsL6WBfuI0Oye84lVBVrQVk2EY1ERFhgdMpuFSg4=";
 
-        const XDR: &str = "AAAAAgAAAABi/B0L0JGythwN1lY0aypo19NHxvLCyO5tBEcCVvwF9wAABEwAAAAAAAAAAQAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAAAQfdFrLDgzSIIugR73qs8U0ZiKbwBUclTTPh5thlbgnAFjRXhdigAAAAAAAAAAAAAAAAAA3b5KF6uk1w1fSKYLrzR8gF2lB+AHAi6oU6CaWhunAskAAAAXSHboAAAAAAAAAAAAAAAAAHfmNeMLin2aTUfxa530ZRn4zwRu7ROAQfUJeJco8HSCAAHGv1JjQAAAAAAAAAAAAAAAAAAAlRt2go9sp7E1a5ZWvr7vin4UPrFQThpQax1lOFm33AAAABdIdugAAAAAAAAAAAAAAAAAmv+knlR6JR2VqWeU0k/4FgvZ/tSV5DEY4gu0iOTKgpUAAAAXSHboAAAAAAAAAAAAAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAAF0h26AAAAAABAAAAAACVG3aCj2ynsTVrlla+vu+KfhQ+sVBOGlBrHWU4WbfcAAAABgAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bf/////////8AAAABAAAAAJr/pJ5UeiUdlalnlNJP+BYL2f7UleQxGOILtIjkyoKVAAAABgAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bf/////////8AAAABAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAAAQAAAAAAlRt2go9sp7E1a5ZWvr7vin4UPrFQThpQax1lOFm33AAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAJGE5yoAAAAAABAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAAAQAAAACa/6SeVHolHZWpZ5TST/gWC9n+1JXkMRjiC7SI5MqClQAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAJGE5yoAAAAAAAAAAAAAAAAABKBB+2UBMP/abwcm/M1TXO+/JQWhPwkalgqizKmXyRIQx7qh6aAFYAAAAAAAAAAARW/AX3AAAAQDVB8fT2ZXF0PZqtZX9brK0kz+P4G8VKs1DkDklP6ULsvXRexXFBdH4xG8xRAsR1HJeEBH278hiBNNvUwNw6zgzGYc0bAAAAQLgZUU/oYGL7frWDQhJHhCQu9JmfqN03PrJq4/cJrN1OSUWXnmLc94sv8m2L+cxl2p0skr2Jxy+vt1Lcxkv7wAI4WbfcAAAAQHvZEVqlygIProf3jVTZohDWm2WUNrFAFXf1LctTqDCQBHph14Eo+APwrTURLLYTIvNoXeGzBKbL03SsOARWcQLkyoKVAAAAQHAvKv2/Ro4+cNh6bKQO/G9NNiUozYysGwG1GvJQkFjwy/OTsL6WBfuI0Oye84lVBVrQVk2EY1ERFhgdMpuFSg4=";
+        const LINK_SELF: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+        const LINK_ACCOUNT: &str = "https://horizon-testnet.stellar.org/accounts/GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
+        const LINK_LEDGER: &str = "https://horizon-testnet.stellar.org/ledgers/539";
+        const LINK_OPERATIONS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/operations{?cursor,limit,order}";
+        const LINK_EFFECTS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/effects{?cursor,limit,order}";
+        const LINK_PRECEDES: &str = "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=2314987376640";
+        const LINK_SUCCEEDS: &str = "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=2314987376640";
+        const LINK_TRANSACTION: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+        const ID: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+        const PAGING_TOKEN: &str = "2314987376640";
+        const SUCCESSFUL: &bool = &true;
+        const HASH: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+        const LEDGER: &i64 = &539;
+        const CREATED_AT: &str = "2024-06-11T21:36:12Z";
+        const SOURCE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
+        const SOURCE_ACCOUNT_SEQUENCE: &str = "1";
+        const FEE_ACCOUNT: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
+        const FEE_CHARGED: &str = "1100";
+        const MAX_FEE: &str = "1100";
+        const OPERATION_COUNT: &i64 = &11;
+        const MEMO_TYPE: &str = "none";
+        const SIGNATURE: &str = "NUHx9PZlcXQ9mq1lf1usrSTP4/gbxUqzUOQOSU/pQuy9dF7FcUF0fjEbzFECxHUcl4QEfbvyGIE029TA3DrODA==";
+        const VALID_AFTER: &str = "1970-01-01T00:00:00Z";
+        const MIN_TIME: &str = "0";
+
         let horizon_client =
             HorizonClient::new("https://horizon-testnet.stellar.org"
             .to_string())
             .unwrap();
 
         let request = PostTransactionRequest::new()
-            .set_transaction_envelope_xdr(XDR.to_string())
+            .set_transaction_envelope_xdr(REQUEST_XDR.to_string())
             .unwrap();
 
         let response = horizon_client
             .post_transaction(&request)
             .await;
 
-        println!("{:?}", response);
+            assert!(response.clone().is_ok());
+            let record = response.unwrap();
+            assert_eq!(record.links().self_link().href().as_ref().unwrap(), LINK_SELF);
+            assert_eq!(record.links().account().href().as_ref().unwrap(), LINK_ACCOUNT);
+            assert_eq!(record.links().ledger().href().as_ref().unwrap(), LINK_LEDGER);
+            assert_eq!(record.links().operations().href().as_ref().unwrap(), LINK_OPERATIONS);
+            assert_eq!(record.links().effects().href().as_ref().unwrap(), LINK_EFFECTS);
+            assert_eq!(record.links().precedes().href().as_ref().unwrap(), LINK_PRECEDES);
+            assert_eq!(record.links().succeeds().href().as_ref().unwrap(), LINK_SUCCEEDS);
+            assert_eq!(record.links().transaction().href().as_ref().unwrap(), LINK_TRANSACTION);
+            assert_eq!(record.id(), ID);
+            assert_eq!(record.paging_token(), PAGING_TOKEN);
+            assert_eq!(record.successful(), SUCCESSFUL);
+            assert_eq!(record.hash(), HASH);
+            assert_eq!(record.ledger(), LEDGER);
+            assert_eq!(record.created_at(), CREATED_AT);
+            assert_eq!(record.source_account(), SOURCE_ACCOUNT);
+            assert_eq!(record.source_account_sequence(), SOURCE_ACCOUNT_SEQUENCE);
+            assert_eq!(record.fee_account(), FEE_ACCOUNT);
+            assert_eq!(record.fee_charged(), FEE_CHARGED);
+            assert_eq!(record.max_fee(), MAX_FEE);
+            assert_eq!(record.operation_count(), OPERATION_COUNT);
+            assert_eq!(record.memo_type(), MEMO_TYPE);
+            assert_eq!(record.signatures()[0], SIGNATURE); // Check only the first signature of the vector
+            assert_eq!(record.valid_after().as_ref().unwrap(), VALID_AFTER);
+            assert_eq!(record.preconditions().as_ref().unwrap().timebounds().min_time(), MIN_TIME);
     }
 }

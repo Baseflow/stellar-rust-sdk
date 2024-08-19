@@ -120,12 +120,50 @@ impl HorizonClient {
         Ok(result)
     }
 
-    // TODO: Documentation
+    /// Sends a POST request to the Horizon server and retrieves a specified response type.
+    ///
+    /// This internal asynchronous method is designed to handle various POST requests to the
+    /// Horizon server. It is generic over the response type, allowing for flexibility in
+    /// handling different types of responses as dictated by the caller. This method performs
+    /// key tasks such as request validation, URL construction, sending the request, and
+    /// processing the received response.
+    ///
+    /// # Type Parameters
+    ///
+    /// * `Response` - Defines the expected response type. This type must implement the
+    /// [`Response`] trait.
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - A reference to an object implementing the [`PostRequest`] trait. It contains
+    /// specific details about the POST request to be sent.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing the response of type [`Response`] if the request is
+    /// successful. In case of failure (e.g., network issues, server errors), it returns an
+    /// error encapsulated as a `String`.
+    ///
+    /// # Example Usage
+    ///
+    /// This function is typically not called directly but through other specific methods of
+    /// the `HorizonClient` that define the type of request and response.
+    ///
+    /// # Remarks
+    ///
+    /// As a core utility function within `HorizonClient`, it centralizes the logic of sending
+    /// POST requests and handling responses. Modifications or enhancements to the request or
+    /// response handling logic should be implemented here to maintain consistency across the
+    /// client's interface.
+    ///
     async fn post<R: Response>(&self, request: &impl PostRequest) -> Result<R, String> {
-        // Construct the URL with potential query parameters.
+        // Construct the URL.
         let url = request.build_url(&self.base_url);
 
         // Send the request and await the response.
+        // The vector of tuples (containing the key/value pairs) returned by the `get_body()` method can
+        // be passed directly to `reqwest`s `form()` method, which will automatically create a valid
+        // formdata body for the request.
         let response = reqwest::Client::new()
             .post(&url)
             .form(&request.get_body())
