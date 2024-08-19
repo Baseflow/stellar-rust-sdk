@@ -66,7 +66,7 @@ pub mod response;
 /// # Usage
 /// This variable is intended to be used internally by the request-building logic
 /// to ensure consistent and accurate path construction for transaction-related API calls.
-static TRANSACTIONS_PATH: &str = "transactions";
+pub(crate) static TRANSACTIONS_PATH: &str = "transactions";
 
 /// The `prelude` module of the `transactions` module.
 ///
