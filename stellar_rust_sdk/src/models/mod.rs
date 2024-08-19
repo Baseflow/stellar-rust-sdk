@@ -6,6 +6,12 @@ pub mod prelude {
     pub use super::Response;
 }
 
+pub trait PostRequest {
+    fn get_body(&self) -> Vec<(String, String)>;
+    fn build_url(&self, base_url: &str) -> String;
+
+}
+
 /// Defines methods for creating HTTP requests to the Horizon server.
 ///
 /// Implementors of this trait represent different types of requests that can be made to the server.
