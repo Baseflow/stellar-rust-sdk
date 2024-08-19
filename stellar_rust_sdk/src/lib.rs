@@ -15,7 +15,7 @@
 //! stabilization.
 //!
 //! #### Supported endpoints:
-//! ![86%](https://progress-bar.dev/86/?width=200)
+//! ![93%](https://progress-bar.dev/93/?width=200)
 //! * Accounts
 //! * Assets
 //! * Claimable balance
@@ -29,10 +29,10 @@
 //! * Payments
 //! * Trades
 //! * Trade aggregations
+//! * Transactions
 //!
 //! #### Endpoints on the roadmap:
 //! * Paths
-//! * Transactions
 
 //!
 //! ## Example Usage
