@@ -34,7 +34,7 @@ use crate::Paginatable;
 #[derive(Default, Pagination)]
 pub struct AllTransactionsRequest {
     // Indicates whether or not to include failed operations in the response.
-    include_failed: Option<bool>,
+    include_failed: Option<IncludeFailed>,
     /// A pointer to a specific location in a collection of responses, derived from the
     /// `paging_token` value of a record. Used for pagination control in the API response.
     cursor: Option<u32>,
@@ -77,7 +77,7 @@ impl AllTransactionsRequest {
     ///
     /// # Arguments
     /// * `include_failed` (bool) - when set to `true`, failed operations will be included.
-    pub fn set_include_failed(self, include_failed: bool) -> Result<AllTransactionsRequest, String> {
+    pub fn set_include_failed(self, include_failed: IncludeFailed) -> Result<AllTransactionsRequest, String> {
         Ok(AllTransactionsRequest {
             include_failed: Some(include_failed),
             ..self
