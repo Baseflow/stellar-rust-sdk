@@ -1,6 +1,5 @@
 use crate::{models::*, BuildQueryParametersExt};
-use stellar_rust_sdk_derive::Pagination;
-use crate::Paginatable;
+use stellar_rust_sdk_derive::pagination;
 
 /// Represents a request to list all transactions from the Stellar Horizon API.
 ///
@@ -31,19 +30,11 @@ use crate::Paginatable;
 /// // Use with HorizonClient::get_all_transactions
 /// ```
 ///
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct AllTransactionsRequest {
     // Indicates whether or not to include failed operations in the response.
     include_failed: Option<IncludeFailed>,
-    /// A pointer to a specific location in a collection of responses, derived from the
-    /// `paging_token` value of a record. Used for pagination control in the API response.
-    cursor: Option<u32>,
-    /// Specifies the maximum number of records to be returned in a single response.
-    /// The range for this parameter is from 1 to 200. The default value is set to 10.
-    limit: Option<u8>,
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    /// and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    order: Option<Order>,
 }
 
 impl Request for AllTransactionsRequest {
