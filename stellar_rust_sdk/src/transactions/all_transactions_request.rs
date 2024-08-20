@@ -18,12 +18,12 @@ use crate::Paginatable;
 /// # Example
 /// ```
 /// use stellar_rs::transactions::all_transactions_request::AllTransactionsRequest;
-/// use stellar_rs::models::{Order};
+/// use stellar_rs::models::{Order, IncludeFailed};
 /// use stellar_rust_sdk_derive::Pagination;
 /// use stellar_rs::Paginatable;
 ///
 /// let request = AllTransactionsRequest::new()
-///     .set_include_failed(true).unwrap() // Optional flag to include failed transactions
+///     .set_include_failed(IncludeFailed::True).unwrap() // Optional flag to include failed transactions
 ///     .set_cursor(123).unwrap() // Optional cursor for pagination
 ///     .set_limit(100).unwrap() // Optional limit for response records
 ///     .set_order(Order::Desc); // Optional order of records

@@ -1661,7 +1661,7 @@ impl HorizonClient {
     ///
     /// ```
     /// # use stellar_rs::transactions::prelude::*;
-    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::models::{Request, IncludeFailed};
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// # use stellar_rust_sdk_derive::Pagination;
     /// # use stellar_rs::Paginatable;
@@ -1671,7 +1671,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllTransactionsRequest::new()
-    ///   .set_include_failed(true).unwrap();
+    ///   .set_include_failed(IncludeFailed::True).unwrap();
     ///
     /// let response = horizon_client.get_all_transactions(&request).await;
     ///
