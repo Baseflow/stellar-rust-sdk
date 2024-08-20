@@ -81,7 +81,7 @@ impl std::fmt::Display for ResolutionData {
 ///
 /// # Example
 /// ```
-/// use stellar_rs::{trade_aggregations::prelude::*, models::*, Paginatable};
+/// use stellar_rs::{trade_aggregations::prelude::*, models::*};
 ///
 /// let request = TradeAggregationsRequest::new()
 ///     .set_base_asset(AssetType::Native).unwrap()

@@ -18,8 +18,6 @@ use stellar_rust_sdk_derive::pagination;
 /// # use stellar_rs::assets::prelude::{AllAssetsRequest, AllAssetsResponse};
 /// # use stellar_rs::models::*;
 /// # use stellar_rs::horizon_client::HorizonClient;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use stellar_rs::Paginatable;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let base_url = "https://horizon-testnet.stellar.org".to_string();

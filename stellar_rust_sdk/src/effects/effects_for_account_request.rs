@@ -25,8 +25,6 @@ use stellar_rust_sdk_derive::pagination;
 /// ```rust
 /// # use stellar_rs::effects::effects_for_account_request::EffectsForAccountRequest;
 /// # use stellar_rs::models::*;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use crate::stellar_rs::Paginatable;
 ///
 /// let request = EffectsForAccountRequest::new()
 ///     .set_cursor(1234).unwrap()

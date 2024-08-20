@@ -14,8 +14,6 @@ use stellar_rust_sdk_derive::pagination;
 /// ```rust
 /// # use stellar_rs::effects::effects_for_ledger_request::EffectsForLedgerRequest;
 /// # use stellar_rs::models::Order;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use stellar_rs::Paginatable;
 ///
 /// let mut request = EffectsForLedgerRequest::new()
 ///     .set_sequence(&1000)

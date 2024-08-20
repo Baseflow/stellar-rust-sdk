@@ -33,8 +33,6 @@ pub enum ReserveType {
 /// ```rust
 /// # use stellar_rs::liquidity_pools::all_liquidity_pools_request::AllLiquidityPoolsRequest;
 /// # use stellar_rs::models::*;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use stellar_rs::Paginatable;
 ///
 /// let request = AllLiquidityPoolsRequest::new()
 ///     .set_cursor(1234).unwrap()

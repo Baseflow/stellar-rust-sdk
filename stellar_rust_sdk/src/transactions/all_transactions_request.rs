@@ -18,8 +18,6 @@ use stellar_rust_sdk_derive::pagination;
 /// ```
 /// use stellar_rs::transactions::all_transactions_request::AllTransactionsRequest;
 /// use stellar_rs::models::{Order, IncludeFailed};
-/// use stellar_rust_sdk_derive::Pagination;
-/// use stellar_rs::Paginatable;
 ///
 /// let request = AllTransactionsRequest::new()
 ///     .set_include_failed(IncludeFailed::True).unwrap() // Optional flag to include failed transactions
