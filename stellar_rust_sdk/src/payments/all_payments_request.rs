@@ -5,6 +5,7 @@ use stellar_rust_sdk_derive::pagination;
 #[pagination]
 #[derive(Default)]
 pub struct AllPaymentsRequest {
+    // All fields are injected by the `pagination` macro.
 }
 
 impl AllPaymentsRequest {
