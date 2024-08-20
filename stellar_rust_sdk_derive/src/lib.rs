@@ -1,7 +1,7 @@
 extern crate proc_macro2;
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, ItemStruct, Fields, Field};
+use syn::{parse_macro_input, ItemStruct, Fields, Field, parse::Nothing};
 
 /// The procedural attribute macro to add pagination functionality to request structs.
 ///
@@ -28,8 +28,11 @@ use syn::{parse_macro_input, ItemStruct, Fields, Field};
 /// functionality.
 ///
 #[proc_macro_attribute]
-pub fn pagination(_attr: TokenStream, input: TokenStream) -> TokenStream {
+pub fn pagination(args: TokenStream, input: TokenStream) -> TokenStream {
     let mut input = parse_macro_input!(input as ItemStruct);
+
+    // No arguments should be passed, but if they are, parse them as `Nothing` to prevent misuse. 
+    let _ = parse_macro_input!(args as Nothing);
 
     // Create required fields to be added to the struct.
     let cursor_field: Field = syn::parse_quote! {
