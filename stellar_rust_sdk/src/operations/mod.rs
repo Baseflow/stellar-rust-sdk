@@ -121,8 +121,17 @@ pub mod prelude {
 
 #[cfg(test)]
 pub mod tests {
-    use super::prelude::*;
-    use crate::{horizon_client::HorizonClient, Paginatable};
+    use crate::{
+        horizon_client,
+        operations::{
+            operations_for_account_request::OperationsForAccountRequest,
+            prelude::{
+                AllOperationsRequest, OperationsForLedgerRequest, OperationsForLiquidityPoolRequest,
+            },
+            response::{Operation, OperationResponse},
+            single_operation_request::SingleOperationRequest,
+        },
+    };
 
     #[tokio::test]
     async fn test_get_all_operations() {

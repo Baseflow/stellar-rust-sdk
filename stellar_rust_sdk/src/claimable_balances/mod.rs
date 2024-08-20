@@ -96,7 +96,7 @@ pub mod prelude {
 mod tests {
     use super::parse_epoch;
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient, Paginatable};
+    use crate::{horizon_client::HorizonClient};
     use chrono::DateTime;
     use chrono::{TimeZone, Utc};
     use lazy_static::lazy_static;

@@ -83,7 +83,6 @@
 //! types for more examples and detailed usage instructions.
 
 use derive_getters::Getters;
-use models::Order;
 /// Provides `Request` and `Response` structs for retrieving accounts.
 ///
 /// This module provides a set of specialized request and response structures designed for

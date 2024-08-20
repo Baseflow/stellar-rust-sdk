@@ -1,20 +1,13 @@
 use crate::models::{IncludeFailed, Order, Request};
 use crate::payments::PAYMENTS_PATH;
-use crate::{BuildQueryParametersExt, Paginatable};
-use stellar_rust_sdk_derive::Pagination;
+use crate::BuildQueryParametersExt;
+use stellar_rust_sdk_derive::pagination;
 
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct PaymentsForAccountRequest {
     /// The Stellar address of the account for which you want to retrieve payments.
     account_id: Option<String>,
-    /// A pointer to a specific location in a collection of responses, derived from the
-    ///  `paging_token` value of a record. Used for pagination control in the API response.
-    cursor: Option<u32>,
-    /// Specifies the maximum number of records to be returned in a single response.
-    limit: Option<u8>,
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    /// and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    order: Option<Order>,
     /// A boolean value that determines whether failed transactions should be included in the response.
     include_failed: Option<IncludeFailed>,
 }
