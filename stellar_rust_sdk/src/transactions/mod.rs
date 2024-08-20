@@ -109,6 +109,7 @@ pub mod prelude {
 #[cfg(test)]
 pub mod test {
     use super::prelude::*;
+    use crate::models::IncludeFailed;
     use crate::horizon_client::HorizonClient;
 
     const LINK_SELF: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
@@ -193,7 +194,7 @@ pub mod test {
             .unwrap();
 
         let all_transactions_request = AllTransactionsRequest::new()
-            .set_include_failed(true)
+            .set_include_failed(IncludeFailed::True)
             .unwrap();
 
         let all_transactions_response = horizon_client
