@@ -1,15 +1,34 @@
 extern crate proc_macro2;
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, DeriveInput};
+use syn::{parse_macro_input, ItemStruct, Fields, Field};
 
-#[proc_macro_derive(Pagination, attributes(Pagination))]
-pub fn pagination_macro(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as DeriveInput);
+#[proc_macro_attribute]
+pub fn pagination(_attr: TokenStream, input: TokenStream) -> TokenStream {
+    let mut input = parse_macro_input!(input as ItemStruct);
+
+    // create req'd fields
+    let cursor_field: Field = syn::parse_quote! {
+        pub cursor: Option<u32>
+    };
+    let limit_field: Field = syn::parse_quote! {
+        pub limit: Option<u8>
+    };
+    let order_field: Field = syn::parse_quote! {
+        pub order: Option<Order>
+    };
+
+    if let Fields::Named(ref mut fields) = input.fields {
+        fields.named.push(cursor_field);
+        fields.named.push(limit_field);
+        fields.named.push(order_field);
+    }
+
     let struct_name = &input.ident;
     let (impl_generics, type_generics, where_clause) = input.generics.split_for_impl();
     let expanded = quote! {
-        impl #impl_generics Paginatable for #struct_name #type_generics #where_clause {
+        #input
+        impl #impl_generics #struct_name #type_generics #where_clause {
             fn set_cursor(self, cursor: u32) -> Result<Self, String> {
                 // Always accept the cursor since it's non-optional in the setter
                 if cursor < 1 {

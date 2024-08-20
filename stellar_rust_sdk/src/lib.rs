@@ -738,15 +738,3 @@ impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
         }
     }
 }
-
-pub trait Paginatable {
-    fn set_cursor(self, cursor: u32) -> Result<Self, String>
-    where
-        Self: Sized;
-    fn set_limit(self, limit: u8) -> Result<Self, String>
-    where
-        Self: Sized;
-    fn set_order(self, order: Order) -> Result<Self, String>
-    where
-        Self: Sized;
-}
