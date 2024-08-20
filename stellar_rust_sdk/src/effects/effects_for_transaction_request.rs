@@ -16,8 +16,6 @@ use stellar_rust_sdk_derive::pagination;
 /// ```rust
 /// # use stellar_rs::effects::effects_for_transaction_request::EffectForTransactionRequest;
 /// # use stellar_rs::models::*;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use stellar_rs::Paginatable;
 ///
 /// let request = EffectForTransactionRequest::new()
 ///     .set_transaction_hash("transaction_hash".to_string())

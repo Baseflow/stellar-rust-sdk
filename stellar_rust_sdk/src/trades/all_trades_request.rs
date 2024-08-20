@@ -38,8 +38,7 @@ pub enum AssetType {
 ///
 /// # Example
 /// ```
-/// use stellar_rs::{trades::prelude::*, models::*, Paginatable};
-/// use stellar_rust_sdk_derive::Pagination;
+/// use stellar_rs::{trades::prelude::*, models::*};
 ///
 /// let request = AllTradesRequest::new()
 ///     .set_base_asset(AssetType::Native).unwrap() // Optional selling asset filter

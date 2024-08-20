@@ -16,8 +16,6 @@ use stellar_rust_sdk_derive::pagination;
 /// ```rust
 /// # use stellar_rs::ledgers::ledgers_request::LedgersRequest;
 /// # use stellar_rs::models::*;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use stellar_rs::Paginatable;
 ///
 /// let request = LedgersRequest::new()
 ///     .set_cursor(1234).unwrap()

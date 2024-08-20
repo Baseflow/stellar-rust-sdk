@@ -23,8 +23,6 @@ use stellar_rust_sdk_derive::pagination;
 /// ```rust
 /// # use stellar_rs::effects::effects_for_liquidity_pools_request::EffectsForLiquidityPoolRequest;
 /// # use stellar_rs::models::*;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use stellar_rs::Paginatable;
 ///
 /// let request = EffectsForLiquidityPoolRequest::new()
 ///     .set_liquidity_pool_id("01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d".to_string())

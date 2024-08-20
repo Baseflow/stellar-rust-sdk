@@ -19,7 +19,6 @@ use stellar_rust_sdk_derive::pagination;
 /// ```
 /// # use stellar_rs::claimable_balances::all_claimable_balances_request::AllClaimableBalancesRequest;
 /// # use stellar_rs::models::{Asset, Order, IssuedAsset};
-/// # use crate::stellar_rs::Paginatable;
 ///
 /// let request = AllClaimableBalancesRequest::new()
 ///     .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()).unwrap() // Optional sponsor filter

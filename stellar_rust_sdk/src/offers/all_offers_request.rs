@@ -18,8 +18,6 @@ use stellar_rust_sdk_derive::pagination;
 /// ```
 /// use stellar_rs::offers::all_offers_request::AllOffersRequest;
 /// use stellar_rs::models::{Asset, NativeAsset, Order};
-/// use stellar_rust_sdk_derive::Pagination;
-/// use stellar_rs::Paginatable;
 ///
 /// let request = AllOffersRequest::new()
 ///     .set_sponsor("GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string()).unwrap() // Optional sponsor filter
