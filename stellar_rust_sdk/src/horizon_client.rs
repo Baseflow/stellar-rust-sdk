@@ -1066,7 +1066,7 @@ impl HorizonClient {
     /// let request = OperationsForAccountRequest::new()
     ///   .set_limit(2).unwrap();
     ///
-    /// let response = horizon_client.get_operation_for_account(&request).await;
+    /// let response = horizon_client.get_operations_for_account(&request).await;
     ///
     /// // Access the payments
     /// if let Ok(operations_for_account_response) = response {
@@ -1222,10 +1222,10 @@ impl HorizonClient {
     ///
     /// // Access the operations
     /// if let Ok(operations_for_transaction_response) = response {
-    ///  for operation in operations_for_transaction_response.embedded().records() {
-    ///   println!("Operation ID: {}", operation.id());
-    /// // Further processing...
-    /// }
+    ///     for operation in operations_for_transaction_response.embedded().records() {
+    ///         println!("Operation ID: {}", operation.id());
+    ///         // Further processing...
+    ///     }
     /// }
     /// # Ok({})
     /// # }

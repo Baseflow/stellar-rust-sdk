@@ -49,6 +49,7 @@ impl Request for OperationsForTransactionRequest {
         ]
         .build_query_parameters()
     }
+
     fn build_url(&self, base_url: &str) -> String {
         let transaction_hash = &self.transaction_hash.as_ref().unwrap();
         use crate::transactions::TRANSACTIONS_PATH;
