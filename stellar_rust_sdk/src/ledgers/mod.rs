@@ -85,7 +85,7 @@ pub mod prelude {
 #[cfg(test)]
 pub mod tests {
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient, Paginatable};
+    use crate::{horizon_client::HorizonClient};
     use base64::{engine::general_purpose, Engine};
 
     #[tokio::test]

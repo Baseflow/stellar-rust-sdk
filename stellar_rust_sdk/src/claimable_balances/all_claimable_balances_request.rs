@@ -1,5 +1,5 @@
-use crate::{models::*, BuildQueryParametersExt, Paginatable};
-use stellar_rust_sdk_derive::Pagination;
+use crate::{models::*, BuildQueryParametersExt};
+use stellar_rust_sdk_derive::pagination;
 
 /// Represents a request to list all claimable balances from the Stellar Horizon API.
 ///
@@ -32,7 +32,8 @@ use stellar_rust_sdk_derive::Pagination;
 /// // Use with HorizonClient::get_all_claimable_balances
 /// ```
 ///
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct AllClaimableBalancesRequest {
     /// Optional. Representing the account ID of the sponsor. When set, the response will
     ///   only include claimable balances sponsored by the specified account.
@@ -45,18 +46,6 @@ pub struct AllClaimableBalancesRequest {
     /// Optional. Represents the account ID of the claimant. If provided, the response will
     ///   include only claimable balances that are claimable by the specified account.
     claimant: Option<String>,
-
-    /// A pointer to a specific location in a collection of responses, derived from the
-    ///   `paging_token` value of a record. Used for pagination control in the API response.
-    cursor: Option<u32>,
-
-    /// Specifies the maximum number of records to be returned in a single response.
-    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
-    limit: Option<u8>,
-
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    order: Option<Order>,
 }
 
 impl Request for AllClaimableBalancesRequest {

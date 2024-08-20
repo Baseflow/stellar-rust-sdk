@@ -1,6 +1,5 @@
 use crate::models::*;
-use stellar_rust_sdk_derive::Pagination;
-use crate::Paginatable;
+use stellar_rust_sdk_derive::pagination;
 
 /// Represents the base and counter assets. Contains an enum of one of the possible asset types.
 #[derive(PartialEq, Debug)]
@@ -51,7 +50,8 @@ pub enum AssetType {
 /// // Use with HorizonClient::get_all_offers
 /// ```
 ///
-#[derive(PartialEq, Default, Pagination)]
+#[pagination]
+#[derive(PartialEq, Default)]
 pub struct AllTradesRequest {
     /// The base asset of the trade.
     pub base_asset: Option<TradeAsset>,
@@ -59,17 +59,7 @@ pub struct AllTradesRequest {
     pub counter_asset: Option<TradeAsset>,
     // The offer ID. Used to filter for trades originating from a specific offer.
     pub offer_id: Option<String>,
-    /// A pointer to a specific location in a collection of responses, derived from the
-    /// `paging_token` value of a record. Used for pagination control in the API response.
-    pub cursor: Option<u32>,
-    /// Specifies the maximum number of records to be returned in a single response.
-    /// The range for this parameter is from 1 to 200. The default value is set to 10.
-    pub limit: Option<u8>,
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    /// and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    pub order: Option<Order>,
 }
-
 
 impl AllTradesRequest {
     /// Creates a new `AllOffersRequest` with default parameters.

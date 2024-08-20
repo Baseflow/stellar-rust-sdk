@@ -1,6 +1,5 @@
 use crate::models::*;
-use stellar_rust_sdk_derive::Pagination;
-use crate::Paginatable;
+use stellar_rust_sdk_derive::pagination;
 
 /// Represents the ID of an account for which the trades are to be retrieved.
 #[derive(Default, Clone)]
@@ -10,19 +9,11 @@ pub struct TradeAccountId(String);
 #[derive(Default, Clone)]
 pub struct NoTradeAccountId;
 
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct TradesForAccountRequest<I> {
     /// The ID of the account for which the trades are to be retrieved.
     account_id: I,
-    /// A pointer to a specific location in a collection of responses, derived from the
-    /// `paging_token` value of a record. Used for pagination control in the API response.
-    pub cursor: Option<u32>,
-    /// Specifies the maximum number of records to be returned in a single response.
-    /// The range for this parameter is from 1 to 200. The default value is set to 10.
-    pub limit: Option<u8>,
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    /// and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    pub order: Option<Order>,
 }
 
 impl TradesForAccountRequest<NoTradeAccountId> {

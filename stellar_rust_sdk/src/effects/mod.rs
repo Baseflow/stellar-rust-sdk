@@ -119,7 +119,7 @@ pub mod prelude {
 #[cfg(test)]
 mod tests {
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient, Paginatable};
+    use crate::{horizon_client::HorizonClient};
 
     #[test]
     fn dummy_test() {

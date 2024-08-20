@@ -1,21 +1,13 @@
 use crate::models::{Order, Request};
 use crate::payments::PAYMENTS_PATH;
-use crate::{BuildQueryParametersExt, Paginatable};
-use stellar_rust_sdk_derive::Pagination;
+use crate::BuildQueryParametersExt;
+use stellar_rust_sdk_derive::pagination;
 
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct PaymentsForTransactionRequest {
     /// The transaction hash of the transaction for which you want to retrieve payments.
     transaction_hash: Option<String>,
-    /// A pointer to a specific location in a collection of responses, derived from the
-    ///   `paging_token` value of a record. Used for pagination control in the API response.
-    cursor: Option<u32>,
-    /// Specifies the maximum number of records to be returned in a single response.
-    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
-    limit: Option<u8>,
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    order: Option<Order>,
 }
 
 impl PaymentsForTransactionRequest {

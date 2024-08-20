@@ -56,7 +56,7 @@ pub mod prelude {
 #[cfg(test)]
 pub mod test {
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient, models::IncludeFailed, Paginatable};
+    use crate::{horizon_client::HorizonClient, models::IncludeFailed};
 
     static ID: &str = "2314987376641";
     static PAGING_TOKEN: &str = "2314987376641";

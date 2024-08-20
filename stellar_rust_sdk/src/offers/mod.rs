@@ -83,7 +83,7 @@ pub mod prelude {
 #[cfg(test)]
 pub mod test {
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient, models::*, Paginatable};
+    use crate::{horizon_client::HorizonClient, models::*};
 
     #[tokio::test]
     async fn test_get_single_offer() {

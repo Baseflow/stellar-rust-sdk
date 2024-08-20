@@ -29,7 +29,7 @@ pub fn pagination(_attr: TokenStream, input: TokenStream) -> TokenStream {
     let expanded = quote! {
         #input
         impl #impl_generics #struct_name #type_generics #where_clause {
-            fn set_cursor(self, cursor: u32) -> Result<Self, String> {
+            pub fn set_cursor(self, cursor: u32) -> Result<Self, String> {
                 // Always accept the cursor since it's non-optional in the setter
                 if cursor < 1 {
                     return Err("Cursor must be greater than or equal to 1.".to_string());
@@ -38,7 +38,7 @@ pub fn pagination(_attr: TokenStream, input: TokenStream) -> TokenStream {
                 Ok(Self { cursor: Some(cursor), ..self })
             }
 
-            fn set_limit(self, limit: u8) -> Result<Self, String> {
+            pub fn set_limit(self, limit: u8) -> Result<Self, String> {
                 // Validate limit if necessary
                 if !(1..=200).contains(&limit) {
                     Err("Limit must be between 1 and 200.".to_string())
@@ -47,7 +47,7 @@ pub fn pagination(_attr: TokenStream, input: TokenStream) -> TokenStream {
                 }
             }
 
-            fn set_order(self, order: Order) -> Result<Self, String> {
+            pub fn set_order(self, order: Order) -> Result<Self, String> {
                 // No validation required for setting the order in this context
                 Ok(Self { order: Some(order), ..self })
             }

@@ -70,7 +70,7 @@ pub mod prelude {
 
 #[tokio::test]
 async fn test_get_all_liquidity_pools() {
-    use crate::{horizon_client::HorizonClient, Paginatable};
+    use crate::{horizon_client::HorizonClient};
     use all_liquidity_pools_request::AllLiquidityPoolsRequest;
 
 

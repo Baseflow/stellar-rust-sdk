@@ -76,7 +76,7 @@ pub mod prelude {
 #[cfg(test)]
 pub mod test {
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient, Paginatable};
+    use crate::{horizon_client::HorizonClient};
 
     #[tokio::test]
     async fn test_get_all_assets() {

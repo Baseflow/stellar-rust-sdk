@@ -1,5 +1,5 @@
-use crate::{models::*, BuildQueryParametersExt, Paginatable};
-use stellar_rust_sdk_derive::Pagination;
+use crate::{models::*, BuildQueryParametersExt};
+use stellar_rust_sdk_derive::pagination;
 
 /// Represents a request for listing all assets in the Stellar Horizon API.
 ///
@@ -38,27 +38,15 @@ use stellar_rust_sdk_derive::Pagination;
 ///
 /// ```
 ///
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct AllAssetsRequest {
     /// The code of the asset to filter by. This is typically the identifier
     ///   assigned to custom assets on the Stellar network.
     asset_code: Option<String>,
-
     /// The Stellar address of the issuer for the asset you want to filter by.
     ///   It is relevant for assets that are custom issued on the Stellar network.
     asset_issuer: Option<String>,
-
-    /// A pointer to a specific location in a collection of responses, derived from the
-    ///   `paging_token` value of a record. Used for pagination control in the API response.
-    cursor: Option<u32>,
-
-    /// Specifies the maximum number of records to be returned in a single response.
-    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
-    limit: Option<u8>,
-
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    order: Option<Order>,
 }
 
 impl Request for AllAssetsRequest {
