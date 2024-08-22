@@ -76,7 +76,7 @@ pub mod prelude {
 #[cfg(test)]
 pub mod test {
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient};
+    use crate::horizon_client::HorizonClient;
 
     #[tokio::test]
     async fn test_get_all_assets() {
@@ -100,7 +100,6 @@ pub mod test {
         static AUTH_REVOCABLE: &bool = &false;
         static AUTH_IMMUTABLE: &bool = &false;
         static AUTH_CLAWBACK_ENABLED: &bool = &false;
-
 
         // Initialize horizon client
         let horizon_client =
@@ -126,9 +125,15 @@ pub mod test {
         assert_eq!(response.num_liquidity_pools(), NUM_LIQUIDITY_POOLS);
         assert_eq!(response.amount(), AMOUNT);
         assert_eq!(response.accounts().authorized(), AUTHORIZED);
-        assert_eq!(response.accounts().authorized_to_maintain_liabilities(), AUTHORIZED_TO_MAINTAIN_LIABILITIES);
+        assert_eq!(
+            response.accounts().authorized_to_maintain_liabilities(),
+            AUTHORIZED_TO_MAINTAIN_LIABILITIES
+        );
         assert_eq!(response.accounts().unauthorized(), UNAUTHORIZED);
-        assert_eq!(response.claimable_balances_amount(), CLAIMABLE_BALANCES_AMOUNT);
+        assert_eq!(
+            response.claimable_balances_amount(),
+            CLAIMABLE_BALANCES_AMOUNT
+        );
         assert_eq!(response.liquidity_pools_amount(), LIQUIDITY_POOLS_AMOUNT);
         assert_eq!(response.contracts_amount(), CONTRACTS_AMOUNT);
         assert_eq!(response.balances().authorized(), BALANCES_AUTHORIZED);
@@ -136,6 +141,9 @@ pub mod test {
         assert_eq!(response.flags().auth_required(), AUTH_REQUIRED);
         assert_eq!(response.flags().auth_revocable(), AUTH_REVOCABLE);
         assert_eq!(response.flags().auth_immutable(), AUTH_IMMUTABLE);
-        assert_eq!(response.flags().auth_clawback_enabled(), AUTH_CLAWBACK_ENABLED);
+        assert_eq!(
+            response.flags().auth_clawback_enabled(),
+            AUTH_CLAWBACK_ENABLED
+        );
     }
 }

@@ -55,13 +55,13 @@ static TRADE_AGGREGATIONS_PATH: &str = "trade_aggregations";
 /// ```
 ///
 pub mod prelude {
-    pub use super::trade_aggregations_request::*;
     pub use super::response::*;
+    pub use super::trade_aggregations_request::*;
 }
 
 #[cfg(test)]
 pub mod test {
-    use crate::{trade_aggregations::prelude::*, horizon_client::HorizonClient};
+    use crate::{horizon_client::HorizonClient, trade_aggregations::prelude::*};
 
     // Request constants.
     const BASE_ASSET_ACCOUNT: &str = "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI";
@@ -92,14 +92,16 @@ pub mod test {
     async fn test_set_offset() {
         // Create the base of a valid request which can be cloned by the individual tests.
         let request = TradeAggregationsRequest::new()
-        .set_base_asset(AssetType::Alphanumeric4(AssetData{
-            asset_issuer: BASE_ASSET_ACCOUNT.to_string(),
-            asset_code: BASE_ASSET_CODE.to_string()}))
-        .unwrap()
-        .set_counter_asset(AssetType::Alphanumeric4(AssetData{
-            asset_issuer: COUNTER_ASSET_ACCOUNT.to_string(),
-            asset_code: COUNTER_ASSET_CODE.to_string()}))
-        .unwrap();
+            .set_base_asset(AssetType::Alphanumeric4(AssetData {
+                asset_issuer: BASE_ASSET_ACCOUNT.to_string(),
+                asset_code: BASE_ASSET_CODE.to_string(),
+            }))
+            .unwrap()
+            .set_counter_asset(AssetType::Alphanumeric4(AssetData {
+                asset_issuer: COUNTER_ASSET_ACCOUNT.to_string(),
+                asset_code: COUNTER_ASSET_CODE.to_string(),
+            }))
+            .unwrap();
 
         // Check if an error is returned when trying to set an offset, when the resolution is smaller than an hour.
         let result = request
@@ -108,7 +110,10 @@ pub mod test {
             .unwrap()
             .set_offset(60000);
         assert!(result.is_err());
-        assert_eq!(result.unwrap_err(), "Resolution must be greater than 1 hour when setting offset.");
+        assert_eq!(
+            result.unwrap_err(),
+            "Resolution must be greater than 1 hour when setting offset."
+        );
 
         // Check if an error is returned when passing unwhole hours in milliseconds.
         let result = request
@@ -126,7 +131,10 @@ pub mod test {
             .unwrap()
             .set_offset(7200000); // 2 hours
         assert!(result.is_err());
-        assert_eq!(result.unwrap_err(), "Offset must be smaller than the resolution.");
+        assert_eq!(
+            result.unwrap_err(),
+            "Offset must be smaller than the resolution."
+        );
 
         // Check if an error is returned if the offset is greater than 24 hours.
         let result = request
@@ -141,18 +149,18 @@ pub mod test {
     #[tokio::test]
     async fn test_get_trade_aggregations() {
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org"
-                .to_string())
-                .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let trade_aggregations_request = TradeAggregationsRequest::new()
-            .set_base_asset(AssetType::Alphanumeric4(AssetData{
+            .set_base_asset(AssetType::Alphanumeric4(AssetData {
                 asset_issuer: BASE_ASSET_ACCOUNT.to_string(),
-                asset_code: BASE_ASSET_CODE.to_string()}))
+                asset_code: BASE_ASSET_CODE.to_string(),
+            }))
             .unwrap()
-            .set_counter_asset(AssetType::Alphanumeric4(AssetData{
+            .set_counter_asset(AssetType::Alphanumeric4(AssetData {
                 asset_issuer: COUNTER_ASSET_ACCOUNT.to_string(),
-                asset_code: COUNTER_ASSET_CODE.to_string()}))
+                asset_code: COUNTER_ASSET_CODE.to_string(),
+            }))
             .unwrap()
             .set_resolution(Resolution(ResolutionData::Duration604800000))
             .unwrap();
@@ -193,13 +201,15 @@ pub mod test {
 
         // Test 2 different, non-native, asset types.
         let request = TradeAggregationsRequest::new()
-            .set_base_asset(AssetType::Alphanumeric4(AssetData{
+            .set_base_asset(AssetType::Alphanumeric4(AssetData {
                 asset_issuer: "baseissuer".to_string(),
-                asset_code: "basecode".to_string()}))
-                .unwrap()
-            .set_counter_asset(AssetType::Alphanumeric12(AssetData{
+                asset_code: "basecode".to_string(),
+            }))
+            .unwrap()
+            .set_counter_asset(AssetType::Alphanumeric12(AssetData {
                 asset_issuer: "counterissuer".to_string(),
-                asset_code: "countercode".to_string()}))
+                asset_code: "countercode".to_string(),
+            }))
             .unwrap()
             .set_resolution(Resolution(ResolutionData::Duration604800000))
             .unwrap();
@@ -211,9 +221,10 @@ pub mod test {
         let request = TradeAggregationsRequest::new()
             .set_counter_asset(AssetType::Native)
             .unwrap()
-            .set_base_asset(AssetType::Alphanumeric12(AssetData{
+            .set_base_asset(AssetType::Alphanumeric12(AssetData {
                 asset_issuer: "counterissuer".to_string(),
-                asset_code: "countercode".to_string()}))
+                asset_code: "countercode".to_string(),
+            }))
             .unwrap()
             .set_resolution(Resolution(ResolutionData::Duration604800000))
             .unwrap();
@@ -223,9 +234,10 @@ pub mod test {
 
         // Test 1 non-native, 1 native asset type.
         let request = TradeAggregationsRequest::new()
-            .set_base_asset(AssetType::Alphanumeric4(AssetData{
+            .set_base_asset(AssetType::Alphanumeric4(AssetData {
                 asset_issuer: "counterissuer".to_string(),
-                asset_code: "countercode".to_string()}))
+                asset_code: "countercode".to_string(),
+            }))
             .unwrap()
             .set_resolution(Resolution(ResolutionData::Duration604800000))
             .unwrap()
@@ -243,7 +255,8 @@ pub mod test {
             .unwrap()
             .set_counter_asset(AssetType::Native)
             .unwrap();
-        assert_eq!(request.get_query_parameters(),
+        assert_eq!(
+            request.get_query_parameters(),
             "?base_asset_type=native&counter_asset_type=native&resolution=604800000"
         );
     }

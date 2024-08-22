@@ -78,10 +78,7 @@ impl AllTradesRequest {
     /// # Returns
     ///
     /// The updated `AllTradesRequest` with the base asset set.    
-    pub fn set_base_asset(
-        self,
-        base_asset: AssetType,
-    ) -> Result<AllTradesRequest, String> {
+    pub fn set_base_asset(self, base_asset: AssetType) -> Result<AllTradesRequest, String> {
         Ok(AllTradesRequest {
             base_asset: Some(TradeAsset(base_asset)),
             ..self
@@ -100,10 +97,7 @@ impl AllTradesRequest {
     /// # Returns
     ///
     /// The updated `AllTradesRequest` with the counter asset set.    
-    pub fn set_counter_asset(
-        self,
-        counter_asset: AssetType,
-    ) -> Result<AllTradesRequest, String> {
+    pub fn set_counter_asset(self, counter_asset: AssetType) -> Result<AllTradesRequest, String> {
         Ok(AllTradesRequest {
             counter_asset: Some(TradeAsset(counter_asset)),
             ..self
@@ -114,7 +108,7 @@ impl AllTradesRequest {
 impl Request for AllTradesRequest {
     fn get_query_parameters(&self) -> String {
         let mut query: Vec<String> = Vec::new();
-        
+
         if let Some(base_asset) = &self.base_asset {
             match &base_asset.0 {
                 AssetType::Native => {

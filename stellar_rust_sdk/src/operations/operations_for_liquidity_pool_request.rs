@@ -1,8 +1,8 @@
-use stellar_rust_sdk_derive::pagination;
 use crate::{
     models::{IncludeFailed, Order, Request},
     BuildQueryParametersExt,
 };
+use stellar_rust_sdk_derive::pagination;
 
 #[pagination]
 #[derive(Default)]
@@ -38,7 +38,10 @@ impl OperationsForLiquidityPoolRequest {
     /// # Arguments
     /// * `account_id` - A `String` representing the account ID.
     ///
-    pub fn set_liquidity_pool_id(self, liquidity_pool_id: String) -> OperationsForLiquidityPoolRequest {
+    pub fn set_liquidity_pool_id(
+        self,
+        liquidity_pool_id: String,
+    ) -> OperationsForLiquidityPoolRequest {
         OperationsForLiquidityPoolRequest {
             liquidity_pool_id: Some(liquidity_pool_id),
             ..self

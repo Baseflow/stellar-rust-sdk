@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 /// Represents the navigational links in a response.
 ///
 /// Contains the links to the current, next, and previous pages of the response.
-/// 
+///
 #[derive(Default, Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct ResponseLinks {
     #[serde(rename = "self")]
@@ -16,7 +16,7 @@ pub struct ResponseLinks {
 /// Represents a navigational link in a response.
 ///
 /// Contains an optional url.
-/// 
+///
 #[derive(Default, Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct Link {
     pub href: Option<String>,
@@ -25,15 +25,15 @@ pub struct Link {
 /// Represents a navigational link in a response.
 ///
 /// Contains an optional url, and an optional boolean to indicate whether a link is templated or not.
-/// 
+///
 #[derive(Default, Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct TemplateLink {
     pub href: Option<String>,
     pub templated: Option<bool>,
 }
 
-/// Represents a collection of results in a response. 
-/// 
+/// Represents a collection of results in a response.
+///
 /// Contains a vector, which can hold any type of record returned by the API.
 #[derive(Default, Debug, Deserialize, Serialize, Clone, Getters)]
 pub struct Embedded<T> {

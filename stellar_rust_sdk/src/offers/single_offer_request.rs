@@ -54,15 +54,12 @@ impl SingleOfferRequest<NoOfferId> {
     /// # Returns
     /// A `SingleOfferRequest` with the specified offer ID, or an error if the offer ID is invalid.
     ///
-    pub fn set_offer_id(
-        self,
-        offer_id: String,
-    ) -> Result<SingleOfferRequest<OfferId>, String> {
+    pub fn set_offer_id(self, offer_id: String) -> Result<SingleOfferRequest<OfferId>, String> {
         match offer_id.parse::<u32>() {
             Ok(id) => {
                 if id > 0 {
                     Ok(SingleOfferRequest {
-                        offer_id: OfferId(offer_id)
+                        offer_id: OfferId(offer_id),
                     })
                 } else {
                     Err("offer ID must be greater than or equal to 1".to_string())

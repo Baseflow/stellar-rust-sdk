@@ -55,7 +55,6 @@ impl SingleLiquidityPoolRequest<NoLiquidityPoolId> {
         self,
         liquidity_pool_id: String,
     ) -> Result<SingleLiquidityPoolRequest<LiquidityPoolId>, String> {
-
         Ok(SingleLiquidityPoolRequest {
             liquidity_pool_id: LiquidityPoolId(liquidity_pool_id),
         })

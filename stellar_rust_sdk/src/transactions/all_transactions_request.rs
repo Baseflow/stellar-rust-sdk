@@ -38,7 +38,9 @@ pub struct AllTransactionsRequest {
 impl Request for AllTransactionsRequest {
     fn get_query_parameters(&self) -> String {
         vec![
-            self.include_failed.as_ref().map(|i| format!("include_failed={}", i)),
+            self.include_failed
+                .as_ref()
+                .map(|i| format!("include_failed={}", i)),
             self.cursor.as_ref().map(|c| format!("cursor={}", c)),
             self.limit.as_ref().map(|l| format!("limit={}", l)),
             self.order.as_ref().map(|o| format!("order={}", o)),
@@ -66,7 +68,10 @@ impl AllTransactionsRequest {
     ///
     /// # Arguments
     /// * `include_failed` (bool) - when set to `true`, failed operations will be included.
-    pub fn set_include_failed(self, include_failed: IncludeFailed) -> Result<AllTransactionsRequest, String> {
+    pub fn set_include_failed(
+        self,
+        include_failed: IncludeFailed,
+    ) -> Result<AllTransactionsRequest, String> {
         Ok(AllTransactionsRequest {
             include_failed: Some(include_failed),
             ..self

@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 /// Represents the response for the trade aggregations query in the Horizon API.
 ///
 /// This struct defines the overall structure of the response for a trade aggregations query.
-/// It includes navigational links and embedded results. 
+/// It includes navigational links and embedded results.
 ///
 #[derive(Debug, Clone, Serialize, Deserialize, Getters)]
 pub struct AllTradeAggregationsResponse {

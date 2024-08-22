@@ -1,4 +1,7 @@
-use crate::{models::{Order, Request}, BuildQueryParametersExt};
+use crate::{
+    models::{Order, Request},
+    BuildQueryParametersExt,
+};
 use stellar_rust_sdk_derive::pagination;
 
 /// Represents a reserve for a liquidity pool. This struct is used to specify the asset code and
@@ -171,7 +174,7 @@ impl Request for AllLiquidityPoolsRequest {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_new() {
         let request = AllLiquidityPoolsRequest::new();
@@ -195,7 +198,9 @@ mod tests {
 
     #[test]
     fn test_set_order() {
-        let request = AllLiquidityPoolsRequest::new().set_order(Order::Desc).unwrap();
+        let request = AllLiquidityPoolsRequest::new()
+            .set_order(Order::Desc)
+            .unwrap();
         assert_eq!(request.order, Some(Order::Desc));
     }
 

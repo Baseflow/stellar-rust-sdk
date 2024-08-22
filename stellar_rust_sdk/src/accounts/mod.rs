@@ -131,11 +131,20 @@ pub mod test {
         assert_eq!(response.flags().auth_required(), AUTH_REQUIRED);
         assert_eq!(response.flags().auth_revocable(), AUTH_REVOCABLE);
         assert_eq!(response.flags().auth_immutable(), AUTH_IMMUTABLE);
-        assert_eq!(response.flags().auth_clawback_enabled(), AUTH_CLAWBACK_ENABLED);
+        assert_eq!(
+            response.flags().auth_clawback_enabled(),
+            AUTH_CLAWBACK_ENABLED
+        );
         assert_eq!(response.balances()[0].balance(), BALANCE);
         assert_eq!(response.balances()[0].asset_type(), ASSET_TYPE);
-        assert_eq!(response.balances()[0].buying_liabilities(), BUYING_LIABILITY);
-        assert_eq!(response.balances()[0].selling_liabilities(), SELLING_LIABILITY);
+        assert_eq!(
+            response.balances()[0].buying_liabilities(),
+            BUYING_LIABILITY
+        );
+        assert_eq!(
+            response.balances()[0].selling_liabilities(),
+            SELLING_LIABILITY
+        );
         assert_eq!(response.signers()[0].key(), ACCOUNT_ID);
         assert_eq!(response.signers()[0].weight(), WEIGHT);
         assert_eq!(response.signers()[0].singer_type(), SIGNER_TYPE);
@@ -172,11 +181,20 @@ pub mod test {
         assert_eq!(response.flags().auth_required(), AUTH_REQUIRED);
         assert_eq!(response.flags().auth_revocable(), AUTH_REVOCABLE);
         assert_eq!(response.flags().auth_immutable(), AUTH_IMMUTABLE);
-        assert_eq!(response.flags().auth_clawback_enabled(), AUTH_CLAWBACK_ENABLED);
+        assert_eq!(
+            response.flags().auth_clawback_enabled(),
+            AUTH_CLAWBACK_ENABLED
+        );
         assert_eq!(response.balances()[0].balance(), BALANCE);
         assert_eq!(response.balances()[0].asset_type(), ASSET_TYPE);
-        assert_eq!(response.balances()[0].buying_liabilities(), BUYING_LIABILITY);
-        assert_eq!(response.balances()[0].selling_liabilities(), SELLING_LIABILITY);
+        assert_eq!(
+            response.balances()[0].buying_liabilities(),
+            BUYING_LIABILITY
+        );
+        assert_eq!(
+            response.balances()[0].selling_liabilities(),
+            SELLING_LIABILITY
+        );
         assert_eq!(response.signers()[0].key(), ACCOUNT_ID);
         assert_eq!(response.signers()[0].weight(), WEIGHT);
         assert_eq!(response.signers()[0].singer_type(), SIGNER_TYPE);

@@ -33,10 +33,10 @@ use crate::{
         details_request::{BuyingAsset, DetailsRequest, SellingAsset},
         response::DetailsResponse,
     },
+    payments::prelude::*,
     trade_aggregations::prelude::*,
-    transactions::prelude::*,
     trades::prelude::*,
-    payments::prelude::*
+    transactions::prelude::*,
 };
 use reqwest;
 use url::Url;
@@ -1175,7 +1175,7 @@ impl HorizonClient {
     ) -> Result<OperationResponse, String> {
         self.get::<OperationResponse>(request).await
     }
-    
+
     /// Retrieves a list of all operations for a specific transaction from the Horizon server.
     ///
     /// This asynchronous method fetches a list of all operations for a specific transaction from the Horizon server.
@@ -1225,7 +1225,7 @@ impl HorizonClient {
     ) -> Result<OperationResponse, String> {
         self.get::<OperationResponse>(request).await
     }
-    
+
     /// Retrieves a list of order book details from the Horizon server.
     ///
     /// This asynchronous method fetches a list of order book details from the Horizon server.

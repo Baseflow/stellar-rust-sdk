@@ -1,7 +1,7 @@
 /// Provides the `AllEffectsRequest` struct.
 ///
 /// This module contains the `AllEffectsRequest` struct, which is designed to create requests
-/// for querying comprehensive lists of effects from the Horizon server. 
+/// for querying comprehensive lists of effects from the Horizon server.
 ///
 /// The `AllEffectsRequest` struct is meant to be used in conjunction with the [`HorizonClient`](crate::horizon_client::HorizonClient)
 /// to perform the actual API calls and fetch asset data. It adheres to the structure
@@ -119,7 +119,7 @@ pub mod prelude {
 #[cfg(test)]
 mod tests {
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient};
+    use crate::horizon_client::HorizonClient;
 
     #[test]
     fn dummy_test() {
@@ -271,33 +271,19 @@ mod tests {
         let binding = effects_for_ledger_response.clone().unwrap();
         let record = &binding.embedded().records()[0];
 
-        assert_eq!(
-            record.id,
-            ID);
+        assert_eq!(record.id, ID);
 
-        assert_eq!(
-            record.paging_token,
-            PAGING_TOKEN);
+        assert_eq!(record.paging_token, PAGING_TOKEN);
 
-        assert_eq!(
-            record.account,
-            ACCOUNT);
+        assert_eq!(record.account, ACCOUNT);
 
-        assert_eq!(
-            record.effect_type,
-            RECORD_TYPE);
+        assert_eq!(record.effect_type, RECORD_TYPE);
 
-        assert_eq!(
-            record.type_i,
-            TYPE_I);
+        assert_eq!(record.type_i, TYPE_I);
 
-        assert_eq!(
-            record.created_at,
-            CREATED_AT);
+        assert_eq!(record.created_at, CREATED_AT);
 
-        assert_eq!(
-            record.starting_balance.as_ref().unwrap(),
-            STARTING_BALANCE);
+        assert_eq!(record.starting_balance.as_ref().unwrap(), STARTING_BALANCE);
     }
 
     #[tokio::test]

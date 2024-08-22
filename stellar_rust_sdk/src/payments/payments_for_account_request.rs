@@ -52,12 +52,14 @@ impl PaymentsForAccountRequest {
 impl Request for PaymentsForAccountRequest {
     fn get_query_parameters(&self) -> String {
         vec![
-            self.include_failed.as_ref().map(|s| format!("include_failed={}", s)),
+            self.include_failed
+                .as_ref()
+                .map(|s| format!("include_failed={}", s)),
             self.cursor.as_ref().map(|c| format!("cursor={}", c)),
             self.limit.as_ref().map(|l| format!("limit={}", l)),
             self.order.as_ref().map(|o| format!("order={}", o)),
         ]
-            .build_query_parameters()
+        .build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {

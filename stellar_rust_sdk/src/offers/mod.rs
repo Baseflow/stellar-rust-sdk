@@ -19,8 +19,8 @@ pub mod all_offers_request;
 /// Provides the `OffersForAccountRequest`.
 ///
 /// This module provides the `OffersForAccountRequest` struct, specifically designed for
-/// constructing requests to query information about all offers a given account has 
-/// currently open from the Horizon server. It is tailored for use with the 
+/// constructing requests to query information about all offers a given account has
+/// currently open from the Horizon server. It is tailored for use with the
 /// [`HorizonClient::get_offers_for_account`](crate::horizon_client::HorizonClient::get_offers_for_account) method.
 ///
 pub mod offers_for_account_request;
@@ -74,10 +74,10 @@ pub(crate) static OFFERS_PATH: &str = "offers";
 /// ```
 ///
 pub mod prelude {
-    pub use super::single_offer_request::*;
     pub use super::all_offers_request::*;
     pub use super::offers_for_account_request::*;
     pub use super::response::*;
+    pub use super::single_offer_request::*;
 }
 
 #[cfg(test)]
@@ -94,10 +94,12 @@ pub mod test {
         const SELLER: &str = "GCXRNJ23TEHRNXQJEYXGQ3IYGVAWWY6Z2VOOWPP6STTYQCKXIRTNCN3E";
         const SELLING_ASSET_TYPE: &str = "credit_alphanum12";
         const SELLING_ASSET_CODE: &str = "MBAUDD";
-        const SELLING_ASSET_ISSUER: &str = "GD2YNRNSJ3EOFJAYGLKGKSIOLX2VU3UFDW3YFNOYMAHB26AEHSZBJU4U";
+        const SELLING_ASSET_ISSUER: &str =
+            "GD2YNRNSJ3EOFJAYGLKGKSIOLX2VU3UFDW3YFNOYMAHB26AEHSZBJU4U";
         const BUYING_ASSET_TYPE: &str = "credit_alphanum12";
         const BUYING_ASSET_CODE: &str = "TMB001128";
-        const BUYING_ASSET_ISSUER: &str = "GBH2HB7DZN7PRJP5RED2SQZAKSYYBH43PQCQH3NOYT2Y2KLODQZM3M2F";
+        const BUYING_ASSET_ISSUER: &str =
+            "GBH2HB7DZN7PRJP5RED2SQZAKSYYBH43PQCQH3NOYT2Y2KLODQZM3M2F";
         const AMOUNT: &str = "20081.0000000";
         const PRICE_R_N: &u32 = &50;
         const PRICE_R_D: &u32 = &467;
@@ -106,32 +108,45 @@ pub mod test {
         const LAST_MODIFIED_TIME: &str = "2024-08-02T08:29:11Z";
 
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org"
-            .to_string())
-            .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
-        let single_offer_request =
-            SingleOfferRequest::new()
+        let single_offer_request = SingleOfferRequest::new()
             .set_offer_id(OFFER_ID.to_string())
             .unwrap();
 
-        let single_offer_response = horizon_client
-            .get_single_offer(&single_offer_request)
-            .await;
+        let single_offer_response = horizon_client.get_single_offer(&single_offer_request).await;
 
         assert!(single_offer_response.clone().is_ok());
         let response = single_offer_response.unwrap();
-        assert_eq!(response.links().self_link().href().as_ref().unwrap(), LINK_SELF);
-        assert_eq!(response.links().offer_maker().href().as_ref().unwrap(), LINK_OFFER_MAKER);
+        assert_eq!(
+            response.links().self_link().href().as_ref().unwrap(),
+            LINK_SELF
+        );
+        assert_eq!(
+            response.links().offer_maker().href().as_ref().unwrap(),
+            LINK_OFFER_MAKER
+        );
         assert_eq!(response.id(), OFFER_ID);
         assert_eq!(response.paging_token(), PAGING_TOKEN);
         assert_eq!(response.seller(), SELLER);
         assert_eq!(response.selling().asset_type(), SELLING_ASSET_TYPE);
-        assert_eq!(response.selling().asset_code().as_ref().unwrap(), SELLING_ASSET_CODE);
-        assert_eq!(response.selling().asset_issuer().as_ref().unwrap(), SELLING_ASSET_ISSUER);
+        assert_eq!(
+            response.selling().asset_code().as_ref().unwrap(),
+            SELLING_ASSET_CODE
+        );
+        assert_eq!(
+            response.selling().asset_issuer().as_ref().unwrap(),
+            SELLING_ASSET_ISSUER
+        );
         assert_eq!(response.buying().asset_type(), BUYING_ASSET_TYPE);
-        assert_eq!(response.buying().asset_code().as_ref().unwrap(), BUYING_ASSET_CODE);
-        assert_eq!(response.buying().asset_issuer().as_ref().unwrap(), BUYING_ASSET_ISSUER);
+        assert_eq!(
+            response.buying().asset_code().as_ref().unwrap(),
+            BUYING_ASSET_CODE
+        );
+        assert_eq!(
+            response.buying().asset_issuer().as_ref().unwrap(),
+            BUYING_ASSET_ISSUER
+        );
         assert_eq!(response.amount(), AMOUNT);
         assert_eq!(response.price_ratio().numenator(), PRICE_R_N);
         assert_eq!(response.price_ratio().denominator(), PRICE_R_D);
@@ -150,39 +165,47 @@ pub mod test {
         const SELLING_ASSET_TYPE: &str = "native";
         const BUYING_ASSET_TYPE: &str = "credit_alphanum12";
         const BUYING_ASSET_CODE: &str = "NewDollar";
-        const BUYING_ASSET_ISSUER: &str = "GBAKINTNEGR7PO6Z6XW2S5ITT5VARNW6DZ5K4OYSLFNEA2CSMUM2UEF4";
+        const BUYING_ASSET_ISSUER: &str =
+            "GBAKINTNEGR7PO6Z6XW2S5ITT5VARNW6DZ5K4OYSLFNEA2CSMUM2UEF4";
         const AMOUNT: &str = "10.0000000";
         const PRICE_R_N: &u32 = &1;
         const PRICE_R_D: &u32 = &1;
         const PRICE: &str = "1.0000000";
         const LAST_MODIFIED_LEDGER: &u32 = &5858;
         const LAST_MODIFIED_TIME: &str = "2024-06-12T05:23:41Z";
-    
+
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org"
-            .to_string())
-            .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // Create a request with no (optional) filters.
-        let all_offers_request =
-            AllOffersRequest::new();
+        let all_offers_request = AllOffersRequest::new();
 
-        let all_offers_response = horizon_client
-            .get_all_offers(&all_offers_request)
-            .await;
+        let all_offers_response = horizon_client.get_all_offers(&all_offers_request).await;
 
         assert!(all_offers_response.clone().is_ok());
         let binding = all_offers_response.unwrap();
         let record = &binding.embedded().records()[0];
-        assert_eq!(record.links().self_link().href().as_ref().unwrap(), LINK_SELF);
-        assert_eq!(record.links().offer_maker().href().as_ref().unwrap(), LINK_OFFER_MAKER);
+        assert_eq!(
+            record.links().self_link().href().as_ref().unwrap(),
+            LINK_SELF
+        );
+        assert_eq!(
+            record.links().offer_maker().href().as_ref().unwrap(),
+            LINK_OFFER_MAKER
+        );
         assert_eq!(record.id(), OFFER_ID);
         assert_eq!(record.paging_token(), PAGING_TOKEN);
         assert_eq!(record.seller(), SELLER);
         assert_eq!(record.selling().asset_type(), SELLING_ASSET_TYPE);
         assert_eq!(record.buying().asset_type(), BUYING_ASSET_TYPE);
-        assert_eq!(record.buying().asset_code().as_ref().unwrap(), BUYING_ASSET_CODE);
-        assert_eq!(record.buying().asset_issuer().as_ref().unwrap(), BUYING_ASSET_ISSUER);
+        assert_eq!(
+            record.buying().asset_code().as_ref().unwrap(),
+            BUYING_ASSET_CODE
+        );
+        assert_eq!(
+            record.buying().asset_issuer().as_ref().unwrap(),
+            BUYING_ASSET_ISSUER
+        );
         assert_eq!(record.amount(), AMOUNT);
         assert_eq!(record.price_ratio().numenator(), PRICE_R_N);
         assert_eq!(record.price_ratio().denominator(), PRICE_R_D);
@@ -200,47 +223,63 @@ pub mod test {
         const SELLER: &str = "GB3Q6QDZYTHWT7E5PVS3W7FUT5GVAFC5KSZFFLPU25GO7VTC3NM2ZTVO";
         const SELLING_ASSET_TYPE: &str = "credit_alphanum4";
         const SELLING_ASSET_CODE: &str = "EURC";
-        const SELLING_ASSET_ISSUER: &str = "GB3Q6QDZYTHWT7E5PVS3W7FUT5GVAFC5KSZFFLPU25GO7VTC3NM2ZTVO";
+        const SELLING_ASSET_ISSUER: &str =
+            "GB3Q6QDZYTHWT7E5PVS3W7FUT5GVAFC5KSZFFLPU25GO7VTC3NM2ZTVO";
         const BUYING_ASSET_TYPE: &str = "credit_alphanum12";
         const BUYING_ASSET_CODE: &str = "EURCAllow";
-        const BUYING_ASSET_ISSUER: &str = "GA6HVGLFUF3BHHGR5CMYXIVZ3RYVUH5EUYAOAY4T3OKI5OQVIWVRK24R";
+        const BUYING_ASSET_ISSUER: &str =
+            "GA6HVGLFUF3BHHGR5CMYXIVZ3RYVUH5EUYAOAY4T3OKI5OQVIWVRK24R";
         const AMOUNT: &str = "922192119415.1975807";
         const PRICE_R_N: &u32 = &1;
         const PRICE_R_D: &u32 = &1;
         const PRICE: &str = "1.0000000";
         const LAST_MODIFIED_LEDGER: &u32 = &923809;
         const LAST_MODIFIED_TIME: &str = "2024-08-07T02:21:13Z";
-    
+
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org"
-            .to_string())
-            .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         // Create a request and supply values for optional filters.
-        let all_offers_request =
-            AllOffersRequest::new()
-            .set_seller(SELLER.to_string()).unwrap()
-            .set_cursor(1).unwrap()
-            .set_limit(100).unwrap()
-            .set_order(Order::Asc).unwrap();
+        let all_offers_request = AllOffersRequest::new()
+            .set_seller(SELLER.to_string())
+            .unwrap()
+            .set_cursor(1)
+            .unwrap()
+            .set_limit(100)
+            .unwrap()
+            .set_order(Order::Asc)
+            .unwrap();
 
-        let all_offers_response = horizon_client
-            .get_all_offers(&all_offers_request)
-            .await;
+        let all_offers_response = horizon_client.get_all_offers(&all_offers_request).await;
 
         assert!(all_offers_response.clone().is_ok());
         let binding = all_offers_response.unwrap();
         let record = &binding.embedded().records()[0];
-        assert_eq!(record.links().offer_maker().href().as_ref().unwrap(), LINK_OFFER_MAKER);
+        assert_eq!(
+            record.links().offer_maker().href().as_ref().unwrap(),
+            LINK_OFFER_MAKER
+        );
         assert_eq!(record.id(), OFFER_ID);
         assert_eq!(record.paging_token(), PAGING_TOKEN);
         assert_eq!(record.seller(), SELLER);
         assert_eq!(record.selling().asset_type(), SELLING_ASSET_TYPE);
-        assert_eq!(record.selling().asset_code().as_ref().unwrap(), SELLING_ASSET_CODE);
-        assert_eq!(record.selling().asset_issuer().as_ref().unwrap(), SELLING_ASSET_ISSUER);
+        assert_eq!(
+            record.selling().asset_code().as_ref().unwrap(),
+            SELLING_ASSET_CODE
+        );
+        assert_eq!(
+            record.selling().asset_issuer().as_ref().unwrap(),
+            SELLING_ASSET_ISSUER
+        );
         assert_eq!(record.buying().asset_type(), BUYING_ASSET_TYPE);
-        assert_eq!(record.buying().asset_code().as_ref().unwrap(), BUYING_ASSET_CODE);
-        assert_eq!(record.buying().asset_issuer().as_ref().unwrap(), BUYING_ASSET_ISSUER);
+        assert_eq!(
+            record.buying().asset_code().as_ref().unwrap(),
+            BUYING_ASSET_CODE
+        );
+        assert_eq!(
+            record.buying().asset_issuer().as_ref().unwrap(),
+            BUYING_ASSET_ISSUER
+        );
         assert_eq!(record.amount(), AMOUNT);
         assert_eq!(record.price_ratio().numenator(), PRICE_R_N);
         assert_eq!(record.price_ratio().denominator(), PRICE_R_D);
@@ -259,45 +298,62 @@ pub mod test {
         const SELLER: &str = "GCXRNJ23TEHRNXQJEYXGQ3IYGVAWWY6Z2VOOWPP6STTYQCKXIRTNCN3E";
         const SELLING_ASSET_TYPE: &str = "credit_alphanum12";
         const SELLING_ASSET_CODE: &str = "MBAUDD";
-        const SELLING_ASSET_ISSUER: &str = "GD2YNRNSJ3EOFJAYGLKGKSIOLX2VU3UFDW3YFNOYMAHB26AEHSZBJU4U";
+        const SELLING_ASSET_ISSUER: &str =
+            "GD2YNRNSJ3EOFJAYGLKGKSIOLX2VU3UFDW3YFNOYMAHB26AEHSZBJU4U";
         const BUYING_ASSET_TYPE: &str = "credit_alphanum12";
         const BUYING_ASSET_CODE: &str = "TMB001128";
-        const BUYING_ASSET_ISSUER: &str = "GBH2HB7DZN7PRJP5RED2SQZAKSYYBH43PQCQH3NOYT2Y2KLODQZM3M2F";
+        const BUYING_ASSET_ISSUER: &str =
+            "GBH2HB7DZN7PRJP5RED2SQZAKSYYBH43PQCQH3NOYT2Y2KLODQZM3M2F";
         const AMOUNT: &str = "20081.0000000";
         const PRICE_R_N: &u32 = &50;
         const PRICE_R_D: &u32 = &467;
         const PRICE: &str = "0.1070664";
         const LAST_MODIFIED_LEDGER: &u32 = &845805;
         const LAST_MODIFIED_TIME: &str = "2024-08-02T08:29:11Z";
-    
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org"
-            .to_string())
-            .unwrap();
 
-        let offers_for_account_request =
-            OffersForAccountRequest::new()
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+
+        let offers_for_account_request = OffersForAccountRequest::new()
             .set_account_id(ACCOUNT_ID.to_string())
             .unwrap();
 
         let offers_for_account_response = horizon_client
             .get_offers_for_account(&offers_for_account_request)
             .await;
-        
+
         assert!(offers_for_account_response.clone().is_ok());
         let binding = offers_for_account_response.unwrap();
         let record = &binding.embedded().records()[0];
-        assert_eq!(record.links().self_link().href().as_ref().unwrap(), LINK_SELF);
-        assert_eq!(record.links().offer_maker().href().as_ref().unwrap(), LINK_OFFER_MAKER);
+        assert_eq!(
+            record.links().self_link().href().as_ref().unwrap(),
+            LINK_SELF
+        );
+        assert_eq!(
+            record.links().offer_maker().href().as_ref().unwrap(),
+            LINK_OFFER_MAKER
+        );
         assert_eq!(record.id(), OFFER_ID);
         assert_eq!(record.paging_token(), PAGING_TOKEN);
         assert_eq!(record.seller(), SELLER);
         assert_eq!(record.selling().asset_type(), SELLING_ASSET_TYPE);
-        assert_eq!(record.selling().asset_code().as_ref().unwrap(), SELLING_ASSET_CODE);
-        assert_eq!(record.selling().asset_issuer().as_ref().unwrap(), SELLING_ASSET_ISSUER);
+        assert_eq!(
+            record.selling().asset_code().as_ref().unwrap(),
+            SELLING_ASSET_CODE
+        );
+        assert_eq!(
+            record.selling().asset_issuer().as_ref().unwrap(),
+            SELLING_ASSET_ISSUER
+        );
         assert_eq!(record.buying().asset_type(), BUYING_ASSET_TYPE);
-        assert_eq!(record.buying().asset_code().as_ref().unwrap(), BUYING_ASSET_CODE);
-        assert_eq!(record.buying().asset_issuer().as_ref().unwrap(), BUYING_ASSET_ISSUER);
+        assert_eq!(
+            record.buying().asset_code().as_ref().unwrap(),
+            BUYING_ASSET_CODE
+        );
+        assert_eq!(
+            record.buying().asset_issuer().as_ref().unwrap(),
+            BUYING_ASSET_ISSUER
+        );
         assert_eq!(record.amount(), AMOUNT);
         assert_eq!(record.price_ratio().numenator(), PRICE_R_N);
         assert_eq!(record.price_ratio().denominator(), PRICE_R_D);

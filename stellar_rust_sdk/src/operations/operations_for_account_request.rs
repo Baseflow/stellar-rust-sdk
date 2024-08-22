@@ -13,7 +13,6 @@ pub struct OperationsForAccountRequest {
     include_failed: Option<IncludeFailed>,
 }
 
- 
 impl OperationsForAccountRequest {
     pub fn new() -> Self {
         OperationsForAccountRequest::default()

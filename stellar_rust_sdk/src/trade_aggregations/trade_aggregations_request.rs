@@ -9,7 +9,7 @@ pub struct BaseAsset(AssetType);
 pub struct NoBaseAsset;
 
 /// Represents the counter asset. Contains an enum of one of the possible asset types.
-#[derive(Clone,PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct CounterAsset(AssetType);
 
 /// Represents the absence of a counter asset.
@@ -43,7 +43,7 @@ pub struct NoResolution;
 #[derive(PartialEq, Debug, Default, Clone)]
 pub struct Resolution(pub ResolutionData);
 
-/// Represents the supported segment duration times in milliseconds. 
+/// Represents the supported segment duration times in milliseconds.
 #[derive(PartialEq, Debug, Default, Clone)]
 pub enum ResolutionData {
     #[default]
@@ -70,7 +70,7 @@ impl std::fmt::Display for ResolutionData {
 ///
 /// This structure is used to construct a query to retrieve a comprehensive list of trade aggregations, which will be filtered
 /// by the mandatory base asset, counter asset and resolution fields. Additional filters such as start time, end time, limit
-/// and order can be set. It adheres to the structure and parameters required by the Horizon API for retrieving a 
+/// and order can be set. It adheres to the structure and parameters required by the Horizon API for retrieving a
 /// <a href="https://developers.stellar.org/docs/data/horizon/api-reference/list-trade-aggregations">list of trade aggregations</a>.
 ///
 /// # Usage
@@ -226,10 +226,7 @@ impl<B, C, R> TradeAggregationsRequest<B, C, R> {
     /// * `start_time` - The lower time boundary represented as milliseconds since epoch.
     ///
     pub fn set_start_time(self, start_time: Option<i64>) -> Result<Self, String> {
-        Ok(Self {
-            start_time,
-            ..self
-        })
+        Ok(Self { start_time, ..self })
     }
 
     /// Specifies the end time in the request.
@@ -239,10 +236,7 @@ impl<B, C, R> TradeAggregationsRequest<B, C, R> {
     /// * `end_time` - The upper time boundary represented as milliseconds since epoch.
     ///
     pub fn set_end_time(self, end_time: Option<i64>) -> Result<Self, String> {
-        Ok(Self {
-            end_time,
-            ..self
-        })
+        Ok(Self { end_time, ..self })
     }
 
     /// Specifies the maximum number of records to be returned.
@@ -256,7 +250,10 @@ impl<B, C, R> TradeAggregationsRequest<B, C, R> {
         if !(1..=200).contains(&limit) {
             Err("Limit must be between 1 and 200.".to_string())
         } else {
-            Ok(Self { limit: Some(limit), ..self })
+            Ok(Self {
+                limit: Some(limit),
+                ..self
+            })
         }
     }
 
@@ -268,22 +265,25 @@ impl<B, C, R> TradeAggregationsRequest<B, C, R> {
     ///
     pub fn set_order(self, order: Order) -> Result<Self, String> {
         // No validation required for setting the order in this context
-        Ok(Self { order: Some(order), ..self })
+        Ok(Self {
+            order: Some(order),
+            ..self
+        })
     }
 }
 
-impl <B, C> TradeAggregationsRequest<B, C, Resolution> {
+impl<B, C> TradeAggregationsRequest<B, C, Resolution> {
     /// Sets the `offset` field in the request.
     ///
-    /// Can only be used if the resolution is greater than 1 hour. Offset value must be in whole hours, 
+    /// Can only be used if the resolution is greater than 1 hour. Offset value must be in whole hours,
     /// smaller than the provided resolution, and smaller than 24 hours. These conditions are first
-    /// checked before setting the offset field of the struct. Can only be set if the `resolution` 
+    /// checked before setting the offset field of the struct. Can only be set if the `resolution`
     /// field has been set.
     ///
     /// # Arguments
     ///
     /// * `offset` - The offset represented as milliseconds. Note: although the `offset` field in the
-    ///     [`TradeAggregationsRequest`] struct is of the type `String`, the `offset` argument is 
+    ///     [`TradeAggregationsRequest`] struct is of the type `String`, the `offset` argument is
     ///     of the type `u64` as a part of the condition check.
     ///
     /// # Returns
@@ -293,20 +293,24 @@ impl <B, C> TradeAggregationsRequest<B, C, Resolution> {
     pub fn set_offset(self, offset: u64) -> Result<Self, String> {
         const ONE_HOUR: &u64 = &360000;
         const ONE_DAY: &u64 = &86400000;
-        let resolution = format!("{}", &self.resolution.0)
-            .parse::<u64>()
-            .unwrap();
+        let resolution = format!("{}", &self.resolution.0).parse::<u64>().unwrap();
 
         let conditions = [
-            (&resolution < ONE_HOUR, "Resolution must be greater than 1 hour when setting offset."),
+            (
+                &resolution < ONE_HOUR,
+                "Resolution must be greater than 1 hour when setting offset.",
+            ),
             (&offset % ONE_HOUR != 0, "Offset must be in whole hours."),
-            (&offset > &resolution, "Offset must be smaller than the resolution."),
+            (
+                &offset > &resolution,
+                "Offset must be smaller than the resolution.",
+            ),
             (&offset > ONE_DAY, "Offset must be smaller than 24 hours."),
         ];
 
         for (condition, message) in conditions {
             if condition {
-                return Err(message.to_string())
+                return Err(message.to_string());
             }
         }
 
@@ -319,43 +323,62 @@ impl <B, C> TradeAggregationsRequest<B, C, Resolution> {
 
 impl Request for TradeAggregationsRequest<BaseAsset, CounterAsset, Resolution> {
     fn get_query_parameters(&self) -> String {
-        let asset_parameters =
-            vec![&self.base_asset.0, &self.counter_asset.0]
-                .iter()
-                .enumerate()
-                .fold(Vec::new(), |mut parameters, (i, asset)| {
-                    let asset_type_prefix = if i == 0 { "base_asset_type=" } // no `&` for `base_asset_type`, as the query begins with `?`
-                        else { "&counter_asset_type=" };
-                    match asset {
-                        AssetType::Native => parameters.push(format!("{}native", asset_type_prefix)),
-                        AssetType::Alphanumeric4(asset_data) | AssetType::Alphanumeric12(asset_data) => {
-                            let asset_type = match asset {
-                                AssetType::Alphanumeric4(_) => "credit_alphanum4",
-                                AssetType::Alphanumeric12(_) => "credit_alphanum12",
-                                _ => "", // should not be reached
-                            };
-                            let asset_issuer_prefix = if i == 0 { "&base_asset_issuer=" } else { "&counter_asset_issuer=" };
-                            let asset_code_prefix = if i == 0 { "&base_asset_code=" } else { "&counter_asset_code=" };
-                            parameters.push(format!(
-                                "{}{}{}{}{}{}",
-                                 asset_type_prefix, asset_type,
-                                 asset_code_prefix, asset_data.asset_code,
-                                 asset_issuer_prefix, asset_data.asset_issuer
-                            ));
-                        }
+        let asset_parameters = vec![&self.base_asset.0, &self.counter_asset.0]
+            .iter()
+            .enumerate()
+            .fold(Vec::new(), |mut parameters, (i, asset)| {
+                let asset_type_prefix = if i == 0 {
+                    "base_asset_type="
+                }
+                // no `&` for `base_asset_type`, as the query begins with `?`
+                else {
+                    "&counter_asset_type="
+                };
+                match asset {
+                    AssetType::Native => parameters.push(format!("{}native", asset_type_prefix)),
+                    AssetType::Alphanumeric4(asset_data)
+                    | AssetType::Alphanumeric12(asset_data) => {
+                        let asset_type = match asset {
+                            AssetType::Alphanumeric4(_) => "credit_alphanum4",
+                            AssetType::Alphanumeric12(_) => "credit_alphanum12",
+                            _ => "", // should not be reached
+                        };
+                        let asset_issuer_prefix = if i == 0 {
+                            "&base_asset_issuer="
+                        } else {
+                            "&counter_asset_issuer="
+                        };
+                        let asset_code_prefix = if i == 0 {
+                            "&base_asset_code="
+                        } else {
+                            "&counter_asset_code="
+                        };
+                        parameters.push(format!(
+                            "{}{}{}{}{}{}",
+                            asset_type_prefix,
+                            asset_type,
+                            asset_code_prefix,
+                            asset_data.asset_code,
+                            asset_issuer_prefix,
+                            asset_data.asset_issuer
+                        ));
                     }
-                    parameters
-                })
+                }
+                parameters
+            })
             .join("");
 
         vec![
             Some(asset_parameters),
             Some(format!("resolution={}", self.resolution.0)),
-            self.start_time.as_ref().map(|s| format!("start_time={}", s)),
+            self.start_time
+                .as_ref()
+                .map(|s| format!("start_time={}", s)),
             self.end_time.as_ref().map(|e| format!("end_time={}", e)),
             self.limit.as_ref().map(|l| format!("limit={}", l)),
             self.order.as_ref().map(|o| format!("order={}", o)),
-        ].build_query_parameters()
+        ]
+        .build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {
@@ -367,6 +390,3 @@ impl Request for TradeAggregationsRequest<BaseAsset, CounterAsset, Resolution> {
         )
     }
 }
-
-
-

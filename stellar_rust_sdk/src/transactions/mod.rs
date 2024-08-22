@@ -42,13 +42,12 @@ pub mod transactions_for_ledger_request;
 ///
 /// # Usage
 /// This module provides the `TransactionsForLiquidityPoolRequest` struct, specifically designed for
-/// constructing requests to query information about all successful transactions referencing 
-/// a given liquidity pool from the Horizon server. 
+/// constructing requests to query information about all successful transactions referencing
+/// a given liquidity pool from the Horizon server.
 /// It is tailored for use with the [`HorizonClient::get_transactions_for_liquidity_pool`](crate::horizon_client::HorizonClient::get_transactions_for_liquidity_pool)
 /// method.
 ///
 pub mod transactions_for_liquidity_pool_request;
-
 
 /// Provides the responses.
 ///
@@ -98,27 +97,29 @@ pub(crate) static TRANSACTIONS_PATH: &str = "transactions";
 /// let single_transactions_request = SingleTransactionRequest::new();
 /// ```
 pub mod prelude {
-    pub use super::single_transaction_request::*;
     pub use super::all_transactions_request::*;
+    pub use super::response::*;
+    pub use super::single_transaction_request::*;
     pub use super::transactions_for_account_request::*;
     pub use super::transactions_for_ledger_request::*;
     pub use super::transactions_for_liquidity_pool_request::*;
-    pub use super::response::*;
 }
 
 #[cfg(test)]
 pub mod test {
     use super::prelude::*;
-    use crate::models::IncludeFailed;
     use crate::horizon_client::HorizonClient;
+    use crate::models::IncludeFailed;
 
     const LINK_SELF: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
     const LINK_ACCOUNT: &str = "https://horizon-testnet.stellar.org/accounts/GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
     const LINK_LEDGER: &str = "https://horizon-testnet.stellar.org/ledgers/539";
     const LINK_OPERATIONS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/operations{?cursor,limit,order}";
     const LINK_EFFECTS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/effects{?cursor,limit,order}";
-    const LINK_PRECEDES: &str = "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=2314987376640";
-    const LINK_SUCCEEDS: &str = "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=2314987376640";
+    const LINK_PRECEDES: &str =
+        "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=2314987376640";
+    const LINK_SUCCEEDS: &str =
+        "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=2314987376640";
     const LINK_TRANSACTION: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
     const ID: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
     const PAGING_TOKEN: &str = "2314987376640";
@@ -138,19 +139,17 @@ pub mod test {
     // const RESULT_META_XDR: &str = "";
     // const FEE_META_XDR: &str = "";
     const MEMO_TYPE: &str = "none";
-    const SIGNATURE: &str = "NUHx9PZlcXQ9mq1lf1usrSTP4/gbxUqzUOQOSU/pQuy9dF7FcUF0fjEbzFECxHUcl4QEfbvyGIE029TA3DrODA==";
+    const SIGNATURE: &str =
+        "NUHx9PZlcXQ9mq1lf1usrSTP4/gbxUqzUOQOSU/pQuy9dF7FcUF0fjEbzFECxHUcl4QEfbvyGIE029TA3DrODA==";
     const VALID_AFTER: &str = "1970-01-01T00:00:00Z";
     const MIN_TIME: &str = "0";
 
     #[tokio::test]
     async fn test_get_single_transaction() {
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org"
-            .to_string())
-            .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
-        let single_transaction_request =
-            SingleTransactionRequest::new()
+        let single_transaction_request = SingleTransactionRequest::new()
             .set_transaction_hash(ID.to_string())
             .unwrap();
 
@@ -160,14 +159,38 @@ pub mod test {
 
         assert!(single_transaction_response.clone().is_ok());
         let response = single_transaction_response.unwrap();
-        assert_eq!(response.links().self_link().href().as_ref().unwrap(), LINK_SELF);
-        assert_eq!(response.links().account().href().as_ref().unwrap(), LINK_ACCOUNT);
-        assert_eq!(response.links().ledger().href().as_ref().unwrap(), LINK_LEDGER);
-        assert_eq!(response.links().operations().href().as_ref().unwrap(), LINK_OPERATIONS);
-        assert_eq!(response.links().effects().href().as_ref().unwrap(), LINK_EFFECTS);
-        assert_eq!(response.links().precedes().href().as_ref().unwrap(), LINK_PRECEDES);
-        assert_eq!(response.links().succeeds().href().as_ref().unwrap(), LINK_SUCCEEDS);
-        assert_eq!(response.links().transaction().href().as_ref().unwrap(), LINK_TRANSACTION);
+        assert_eq!(
+            response.links().self_link().href().as_ref().unwrap(),
+            LINK_SELF
+        );
+        assert_eq!(
+            response.links().account().href().as_ref().unwrap(),
+            LINK_ACCOUNT
+        );
+        assert_eq!(
+            response.links().ledger().href().as_ref().unwrap(),
+            LINK_LEDGER
+        );
+        assert_eq!(
+            response.links().operations().href().as_ref().unwrap(),
+            LINK_OPERATIONS
+        );
+        assert_eq!(
+            response.links().effects().href().as_ref().unwrap(),
+            LINK_EFFECTS
+        );
+        assert_eq!(
+            response.links().precedes().href().as_ref().unwrap(),
+            LINK_PRECEDES
+        );
+        assert_eq!(
+            response.links().succeeds().href().as_ref().unwrap(),
+            LINK_SUCCEEDS
+        );
+        assert_eq!(
+            response.links().transaction().href().as_ref().unwrap(),
+            LINK_TRANSACTION
+        );
         assert_eq!(response.id(), ID);
         assert_eq!(response.paging_token(), PAGING_TOKEN);
         assert_eq!(response.successful(), SUCCESSFUL);
@@ -183,15 +206,21 @@ pub mod test {
         assert_eq!(response.memo_type(), MEMO_TYPE);
         assert_eq!(response.signatures()[0], SIGNATURE);
         assert_eq!(response.valid_after().as_ref().unwrap(), VALID_AFTER);
-        assert_eq!(response.preconditions().as_ref().unwrap().timebounds().min_time(), MIN_TIME);
+        assert_eq!(
+            response
+                .preconditions()
+                .as_ref()
+                .unwrap()
+                .timebounds()
+                .min_time(),
+            MIN_TIME
+        );
     }
 
     #[tokio::test]
     async fn test_get_all_transactions() {
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org"
-            .to_string())
-            .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let all_transactions_request = AllTransactionsRequest::new()
             .set_include_failed(IncludeFailed::True)
@@ -204,14 +233,38 @@ pub mod test {
         assert!(all_transactions_response.clone().is_ok());
         let binding = all_transactions_response.unwrap();
         let record = &binding.embedded().records()[0];
-        assert_eq!(record.links().self_link().href().as_ref().unwrap(), LINK_SELF);
-        assert_eq!(record.links().account().href().as_ref().unwrap(), LINK_ACCOUNT);
-        assert_eq!(record.links().ledger().href().as_ref().unwrap(), LINK_LEDGER);
-        assert_eq!(record.links().operations().href().as_ref().unwrap(), LINK_OPERATIONS);
-        assert_eq!(record.links().effects().href().as_ref().unwrap(), LINK_EFFECTS);
-        assert_eq!(record.links().precedes().href().as_ref().unwrap(), LINK_PRECEDES);
-        assert_eq!(record.links().succeeds().href().as_ref().unwrap(), LINK_SUCCEEDS);
-        assert_eq!(record.links().transaction().href().as_ref().unwrap(), LINK_TRANSACTION);
+        assert_eq!(
+            record.links().self_link().href().as_ref().unwrap(),
+            LINK_SELF
+        );
+        assert_eq!(
+            record.links().account().href().as_ref().unwrap(),
+            LINK_ACCOUNT
+        );
+        assert_eq!(
+            record.links().ledger().href().as_ref().unwrap(),
+            LINK_LEDGER
+        );
+        assert_eq!(
+            record.links().operations().href().as_ref().unwrap(),
+            LINK_OPERATIONS
+        );
+        assert_eq!(
+            record.links().effects().href().as_ref().unwrap(),
+            LINK_EFFECTS
+        );
+        assert_eq!(
+            record.links().precedes().href().as_ref().unwrap(),
+            LINK_PRECEDES
+        );
+        assert_eq!(
+            record.links().succeeds().href().as_ref().unwrap(),
+            LINK_SUCCEEDS
+        );
+        assert_eq!(
+            record.links().transaction().href().as_ref().unwrap(),
+            LINK_TRANSACTION
+        );
         assert_eq!(record.id(), ID);
         assert_eq!(record.paging_token(), PAGING_TOKEN);
         assert_eq!(record.successful(), SUCCESSFUL);
@@ -227,15 +280,21 @@ pub mod test {
         assert_eq!(record.memo_type(), MEMO_TYPE);
         assert_eq!(record.signatures()[0], SIGNATURE); // Check only the first signature of the vector
         assert_eq!(record.valid_after().as_ref().unwrap(), VALID_AFTER);
-        assert_eq!(record.preconditions().as_ref().unwrap().timebounds().min_time(), MIN_TIME);
+        assert_eq!(
+            record
+                .preconditions()
+                .as_ref()
+                .unwrap()
+                .timebounds()
+                .min_time(),
+            MIN_TIME
+        );
     }
 
     #[tokio::test]
     async fn test_get_transactions_for_account() {
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org"
-            .to_string())
-            .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let transactions_for_account_request = TransactionsForAccountRequest::new()
             .set_account_id("GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H".to_string())
@@ -250,14 +309,38 @@ pub mod test {
         assert!(transactions_for_account_response.clone().is_ok());
         let binding = transactions_for_account_response.unwrap();
         let record = &binding.embedded().records()[0];
-        assert_eq!(record.links().self_link().href().as_ref().unwrap(), LINK_SELF);
-        assert_eq!(record.links().account().href().as_ref().unwrap(), LINK_ACCOUNT);
-        assert_eq!(record.links().ledger().href().as_ref().unwrap(), LINK_LEDGER);
-        assert_eq!(record.links().operations().href().as_ref().unwrap(), LINK_OPERATIONS);
-        assert_eq!(record.links().effects().href().as_ref().unwrap(), LINK_EFFECTS);
-        assert_eq!(record.links().precedes().href().as_ref().unwrap(), LINK_PRECEDES);
-        assert_eq!(record.links().succeeds().href().as_ref().unwrap(), LINK_SUCCEEDS);
-        assert_eq!(record.links().transaction().href().as_ref().unwrap(), LINK_TRANSACTION);
+        assert_eq!(
+            record.links().self_link().href().as_ref().unwrap(),
+            LINK_SELF
+        );
+        assert_eq!(
+            record.links().account().href().as_ref().unwrap(),
+            LINK_ACCOUNT
+        );
+        assert_eq!(
+            record.links().ledger().href().as_ref().unwrap(),
+            LINK_LEDGER
+        );
+        assert_eq!(
+            record.links().operations().href().as_ref().unwrap(),
+            LINK_OPERATIONS
+        );
+        assert_eq!(
+            record.links().effects().href().as_ref().unwrap(),
+            LINK_EFFECTS
+        );
+        assert_eq!(
+            record.links().precedes().href().as_ref().unwrap(),
+            LINK_PRECEDES
+        );
+        assert_eq!(
+            record.links().succeeds().href().as_ref().unwrap(),
+            LINK_SUCCEEDS
+        );
+        assert_eq!(
+            record.links().transaction().href().as_ref().unwrap(),
+            LINK_TRANSACTION
+        );
         assert_eq!(record.id(), ID);
         assert_eq!(record.paging_token(), PAGING_TOKEN);
         assert_eq!(record.successful(), SUCCESSFUL);
@@ -273,7 +356,15 @@ pub mod test {
         assert_eq!(record.memo_type(), MEMO_TYPE);
         assert_eq!(record.signatures()[0], SIGNATURE); // Check only the first signature of the vector
         assert_eq!(record.valid_after().as_ref().unwrap(), VALID_AFTER);
-        assert_eq!(record.preconditions().as_ref().unwrap().timebounds().min_time(), MIN_TIME);
+        assert_eq!(
+            record
+                .preconditions()
+                .as_ref()
+                .unwrap()
+                .timebounds()
+                .min_time(),
+            MIN_TIME
+        );
     }
 
     #[tokio::test]
@@ -281,9 +372,7 @@ pub mod test {
         const LEDGER_SEQUENCE: &str = "539";
 
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org"
-            .to_string())
-            .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let transactions_for_ledger_request = TransactionsForLedgerRequest::new()
             .set_ledger_sequence(LEDGER_SEQUENCE.to_string())
@@ -298,14 +387,38 @@ pub mod test {
         assert!(transactions_for_ledger_response.clone().is_ok());
         let binding = transactions_for_ledger_response.unwrap();
         let record = &binding.embedded().records()[0];
-        assert_eq!(record.links().self_link().href().as_ref().unwrap(), LINK_SELF);
-        assert_eq!(record.links().account().href().as_ref().unwrap(), LINK_ACCOUNT);
-        assert_eq!(record.links().ledger().href().as_ref().unwrap(), LINK_LEDGER);
-        assert_eq!(record.links().operations().href().as_ref().unwrap(), LINK_OPERATIONS);
-        assert_eq!(record.links().effects().href().as_ref().unwrap(), LINK_EFFECTS);
-        assert_eq!(record.links().precedes().href().as_ref().unwrap(), LINK_PRECEDES);
-        assert_eq!(record.links().succeeds().href().as_ref().unwrap(), LINK_SUCCEEDS);
-        assert_eq!(record.links().transaction().href().as_ref().unwrap(), LINK_TRANSACTION);
+        assert_eq!(
+            record.links().self_link().href().as_ref().unwrap(),
+            LINK_SELF
+        );
+        assert_eq!(
+            record.links().account().href().as_ref().unwrap(),
+            LINK_ACCOUNT
+        );
+        assert_eq!(
+            record.links().ledger().href().as_ref().unwrap(),
+            LINK_LEDGER
+        );
+        assert_eq!(
+            record.links().operations().href().as_ref().unwrap(),
+            LINK_OPERATIONS
+        );
+        assert_eq!(
+            record.links().effects().href().as_ref().unwrap(),
+            LINK_EFFECTS
+        );
+        assert_eq!(
+            record.links().precedes().href().as_ref().unwrap(),
+            LINK_PRECEDES
+        );
+        assert_eq!(
+            record.links().succeeds().href().as_ref().unwrap(),
+            LINK_SUCCEEDS
+        );
+        assert_eq!(
+            record.links().transaction().href().as_ref().unwrap(),
+            LINK_TRANSACTION
+        );
         assert_eq!(record.id(), ID);
         assert_eq!(record.paging_token(), PAGING_TOKEN);
         assert_eq!(record.successful(), SUCCESSFUL);
@@ -321,7 +434,15 @@ pub mod test {
         assert_eq!(record.memo_type(), MEMO_TYPE);
         assert_eq!(record.signatures()[0], SIGNATURE); // Check only the first signature of the vector
         assert_eq!(record.valid_after().as_ref().unwrap(), VALID_AFTER);
-        assert_eq!(record.preconditions().as_ref().unwrap().timebounds().min_time(), MIN_TIME);
+        assert_eq!(
+            record
+                .preconditions()
+                .as_ref()
+                .unwrap()
+                .timebounds()
+                .min_time(),
+            MIN_TIME
+        );
     }
 
     #[tokio::test]
@@ -331,8 +452,10 @@ pub mod test {
         const LINK_LEDGER: &str = "https://horizon-testnet.stellar.org/ledgers/106867";
         const LINK_OPERATIONS: &str = "https://horizon-testnet.stellar.org/transactions/1f6abb2a00ba84469f8d95271bf2eec99da10bddb894be11f29f7a7039f0c0a6/operations{?cursor,limit,order}";
         const LINK_EFFECTS: &str = "https://horizon-testnet.stellar.org/transactions/1f6abb2a00ba84469f8d95271bf2eec99da10bddb894be11f29f7a7039f0c0a6/effects{?cursor,limit,order}";
-        const LINK_PRECEDES: &str = "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=458990270087168";
-        const LINK_SUCCEEDS: &str = "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=458990270087168";
+        const LINK_PRECEDES: &str =
+            "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=458990270087168";
+        const LINK_SUCCEEDS: &str =
+            "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=458990270087168";
         const LINK_TRANSACTION: &str = "https://horizon-testnet.stellar.org/transactions/1f6abb2a00ba84469f8d95271bf2eec99da10bddb894be11f29f7a7039f0c0a6";
         const ID: &str = "1f6abb2a00ba84469f8d95271bf2eec99da10bddb894be11f29f7a7039f0c0a6";
         const PAGING_TOKEN: &str = "458990270087168";
@@ -350,18 +473,18 @@ pub mod test {
         const SIGNATURE: &str = "T8ediCtghc8L41mZpHLfWGe0a6pe+wfr1cdaHLApD6Kv0nKrQ6FK/biBWf50IrsMQjMfK61m3a997qQc3M3oDA==";
         const VALID_AFTER: &str = "1970-01-01T00:00:00Z";
         const MIN_TIME: &str = "0";
-    
-        const LIQUIDITY_POOL_ID: &str = "0066b15f5d0dc0be771209c33f3e4126383e58183a598eae8b3813024c6a6d10";
+
+        const LIQUIDITY_POOL_ID: &str =
+            "0066b15f5d0dc0be771209c33f3e4126383e58183a598eae8b3813024c6a6d10";
 
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org"
-            .to_string())
-            .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let transactions_for_liquidity_pool_request = TransactionsForLiquidityPoolRequest::new()
             .set_liquidity_pool_id(LIQUIDITY_POOL_ID.to_string())
             .unwrap()
-            .set_include_failed(true).unwrap();
+            .set_include_failed(true)
+            .unwrap();
 
         let transactions_for_liquidity_pool_response = horizon_client
             .get_transactions_for_liquidity_pool(&transactions_for_liquidity_pool_request)
@@ -370,14 +493,38 @@ pub mod test {
         assert!(transactions_for_liquidity_pool_response.clone().is_ok());
         let binding = transactions_for_liquidity_pool_response.unwrap();
         let record = &binding.embedded().records()[0];
-        assert_eq!(record.links().self_link().href().as_ref().unwrap(), LINK_SELF);
-        assert_eq!(record.links().account().href().as_ref().unwrap(), LINK_ACCOUNT);
-        assert_eq!(record.links().ledger().href().as_ref().unwrap(), LINK_LEDGER);
-        assert_eq!(record.links().operations().href().as_ref().unwrap(), LINK_OPERATIONS);
-        assert_eq!(record.links().effects().href().as_ref().unwrap(), LINK_EFFECTS);
-        assert_eq!(record.links().precedes().href().as_ref().unwrap(), LINK_PRECEDES);
-        assert_eq!(record.links().succeeds().href().as_ref().unwrap(), LINK_SUCCEEDS);
-        assert_eq!(record.links().transaction().href().as_ref().unwrap(), LINK_TRANSACTION);
+        assert_eq!(
+            record.links().self_link().href().as_ref().unwrap(),
+            LINK_SELF
+        );
+        assert_eq!(
+            record.links().account().href().as_ref().unwrap(),
+            LINK_ACCOUNT
+        );
+        assert_eq!(
+            record.links().ledger().href().as_ref().unwrap(),
+            LINK_LEDGER
+        );
+        assert_eq!(
+            record.links().operations().href().as_ref().unwrap(),
+            LINK_OPERATIONS
+        );
+        assert_eq!(
+            record.links().effects().href().as_ref().unwrap(),
+            LINK_EFFECTS
+        );
+        assert_eq!(
+            record.links().precedes().href().as_ref().unwrap(),
+            LINK_PRECEDES
+        );
+        assert_eq!(
+            record.links().succeeds().href().as_ref().unwrap(),
+            LINK_SUCCEEDS
+        );
+        assert_eq!(
+            record.links().transaction().href().as_ref().unwrap(),
+            LINK_TRANSACTION
+        );
         assert_eq!(record.id(), ID);
         assert_eq!(record.paging_token(), PAGING_TOKEN);
         assert_eq!(record.successful(), SUCCESSFUL);
@@ -393,6 +540,14 @@ pub mod test {
         assert_eq!(record.memo_type(), MEMO_TYPE);
         assert_eq!(record.signatures()[0], SIGNATURE); // Check only the first signature of the vector
         assert_eq!(record.valid_after().as_ref().unwrap(), VALID_AFTER);
-        assert_eq!(record.preconditions().as_ref().unwrap().timebounds().min_time(), MIN_TIME);
+        assert_eq!(
+            record
+                .preconditions()
+                .as_ref()
+                .unwrap()
+                .timebounds()
+                .min_time(),
+            MIN_TIME
+        );
     }
 }

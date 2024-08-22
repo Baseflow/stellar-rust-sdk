@@ -85,7 +85,7 @@ pub mod prelude {
 #[cfg(test)]
 pub mod tests {
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient};
+    use crate::horizon_client::HorizonClient;
     use base64::{engine::general_purpose, Engine};
 
     #[tokio::test]
@@ -125,15 +125,30 @@ pub mod tests {
         assert_eq!(all_ledgers_response.hash(), HASH);
         assert_eq!(all_ledgers_response.prev_hash(), PREV_HASH);
         assert_eq!(all_ledgers_response.sequence(), &SEQUENCE);
-        assert_eq!(all_ledgers_response.successful_transaction_count(), &SUCCESSFUL_TRANSACTION_COUNT);
-        assert_eq!(all_ledgers_response.failed_transaction_count(), &FAILED_TRANSACTION_COUNT);
+        assert_eq!(
+            all_ledgers_response.successful_transaction_count(),
+            &SUCCESSFUL_TRANSACTION_COUNT
+        );
+        assert_eq!(
+            all_ledgers_response.failed_transaction_count(),
+            &FAILED_TRANSACTION_COUNT
+        );
         assert_eq!(all_ledgers_response.operation_count(), &OPERATION_COUNT);
-        assert_eq!(all_ledgers_response.tx_set_operation_count(), &TX_SET_OPERATION_COUNT);
+        assert_eq!(
+            all_ledgers_response.tx_set_operation_count(),
+            &TX_SET_OPERATION_COUNT
+        );
         assert_eq!(all_ledgers_response.closed_at(), CLOSED_AT);
         assert_eq!(all_ledgers_response.total_coins(), TOTAL_COINS);
         assert_eq!(all_ledgers_response.fee_pool(), FEE_POOL);
-        assert_eq!(all_ledgers_response.base_fee_in_stroops(), &BASE_FEE_IN_STROOPS);
-        assert_eq!(all_ledgers_response.base_reserve_in_stroops(), &BASE_RESERVE_IN_STROOPS);
+        assert_eq!(
+            all_ledgers_response.base_fee_in_stroops(),
+            &BASE_FEE_IN_STROOPS
+        );
+        assert_eq!(
+            all_ledgers_response.base_reserve_in_stroops(),
+            &BASE_RESERVE_IN_STROOPS
+        );
         assert_eq!(all_ledgers_response.max_tx_set_size(), &MAX_TX_SET_SIZE);
         assert_eq!(all_ledgers_response.protocol_version(), &PROTOCOL_VERSION);
     }
@@ -145,10 +160,10 @@ pub mod tests {
         static HASH: &str = "546c5bccad35413e75324e0e63dd4d9f1ba87a3f4c97c84f83b7c09150f61caa";
         static PREV_HASH: &str = "63d98f536ee68d1b27b5b89f23af5311b7569a24faf1403ad0b52b633b07be99";
         static SEQUENCE: &i32 = &2;
-        static SUCCESSFUL_TRANSACTION_COUNT:  &i32 = &0;
-        static FAILED_TRANSACTION_COUNT:  &i32 = &0;
-        static OPERATION_COUNT:  &i32 = &0;
-        static TX_SET_OPERATION_COUNT:  &i32 = &0;
+        static SUCCESSFUL_TRANSACTION_COUNT: &i32 = &0;
+        static FAILED_TRANSACTION_COUNT: &i32 = &0;
+        static OPERATION_COUNT: &i32 = &0;
+        static TX_SET_OPERATION_COUNT: &i32 = &0;
         static CLOSED_AT: &str = "2024-06-11T20:49:11Z";
         static TOTAL_COINS: &str = "100000000000.0000000";
         static FEE_POOL: &str = "0.0000000";
@@ -178,15 +193,30 @@ pub mod tests {
         assert_eq!(single_ledger_response.hash(), HASH);
         assert_eq!(single_ledger_response.prev_hash(), PREV_HASH);
         assert_eq!(single_ledger_response.sequence(), SEQUENCE);
-        assert_eq!(single_ledger_response.successful_transaction_count(), SUCCESSFUL_TRANSACTION_COUNT);
-        assert_eq!(single_ledger_response.failed_transaction_count(), FAILED_TRANSACTION_COUNT);
+        assert_eq!(
+            single_ledger_response.successful_transaction_count(),
+            SUCCESSFUL_TRANSACTION_COUNT
+        );
+        assert_eq!(
+            single_ledger_response.failed_transaction_count(),
+            FAILED_TRANSACTION_COUNT
+        );
         assert_eq!(single_ledger_response.operation_count(), OPERATION_COUNT);
-        assert_eq!(single_ledger_response.tx_set_operation_count(), TX_SET_OPERATION_COUNT);
+        assert_eq!(
+            single_ledger_response.tx_set_operation_count(),
+            TX_SET_OPERATION_COUNT
+        );
         assert_eq!(single_ledger_response.closed_at(), CLOSED_AT);
         assert_eq!(single_ledger_response.total_coins(), TOTAL_COINS);
         assert_eq!(single_ledger_response.fee_pool(), FEE_POOL);
-        assert_eq!(single_ledger_response.base_fee_in_stroops(), BASE_FEE_IN_STROOPS);
-        assert_eq!(single_ledger_response.base_reserve_in_stroops(), BASE_RESERVE_IN_STROOPS);
+        assert_eq!(
+            single_ledger_response.base_fee_in_stroops(),
+            BASE_FEE_IN_STROOPS
+        );
+        assert_eq!(
+            single_ledger_response.base_reserve_in_stroops(),
+            BASE_RESERVE_IN_STROOPS
+        );
         assert_eq!(single_ledger_response.max_tx_set_size(), MAX_TX_SET_SIZE);
         assert_eq!(single_ledger_response.protocol_version(), PROTOCOL_VERSION);
 

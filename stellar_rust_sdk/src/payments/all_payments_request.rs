@@ -26,7 +26,7 @@ impl Request for AllPaymentsRequest {
             self.limit.as_ref().map(|l| format!("limit={}", l)),
             self.order.as_ref().map(|o| format!("order={}", o)),
         ]
-            .build_query_parameters()
+        .build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {

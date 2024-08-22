@@ -64,14 +64,8 @@ pub mod tests {
             binding.base().asset_type().as_deref(),
             Some(BASE_ASSET_TYPE)
         );
-        assert_eq!(
-            binding.base().asset_code().as_deref(),
-            None
-        );
-        assert_eq!(
-            binding.base().asset_issuer().as_deref(),
-            None
-        );
+        assert_eq!(binding.base().asset_code().as_deref(), None);
+        assert_eq!(binding.base().asset_issuer().as_deref(), None);
 
         assert_eq!(
             binding.counter().asset_type().as_deref(),

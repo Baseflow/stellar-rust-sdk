@@ -126,10 +126,9 @@ pub mod tests {
         operations::{
             operations_for_account_request::OperationsForAccountRequest,
             prelude::{
-                AllOperationsRequest,
-                OperationsForLedgerRequest,
-                OperationsForLiquidityPoolRequest,
-                OperationsForTransactionRequest,            },
+                AllOperationsRequest, OperationsForLedgerRequest,
+                OperationsForLiquidityPoolRequest, OperationsForTransactionRequest,
+            },
             response::{Operation, OperationResponse},
             single_operation_request::SingleOperationRequest,
         },
@@ -151,8 +150,7 @@ pub mod tests {
         const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
 
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string())
-                .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let all_operations_request = AllOperationsRequest::new().set_limit(2).unwrap();
 
@@ -197,8 +195,7 @@ pub mod tests {
         const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
 
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string())
-                .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let single_operation_request =
             SingleOperationRequest::new().set_operation_id(ID.to_string());
@@ -241,8 +238,7 @@ pub mod tests {
         const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
 
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string())
-                .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let operations_for_account_request = OperationsForAccountRequest::new()
             .set_account_id(ACCOUNT_ID.to_string())
@@ -301,8 +297,7 @@ pub mod tests {
         const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
 
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string())
-                .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let operations_for_ledger_request = OperationsForLedgerRequest::new().set_limit(2).unwrap();
 
@@ -356,8 +351,7 @@ pub mod tests {
         const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
 
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string())
-                .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let operations_for_liquidity_pool_request = OperationsForLiquidityPoolRequest::new()
             .set_limit(2)
@@ -405,7 +399,8 @@ pub mod tests {
 
     #[tokio::test]
     async fn test_get_operations_for_transaction() {
-        const REQUEST_TRANSACTION_HASH: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
+        const REQUEST_TRANSACTION_HASH: &str =
+            "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
         const ID: &str = "2314987376641";
         const PAGING_TOKEN: &str = "2314987376641";
         const TRANSACTION_SUCCESFULL: bool = true;
@@ -419,8 +414,8 @@ pub mod tests {
         const FUNDER: &str = "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H";
         const ACCOUNT: &str = "GAIH3ULLFQ4DGSECF2AR555KZ4KNDGEKN4AFI4SU2M7B43MGK3QJZNSR";
 
-        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())
-                .unwrap();
+        let horizon_client =
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let operations_for_transaction_request = OperationsForTransactionRequest::new()
             .set_transaction_hash(REQUEST_TRANSACTION_HASH.to_string())

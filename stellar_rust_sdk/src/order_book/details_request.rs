@@ -40,10 +40,10 @@ impl DetailsRequest<NoSellingAsset, NoBuyingAsset> {
     }
 
     /// Sets the selling asset of the order book.
-    /// 
+    ///
     /// # Arguments
     /// * `selling_asset` - An [`AssetType`] enum value specifying the selling asset.
-    /// 
+    ///
     pub fn set_selling_asset(
         self,
         selling_asset: AssetType,
@@ -55,7 +55,7 @@ impl DetailsRequest<NoSellingAsset, NoBuyingAsset> {
     }
 
     /// Sets the buying asset of the order book.
-    /// 
+    ///
     /// # Arguments
     /// * `buying_asset` - An [`AssetType`] enum value specifying the buying asset.
     pub fn set_buying_asset(
@@ -71,9 +71,8 @@ impl DetailsRequest<NoSellingAsset, NoBuyingAsset> {
 
 /// Implements the setting of a selling asset of the order book with a buying asset and no selling asset
 impl DetailsRequest<NoSellingAsset, BuyingAsset> {
-
     /// Sets the selling asset of the order book.
-    /// 
+    ///
     /// # Arguments
     /// * `selling_asset` - An [`AssetType`] enum value specifying the selling asset.
     pub fn set_selling_asset(
@@ -89,9 +88,8 @@ impl DetailsRequest<NoSellingAsset, BuyingAsset> {
 
 /// Implements the setting of a buying asset of the order book with a selling asset and no buying asset
 impl DetailsRequest<SellingAsset, NoBuyingAsset> {
-
     /// Sets the buying asset of the order book.
-    /// 
+    ///
     /// # Arguments
     /// * `buying_asset` - An [`AssetType`] enum value specifying the buying asset.
     pub fn set_buying_asset(
@@ -155,11 +153,11 @@ impl Request for DetailsRequest<SellingAsset, BuyingAsset> {
 }
 
 mod tests {
-    
+
     #[test]
     fn test_details_request() {
-        use crate::models::Request;
         use super::{Asset, AssetType, DetailsRequest};
+        use crate::models::Request;
         let details_request = DetailsRequest::new()
             .set_buying_asset(AssetType::Native)
             .unwrap()
@@ -176,7 +174,8 @@ mod tests {
             .unwrap()
             .set_selling_asset(AssetType::Alphanumeric4(Asset {
                 asset_code: "USDC".to_string(),
-                asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string(),
+                asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
+                    .to_string(),
             }))
             .unwrap();
 

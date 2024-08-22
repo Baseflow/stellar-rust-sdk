@@ -1,4 +1,7 @@
-use crate::{models::{Order, Request}, BuildQueryParametersExt};
+use crate::{
+    models::{Order, Request},
+    BuildQueryParametersExt,
+};
 use stellar_rust_sdk_derive::pagination;
 
 /// Represents a request to fetch effect data from the Stellar Horizon API.
@@ -43,10 +46,7 @@ impl EffectForTransactionRequest {
     /// # Arguments
     /// * `liquidity_pool_id` - A `String` value representing the liquidity pool id.
     ///
-    pub fn set_transaction_hash(
-        self,
-        transaction_hash: String,
-    ) -> EffectForTransactionRequest {
+    pub fn set_transaction_hash(self, transaction_hash: String) -> EffectForTransactionRequest {
         EffectForTransactionRequest {
             transaction_hash: Some(transaction_hash),
             ..self
@@ -106,6 +106,9 @@ mod tests {
             url,
             "https://horizon-testnet.stellar.org/effects?transaction_hash=transaction_hash&cursor=1&limit=10&order=asc"
         );
-        assert_eq!(query_parameters, "?transaction_hash=transaction_hash&cursor=1&limit=10&order=asc");
+        assert_eq!(
+            query_parameters,
+            "?transaction_hash=transaction_hash&cursor=1&limit=10&order=asc"
+        );
     }
 }

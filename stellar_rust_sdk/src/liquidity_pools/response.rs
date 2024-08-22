@@ -1,7 +1,10 @@
 use derive_getters::Getters;
 use serde::{Deserialize, Serialize};
 
-use crate::models::{prelude::{Embedded, Link, ResponseLinks, TemplateLink}, Response};
+use crate::models::{
+    prelude::{Embedded, Link, ResponseLinks, TemplateLink},
+    Response,
+};
 
 /// Represents the response from the Horizon server when querying for all liquidity pools.
 ///

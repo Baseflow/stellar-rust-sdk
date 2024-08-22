@@ -1,8 +1,8 @@
-use stellar_rust_sdk_derive::pagination;
 use crate::{
     models::{IncludeFailed, Order, Request},
     BuildQueryParametersExt,
 };
+use stellar_rust_sdk_derive::pagination;
 
 #[pagination]
 #[derive(Default)]

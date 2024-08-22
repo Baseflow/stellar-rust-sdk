@@ -31,7 +31,7 @@ impl OffersForAccountRequest<NoOfferAccountId> {
         }
 
         Ok(OffersForAccountRequest {
-            account_id: OfferAccountId(account_id,),
+            account_id: OfferAccountId(account_id),
             cursor: self.cursor,
             limit: self.limit,
             order: self.order,

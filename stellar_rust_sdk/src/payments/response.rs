@@ -1,7 +1,7 @@
-use derive_getters::Getters;
-use serde::{Deserialize, Serialize};
 use crate::models::prelude::{Embedded, ResponseLinks};
 use crate::models::Response;
+use derive_getters::Getters;
+use serde::{Deserialize, Serialize};
 
 /// Represents the response from the Horizon server when querying for all payments.
 ///

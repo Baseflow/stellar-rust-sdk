@@ -70,9 +70,8 @@ pub mod prelude {
 
 #[tokio::test]
 async fn test_get_all_liquidity_pools() {
-    use crate::{horizon_client::HorizonClient};
+    use crate::horizon_client::HorizonClient;
     use all_liquidity_pools_request::AllLiquidityPoolsRequest;
-
 
     const RSP_1_LIQUIDITY_POOL_ID: &str =
         "4cd1f6defba237eecbc5fefe259f89ebc4b5edd49116beb5536c4034fc48d63f";
@@ -229,7 +228,7 @@ async fn test_get_all_liquidity_pools() {
             "GAGTRBIF75N7NUA37JGGJZKXIS4JJKTQERRFWTP5DN4SM4OC2T6QPMQB".to_string(),
         )
         .set_limit(2)
-            .unwrap();
+        .unwrap();
 
     let all_liquidity_pools_response_3 = horizon_client
         .get_all_liquidity_pools(&all_liquidity_pools_request_3)
@@ -292,8 +291,7 @@ async fn test_get_single_liquidity_pool() {
     const LIQUIDITY_POOL_TYPE: &str = "constant_product";
     const LIQUIDITY_POOL_TOTAL_TRUSTLINES: &str = "1";
     const LIQUIDITY_POOL_TOTAL_SHARES: &str = "249.0000000";
-    const LIQUIDITY_POOL_RESERVE_ASSET_0: &str =
-        "native";
+    const LIQUIDITY_POOL_RESERVE_ASSET_0: &str = "native";
     const LIQUIDITY_POOL_RESERVE_AMOUNT_0: &str = "2939.0000000";
     const LIQUIDITY_POOL_RESERVE_ASSET_1: &str =
         "FLUTTER:GCGTOQSNERFVVJ6Y7YZYDF3MTZIY63KIEFMKA26Q7YPV3AFYD2JSRNYN";

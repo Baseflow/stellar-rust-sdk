@@ -89,7 +89,7 @@ impl Request for EffectsForLiquidityPoolRequest {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{BuildQueryParametersExt};
+    use crate::BuildQueryParametersExt;
 
     #[test]
     fn test_effects_for_liquidity_pools_request() {
