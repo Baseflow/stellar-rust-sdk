@@ -21,15 +21,17 @@ impl PostTransactionRequest<NoTransactionEnvelope> {
     }
 
     /// Sets the transaction envelope for the request.
-    /// 
+    ///
     /// # Arguments
     /// * `transaction_envelope_xdr` - A `String` specifying the transaction envelope XDR.
-    /// 
+    ///
     pub fn set_transaction_envelope_xdr(
         self,
-        transaction_envelope_xdr: String,
+        transaction_envelope_xdr: impl Into<String>,
     ) -> Result<PostTransactionRequest<TransactionEnvelope>, String> {
-        Ok(PostTransactionRequest {transaction_envelope_xdr: TransactionEnvelope(transaction_envelope_xdr)})
+        Ok(PostTransactionRequest {
+            transaction_envelope_xdr: TransactionEnvelope(transaction_envelope_xdr.into()),
+        })
     }
 }
 
@@ -37,15 +39,14 @@ impl PostRequest for PostTransactionRequest<TransactionEnvelope> {
     fn get_body(&self) -> Vec<(String, String)> {
         // Return a vector containing a tuple with a key/value pair, to be used in the request's formdata.
         // Since the request has one parameter, a vector with only 1 tuple is returned.
-        vec![("tx".to_string(), self.transaction_envelope_xdr.0.to_string())]
+        vec![(
+            "tx".to_string(),
+            self.transaction_envelope_xdr.0.to_string(),
+        )]
     }
 
     fn build_url(&self, base_url: &str) -> String {
         // This URL is not built with query parameters, but uses formdata, which is POSTed to the transactions API endpoint.
-        format!(
-            "{}/{}",
-            base_url,
-            super::TRANSACTIONS_PATH
-        )
+        format!("{}/{}", base_url, super::TRANSACTIONS_PATH)
     }
 }

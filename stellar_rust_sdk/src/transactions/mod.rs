@@ -28,7 +28,7 @@ pub mod post_transaction_request;
 pub mod all_transactions_request;
 
 /// Provides the `TransactionsForAccountRequest`.
-/// 
+///
 /// # Usage
 /// This module provides the `TransactionsForAccountRequest` struct, specifically designed for
 /// constructing requests to query information about all successful transactions for a given account from the Horizon
@@ -110,7 +110,6 @@ pub(crate) static TRANSACTIONS_PATH: &str = "transactions";
 /// let single_transactions_request = SingleTransactionRequest::new();
 /// ```
 pub mod prelude {
-    pub use super::post_transaction_request::*;
     pub use super::all_transactions_request::*;
     pub use super::response::*;
     pub use super::single_transaction_request::*;
@@ -574,8 +573,10 @@ pub mod test {
         const LINK_LEDGER: &str = "https://horizon-testnet.stellar.org/ledgers/539";
         const LINK_OPERATIONS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/operations{?cursor,limit,order}";
         const LINK_EFFECTS: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020/effects{?cursor,limit,order}";
-        const LINK_PRECEDES: &str = "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=2314987376640";
-        const LINK_SUCCEEDS: &str = "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=2314987376640";
+        const LINK_PRECEDES: &str =
+            "https://horizon-testnet.stellar.org/transactions?order=asc&cursor=2314987376640";
+        const LINK_SUCCEEDS: &str =
+            "https://horizon-testnet.stellar.org/transactions?order=desc&cursor=2314987376640";
         const LINK_TRANSACTION: &str = "https://horizon-testnet.stellar.org/transactions/b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
         const ID: &str = "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020";
         const PAGING_TOKEN: &str = "2314987376640";
@@ -595,43 +596,71 @@ pub mod test {
         const MIN_TIME: &str = "0";
 
         let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org"
-            .to_string())
-            .unwrap();
+            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
 
         let request = PostTransactionRequest::new()
-            .set_transaction_envelope_xdr(REQUEST_XDR.to_string())
+            .set_transaction_envelope_xdr(REQUEST_XDR)
             .unwrap();
 
-        let response = horizon_client
-            .post_transaction(&request)
-            .await;
+        let response = horizon_client.post_transaction(&request).await;
 
-            assert!(response.clone().is_ok());
-            let record = response.unwrap();
-            assert_eq!(record.links().self_link().href().as_ref().unwrap(), LINK_SELF);
-            assert_eq!(record.links().account().href().as_ref().unwrap(), LINK_ACCOUNT);
-            assert_eq!(record.links().ledger().href().as_ref().unwrap(), LINK_LEDGER);
-            assert_eq!(record.links().operations().href().as_ref().unwrap(), LINK_OPERATIONS);
-            assert_eq!(record.links().effects().href().as_ref().unwrap(), LINK_EFFECTS);
-            assert_eq!(record.links().precedes().href().as_ref().unwrap(), LINK_PRECEDES);
-            assert_eq!(record.links().succeeds().href().as_ref().unwrap(), LINK_SUCCEEDS);
-            assert_eq!(record.links().transaction().href().as_ref().unwrap(), LINK_TRANSACTION);
-            assert_eq!(record.id(), ID);
-            assert_eq!(record.paging_token(), PAGING_TOKEN);
-            assert_eq!(record.successful(), SUCCESSFUL);
-            assert_eq!(record.hash(), HASH);
-            assert_eq!(record.ledger(), LEDGER);
-            assert_eq!(record.created_at(), CREATED_AT);
-            assert_eq!(record.source_account(), SOURCE_ACCOUNT);
-            assert_eq!(record.source_account_sequence(), SOURCE_ACCOUNT_SEQUENCE);
-            assert_eq!(record.fee_account(), FEE_ACCOUNT);
-            assert_eq!(record.fee_charged(), FEE_CHARGED);
-            assert_eq!(record.max_fee(), MAX_FEE);
-            assert_eq!(record.operation_count(), OPERATION_COUNT);
-            assert_eq!(record.memo_type(), MEMO_TYPE);
-            assert_eq!(record.signatures()[0], SIGNATURE); // Check only the first signature of the vector
-            assert_eq!(record.valid_after().as_ref().unwrap(), VALID_AFTER);
-            assert_eq!(record.preconditions().as_ref().unwrap().timebounds().min_time(), MIN_TIME);
+        assert!(response.clone().is_ok());
+        let record = response.unwrap();
+        assert_eq!(
+            record.links().self_link().href().as_ref().unwrap(),
+            LINK_SELF
+        );
+        assert_eq!(
+            record.links().account().href().as_ref().unwrap(),
+            LINK_ACCOUNT
+        );
+        assert_eq!(
+            record.links().ledger().href().as_ref().unwrap(),
+            LINK_LEDGER
+        );
+        assert_eq!(
+            record.links().operations().href().as_ref().unwrap(),
+            LINK_OPERATIONS
+        );
+        assert_eq!(
+            record.links().effects().href().as_ref().unwrap(),
+            LINK_EFFECTS
+        );
+        assert_eq!(
+            record.links().precedes().href().as_ref().unwrap(),
+            LINK_PRECEDES
+        );
+        assert_eq!(
+            record.links().succeeds().href().as_ref().unwrap(),
+            LINK_SUCCEEDS
+        );
+        assert_eq!(
+            record.links().transaction().href().as_ref().unwrap(),
+            LINK_TRANSACTION
+        );
+        assert_eq!(record.id(), ID);
+        assert_eq!(record.paging_token(), PAGING_TOKEN);
+        assert_eq!(record.successful(), SUCCESSFUL);
+        assert_eq!(record.hash(), HASH);
+        assert_eq!(record.ledger(), LEDGER);
+        assert_eq!(record.created_at(), CREATED_AT);
+        assert_eq!(record.source_account(), SOURCE_ACCOUNT);
+        assert_eq!(record.source_account_sequence(), SOURCE_ACCOUNT_SEQUENCE);
+        assert_eq!(record.fee_account(), FEE_ACCOUNT);
+        assert_eq!(record.fee_charged(), FEE_CHARGED);
+        assert_eq!(record.max_fee(), MAX_FEE);
+        assert_eq!(record.operation_count(), OPERATION_COUNT);
+        assert_eq!(record.memo_type(), MEMO_TYPE);
+        assert_eq!(record.signatures()[0], SIGNATURE); // Check only the first signature of the vector
+        assert_eq!(record.valid_after().as_ref().unwrap(), VALID_AFTER);
+        assert_eq!(
+            record
+                .preconditions()
+                .as_ref()
+                .unwrap()
+                .timebounds()
+                .min_time(),
+            MIN_TIME
+        );
     }
 }
