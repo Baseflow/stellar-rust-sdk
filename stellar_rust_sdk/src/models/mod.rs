@@ -46,7 +46,6 @@ pub(crate) trait PostRequest {
     /// includes complex query parameters.
     ///
     fn build_url(&self, base_url: &str) -> String;
-
 }
 
 /// Defines methods for creating HTTP requests to the Horizon server.

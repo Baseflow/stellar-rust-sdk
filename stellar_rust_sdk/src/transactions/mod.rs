@@ -111,6 +111,7 @@ pub(crate) static TRANSACTIONS_PATH: &str = "transactions";
 /// ```
 pub mod prelude {
     pub use super::all_transactions_request::*;
+    pub use super::post_transaction_request::*;
     pub use super::response::*;
     pub use super::single_transaction_request::*;
     pub use super::transactions_for_account_request::*;
