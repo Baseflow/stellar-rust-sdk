@@ -1,25 +1,15 @@
-use stellar_rust_sdk_derive::Pagination;
-use crate::Paginatable;
+use stellar_rust_sdk_derive::pagination;
 
 use crate::{
     models::{Order, Request},
     BuildQueryParametersExt,
 };
 
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct OperationsForTransactionRequest {
     /// The hash of the transaction. Optional.
     transaction_hash: Option<String>,
-    /// A number that points to a specific location in a collection of responses and is pulled
-    /// from the paging_token value of a record.
-    cursor: Option<u32>,
-    /// The maximum number of records returned. The limit can range from 1 to 200 - an upper limit
-    /// that is hardcoded in Horizon for performance reasons. If this argument isn’t designated, it
-    /// defaults to 10.
-    limit: Option<u8>,
-    /// A designation of the [`Order`] in which records should appear. Options include [`Order::Asc`] (ascending)
-    /// or [`Order::Desc`] (descending). If this argument isn’t set, it defaults to asc.
-    order: Option<Order>,
 }
 
 impl OperationsForTransactionRequest {
