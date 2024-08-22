@@ -122,12 +122,14 @@ pub mod prelude {
 #[cfg(test)]
 pub mod tests {
     use crate::{
-        horizon_client,
+        horizon_client::*,
         operations::{
             operations_for_account_request::OperationsForAccountRequest,
             prelude::{
-                AllOperationsRequest, OperationsForLedgerRequest, OperationsForLiquidityPoolRequest,
-            },
+                AllOperationsRequest,
+                OperationsForLedgerRequest,
+                OperationsForLiquidityPoolRequest,
+                OperationsForTransactionRequest,            },
             response::{Operation, OperationResponse},
             single_operation_request::SingleOperationRequest,
         },
