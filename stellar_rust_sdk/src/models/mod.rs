@@ -6,7 +6,7 @@ pub mod prelude {
     pub use super::Response;
 }
 
-pub trait PostRequest {
+pub(crate) trait PostRequest {
     /// Generates a vector of tuples, containing key/value pairs to be used in the request's formdata.
     ///
     /// This method is responsible for constructing the formdata body for an HTTP request.
@@ -41,7 +41,7 @@ pub trait PostRequest {
     /// This method is typically called when an HTTP request is being prepared. The returned URL
     /// is used as the target for the request.
     ///
-    /// Implementors of this method should ensure that the full URL is correctly structured,
+    /// Implementers of this method should ensure that the full URL is correctly structured,
     /// particularly in cases where the base URL has specific path components or the request
     /// includes complex query parameters.
     ///
@@ -51,11 +51,11 @@ pub trait PostRequest {
 
 /// Defines methods for creating HTTP requests to the Horizon server.
 ///
-/// Implementors of this trait represent different types of requests that can be made to the server.
+/// Implementers of this trait represent different types of requests that can be made to the server.
 /// The trait provides methods for assembling the request's query parameters and building the
 /// full URL for the request.
 ///
-/// Implementors of this trait should provide the specific logic for these methods based on the
+/// Implementers of this trait should provide the specific logic for these methods based on the
 /// type of request they represent.
 ///
 pub trait Request {
