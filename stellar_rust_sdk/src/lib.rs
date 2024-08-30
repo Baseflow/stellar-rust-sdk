@@ -15,7 +15,7 @@
 //! stabilization.
 //!
 //! #### Supported endpoints:
-//! ![93%](https://progress-bar.dev/93/?width=200)
+//! ![100%](https://progress-bar.dev/100/?width=200)
 //! * Accounts
 //! * Assets
 //! * Claimable balance
@@ -26,13 +26,13 @@
 //! * Operations
 //! * Offers
 //! * Orderbook
+//! * Paths
 //! * Payments
 //! * Trades
 //! * Trade aggregations
 //! * Transactions
 //!
 //! #### Endpoints on the roadmap:
-//! * Paths
 
 //!
 //! ## Example Usage
@@ -624,6 +624,50 @@ pub mod transactions;
 /// ```
 ///
 pub mod trades;
+
+/// Provides `Request` and `Response` structs for retrieving payment paths.
+///
+/// This module provides a set of specialized request and response structures designed for
+/// interacting with the payment path-related endpoints of the Horizon server. These structures
+/// facilitate the construction of requests to query payment paths and the interpretation of
+/// the corresponding responses.
+///
+/// # Usage
+///
+/// This module is intended to be used in conjunction with the [`HorizonClient`](crate::horizon_client::HorizonClient)
+/// for making specific payment path-related API calls to the Horizon server. The request
+/// structures are designed to be passed to the client's methods, which handle the
+/// communication with the server and return the corresponding response structures.
+///
+/// # Example
+///
+/// To use this module, you can create an instance of a request struct, such as
+/// `FindPaymentPathsRequest`, `ListStrictReceivePaymentPathsRequest`, or `ListStrictSendPaymentPathsRequest`,
+/// set any desired query parameters, and pass the request to the `HorizonClient`. The client
+/// will then execute the request and return the corresponding response struct, like `PathsResponse`.
+///
+/// ```rust
+/// use stellar_rs::horizon_client::HorizonClient;
+/// use stellar_rs::paths::{prelude::*, AssetType};
+/// use stellar_rs::models::Request;
+///
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+///
+/// // Example: Fetching payment paths
+/// let request = FindPaymentsPathRequest::new()
+///     .set_destination_asset(AssetType::Native).unwrap() // Sets the destination asset to native XLM.
+///     .set_destination_amount("100.0".to_string()).unwrap() // Sets the amount of the destination asset.
+///     .set_source_account("GCDNJUBQSXK57MSKJ4NSXK5DT5CJMMXMWUE7BN6NTJ6JTH23HQVYXG2C".to_string()).unwrap() // Sets the source account.
+///     .set_destination_account("GAZD7JY7RCZN7KJ27SMUGKDPF7GQTYPXLDU7TFTJNSDB3MLO3M22DEIV".to_string()).unwrap(); // Sets the destination account.
+///
+/// let paths_response = horizon_client.get_find_payment_paths(&request).await?;
+///
+/// // Process the responses...
+/// # Ok(())
+/// # }
+/// ```
+pub mod paths;
 
 /// Provides `Request` and `Response` structs for retrieving payments.
 ///
