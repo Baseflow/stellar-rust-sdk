@@ -33,6 +33,7 @@ use crate::{
         details_request::{BuyingAsset, DetailsRequest, SellingAsset},
         response::DetailsResponse,
     },
+    paths::{prelude::*, DestinationAmount, DestinationAsset, SourceAccount},
     payments::prelude::*,
     trade_aggregations::prelude::*,
     trades::prelude::*,
@@ -1983,6 +1984,84 @@ impl HorizonClient {
         request: &TransactionsForLiquidityPoolRequest<TransactionsLiquidityPoolId>,
     ) -> Result<AllTransactionsResponse, String> {
         self.get::<AllTransactionsResponse>(request).await
+    }
+
+    /// Retrieves payment paths from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of payment paths from
+    /// the Horizon server. It requires an [`FindPaymentsPathRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`FindPaymentsPathRequest`] instance, containing the
+    /// parameters for the paths request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`PathsResponse`], which includes
+    /// the list of the payment paths obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`FindPaymentsPathRequest`] and set any desired
+    /// filters or parameters.
+    pub async fn get_find_payment_paths(
+        &self,
+        request: &FindPaymentsPathRequest<DestinationAsset, DestinationAmount, SourceAccount>,
+    ) -> Result<PathsResponse, String> {
+        self.get::<PathsResponse>(request).await
+    }
+
+    /// Retrieves a list of strict receive payment paths from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of strict receive payment paths from
+    /// the Horizon server. It requires an [`ListStrictReceivePaymentPathsRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`ListStrictReceivePaymentPathsRequest`] instance, containing the
+    /// parameters for the paths request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`PathsResponse`], which includes
+    /// the list of the strict receive payment paths obtained from the Horizon server.
+    /// If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`ListStrictReceivePaymentPathsRequest`] and set any desired
+    /// filters or parameters.
+    pub async fn get_list_strict_receive_payment_paths(
+        &self,
+        request: &ListStrictReceivePaymentPathsRequest<
+            DestinationAsset,
+            DestinationAmount,
+            SourceAccount,
+        >,
+    ) -> Result<PathsResponse, String> {
+        self.get::<PathsResponse>(request).await
+    }
+
+    /// Retrieves a list of strict send payment paths from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of strict send payment paths from
+    /// the Horizon server. It requires an [`ListStrictSendPaymentPathsRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`ListStrictSendPaymentPathsRequest`] instance, containing the
+    /// parameters for the paths request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`PathsResponse`], which includes
+    /// the list of the strict send payment paths obtained from the Horizon server.
+    /// If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`ListStrictSendPaymentPathsRequest`] and set any desired
+    /// filters or parameters.
+    pub async fn get_list_strict_send_payment_paths(
+        &self,
+        request: &ListStrictSendPaymentPathsRequest<DestinationAsset, DestinationAmount>,
+    ) -> Result<PathsResponse, String> {
+        self.get::<PathsResponse>(request).await
     }
 
     /// Retrieves a list of all payments from the Horizon server.
