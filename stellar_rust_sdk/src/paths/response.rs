@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 ///
 #[derive(Debug, Clone, Serialize, Deserialize, Getters)]
 pub struct PathsResponse {
+    #[serde(rename = "_embedded")]
     embedded: Embedded<Path>,
 }
 
