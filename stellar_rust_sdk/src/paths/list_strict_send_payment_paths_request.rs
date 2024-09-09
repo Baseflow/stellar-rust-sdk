@@ -1,156 +1,176 @@
-use crate::models::Request;
+use crate::models::{is_public_key, Request};
 use crate::paths::*;
 use crate::BuildQueryParametersExt;
 
+/// Represents the absence of a source asset for a payment path request.
+#[derive(Default, Clone, Debug)]
+pub struct NoSourceAsset;
+
+/// Represents the source asset for a payment path request.
+#[derive(Default, Clone, Debug)]
+pub struct SourceAsset(AssetType);
+
+/// Represents the absence of a source amount for a payment path request.
+#[derive(Default, Clone, Debug)]
+pub struct NoSourceAmount;
+
+/// Represents the source amount for a payment path request.
+#[derive(Default, Clone, Debug)]
+pub struct SourceAmount(String);
+
+/// Represents the absence of a source amount for a payment path request.
+#[derive(Default, Clone, Debug)]
+pub struct NoDestination;
+
+/// Represents the destination which can be either a vector of assets, or an account.
+/// Exactly one of these must be set, in order to make a valid request.
+#[derive(Clone, Debug)]
+pub enum Destination {
+    DestinationAssets(Vec<IssuedOrNative>),
+    DestinationAccount(String),
+}
+
+impl Default for Destination {
+    fn default() -> Self {
+        Destination::DestinationAssets(Vec::new())
+    }
+}
+
 /// Represents a request to list strict send payment paths on the Stellar Horizon API.
 ///
-/// This struct is designed to construct a query for discovering payment paths that allow
-/// a specified destination amount of a specified asset to be sent, considering one or more
-/// source assets. It adheres to the structure and parameters required by the Horizon API
-/// for retrieving such payment paths.
+/// This struct is designed to construct a query for listing the paths a payment can take based
+/// on the amount of an asset you want the recipient to receive. The destination asset amount
+/// stays constant, and the type and amount of an asset sent varies based on offers in the order books.
 ///
 /// # Usage
 ///
-/// Create an instance using the `new` method, and then specify the destination asset, amount,
-/// destination account, and source assets using the provided setters. Once the required parameters are set,
-/// you can pass this request object to the appropriate method in the Horizon client to fetch
-/// the available strict send payment paths.
+/// Create an instance using the `new` method, and then specify the source asset, source amount,
+/// and the destination using the provided setters. Once the required parameters are set, optional
+/// parameters can be set, and the request object can then be passed to the appropriate method
+/// in the Horizon client to fetch the available strict send payment paths.
 ///
 /// # Example
 /// ```
 /// use stellar_rs::paths::prelude::*;
-/// use stellar_rs::paths::{AssetType, SourceAsset, IssuedOrNative};
+/// use stellar_rs::paths::{AssetType, IssuedOrNative};
 ///
 /// let request = ListStrictSendPaymentPathsRequest::new()
-///     .set_destination_asset(AssetType::Native).unwrap() // Sets the destination asset to native XLM.
-///     .set_destination_amount("100".to_string()).unwrap() // Sets the amount of the destination asset.
-///     .set_destination_account("GAZD7JY7RCZN7KJ27SMUGKDPF7GQTYPXLDU7TFTJNSDB3MLO3M22DEIV".to_string()).unwrap() // Sets the destination account.
-///     .set_source_assets(vec![SourceAsset(IssuedOrNative::Native)]).unwrap(); // Sets the source assets.
+///     .set_source_asset(AssetType::Native).unwrap() // Sets the source asset to native XLM.
+///     .set_source_amount("100".to_string()).unwrap() // Sets the amount of the source asset.
+///     .set_destination(Destination::DestinationAccount("GAZD7JY7RCZN7KJ27SMUGKDPF7GQTYPXLDU7TFTJNSDB3MLO3M22DEIV".to_string())).unwrap(); // Sets an account as destination.
 /// ```
 ///
 #[derive(Default, Clone)]
-pub struct ListStrictSendPaymentPathsRequest<DAs = NoDestinationAsset, DAm = NoDestinationAmount> {
-    /// Represents the asset type being received by the destination account.
-    destination_asset: DAs,
-    /// Specifies the amount of the destination asset to be received.
-    destination_amount: DAm,
-    /// Optionally contains the public key of the destination account.
-    destination_account: Option<String>,
-    /// Optionally contains a list of source assets to consider when finding payment paths.
-    source_assets: Option<Vec<SourceAsset>>,
+pub struct ListStrictSendPaymentPathsRequest<
+    SAs = NoSourceAsset,
+    SAm = NoSourceAmount,
+    D = Destination,
+> {
+    /// Represents the asset type being received by the source account.
+    source_asset: SAs,
+    /// Specifies the amount of the source asset to be received.
+    source_amount: SAm,
+    /// Represents the destination which can be either a vector of assets, or an account.
+    destination: D,
 }
 
-impl ListStrictSendPaymentPathsRequest<NoDestinationAsset, NoDestinationAmount> {
+impl ListStrictSendPaymentPathsRequest<NoSourceAsset, NoSourceAmount, NoDestination> {
     /// Creates a new `ListStrictSendPaymentPathsRequest` with default parameters.
     pub fn new() -> Self {
         ListStrictSendPaymentPathsRequest {
-            destination_asset: NoDestinationAsset,
-            destination_amount: NoDestinationAmount,
-            destination_account: None,
-            source_assets: None,
+            source_asset: NoSourceAsset,
+            source_amount: NoSourceAmount,
+            destination: NoDestination,
         }
     }
 }
 
-impl<DAs, DAm> ListStrictSendPaymentPathsRequest<DAs, DAm> {
-    /// Sets the destination asset for the payment path request.
+impl<SAs, SAm, D> ListStrictSendPaymentPathsRequest<SAs, SAm, D> {
+    /// Sets the source asset for the payment path request.
     ///
     /// # Arguments
-    /// * `destination_asset_type` - The type of asset being received by the destination account.
+    /// * `source_asset_type` - The type of asset being received by the source account.
     ///
     /// # Returns
-    /// A new instance of `ListStrictSendPaymentPathsRequest` with the destination asset set.
+    /// A new instance of `ListStrictSendPaymentPathsRequest` with the source asset set.
     ///
-    pub fn set_destination_asset(
+    pub fn set_source_asset(
         self,
-        destination_asset_type: AssetType,
-    ) -> Result<ListStrictSendPaymentPathsRequest<DestinationAsset, DAm>, String> {
+        source_asset_type: AssetType,
+    ) -> Result<ListStrictSendPaymentPathsRequest<SourceAsset, SAm, D>, String> {
         Ok(ListStrictSendPaymentPathsRequest {
-            destination_asset: DestinationAsset(destination_asset_type),
-            destination_amount: self.destination_amount,
-            destination_account: self.destination_account,
-            source_assets: self.source_assets,
+            source_asset: SourceAsset(source_asset_type),
+            source_amount: self.source_amount,
+            destination: self.destination,
         })
     }
 
-    /// Sets the destination amount for the payment path request.
+    /// Sets the source amount for the payment path request.
     ///
     /// # Arguments
-    /// * `destination_amount` - The amount of the asset to be received by the destination account.
+    /// * `source_amount` - The amount of the asset to be received by the source account.
     ///
     /// # Returns
-    /// A new instance of `ListStrictSendPaymentPathsRequest` with the destination amount set.
+    /// A new instance of `ListStrictSendPaymentPathsRequest` with the source amount set.
     ///
-    pub fn set_destination_amount(
+    pub fn set_source_amount(
         self,
-        destination_amount: String,
-    ) -> Result<ListStrictSendPaymentPathsRequest<DAs, DestinationAmount>, String> {
+        source_amount: impl Into<String>,
+    ) -> Result<ListStrictSendPaymentPathsRequest<SAs, SourceAmount, D>, String> {
         Ok(ListStrictSendPaymentPathsRequest {
-            destination_asset: self.destination_asset,
-            destination_amount: DestinationAmount(destination_amount),
-            destination_account: self.destination_account,
-            source_assets: self.source_assets,
+            source_asset: self.source_asset,
+            source_amount: SourceAmount(source_amount.into()),
+            destination: self.destination,
+        })
+    }
+
+    /// Sets the destination for the payment path request.
+    ///
+    /// # Arguments
+    /// * `destination` - One of the `Destination` enum types.
+    ///
+    /// # Returns
+    /// A new instance of `ListStrictSendPaymentPathsRequest` with the destination set.
+    ///
+    pub fn set_destination(
+        self,
+        destination: Destination,
+    ) -> Result<ListStrictSendPaymentPathsRequest<SAs, SAm, Destination>, String> {
+        match &destination {
+            Destination::DestinationAssets(assets) => {
+                if assets.is_empty() {
+                    return Err("DestinationAssets cannot be empty".to_string());
+                }
+            }
+            Destination::DestinationAccount(account) => {
+                if let Err(e) = is_public_key(&account) {
+                    return Err(e.to_string());
+                }
+            }
+        }
+
+        Ok(ListStrictSendPaymentPathsRequest {
+            source_asset: self.source_asset,
+            source_amount: self.source_amount,
+            destination: destination,
         })
     }
 }
 
-impl ListStrictSendPaymentPathsRequest<DestinationAsset, DestinationAmount> {
-    /// Sets the destination account for the payment path request.
-    ///
-    /// # Arguments
-    /// * `destination_account` - The Stellar public key of the destination account.
-    ///
-    /// # Returns
-    /// A new instance of `ListStrictSendPaymentPathsRequest` with the destination account set.
-    ///
-    pub fn set_destination_account(
-        self,
-        destination_account: String,
-    ) -> Result<ListStrictSendPaymentPathsRequest<DestinationAsset, DestinationAmount>, String>
-    {
-        Ok(ListStrictSendPaymentPathsRequest {
-            destination_asset: self.destination_asset,
-            destination_amount: self.destination_amount,
-            destination_account: Some(destination_account),
-            source_assets: self.source_assets,
-        })
-    }
-    /// Sets the source assets for the payment path request.
-    ///
-    /// # Arguments
-    /// * `source_assets` - A list of source assets to consider when finding payment paths.
-    ///
-    /// # Returns
-    /// A new instance of `ListStrictSendPaymentPathsRequest` with the source assets set.
-    ///
-    pub fn set_source_assets(
-        self,
-        source_assets: Vec<SourceAsset>,
-    ) -> Result<ListStrictSendPaymentPathsRequest<DestinationAsset, DestinationAmount>, String>
-    {
-        Ok(ListStrictSendPaymentPathsRequest {
-            destination_asset: self.destination_asset,
-            destination_amount: self.destination_amount,
-            destination_account: self.destination_account,
-            source_assets: Some(source_assets),
-        })
-    }
-}
-
-impl Request for ListStrictSendPaymentPathsRequest<DestinationAsset, DestinationAmount> {
+impl Request for ListStrictSendPaymentPathsRequest<SourceAsset, SourceAmount, Destination> {
     fn get_query_parameters(&self) -> String {
-        let asset_type_prefix = "destination_asset_type=";
-        let asset_code_prefix = "&destination_asset_code=";
-        let asset_issuer_prefix = "&destination_asset_issuer=";
+        let asset_type_prefix = "source_asset_type=";
+        let asset_code_prefix = "&source_asset_code=";
+        let asset_issuer_prefix = "&source_asset_issuer=";
 
-        // Construct parameters for destination asset.
-        let destination_asset_parameters = match &self.destination_asset {
-            DestinationAsset(AssetType::Native) => format!("{}=native", asset_type_prefix),
-            DestinationAsset(AssetType::CreditAlphanum4(asset_data))
-            | DestinationAsset(AssetType::CreditAlphanum12(asset_data)) => {
-                let asset_type = match self.destination_asset {
-                    DestinationAsset(AssetType::CreditAlphanum4(_)) => "credit_alphanum4",
-                    DestinationAsset(AssetType::CreditAlphanum12(_)) => "credit_alphanum12",
+        // Construct parameters for source asset.
+        let source_asset_parameters = match &self.source_asset {
+            SourceAsset(AssetType::Native) => format!("{}native", asset_type_prefix),
+            SourceAsset(AssetType::CreditAlphanum4(asset_data))
+            | SourceAsset(AssetType::CreditAlphanum12(asset_data)) => {
+                let asset_type = match self.source_asset {
+                    SourceAsset(AssetType::CreditAlphanum4(_)) => "credit_alphanum4",
+                    SourceAsset(AssetType::CreditAlphanum12(_)) => "credit_alphanum12",
                     _ => "", // should not be reached
                 };
 
@@ -166,18 +186,18 @@ impl Request for ListStrictSendPaymentPathsRequest<DestinationAsset, Destination
             }
         };
 
-        // Construct source asset parameters, if any.
-        // If no source asset parameters are set, return an empty vector which will later be ignored.
-        let source_assets_parameters =
-            self.source_assets.as_ref().map_or(String::new(), |assets| {
-                assets
+        let destination = match &self.destination {
+            Destination::DestinationAssets(destination_assets) => {
+                // Construct destination asset parameters, if any.
+                // If no destination asset parameters are set, return an empty vector which will later be ignored.
+                destination_assets
                     .iter()
                     .enumerate()
                     .map(|(i, asset)| {
-                        let prefix = if i == 0 { "source_assets=" } else { "%2C" };
+                        let prefix = if i == 0 { "destination_assets=" } else { "%2C" };
                         match asset {
-                            SourceAsset(IssuedOrNative::Native) => format!("{}native", prefix),
-                            SourceAsset(IssuedOrNative::Issued(asset_data)) => {
+                            IssuedOrNative::Native => format!("{}native", prefix),
+                            IssuedOrNative::Issued(asset_data) => {
                                 format!(
                                     "{}{}%3A{}",
                                     prefix, asset_data.asset_code, asset_data.issuer_account_id
@@ -187,21 +207,18 @@ impl Request for ListStrictSendPaymentPathsRequest<DestinationAsset, Destination
                     })
                     .collect::<Vec<_>>()
                     .join("")
-            });
+            }
+            Destination::DestinationAccount(account) => {
+                format!("destination_account={}", account)
+            }
+        };
 
         // Create query parameters vector.
-        let mut query_parameters = vec![
-            Some(destination_asset_parameters),
-            Some(format!("destination_amount={}", self.destination_amount.0)),
-            self.destination_account
-                .as_ref()
-                .map(|d| format!("destination_account={}", d)),
+        let query_parameters = vec![
+            Some(format!("source_amount={}", self.source_amount.0)),
+            Some(destination),
+            Some(source_asset_parameters),
         ];
-
-        // Only add source assets parameters if the vector is not empty, to prevent a trailing `&`.
-        if !source_assets_parameters.is_empty() {
-            query_parameters.push(Some(source_assets_parameters));
-        }
 
         query_parameters.build_query_parameters()
     }

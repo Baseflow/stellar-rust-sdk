@@ -33,7 +33,7 @@ use crate::{
         details_request::{BuyingAsset, DetailsRequest, SellingAsset},
         response::DetailsResponse,
     },
-    paths::{prelude::*, DestinationAmount, DestinationAsset, SourceAccount},
+    paths::prelude::*,
     payments::prelude::*,
     trade_aggregations::prelude::*,
     trades::prelude::*,
@@ -2030,11 +2030,7 @@ impl HorizonClient {
     /// filters or parameters.
     pub async fn get_list_strict_receive_payment_paths(
         &self,
-        request: &ListStrictReceivePaymentPathsRequest<
-            DestinationAsset,
-            DestinationAmount,
-            SourceAccount,
-        >,
+        request: &ListStrictReceivePaymentPathsRequest<DestinationAsset, DestinationAmount, Source>,
     ) -> Result<PathsResponse, String> {
         self.get::<PathsResponse>(request).await
     }
@@ -2059,7 +2055,7 @@ impl HorizonClient {
     /// filters or parameters.
     pub async fn get_list_strict_send_payment_paths(
         &self,
-        request: &ListStrictSendPaymentPathsRequest<DestinationAsset, DestinationAmount>,
+        request: &ListStrictSendPaymentPathsRequest<SourceAsset, SourceAmount, Destination>,
     ) -> Result<PathsResponse, String> {
         self.get::<PathsResponse>(request).await
     }

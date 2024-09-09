@@ -1,4 +1,4 @@
-use crate::models::Request;
+use crate::models::{is_public_key, Request};
 use crate::paths::*;
 use crate::BuildQueryParametersExt;
 
@@ -87,11 +87,11 @@ impl<DAs, DAm, S> FindPaymentsPathRequest<DAs, DAm, S> {
     ///
     pub fn set_destination_amount(
         self,
-        destination_amount: String,
+        destination_amount: impl Into<String>,
     ) -> Result<FindPaymentsPathRequest<DAs, DestinationAmount, S>, String> {
         Ok(FindPaymentsPathRequest {
             destination_asset: self.destination_asset,
-            destination_amount: DestinationAmount(destination_amount),
+            destination_amount: DestinationAmount(destination_amount.into()),
             destination_account: self.destination_account,
             source_account: self.source_account,
         })
@@ -107,8 +107,13 @@ impl<DAs, DAm, S> FindPaymentsPathRequest<DAs, DAm, S> {
     ///
     pub fn set_source_account(
         self,
-        source_account: String,
+        source_account: impl Into<String>,
     ) -> Result<FindPaymentsPathRequest<DAs, DAm, SourceAccount>, String> {
+        let source_account = source_account.into();
+        if let Err(e) = is_public_key(&source_account) {
+            return Err(e.to_string());
+        }
+
         Ok(FindPaymentsPathRequest {
             destination_asset: self.destination_asset,
             destination_amount: self.destination_amount,
@@ -129,9 +134,14 @@ impl FindPaymentsPathRequest<DestinationAsset, DestinationAmount, SourceAccount>
     ///
     pub fn set_destination_account(
         self,
-        destination_account: String,
+        destination_account: impl Into<String>,
     ) -> Result<FindPaymentsPathRequest<DestinationAsset, DestinationAmount, SourceAccount>, String>
     {
+        let destination_account = destination_account.into();
+        if let Err(e) = is_public_key(&destination_account) {
+            return Err(e.to_string());
+        }
+
         Ok(FindPaymentsPathRequest {
             destination_asset: self.destination_asset,
             destination_amount: self.destination_amount,
@@ -149,7 +159,7 @@ impl Request for FindPaymentsPathRequest<DestinationAsset, DestinationAmount, So
 
         // Construct parameters for destination asset.
         let parameters = match &self.destination_asset {
-            DestinationAsset(AssetType::Native) => format!("{}=native", asset_type_prefix),
+            DestinationAsset(AssetType::Native) => format!("{}native", asset_type_prefix),
             DestinationAsset(AssetType::CreditAlphanum4(asset_data))
             | DestinationAsset(AssetType::CreditAlphanum12(asset_data)) => {
                 let asset_type = match self.destination_asset {
