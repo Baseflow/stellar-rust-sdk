@@ -39,7 +39,7 @@ impl Default for Source {
 /// # Example
 /// ```
 /// use stellar_rs::paths::prelude::*;
-/// use stellar_rs::paths::{AssetType, IssuedOrNative};
+/// use stellar_rs::models::prelude::*;
 ///
 /// let request = ListStrictReceivePaymentPathsRequest::new()
 ///     .set_destination_asset(AssetType::Native).unwrap() // Sets the destination asset to native XLM.
@@ -188,11 +188,11 @@ impl Request for ListStrictReceivePaymentPathsRequest<DestinationAsset, Destinat
         // Construct parameters for destination asset.
         let destination_asset_parameters = match &self.destination_asset {
             DestinationAsset(AssetType::Native) => format!("{}native", asset_type_prefix),
-            DestinationAsset(AssetType::CreditAlphanum4(asset_data))
-            | DestinationAsset(AssetType::CreditAlphanum12(asset_data)) => {
+            DestinationAsset(AssetType::Alphanumeric4(asset_data))
+            | DestinationAsset(AssetType::Alphanumeric12(asset_data)) => {
                 let asset_type = match self.destination_asset {
-                    DestinationAsset(AssetType::CreditAlphanum4(_)) => "credit_alphanum4",
-                    DestinationAsset(AssetType::CreditAlphanum12(_)) => "credit_alphanum12",
+                    DestinationAsset(AssetType::Alphanumeric4(_)) => "credit_alphanum4",
+                    DestinationAsset(AssetType::Alphanumeric12(_)) => "credit_alphanum12",
                     _ => "", // should not be reached
                 };
 
@@ -201,7 +201,7 @@ impl Request for ListStrictReceivePaymentPathsRequest<DestinationAsset, Destinat
                     asset_type_prefix,
                     asset_type,
                     asset_issuer_prefix,
-                    asset_data.issuer_account_id,
+                    asset_data.asset_issuer,
                     asset_code_prefix,
                     asset_data.asset_code,
                 )
@@ -222,7 +222,7 @@ impl Request for ListStrictReceivePaymentPathsRequest<DestinationAsset, Destinat
                             IssuedOrNative::Issued(asset_data) => {
                                 format!(
                                     "{}{}%3A{}",
-                                    prefix, asset_data.asset_code, asset_data.issuer_account_id
+                                    prefix, asset_data.asset_code, asset_data.asset_issuer
                                 )
                             }
                         }

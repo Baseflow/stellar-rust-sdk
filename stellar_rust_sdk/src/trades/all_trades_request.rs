@@ -1,27 +1,10 @@
 use crate::models::*;
 use stellar_rust_sdk_derive::pagination;
+use crate::models::prelude::AssetType;
 
 /// Represents the base and counter assets. Contains an enum of one of the possible asset types.
 #[derive(PartialEq, Debug)]
 pub struct TradeAsset(AssetType);
-
-// Contains the details of a non-native asset.
-#[derive(PartialEq, Debug)]
-pub struct AssetData {
-    pub asset_code: String,
-    pub asset_issuer: String,
-}
-
-/// Represents the asset type of an asset.
-#[derive(PartialEq, Debug)]
-pub enum AssetType {
-    /// A native asset_type type. It holds no value.
-    Native,
-    /// An alphanumeric 4 asset_type type. It holds an Asset struct with asset code and asset issuer.
-    Alphanumeric4(AssetData),
-    /// An alphanumeric 12 asset_type type. It holds an Asset struct with asset code and asset issuer.
-    Alphanumeric12(AssetData),
-}
 
 /// Represents a request to list all trades from the Stellar Horizon API.
 ///
@@ -39,6 +22,7 @@ pub enum AssetType {
 /// # Example
 /// ```
 /// use stellar_rs::{trades::prelude::*, models::*};
+/// use stellar_rs::models::prelude::AssetType;
 ///
 /// let request = AllTradesRequest::new()
 ///     .set_base_asset(AssetType::Native).unwrap() // Optional selling asset filter

@@ -1,3 +1,4 @@
+use crate::models::prelude::*;
 /// Provides the `FindPaymentPathsRequest`.
 ///
 /// # Usage
@@ -74,28 +75,12 @@ pub struct NoSourceAccount;
 #[derive(Default, Clone, Debug)]
 pub struct SourceAccount(String);
 
-/// Represents structure of the required asset.
-#[derive(Default, Clone, Debug)]
-pub enum AssetType {
-    #[default]
-    Native,
-    CreditAlphanum4(Asset),
-    CreditAlphanum12(Asset),
-}
-
-/// Represents an asset containing an asset code and issuer account ID.
-#[derive(Clone, Debug)]
-pub struct Asset {
-    pub asset_code: String,
-    pub issuer_account_id: String,
-}
-
 /// Represents structure of an asset used in the vector of optional assets.
 #[derive(Default, Clone, Debug)]
 pub enum IssuedOrNative {
     #[default]
     Native,
-    Issued(Asset),
+    Issued(AssetData),
 }
 
 /// The `prelude` module of the `paths` module.
@@ -133,6 +118,7 @@ pub mod prelude {
 #[cfg(test)]
 mod tests {
     use super::prelude::*;
+    use crate::models::prelude::*;
     use super::{AssetType, IssuedOrNative};
     use crate::{horizon_client::HorizonClient, models::*};
 
@@ -143,13 +129,13 @@ mod tests {
 
     #[tokio::test]
     async fn test_find_payment_paths_request() {
-        use crate::paths::{Asset, PATHS_PATH};
+        use crate::paths::PATHS_PATH;
 
         // Test creating and sending a request with source assets. Only the response status will be checked, as the request will not yield comparable data.
         let request = FindPaymentsPathRequest::new()
-            .set_destination_asset(AssetType::CreditAlphanum4(Asset {
+            .set_destination_asset(AssetType::Alphanumeric4(AssetData {
                 asset_code: "USDC".to_string(),
-                issuer_account_id: "GBJJ5OCBXNZWHSJJ4YQ6ECK24MBJSZMLEMINHKGGEWUA5RU2EDMPN6MS"
+                asset_issuer: "GBJJ5OCBXNZWHSJJ4YQ6ECK24MBJSZMLEMINHKGGEWUA5RU2EDMPN6MS"
                     .to_string(),
             }))
             .unwrap()
@@ -229,13 +215,13 @@ mod tests {
 
     #[tokio::test]
     async fn test_list_strict_receive_payment_paths_request() {
-        use crate::paths::{Asset, PATHS_PATH, PATHS_STRICT_RECEIVE_PATH};
+        use crate::paths::{PATHS_PATH, PATHS_STRICT_RECEIVE_PATH};
 
         // Test creating and sending a request with source assets. Only the response status will be checked, as the request will not yield comparable data.
         let request = ListStrictReceivePaymentPathsRequest::new()
-            .set_destination_asset(AssetType::CreditAlphanum4(Asset {
+            .set_destination_asset(AssetType::Alphanumeric4(AssetData {
                 asset_code: "USDC".to_string(),
-                issuer_account_id: "GBJJ5OCBXNZWHSJJ4YQ6ECK24MBJSZMLEMINHKGGEWUA5RU2EDMPN6MS"
+                asset_issuer: "GBJJ5OCBXNZWHSJJ4YQ6ECK24MBJSZMLEMINHKGGEWUA5RU2EDMPN6MS"
                     .to_string(),
             }))
             .unwrap()
@@ -244,9 +230,9 @@ mod tests {
             .set_source(Source::SourceAssets(vec![
                 IssuedOrNative::Native,
                 IssuedOrNative::Native,
-                IssuedOrNative::Issued(Asset {
+                IssuedOrNative::Issued(AssetData {
                     asset_code: "USDC".to_string(),
-                    issuer_account_id: "GBAKINTNEGR7PO6Z6XW2S5ITT5VARNW6DZ5K4OYSLFNEA2CSMUM2UEF4"
+                    asset_issuer: "GBAKINTNEGR7PO6Z6XW2S5ITT5VARNW6DZ5K4OYSLFNEA2CSMUM2UEF4"
                         .to_string(),
                 }),
             ]))
@@ -355,13 +341,13 @@ mod tests {
 
     #[tokio::test]
     async fn test_list_strict_send_payment_paths_request() {
-        use crate::paths::{Asset, PATHS_PATH, PATHS_STRICT_SEND_PATH};
+        use crate::paths::{PATHS_PATH, PATHS_STRICT_SEND_PATH};
 
         // Test creating and sending a request with destination assets. Only the response status will be checked, as the request will not yield comparable data.
         let request = ListStrictSendPaymentPathsRequest::new()
-            .set_source_asset(AssetType::CreditAlphanum4(Asset {
+            .set_source_asset(AssetType::Alphanumeric4(AssetData {
                 asset_code: "USDC".to_string(),
-                issuer_account_id: "GBJJ5OCBXNZWHSJJ4YQ6ECK24MBJSZMLEMINHKGGEWUA5RU2EDMPN6MS"
+                asset_issuer: "GBJJ5OCBXNZWHSJJ4YQ6ECK24MBJSZMLEMINHKGGEWUA5RU2EDMPN6MS"
                     .to_string(),
             }))
             .unwrap()
@@ -370,9 +356,9 @@ mod tests {
             .set_destination(Destination::DestinationAssets(vec![
                 IssuedOrNative::Native,
                 IssuedOrNative::Native,
-                IssuedOrNative::Issued(Asset {
+                IssuedOrNative::Issued(AssetData {
                     asset_code: "USDC".to_string(),
-                    issuer_account_id: "GBAKINTNEGR7PO6Z6XW2S5ITT5VARNW6DZ5K4OYSLFNEA2CSMUM2UEF4"
+                    asset_issuer: "GBAKINTNEGR7PO6Z6XW2S5ITT5VARNW6DZ5K4OYSLFNEA2CSMUM2UEF4"
                         .to_string(),
                 }),
             ]))

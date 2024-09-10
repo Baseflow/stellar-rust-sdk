@@ -61,6 +61,7 @@ pub mod prelude {
 
 #[cfg(test)]
 pub mod test {
+    use crate::models::prelude::*;
     use crate::{horizon_client::HorizonClient, trade_aggregations::prelude::*};
 
     // Request constants.
@@ -194,7 +195,6 @@ pub mod test {
 
     #[tokio::test]
     async fn test_asset_query_parameters() {
-        use crate::models::*;
         // Test if different combinations of asset types result in a valid RESTful query. The `Native` asset, for example,
         // has a different amount of parameters than the alphanumeric types. The separators should always be correct, whatever
         // the combination.

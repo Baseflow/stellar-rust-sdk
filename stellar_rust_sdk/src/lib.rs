@@ -480,7 +480,7 @@ pub mod operations;
 /// ```rust
 /// use stellar_rs::horizon_client::HorizonClient;
 /// use stellar_rs::order_book::prelude::*;
-/// use stellar_rs::models::Request;
+/// use stellar_rs::models::prelude::*;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
@@ -488,7 +488,7 @@ pub mod operations;
 /// // Example: Fetching order book details
 /// let details_request = DetailsRequest::new()
 ///    .set_buying_asset(AssetType::Native)?
-///   .set_selling_asset(AssetType::Alphanumeric4(Asset {
+///   .set_selling_asset(AssetType::Alphanumeric4(AssetData {
 ///      asset_code: "USDC".to_string(),
 ///     asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string(),
 /// }))?;
@@ -521,7 +521,7 @@ pub mod order_book;
 /// ```rust
 /// use stellar_rs::horizon_client::HorizonClient;
 /// use stellar_rs::trade_aggregations::prelude::*;
-/// use stellar_rs::models::Request;
+/// use stellar_rs::models::prelude::*;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
@@ -648,8 +648,8 @@ pub mod trades;
 ///
 /// ```rust
 /// use stellar_rs::horizon_client::HorizonClient;
-/// use stellar_rs::paths::{prelude::*, AssetType};
-/// use stellar_rs::models::Request;
+/// use stellar_rs::paths::prelude::*;
+/// use stellar_rs::models::prelude::*;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;

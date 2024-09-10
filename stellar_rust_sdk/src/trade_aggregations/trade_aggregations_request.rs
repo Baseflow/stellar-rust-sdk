@@ -1,3 +1,4 @@
+use crate::models::prelude::AssetType;
 use crate::{models::*, BuildQueryParametersExt};
 
 /// Represents the base asset. Contains an enum of one of the possible asset types.
@@ -15,25 +16,6 @@ pub struct CounterAsset(AssetType);
 /// Represents the absence of a counter asset.
 #[derive(PartialEq, Debug)]
 pub struct NoCounterAsset;
-
-/// Contains the details of a non-native asset.
-#[derive(Clone, PartialEq, Debug, Default)]
-pub struct AssetData {
-    pub asset_code: String,
-    pub asset_issuer: String,
-}
-
-/// Represents the asset type of an asset.
-#[derive(Clone, PartialEq, Debug)]
-pub enum AssetType {
-    /// A native asset_type type. It holds no value.
-    // #[default]
-    Native,
-    /// An alphanumeric 4 asset_type type. It holds an Asset struct with asset code and asset issuer.
-    Alphanumeric4(AssetData),
-    /// An alphanumeric 12 asset_type type. It holds an Asset struct with asset code and asset issuer.
-    Alphanumeric12(AssetData),
-}
 
 /// Represents the absense of a resolution value.
 #[derive(Default, Clone)]
@@ -82,6 +64,7 @@ impl std::fmt::Display for ResolutionData {
 /// # Example
 /// ```
 /// use stellar_rs::{trade_aggregations::prelude::*, models::*};
+/// use stellar_rs::models::prelude::*;
 ///
 /// let request = TradeAggregationsRequest::new()
 ///     .set_base_asset(AssetType::Native).unwrap()

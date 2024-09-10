@@ -19,7 +19,7 @@ use crate::BuildQueryParametersExt;
 /// # Example
 /// ```
 /// use stellar_rs::paths::prelude::*;
-/// use stellar_rs::paths::{AssetType};
+/// use stellar_rs::models::prelude::AssetType;
 ///
 /// let request = FindPaymentsPathRequest::new()
 ///     .set_destination_asset(AssetType::Native).unwrap() // Sets the destination asset to native XLM.
@@ -160,11 +160,11 @@ impl Request for FindPaymentsPathRequest<DestinationAsset, DestinationAmount, So
         // Construct parameters for destination asset.
         let parameters = match &self.destination_asset {
             DestinationAsset(AssetType::Native) => format!("{}native", asset_type_prefix),
-            DestinationAsset(AssetType::CreditAlphanum4(asset_data))
-            | DestinationAsset(AssetType::CreditAlphanum12(asset_data)) => {
+            DestinationAsset(AssetType::Alphanumeric4(asset_data))
+            | DestinationAsset(AssetType::Alphanumeric12(asset_data)) => {
                 let asset_type = match self.destination_asset {
-                    DestinationAsset(AssetType::CreditAlphanum4(_)) => "credit_alphanum4",
-                    DestinationAsset(AssetType::CreditAlphanum12(_)) => "credit_alphanum12",
+                    DestinationAsset(AssetType::Alphanumeric4(_)) => "credit_alphanum4",
+                    DestinationAsset(AssetType::Alphanumeric12(_)) => "credit_alphanum12",
                     _ => "", // should not be reached
                 };
 
@@ -175,7 +175,7 @@ impl Request for FindPaymentsPathRequest<DestinationAsset, DestinationAmount, So
                     asset_code_prefix,
                     asset_data.asset_code,
                     asset_issuer_prefix,
-                    asset_data.issuer_account_id
+                    asset_data.asset_issuer
                 )
             }
         };
