@@ -118,8 +118,8 @@ pub mod prelude {
 #[cfg(test)]
 mod tests {
     use super::prelude::*;
-    use crate::models::prelude::*;
     use super::{AssetType, IssuedOrNative};
+    use crate::models::prelude::*;
     use crate::{horizon_client::HorizonClient, models::*};
 
     const SOURCE_ASSET_TYPE: &str = "native";
@@ -190,7 +190,6 @@ mod tests {
         );
 
         let response = horizon_client.get_find_payment_paths(&request).await;
-
 
         assert!(response.clone().is_ok());
         let binding = response.unwrap();

@@ -1,5 +1,5 @@
-use crate::models::Request;
 use crate::models::prelude::AssetType;
+use crate::models::Request;
 pub struct SellingAsset(AssetType);
 pub struct NoSellingAsset;
 pub struct BuyingAsset(AssetType);
@@ -140,8 +140,8 @@ mod tests {
 
     #[test]
     fn test_details_request() {
-        use crate::models::prelude::{AssetType, AssetData};
         use super::DetailsRequest;
+        use crate::models::prelude::{AssetData, AssetType};
         use crate::models::Request;
         let details_request = DetailsRequest::new()
             .set_buying_asset(AssetType::Native)

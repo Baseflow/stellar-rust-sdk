@@ -10,12 +10,10 @@ pub mod prelude {
 
 pub mod tests {
 
-
     #[tokio::test]
     async fn get_order_bookdetails() {
-
-        use crate::models::prelude::*;
         use crate::horizon_client;
+        use crate::models::prelude::*;
         use crate::order_book::prelude::DetailsRequest;
 
         const BIDS_N: &u32 = &1;

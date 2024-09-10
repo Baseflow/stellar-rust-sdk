@@ -1,6 +1,6 @@
+use crate::models::prelude::AssetType;
 use crate::models::*;
 use stellar_rust_sdk_derive::pagination;
-use crate::models::prelude::AssetType;
 
 /// Represents the base and counter assets. Contains an enum of one of the possible asset types.
 #[derive(PartialEq, Debug)]
