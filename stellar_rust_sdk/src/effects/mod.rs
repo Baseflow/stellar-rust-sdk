@@ -128,8 +128,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_all_effects() {
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let num_records_to_fetch = 2;
 
@@ -174,8 +173,7 @@ mod tests {
         const CREATED_AT: &str = "2024-06-11T21:36:12Z";
         const STARTING_BALANCE: &str = "10000000000.0000000";
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let effects_for_account_request = EffectsForAccountRequest::new().set_limit(2).unwrap();
 
@@ -209,8 +207,7 @@ mod tests {
         const CREATED_AT: &str = "2024-06-11T21:36:12Z";
         const STARTING_BALANCE: &str = "10000000000.0000000";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let effects_for_liquidity_pools_request =
             EffectsForLiquidityPoolRequest::new().set_limit(2).unwrap();
@@ -258,8 +255,7 @@ mod tests {
         const CREATED_AT: &str = "2024-06-11T22:16:55Z";
         const STARTING_BALANCE: &str = "0.0000000";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let effects_for_ledger_request =
             EffectsForLedgerRequest::new().set_sequence(LEDGER_SEQUENCE);
@@ -297,8 +293,7 @@ mod tests {
         const CREATED_AT: &str = "2024-06-11T21:36:12Z";
         const STARTING_BALANCE: &str = "10000000000.0000000";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let effects_for_operation_request = EffectsForOperationRequest::new()
             .set_operation_id(OPERATION_ID)
@@ -337,8 +332,7 @@ mod tests {
         const CREATED_AT: &str = "2024-06-11T21:36:12Z";
         const STARTING_BALANCE: &str = "10000000000.0000000";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let effects_for_transaction_request = EffectForTransactionRequest::new()
             .set_transaction_hash(TRANSACTION_HASH.to_string())

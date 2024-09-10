@@ -149,8 +149,7 @@ pub mod test {
 
     #[tokio::test]
     async fn test_get_trade_aggregations() {
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let trade_aggregations_request = TradeAggregationsRequest::new()
             .set_base_asset(AssetType::Alphanumeric4(AssetData {

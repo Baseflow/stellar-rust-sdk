@@ -113,8 +113,7 @@ async fn test_get_all_liquidity_pools() {
         "FLUTTER:GCGTOQSNERFVVJ6Y7YZYDF3MTZIY63KIEFMKA26Q7YPV3AFYD2JSRNYN";
     const RSP_3_LIQUIDITY_POOL_RESERVE_AMOUNT_1: &str = "142.3768102";
 
-    let horizon_client =
-        HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+    let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
     let all_liquidity_pools_request_1 = AllLiquidityPoolsRequest::new()
         .add_native_reserve()
@@ -299,8 +298,7 @@ async fn test_get_single_liquidity_pool() {
     const LIQUIDITY_POOL_LAST_MODIFIED_LEDGER: i64 = 1025861;
     const LIQUIDITY_POOL_LAST_MODIFIED_TIME: &str = "2024-08-13T07:20:55Z";
 
-    let horizon_client =
-        HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+    let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
     let single_liquidity_pool_request = SingleLiquidityPoolRequest::new()
         .set_liquidity_pool_id(

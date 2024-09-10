@@ -107,8 +107,7 @@ pub mod test {
         const LAST_MODIFIED_LEDGER: &u32 = &845805;
         const LAST_MODIFIED_TIME: &str = "2024-08-02T08:29:11Z";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let single_offer_request = SingleOfferRequest::new()
             .set_offer_id(OFFER_ID.to_string())
@@ -174,8 +173,7 @@ pub mod test {
         const LAST_MODIFIED_LEDGER: &u32 = &5858;
         const LAST_MODIFIED_TIME: &str = "2024-06-12T05:23:41Z";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         // Create a request with no (optional) filters.
         let all_offers_request = AllOffersRequest::new();
@@ -236,8 +234,7 @@ pub mod test {
         const LAST_MODIFIED_LEDGER: &u32 = &1280060;
         const LAST_MODIFIED_TIME: &str = "2024-08-28T18:20:37Z";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         // Create a request and supply values for optional filters.
         let all_offers_request = AllOffersRequest::new()
@@ -311,8 +308,7 @@ pub mod test {
         const LAST_MODIFIED_LEDGER: &u32 = &845805;
         const LAST_MODIFIED_TIME: &str = "2024-08-02T08:29:11Z";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let offers_for_account_request = OffersForAccountRequest::new()
             .set_account_id(ACCOUNT_ID.to_string())

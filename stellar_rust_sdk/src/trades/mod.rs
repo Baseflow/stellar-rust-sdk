@@ -122,8 +122,7 @@ pub mod test {
         const PRICE_R: &str = "10";
 
         let all_trades_request = AllTradesRequest::new();
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
         let all_trades_response = horizon_client.get_all_trades(&all_trades_request).await;
 
         assert!(all_trades_response.clone().is_ok());
@@ -219,8 +218,7 @@ pub mod test {
         let trades_for_account_request = TradesForAccountRequest::new()
             .set_account_id(ACCOUNT_ID.to_string())
             .unwrap();
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
         let trades_for_account_response = horizon_client
             .get_trades_for_account(&trades_for_account_request)
             .await;
@@ -320,8 +318,7 @@ pub mod test {
         let trades_for_liquidity_pool_request = TradesForLiquidityPoolRequest::new()
             .set_liquidity_pool_id(LIQUIDITY_POOL_ID.to_string())
             .unwrap();
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
         let trades_for_liquidity_pool_response = horizon_client
             .get_trades_for_liquidity_pool(&trades_for_liquidity_pool_request)
             .await;
@@ -424,8 +421,7 @@ pub mod test {
         let trades_for_offer_request = TradesForOfferRequest::new()
             .set_offer_id(OFFER_ID.to_string())
             .unwrap();
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
         let trades_for_liquidity_pools_response = horizon_client
             .get_trades_for_offer(&trades_for_offer_request)
             .await;

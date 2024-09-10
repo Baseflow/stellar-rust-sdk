@@ -28,8 +28,7 @@ pub mod tests {
         const COUNTER_ASSET_TYPE: &str = "credit_alphanum4";
 
         let horizon_client =
-            horizon_client::HorizonClient::new("https://horizon-testnet.stellar.org".to_string())
-                .unwrap();
+            horizon_client::HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let details_request = DetailsRequest::new()
             .set_selling_asset(AssetType::Native)

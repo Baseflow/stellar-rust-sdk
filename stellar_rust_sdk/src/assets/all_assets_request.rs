@@ -20,7 +20,7 @@ use stellar_rust_sdk_derive::pagination;
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let base_url = "https://horizon-testnet.stellar.org";
 /// # let horizon_client = HorizonClient::new(base_url)
 /// #    .expect("Failed to create Horizon Client");
 /// #

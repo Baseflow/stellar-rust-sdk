@@ -64,12 +64,15 @@ impl HorizonClient {
     /// # Example
     /// ```rust
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())
+    /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")
     ///     .expect("Failed to create HorizonClient");
     /// ```
-    pub fn new(base_url: String) -> Result<Self, String> {
-        url_validate(&base_url)?;
-        Ok(Self { base_url })
+    pub fn new(base_url: impl Into<String>) -> Result<Self, String> {
+        let base_url_val = base_url.into();
+        url_validate(&base_url_val)?;
+        Ok(Self {
+            base_url: base_url_val,
+        })
     }
 
     /// Sends a GET request to the Horizon server and retrieves a specified response type.
@@ -205,7 +208,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AccountsRequest::new()
@@ -259,7 +262,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleAccountRequest::new()
@@ -310,7 +313,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllAssetsRequest::new()
@@ -362,7 +365,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllClaimableBalancesRequest::new()
@@ -420,7 +423,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     ///  let request = SingleClaimableBalanceRequest::new()
@@ -469,7 +472,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = EffectsForAccountRequest::new()
@@ -520,7 +523,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = EffectsForAccountRequest::new()
@@ -571,7 +574,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = EffectsForOperationRequest::new()
@@ -622,7 +625,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = EffectForTransactionRequest::new()
@@ -678,7 +681,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = LedgersRequest::new()
@@ -735,7 +738,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleLedgerRequest::new()
@@ -786,7 +789,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllEffectsRequest::new()
@@ -840,7 +843,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)?;
     /// let mut request = EffectsForLedgerRequest::new()
     ///     .set_sequence(&125)
@@ -882,7 +885,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = FeeStatsRequest::new();
@@ -935,7 +938,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleOfferRequest::new()
@@ -983,7 +986,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllOffersRequest::new()
@@ -1060,7 +1063,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllOperationsRequest::new()
@@ -1109,7 +1112,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleOperationRequest::new()
@@ -1156,7 +1159,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = OperationsForAccountRequest::new()
@@ -1206,7 +1209,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = OperationsForLedgerRequest::new()
@@ -1256,7 +1259,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = OperationsForLiquidityPoolRequest::new()
@@ -1307,7 +1310,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = OperationsForTransactionRequest::new()
@@ -1355,7 +1358,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// # let details_request = DetailsRequest::new()
@@ -1404,7 +1407,7 @@ impl HorizonClient {
     /// use stellar_rs::models::prelude::*;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+    /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
     ///
     /// // Example: Fetching trade aggregations
     /// let request = TradeAggregationsRequest::new()
@@ -1452,7 +1455,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllTradesRequest::new();
@@ -1501,7 +1504,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TradesForAccountRequest::new()
@@ -1552,7 +1555,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TradesForLiquidityPoolRequest::new()
@@ -1603,7 +1606,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TradesForOfferRequest::new()
@@ -1655,7 +1658,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)?;
     /// let request = AllLiquidityPoolsRequest::new()
     ///     .add_alphanumeric4_reserve("USDC".to_string(), "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string());
@@ -1703,7 +1706,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)?;
     /// let request = SingleLiquidityPoolRequest::new()
     ///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string()).unwrap();
@@ -1757,7 +1760,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleTransactionRequest::new()
@@ -1807,7 +1810,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllTransactionsRequest::new()
@@ -1857,7 +1860,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TransactionsForAccountRequest::new()
@@ -1908,7 +1911,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TransactionsForLedgerRequest::new()
@@ -1959,7 +1962,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TransactionsForLiquidityPoolRequest::new()
@@ -2084,7 +2087,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllPaymentsRequest::new()
@@ -2134,7 +2137,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = PaymentsForAccountRequest::new()
@@ -2184,7 +2187,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = PaymentsForLedgerRequest::new()
@@ -2235,7 +2238,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = PaymentsForTransactionRequest::new()
@@ -2288,7 +2291,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let signed_transaction_xdr = "AAAAAgAAAABi/B0L0JGythwN1lY0aypo19NHxvLCyO5tBEcCVvwF9wAABEwAAAAAAAAAAQAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAAAQfdFrLDgzSIIugR73qs8U0ZiKbwBUclTTPh5thlbgnAFjRXhdigAAAAAAAAAAAAAAAAAA3b5KF6uk1w1fSKYLrzR8gF2lB+AHAi6oU6CaWhunAskAAAAXSHboAAAAAAAAAAAAAAAAAHfmNeMLin2aTUfxa530ZRn4zwRu7ROAQfUJeJco8HSCAAHGv1JjQAAAAAAAAAAAAAAAAAAAlRt2go9sp7E1a5ZWvr7vin4UPrFQThpQax1lOFm33AAAABdIdugAAAAAAAAAAAAAAAAAmv+knlR6JR2VqWeU0k/4FgvZ/tSV5DEY4gu0iOTKgpUAAAAXSHboAAAAAAAAAAAAAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAAF0h26AAAAAABAAAAAACVG3aCj2ynsTVrlla+vu+KfhQ+sVBOGlBrHWU4WbfcAAAABgAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bf/////////8AAAABAAAAAJr/pJ5UeiUdlalnlNJP+BYL2f7UleQxGOILtIjkyoKVAAAABgAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bf/////////8AAAABAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAAAQAAAAAAlRt2go9sp7E1a5ZWvr7vin4UPrFQThpQax1lOFm33AAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAJGE5yoAAAAAABAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAAAQAAAACa/6SeVHolHZWpZ5TST/gWC9n+1JXkMRjiC7SI5MqClQAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAJGE5yoAAAAAAAAAAAAAAAAABKBB+2UBMP/abwcm/M1TXO+/JQWhPwkalgqizKmXyRIQx7qh6aAFYAAAAAAAAAAARW/AX3AAAAQDVB8fT2ZXF0PZqtZX9brK0kz+P4G8VKs1DkDklP6ULsvXRexXFBdH4xG8xRAsR1HJeEBH278hiBNNvUwNw6zgzGYc0bAAAAQLgZUU/oYGL7frWDQhJHhCQu9JmfqN03PrJq4/cJrN1OSUWXnmLc94sv8m2L+cxl2p0skr2Jxy+vt1Lcxkv7wAI4WbfcAAAAQHvZEVqlygIProf3jVTZohDWm2WUNrFAFXf1LctTqDCQBHph14Eo+APwrTURLLYTIvNoXeGzBKbL03SsOARWcQLkyoKVAAAAQHAvKv2/Ro4+cNh6bKQO/G9NNiUozYysGwG1GvJQkFjwy/OTsL6WBfuI0Oye84lVBVrQVk2EY1ERFhgdMpuFSg4=";

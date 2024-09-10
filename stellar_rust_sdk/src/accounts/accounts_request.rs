@@ -18,7 +18,7 @@ use crate::{models::*, BuildQueryParametersExt};
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let base_url = "https://horizon-testnet.stellar.org";
 /// # let horizon_client = HorizonClient::new(base_url)
 /// #    .expect("Failed to create Horizon Client");
 /// let request = AccountsRequest::new()
@@ -196,7 +196,7 @@ macro_rules! valid_generic_account_request_impl {
 /// # use stellar_rs::accounts::prelude::AccountsRequest;
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// # use stellar_rs::models::Request;
-/// # let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+/// # let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 /// let request = AccountsRequest::new()
 ///     .set_sponsor_filter("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
 ///     .unwrap();

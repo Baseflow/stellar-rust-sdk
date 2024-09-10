@@ -108,8 +108,7 @@ pub mod tests {
         static PROTOCOL_VERSION: i32 = 0;
 
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         // construct request
         let all_ledgers_request = LedgersRequest::new().set_limit(2).unwrap();
@@ -175,8 +174,7 @@ pub mod tests {
         let closed_at_timepoint = 1718138951;
 
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         // construct request
         let single_ledger_request = SingleLedgerRequest::new().set_sequence(2).unwrap();

@@ -102,8 +102,7 @@ pub mod test {
     #[tokio::test]
     async fn test_get_account_list() {
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         // construct request
         let accounts_request = AccountsRequest::new()
@@ -156,8 +155,7 @@ pub mod test {
     #[tokio::test]
     async fn test_get_single_account() {
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         // construct request
         let single_account_request = SingleAccountRequest::new()

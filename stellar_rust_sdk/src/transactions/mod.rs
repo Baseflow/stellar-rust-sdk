@@ -160,8 +160,7 @@ pub mod test {
 
     #[tokio::test]
     async fn test_get_single_transaction() {
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let single_transaction_request = SingleTransactionRequest::new()
             .set_transaction_hash(ID.to_string())
@@ -233,8 +232,7 @@ pub mod test {
 
     #[tokio::test]
     async fn test_get_all_transactions() {
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let all_transactions_request = AllTransactionsRequest::new()
             .set_include_failed(IncludeFailed::True)
@@ -307,8 +305,7 @@ pub mod test {
 
     #[tokio::test]
     async fn test_get_transactions_for_account() {
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let transactions_for_account_request = TransactionsForAccountRequest::new()
             .set_account_id("GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H".to_string())
@@ -385,8 +382,7 @@ pub mod test {
     async fn test_get_transactions_for_ledger() {
         const LEDGER_SEQUENCE: &str = "539";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let transactions_for_ledger_request = TransactionsForLedgerRequest::new()
             .set_ledger_sequence(LEDGER_SEQUENCE.to_string())
@@ -491,8 +487,7 @@ pub mod test {
         const LIQUIDITY_POOL_ID: &str =
             "0066b15f5d0dc0be771209c33f3e4126383e58183a598eae8b3813024c6a6d10";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let transactions_for_liquidity_pool_request = TransactionsForLiquidityPoolRequest::new()
             .set_liquidity_pool_id(LIQUIDITY_POOL_ID.to_string())
@@ -596,8 +591,7 @@ pub mod test {
         const VALID_AFTER: &str = "1970-01-01T00:00:00Z";
         const MIN_TIME: &str = "0";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let request = PostTransactionRequest::new()
             .set_transaction_envelope_xdr(REQUEST_XDR)

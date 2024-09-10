@@ -31,7 +31,7 @@ pub struct NoClaimableBalanceId;
 /// # use stellar_rs::models::Request;
 /// #
 /// # async fn fetch_single_claimable_balance() -> Result<(), Box<dyn std::error::Error>> {
-/// #     let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// #     let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 /// let request = SingleClaimableBalanceRequest::new()
 ///     .set_claimable_balance_id("00000000".to_string());  // Example claimable balance ID
 ///

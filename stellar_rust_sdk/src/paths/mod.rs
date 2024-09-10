@@ -161,8 +161,7 @@ mod tests {
             request.build_url(url)
         );
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let response = horizon_client.get_find_payment_paths(&request).await;
 
@@ -254,8 +253,7 @@ mod tests {
             request.build_url(url)
         );
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let response = horizon_client
             .get_list_strict_receive_payment_paths(&request)
@@ -380,8 +378,7 @@ mod tests {
             request.build_url(url)
         );
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let response = horizon_client
             .get_list_strict_send_payment_paths(&request)

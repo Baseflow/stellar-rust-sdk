@@ -31,8 +31,6 @@
 //! * Trades
 //! * Trade aggregations
 //! * Transactions
-//!
-//! #### Endpoints on the roadmap:
 
 //!
 //! ## Example Usage
@@ -48,7 +46,7 @@
 //! #[tokio::main]
 //! async fn main() -> Result<(), Box<dyn std::error::Error>> {
 //!     // Initialize the Horizon client with the testnet server
-//!     let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+//!     let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 //!
 //!     // Create a request to fetch accounts with a specific signer
 //!     let accounts_request = AccountsRequest::new()
@@ -105,7 +103,7 @@ use derive_getters::Getters;
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let base_url = "https://horizon-testnet.stellar.org";
 /// # let horizon_client = HorizonClient::new(base_url)
 /// #    .expect("Failed to create Horizon Client");
 /// let request = AccountsRequest::new()
@@ -139,7 +137,7 @@ pub mod accounts;
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let base_url = "https://horizon-testnet.stellar.org";
 /// # let horizon_client = HorizonClient::new(base_url)
 /// #    .expect("Failed to create Horizon Client");
 /// let request = AllAssetsRequest::new()
@@ -178,7 +176,7 @@ pub mod assets;
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let base_url = "https://horizon-testnet.stellar.org";
 /// # let horizon_client = HorizonClient::new(base_url)
 /// #    .expect("Failed to create Horizon Client");
 /// let request = AllClaimableBalancesRequest::new();
@@ -202,7 +200,7 @@ pub mod claimable_balances;
 /// ```rust
 /// use stellar_rs::horizon_client::HorizonClient;
 ///
-/// let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// let base_url = "https://horizon-testnet.stellar.org";
 /// let horizon_client = HorizonClient::new(base_url)
 ///     .expect("Failed to create Horizon Client");
 /// ```
@@ -217,7 +215,7 @@ pub mod claimable_balances;
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let base_url = "https://horizon-testnet.stellar.org";
 /// # let horizon_client = HorizonClient::new(base_url)
 /// #    .expect("Failed to create Horizon Client");
 /// let all_assets_request = AllAssetsRequest::new();
@@ -253,7 +251,7 @@ pub mod horizon_client;
 /// # use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching a single ledger by sequence number
 /// let single_ledger_request = SingleLedgerRequest::new().set_sequence(123456)?;
@@ -294,7 +292,7 @@ pub mod ledgers;
 /// # use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching all effects
 /// let all_effects_request = AllEffectsRequest::new().set_limit(10)?;
@@ -330,7 +328,7 @@ pub mod effects;
 /// use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching fee stats
 /// let fee_stats_request = FeeStatsRequest::new();
@@ -366,7 +364,7 @@ pub mod fee_stats;
 /// # use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching fee stats
 /// let single_lp_request = SingleLiquidityPoolRequest::new()
@@ -408,7 +406,7 @@ pub mod liquidity_pools;
 /// use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching all effects
 /// let single_offer_request = SingleOfferRequest::new()
@@ -447,7 +445,7 @@ pub mod offers;
 /// # use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching all operations
 /// let all_operations_request = AllOperationsRequest::new().set_limit(10)?;
@@ -483,7 +481,7 @@ pub mod operations;
 /// use stellar_rs::models::prelude::*;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching order book details
 /// let details_request = DetailsRequest::new()
@@ -524,7 +522,7 @@ pub mod order_book;
 /// use stellar_rs::models::prelude::*;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching trade aggregations
 /// let request = TradeAggregationsRequest::new()
@@ -569,7 +567,7 @@ pub mod trade_aggregations;
 /// use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching a transaction
 /// let single_transaction_request = SingleTransactionRequest::new()
@@ -611,7 +609,7 @@ pub mod transactions;
 /// use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching all trades
 /// let all_trades_request = AllTradesRequest::new();
@@ -652,7 +650,7 @@ pub mod trades;
 /// use stellar_rs::models::prelude::*;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching payment paths
 /// let request = FindPaymentsPathRequest::new()
@@ -696,7 +694,7 @@ pub mod paths;
 /// use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching all payments
 /// let all_payments_request = AllPaymentsRequest::new();

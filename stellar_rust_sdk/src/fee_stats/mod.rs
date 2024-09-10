@@ -38,8 +38,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_fee_stats() {
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let fee_stats_request = FeeStatsRequest::new();
         let fee_stats_response = horizon_client.get_fee_stats(&fee_stats_request).await;

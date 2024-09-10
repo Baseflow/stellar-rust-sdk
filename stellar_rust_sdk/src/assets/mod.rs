@@ -102,8 +102,7 @@ pub mod test {
         static AUTH_CLAWBACK_ENABLED: &bool = &false;
 
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         // construct request
         let all_assets_request: AllAssetsRequest = AllAssetsRequest::new().set_limit(1).unwrap();

@@ -163,8 +163,7 @@ mod tests {
         static CLAWBACK_ENABLED: &bool = &false;
 
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         // construct request
         let all_claimable_balances_request =
@@ -217,8 +216,7 @@ mod tests {
             "9234-00000000fe3d8209ed9662e92f0d3a5c55068e18bd5e0697c3c6db6ac4c0870c6f3e0b38";
 
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let single_claimable_balance_request = SingleClaimableBalanceRequest::new()
             .set_claimable_balance_id(CLAIMABLE_BALANCE_ID.to_string());

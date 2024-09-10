@@ -75,8 +75,7 @@ pub mod test {
     #[tokio::test]
     async fn test_get_all_payments() {
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         // construct request
         let all_payments_request: AllPaymentsRequest =
@@ -106,8 +105,7 @@ pub mod test {
 
     #[tokio::test]
     async fn test_get_payments_for_account() {
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let payments_for_account_request: PaymentsForAccountRequest =
             PaymentsForAccountRequest::new().set_account_id(
@@ -155,8 +153,7 @@ pub mod test {
         static TO: &str = "GACX6RVTLABDFH7JGQT2DQD5G54MA422UYLQZWYVIW6DSLRL2RJ2GTBJ";
         static AMOUNT: &str = "1.0000000";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let payments_for_ledger_request: PaymentsForLedgerRequest = PaymentsForLedgerRequest::new()
             .set_ledger_sequence(LEDGER_SEQUENCE.to_string())
@@ -189,8 +186,7 @@ pub mod test {
 
     #[tokio::test]
     async fn test_get_payments_for_transaction() {
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let payments_for_transaction_request: PaymentsForTransactionRequest =
             PaymentsForTransactionRequest::new()
