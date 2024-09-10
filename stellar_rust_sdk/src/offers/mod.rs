@@ -127,8 +127,6 @@ pub mod test {
         assert_eq!(response.paging_token(), PAGING_TOKEN);
         assert_eq!(response.seller(), SELLER);
         assert_eq!(response.selling().asset_type(), SELLING_ASSET_TYPE);
-        // assert_eq!(response.selling().asset_code().as_ref().unwrap(), SELLING_ASSET_CODE);
-        // assert_eq!(response.selling().asset_issuer().as_ref().unwrap(), SELLING_ASSET_ISSUER);
         assert_eq!(response.buying().asset_type(), BUYING_ASSET_TYPE);
         assert_eq!(response.buying().asset_code().as_ref().unwrap(), BUYING_ASSET_CODE);
         assert_eq!(response.buying().asset_issuer().as_ref().unwrap(), BUYING_ASSET_ISSUER);
@@ -164,8 +162,6 @@ pub mod test {
         assert_eq!(record.paging_token(), PAGING_TOKEN);
         assert_eq!(record.seller(), SELLER);
         assert_eq!(record.selling().asset_type(), SELLING_ASSET_TYPE);
-        // assert_eq!(record.selling().asset_code().as_ref().unwrap(), SELLING_ASSET_CODE);
-        // assert_eq!(record.selling().asset_issuer().as_ref().unwrap(), SELLING_ASSET_ISSUER);
         assert_eq!(record.buying().asset_type(), BUYING_ASSET_TYPE);
         assert_eq!(record.buying().asset_code().as_ref().unwrap(), BUYING_ASSET_CODE);
         assert_eq!(record.buying().asset_issuer().as_ref().unwrap(), BUYING_ASSET_ISSUER);
