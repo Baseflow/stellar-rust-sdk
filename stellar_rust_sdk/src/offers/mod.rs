@@ -311,7 +311,7 @@ pub mod test {
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let offers_for_account_request = OffersForAccountRequest::new()
-            .set_account_id(ACCOUNT_ID.to_string())
+            .set_account_id(ACCOUNT_ID)
             .unwrap();
 
         let offers_for_account_response = horizon_client

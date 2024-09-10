@@ -159,7 +159,7 @@ pub mod test {
 
         // construct request
         let single_account_request = SingleAccountRequest::new()
-            .set_account_id(ACCOUNT_ID.to_string())
+            .set_account_id(ACCOUNT_ID)
             .unwrap();
 
         let single_account_response = horizon_client

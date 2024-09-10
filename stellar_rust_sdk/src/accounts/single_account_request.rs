@@ -28,7 +28,7 @@ pub struct NoAccountId;
 /// # use stellar_rs::accounts::prelude::SingleAccountRequest;
 /// # use stellar_rs::models::Request;
 /// let request = SingleAccountRequest::new()
-///     .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
+///     .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
 ///     .unwrap();
 /// // Use with HorizonClient::get_single_account
 /// ```
@@ -52,8 +52,9 @@ impl SingleAccountRequest<NoAccountId> {
     ///
     pub fn set_account_id(
         self,
-        account_id: String,
+        account_id: impl Into<String>,
     ) -> Result<SingleAccountRequest<AccountId>, String> {
+        let account_id = account_id.into();
         if let Err(e) = is_public_key(&account_id) {
             return Err(e.to_string());
         }

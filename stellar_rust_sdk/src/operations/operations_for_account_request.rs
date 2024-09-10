@@ -35,9 +35,9 @@ impl OperationsForAccountRequest {
     /// # Arguments
     /// * `account_id` - A `String` representing the account ID.
     ///
-    pub fn set_account_id(self, account_id: String) -> OperationsForAccountRequest {
+    pub fn set_account_id(self, account_id: impl Into<String>) -> OperationsForAccountRequest {
         OperationsForAccountRequest {
-            account_id: Some(account_id),
+            account_id: Some(account_id.into()),
             ..self
         }
     }

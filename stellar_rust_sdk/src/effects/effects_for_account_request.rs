@@ -52,9 +52,9 @@ impl EffectsForAccountRequest {
     /// # Arguments
     /// * `account_id` - A `String` value representing the account id.
     ///
-    pub fn set_account_id(self, account_id: String) -> EffectsForAccountRequest {
+    pub fn set_account_id(self, account_id: impl Into<String>) -> EffectsForAccountRequest {
         EffectsForAccountRequest {
-            account_id: Some(account_id),
+            account_id: Some(account_id.into()),
             ..self
         }
     }
@@ -97,7 +97,7 @@ mod tests {
     #[test]
     fn test_effects_for_account_request_with_params() {
         let request = EffectsForAccountRequest::new()
-            .set_account_id("GBL3QJ2MB3KJ7YV7YVXJ5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z".to_string())
+            .set_account_id("GBL3QJ2MB3KJ7YV7YVXJ5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z")
             .set_cursor(1)
             .unwrap()
             .set_limit(10)

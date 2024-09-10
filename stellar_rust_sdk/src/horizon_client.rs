@@ -68,11 +68,9 @@ impl HorizonClient {
     ///     .expect("Failed to create HorizonClient");
     /// ```
     pub fn new(base_url: impl Into<String>) -> Result<Self, String> {
-        let base_url_val = base_url.into();
-        url_validate(&base_url_val)?;
-        Ok(Self {
-            base_url: base_url_val,
-        })
+        let base_url = base_url.into();
+        url_validate(&base_url)?;
+        Ok(Self { base_url })
     }
 
     /// Sends a GET request to the Horizon server and retrieves a specified response type.
@@ -266,7 +264,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleAccountRequest::new()
-    ///     .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
+    ///     .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_single_account(&request).await;
@@ -476,7 +474,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = EffectsForAccountRequest::new()
-    ///    .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string());
+    ///    .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7");
     ///
     /// let response = horizon_client.get_effects_for_account(&request).await;
     ///
@@ -527,7 +525,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = EffectsForAccountRequest::new()
-    ///    .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string());
+    ///    .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7");
     ///
     /// let response = horizon_client.get_effects_for_account(&request).await;
     ///
@@ -1508,7 +1506,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TradesForAccountRequest::new()
-    ///    .set_account_id("GCUOMNFW7YG55YHY5S5W7FE247PWODUDUZ4SOVZFEON47KZ7AXFG6D6A".to_string())
+    ///    .set_account_id("GCUOMNFW7YG55YHY5S5W7FE247PWODUDUZ4SOVZFEON47KZ7AXFG6D6A")
     ///    .unwrap();
     ///
     /// let response = horizon_client.get_trades_for_account(&request).await;
@@ -1864,7 +1862,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TransactionsForAccountRequest::new()
-    ///     .set_account_id("GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H".to_string()).unwrap()
+    ///     .set_account_id("GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H").unwrap()
     ///     .set_include_failed(true).unwrap();
     ///
     /// let response = horizon_client.get_transactions_for_account(&request).await;

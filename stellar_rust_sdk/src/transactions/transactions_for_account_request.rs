@@ -34,10 +34,10 @@ impl TransactionsForAccountRequest<NoTransactionsAccountId> {
     ///
     pub fn set_account_id(
         self,
-        account_id: String,
+        account_id: impl Into<String>
     ) -> Result<TransactionsForAccountRequest<TransactionsAccountId>, String> {
         Ok(TransactionsForAccountRequest {
-            account_id: TransactionsAccountId(account_id),
+            account_id: TransactionsAccountId(account_id.into()),
             include_failed: self.include_failed,
             cursor: self.cursor,
             limit: self.limit,

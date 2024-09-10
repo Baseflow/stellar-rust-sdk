@@ -109,7 +109,7 @@ pub mod test {
 
         let payments_for_account_request: PaymentsForAccountRequest =
             PaymentsForAccountRequest::new().set_account_id(
-                "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H".to_string(),
+                "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
             );
 
         let response: Result<PaymentsResponse, String> = horizon_client

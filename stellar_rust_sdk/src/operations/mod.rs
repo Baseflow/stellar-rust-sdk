@@ -238,7 +238,7 @@ pub mod tests {
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let operations_for_account_request = OperationsForAccountRequest::new()
-            .set_account_id(ACCOUNT_ID.to_string())
+            .set_account_id(ACCOUNT_ID)
             .set_limit(2)
             .unwrap()
             .set_cursor(2)

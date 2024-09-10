@@ -29,8 +29,8 @@ impl PaymentsForAccountRequest {
     /// # Arguments
     /// * `account_id` - The Stellar address of the account for which you want to retrieve payments.
     ///
-    pub fn set_account_id(mut self, account_id: String) -> PaymentsForAccountRequest {
-        self.account_id = Some(account_id);
+    pub fn set_account_id(mut self, account_id: impl Into<String>) -> PaymentsForAccountRequest {
+        self.account_id = Some(account_id.into());
         self
     }
 

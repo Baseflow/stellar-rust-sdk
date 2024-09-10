@@ -35,9 +35,9 @@ impl OperationsForLedgerRequest {
     /// # Arguments
     /// * `account_id` - A `String` representing the account ID.
     ///
-    pub fn set_account_id(self, ledger_sequence: String) -> OperationsForLedgerRequest {
+    pub fn set_account_id(self, ledger_sequence: impl Into<String>) -> OperationsForLedgerRequest {
         OperationsForLedgerRequest {
-            ledger_sequence: Some(ledger_sequence),
+            ledger_sequence: Some(ledger_sequence.into()),
             ..self
         }
     }
@@ -84,7 +84,7 @@ mod tests {
             .set_order(Order::Desc)
             .unwrap()
             .set_include_failed(IncludeFailed::True)
-            .set_account_id("00000000".to_string());
+            .set_account_id("00000000");
 
         assert_eq!(
             request.get_query_parameters(),
