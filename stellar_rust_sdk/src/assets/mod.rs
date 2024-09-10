@@ -76,37 +76,40 @@ pub mod prelude {
 #[cfg(test)]
 pub mod test {
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient, Paginatable};
+    use crate::horizon_client::HorizonClient;
 
     #[tokio::test]
     async fn test_get_all_assets() {
         static ASSET_TYPE: &str = "credit_alphanum4";
-        static ASSET_CODE: &str = "004";
-        static ASSET_ISSUER: &str = "GDJUV2K6YBYUTI6GAA6P6BKVBQQDIOBZYDV2YOWOZI35LLSVMO6J4K7B";
+        static ASSET_CODE: &str = "001";
+        static ASSET_ISSUER: &str = "GAIX6Y5CRIH7A67IWGM26J6KIVPNXBHDPUP6KNHYSKFJ6VWABJKZYMKA";
         static NUM_ACCOUNTS: &u32 = &1;
         static NUM_CLAIMABLE_BALANCES: &u32 = &0;
         static NUM_LIQUIDITY_POOLS: &u32 = &0;
 
-        static AMOUNT: &str = "999.0000000";
+        static AMOUNT: &str = "10.0000000";
         static AUTHORIZED: &u32 = &1;
         static AUTHORIZED_TO_MAINTAIN_LIABILITIES: &u32 = &0;
         static UNAUTHORIZED: &u32 = &0;
         static CLAIMABLE_BALANCES_AMOUNT: &str = "0.0000000";
         static LIQUIDITY_POOLS_AMOUNT: &str = "0.0000000";
         static CONTRACTS_AMOUNT: &str = "0.0000000";
-        static BALANCES_AUTHORIZED: &str = "999.0000000";
+        static BALANCES_AUTHORIZED: &str = "10.0000000";
         static BALANCES_UNAUTHORIZED: &str = "0.0000000";
         static AUTH_REQUIRED: &bool = &false;
         static AUTH_REVOCABLE: &bool = &false;
         static AUTH_IMMUTABLE: &bool = &false;
         static AUTH_CLAWBACK_ENABLED: &bool = &false;
 
-
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         // construct request
+        AllAssetsRequest::new()
+            .set_asset_code(ASSET_CODE)
+            .unwrap()
+            .set_asset_issuer(ASSET_ISSUER)
+            .unwrap();
         let all_assets_request: AllAssetsRequest = AllAssetsRequest::new().set_limit(1).unwrap();
 
         let response = horizon_client.get_all_assets(&all_assets_request).await;
@@ -126,9 +129,15 @@ pub mod test {
         assert_eq!(response.num_liquidity_pools(), NUM_LIQUIDITY_POOLS);
         assert_eq!(response.amount(), AMOUNT);
         assert_eq!(response.accounts().authorized(), AUTHORIZED);
-        assert_eq!(response.accounts().authorized_to_maintain_liabilities(), AUTHORIZED_TO_MAINTAIN_LIABILITIES);
+        assert_eq!(
+            response.accounts().authorized_to_maintain_liabilities(),
+            AUTHORIZED_TO_MAINTAIN_LIABILITIES
+        );
         assert_eq!(response.accounts().unauthorized(), UNAUTHORIZED);
-        assert_eq!(response.claimable_balances_amount(), CLAIMABLE_BALANCES_AMOUNT);
+        assert_eq!(
+            response.claimable_balances_amount(),
+            CLAIMABLE_BALANCES_AMOUNT
+        );
         assert_eq!(response.liquidity_pools_amount(), LIQUIDITY_POOLS_AMOUNT);
         assert_eq!(response.contracts_amount(), CONTRACTS_AMOUNT);
         assert_eq!(response.balances().authorized(), BALANCES_AUTHORIZED);
@@ -136,6 +145,9 @@ pub mod test {
         assert_eq!(response.flags().auth_required(), AUTH_REQUIRED);
         assert_eq!(response.flags().auth_revocable(), AUTH_REVOCABLE);
         assert_eq!(response.flags().auth_immutable(), AUTH_IMMUTABLE);
-        assert_eq!(response.flags().auth_clawback_enabled(), AUTH_CLAWBACK_ENABLED);
+        assert_eq!(
+            response.flags().auth_clawback_enabled(),
+            AUTH_CLAWBACK_ENABLED
+        );
     }
 }

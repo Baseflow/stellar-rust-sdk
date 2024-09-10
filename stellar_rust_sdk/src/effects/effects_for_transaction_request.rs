@@ -1,5 +1,8 @@
-use crate::{models::{Order, Request}, BuildQueryParametersExt, Paginatable};
-use stellar_rust_sdk_derive::Pagination;
+use crate::{
+    models::{Order, Request},
+    BuildQueryParametersExt,
+};
+use stellar_rust_sdk_derive::pagination;
 
 /// Represents a request to fetch effect data from the Stellar Horizon API.
 ///
@@ -16,30 +19,20 @@ use stellar_rust_sdk_derive::Pagination;
 /// ```rust
 /// # use stellar_rs::effects::effects_for_transaction_request::EffectForTransactionRequest;
 /// # use stellar_rs::models::*;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use stellar_rs::Paginatable;
 ///
 /// let request = EffectForTransactionRequest::new()
-///     .set_transaction_hash("transaction_hash".to_string())
+///     .set_transaction_hash("transaction_hash")
 ///     .set_cursor(1234).unwrap()
 ///     .set_limit(20).unwrap()
 ///     .set_order(Order::Desc);
 ///
 /// // The request can now be used with a Horizon client to fetch effects.
 /// ```
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct EffectForTransactionRequest {
     /// The transaction hash of the transaction of the effect
     transaction_hash: Option<String>,
-    /// A pointer to a specific location in a collection of responses, derived from the
-    ///   `paging_token` value of a record. Used for pagination control in the API response.
-    cursor: Option<u32>,
-    /// Specifies the maximum number of records to be returned in a single response.
-    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
-    limit: Option<u8>,
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    order: Option<Order>,
 }
 
 impl EffectForTransactionRequest {
@@ -53,12 +46,9 @@ impl EffectForTransactionRequest {
     /// # Arguments
     /// * `liquidity_pool_id` - A `String` value representing the liquidity pool id.
     ///
-    pub fn set_transaction_hash(
-        self,
-        transaction_hash: String,
-    ) -> EffectForTransactionRequest {
+    pub fn set_transaction_hash(self, transaction_hash: impl Into<String>) -> EffectForTransactionRequest {
         EffectForTransactionRequest {
-            transaction_hash: Some(transaction_hash),
+            transaction_hash: Some(transaction_hash.into()),
             ..self
         }
     }
@@ -95,7 +85,7 @@ mod tests {
     #[test]
     fn test_effects_for_liquidity_pools_request() {
         let request = EffectForTransactionRequest::new()
-            .set_transaction_hash("transaction_hash".to_string())
+            .set_transaction_hash("transaction_hash")
             .set_cursor(1)
             .unwrap()
             .set_limit(10)
@@ -116,6 +106,9 @@ mod tests {
             url,
             "https://horizon-testnet.stellar.org/effects?transaction_hash=transaction_hash&cursor=1&limit=10&order=asc"
         );
-        assert_eq!(query_parameters, "?transaction_hash=transaction_hash&cursor=1&limit=10&order=asc");
+        assert_eq!(
+            query_parameters,
+            "?transaction_hash=transaction_hash&cursor=1&limit=10&order=asc"
+        );
     }
 }

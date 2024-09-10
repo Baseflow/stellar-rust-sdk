@@ -8,26 +8,26 @@ pub struct OperationId(pub String);
 pub struct NoOperationId;
 
 /// Represents a request to fetch details of a single operation from the Horizon API.
-/// 
+///
 /// `SingleOperationRequest` is a struct tailored to querying details of a specific operation
 /// on the Horizon API. This struct is designed to be used in conjunction with the
 /// [`HorizonClient::get_single_operation`](crate::horizon_client::HorizonClient::get_single_operation) method.
-/// 
+///
 /// # Fields
 /// Required:
 /// * `operation_id` - The ID of the operation.
-/// 
-/// ## Usage 
+///
+/// ## Usage
 /// Instances of `SingleOperationRequest` are created and configured using setter methods for each
 /// parameter.
 /// ```
 /// # use stellar_rs::operations::prelude::SingleOperationRequest;
 /// # use stellar_rs::models::Request;
 /// let request = SingleOperationRequest::new()
-///    .set_operation_id("123456".to_string());
+///    .set_operation_id("123456");
 /// // Use with HorizonClient::get_single_operation
 /// ```
-/// 
+///
 #[derive(Default, Clone)]
 pub struct SingleOperationRequest<I> {
     /// The ID of the operation.
@@ -41,13 +41,13 @@ impl SingleOperationRequest<NoOperationId> {
     }
 
     /// Sets the operation ID for the request.
-    /// 
+    ///
     /// # Arguments
     /// * `operation_id` - A `String` specifying the operation ID.
-    /// 
-    pub fn set_operation_id(self, operation_id: String) -> SingleOperationRequest<OperationId> {
+    ///
+    pub fn set_operation_id(self, operation_id: impl Into<String>) -> SingleOperationRequest<OperationId> {
         SingleOperationRequest {
-            operation_id: OperationId(operation_id),
+            operation_id: OperationId(operation_id.into()),
         }
     }
 }

@@ -27,7 +27,7 @@ pub struct TransactionResponseLinks {
 /// This struct details information about the preconditions, including the time bounds, ledger bounds (optional),
 /// minimum account sequence and its age(optional), mimimum account sequence leder gap (optional,
 /// and an array of up to 2 additional signers (optional).
-/// 
+///
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 pub struct Preconditions {
     /// The time range for which this transaction is valid, with bounds as unsigned 64-bit UNIX timestamps.
@@ -47,9 +47,9 @@ pub struct Preconditions {
 /// Represents the time range for which this transaction is valid, with bounds as unsigned 64-bit UNIX timestamps.
 ///
 /// # Usage
-/// This struct details information about the time range, including the lower time bound 
+/// This struct details information about the time range, including the lower time bound
 /// and the upper time bound (optional).
-/// 
+///
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 pub struct TimeBounds {
     /// The lower bound.
@@ -61,9 +61,9 @@ pub struct TimeBounds {
 /// Represents the the ledger range for which this transaction is valid.
 ///
 /// # Usage
-/// This struct details information about the ledger range, including the lower ledger bound 
+/// This struct details information about the ledger range, including the lower ledger bound
 /// and the upper ledger bound (optional).
-/// 
+///
 #[derive(Default, Debug, Clone, Serialize, Deserialize, Getters)]
 pub struct LedgerBounds {
     /// The lower bound.
@@ -99,59 +99,59 @@ impl Response for AllTransactionsResponse {
 /// # Usage
 /// This struct encapsulates detailed information about a single transaction, including its ID,
 /// hash, creation time, source account, and other relevant data.
-/// 
+///
 #[derive(Debug, Clone, Serialize, Deserialize, Getters)]
 pub struct TransactionResponse {
-        #[serde(rename = "_links")]
-        links: TransactionResponseLinks,
-        /// A unique identifier for this transaction.
-        id: String,
-        /// A cursor value for use in pagination.
-        paging_token: String,
-        /// Indicates if this transaction was successful or not.
-        successful: bool,
-        /// A hex-encoded SHA-256 hash of this transaction’s XDR-encoded form.
-        hash: String,
-        /// The sequence number of the ledger that this transaction was included in.
-        ledger: i64,
-        /// The date this transaction was created.
-        created_at: String,
-        /// The account that originates the transaction.
-        source_account: String,
-        // TODO: Missing description in Stellar documentation.
-        account_muxed: Option<String>,
-        // TODO: Missing description in Stellar documentation.
-        account_muxed_id: Option<String>,
-        /// The source account's sequence number that this transaction consumed.
-        source_account_sequence: String,
-        /// The ID of the fee account.
-        fee_account: String,
-        /// The fee (in stroops) paid by the source account to apply this transaction to the ledger.
-        fee_charged: String,
-        /// The maximum fee (in stroops) that the source account was willing to pay.
-        max_fee: String,
-        /// The number of operations contained within this transaction.
-        operation_count: i64,
-        /// A base64 encoded string of the raw `TransactionEnvelope` XDR struct for this transaction.
-        envelope_xdr: String,
-        /// A base64 encoded string of the raw `TransactionResult` XDR struct for this transaction.
-        result_xdr: String,
-        /// A base64 encoded string of the raw `TransactionMeta` XDR struct for this transaction
-        result_meta_xdr: String,
-        /// A base64 encoded string of the raw `L`edgerEntryChanges` XDR struct produced by taking fees for this transaction.
-        fee_meta_xdr: String,
-        /// The optional memo attached to a transaction.
-        memo: Option<String>,
-        /// The type of memo. Potential values include `MEMO_TEXT`, `MEMO_ID`, `MEMO_HASH`, `MEMO_RETURN`.
-        memo_type: String,
-        /// An array of signatures used to sign this transaction.
-        signatures: Vec<String>,
-        /// The date after which a transaction is valid. 
-        valid_after: Option<String>,
-        /// The date before which a transaction is valid.
-        valid_before: Option<String>,
-        /// A set of transaction preconditions affecting its validity.
-        preconditions: Option<Preconditions>,
+    #[serde(rename = "_links")]
+    links: TransactionResponseLinks,
+    /// A unique identifier for this transaction.
+    id: String,
+    /// A cursor value for use in pagination.
+    paging_token: String,
+    /// Indicates if this transaction was successful or not.
+    successful: bool,
+    /// A hex-encoded SHA-256 hash of this transaction’s XDR-encoded form.
+    hash: String,
+    /// The sequence number of the ledger that this transaction was included in.
+    ledger: i64,
+    /// The date this transaction was created.
+    created_at: String,
+    /// The account that originates the transaction.
+    source_account: String,
+    // TODO: Missing description in Stellar documentation.
+    account_muxed: Option<String>,
+    // TODO: Missing description in Stellar documentation.
+    account_muxed_id: Option<String>,
+    /// The source account's sequence number that this transaction consumed.
+    source_account_sequence: String,
+    /// The ID of the fee account.
+    fee_account: String,
+    /// The fee (in stroops) paid by the source account to apply this transaction to the ledger.
+    fee_charged: String,
+    /// The maximum fee (in stroops) that the source account was willing to pay.
+    max_fee: String,
+    /// The number of operations contained within this transaction.
+    operation_count: i64,
+    /// A base64 encoded string of the raw `TransactionEnvelope` XDR struct for this transaction.
+    envelope_xdr: String,
+    /// A base64 encoded string of the raw `TransactionResult` XDR struct for this transaction.
+    result_xdr: String,
+    /// A base64 encoded string of the raw `TransactionMeta` XDR struct for this transaction
+    result_meta_xdr: String,
+    /// A base64 encoded string of the raw `L`edgerEntryChanges` XDR struct produced by taking fees for this transaction.
+    fee_meta_xdr: String,
+    /// The optional memo attached to a transaction.
+    memo: Option<String>,
+    /// The type of memo. Potential values include `MEMO_TEXT`, `MEMO_ID`, `MEMO_HASH`, `MEMO_RETURN`.
+    memo_type: String,
+    /// An array of signatures used to sign this transaction.
+    signatures: Vec<String>,
+    /// The date after which a transaction is valid.
+    valid_after: Option<String>,
+    /// The date before which a transaction is valid.
+    valid_before: Option<String>,
+    /// A set of transaction preconditions affecting its validity.
+    preconditions: Option<Preconditions>,
 }
 
 impl Response for TransactionResponse {

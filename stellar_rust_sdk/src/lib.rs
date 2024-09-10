@@ -15,7 +15,7 @@
 //! stabilization.
 //!
 //! #### Supported endpoints:
-//! ![80%](https://progress-bar.dev/80/?width=200)
+//! ![100%](https://progress-bar.dev/100/?width=200)
 //! * Accounts
 //! * Assets
 //! * Claimable balance
@@ -26,11 +26,9 @@
 //! * Operations
 //! * Offers
 //! * Orderbook
-//! * Trades
-//!
-//! #### Endpoints on the roadmap:
 //! * Paths
 //! * Payments
+//! * Trades
 //! * Trade aggregations
 //! * Transactions
 
@@ -48,7 +46,7 @@
 //! #[tokio::main]
 //! async fn main() -> Result<(), Box<dyn std::error::Error>> {
 //!     // Initialize the Horizon client with the testnet server
-//!     let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+//!     let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 //!
 //!     // Create a request to fetch accounts with a specific signer
 //!     let accounts_request = AccountsRequest::new()
@@ -83,7 +81,6 @@
 //! types for more examples and detailed usage instructions.
 
 use derive_getters::Getters;
-use models::Order;
 /// Provides `Request` and `Response` structs for retrieving accounts.
 ///
 /// This module provides a set of specialized request and response structures designed for
@@ -106,7 +103,7 @@ use models::Order;
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let base_url = "https://horizon-testnet.stellar.org";
 /// # let horizon_client = HorizonClient::new(base_url)
 /// #    .expect("Failed to create Horizon Client");
 /// let request = AccountsRequest::new()
@@ -140,7 +137,7 @@ pub mod accounts;
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let base_url = "https://horizon-testnet.stellar.org";
 /// # let horizon_client = HorizonClient::new(base_url)
 /// #    .expect("Failed to create Horizon Client");
 /// let request = AllAssetsRequest::new()
@@ -179,7 +176,7 @@ pub mod assets;
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let base_url = "https://horizon-testnet.stellar.org";
 /// # let horizon_client = HorizonClient::new(base_url)
 /// #    .expect("Failed to create Horizon Client");
 /// let request = AllClaimableBalancesRequest::new();
@@ -203,9 +200,9 @@ pub mod claimable_balances;
 /// ```rust
 /// use stellar_rs::horizon_client::HorizonClient;
 ///
-/// let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// let base_url = "https://horizon-testnet.stellar.org";
 /// let horizon_client = HorizonClient::new(base_url)
-///     .expect("Failed to create Horizon Client");;
+///     .expect("Failed to create Horizon Client");
 /// ```
 ///
 /// # Using the `HorizonClient`
@@ -218,9 +215,9 @@ pub mod claimable_balances;
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let base_url = "https://horizon-testnet.stellar.org";
 /// # let horizon_client = HorizonClient::new(base_url)
-/// #    .expect("Failed to create Horizon Client");;
+/// #    .expect("Failed to create Horizon Client");
 /// let all_assets_request = AllAssetsRequest::new();
 /// let accounts_response = horizon_client
 ///     .get_all_assets(&all_assets_request)
@@ -252,11 +249,9 @@ pub mod horizon_client;
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// # use stellar_rs::ledgers::prelude::*;
 /// # use stellar_rs::models::Request;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use stellar_rs::Paginatable;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching a single ledger by sequence number
 /// let single_ledger_request = SingleLedgerRequest::new().set_sequence(123456)?;
@@ -295,11 +290,9 @@ pub mod ledgers;
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// # use stellar_rs::effects::prelude::*;
 /// # use stellar_rs::models::Request;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use crate::stellar_rs::Paginatable;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching all effects
 /// let all_effects_request = AllEffectsRequest::new().set_limit(10)?;
@@ -335,7 +328,7 @@ pub mod effects;
 /// use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching fee stats
 /// let fee_stats_request = FeeStatsRequest::new();
@@ -371,11 +364,11 @@ pub mod fee_stats;
 /// # use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching fee stats
 /// let single_lp_request = SingleLiquidityPoolRequest::new()
-///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string())
+///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca")
 ///     .unwrap();
 /// let lp_response = horizon_client.get_single_liquidity_pool(&single_lp_request).await?;
 ///
@@ -413,11 +406,11 @@ pub mod liquidity_pools;
 /// use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching all effects
 /// let single_offer_request = SingleOfferRequest::new()
-///     .set_offer_id("1".to_string())
+///     .set_offer_id("1")
 ///     .unwrap();
 /// let single_offer_response = horizon_client.get_single_offer(&single_offer_request).await?;
 ///
@@ -450,11 +443,9 @@ pub mod offers;
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// # use stellar_rs::operations::prelude::*;
 /// # use stellar_rs::models::Request;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use stellar_rs::Paginatable;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching all operations
 /// let all_operations_request = AllOperationsRequest::new().set_limit(10)?;
@@ -468,45 +459,86 @@ pub mod offers;
 pub mod operations;
 
 /// Provides `Request` and `Response` structs for retrieving order book details.
-/// 
+///
 /// The `order_book` module in the Stellar Horizon SDK includes structures and methods that facilitate
 /// querying order book data from the Horizon server.
-/// 
+///
 /// # Usage
-/// 
+///
 /// This module is used to construct requests for order book-related data and to parse the responses
 /// received from the Horizon server. It includes request and response structures for querying
 /// order book details.
-/// 
+///
 /// # Example
-/// 
+///
 /// To use this module, you can create an instance of a request struct, such as `DetailsRequest`,
 /// set any desired query parameters, and pass the request to the `HorizonClient`. The client will
 /// then execute the request and return the corresponding response struct, like `DetailsResponse`.
-/// 
+///
 /// ```rust
 /// use stellar_rs::horizon_client::HorizonClient;
 /// use stellar_rs::order_book::prelude::*;
-/// use stellar_rs::models::Request;
-/// 
+/// use stellar_rs::models::prelude::*;
+///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
-/// 
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
+///
 /// // Example: Fetching order book details
 /// let details_request = DetailsRequest::new()
 ///    .set_buying_asset(AssetType::Native)?
-///   .set_selling_asset(AssetType::Alphanumeric4(Asset {
+///   .set_selling_asset(AssetType::Alphanumeric4(AssetData {
 ///      asset_code: "USDC".to_string(),
 ///     asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string(),
 /// }))?;
 /// let details_response = horizon_client.get_order_book_details(&details_request).await?;
-/// 
+///
 /// // Process the response...
 /// # Ok(())
 /// # }
 /// ```
-/// 
+///
 pub mod order_book;
+
+/// Provides `Request` and `Response` structs for retrieving trade aggregation details.
+///
+/// The `trade_aggregations` module in the Stellar Horizon SDK includes structures and methods that facilitate
+/// querying trade aggregations data from the Horizon server.
+///
+/// # Usage
+///
+/// This module is used to construct requests for trade aggregations related data and to parse the responses
+/// received from the Horizon server. It includes request and response structures for querying
+/// trade aggregations.
+///
+/// # Example
+///
+/// To use this module, you can create an instance of a request struct, such as `TradeAggregationsRequest`,
+/// set any desired query parameters, and pass the request to the `HorizonClient`. The client will
+/// then execute the request and return the corresponding response struct, like `AllTradeAggregationsResponse`.
+///
+/// ```rust
+/// use stellar_rs::horizon_client::HorizonClient;
+/// use stellar_rs::trade_aggregations::prelude::*;
+/// use stellar_rs::models::prelude::*;
+///
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
+///
+/// // Example: Fetching trade aggregations
+/// let request = TradeAggregationsRequest::new()
+///     .set_base_asset(AssetType::Native).unwrap()
+///     .set_counter_asset(AssetType::Alphanumeric4(AssetData {
+///         asset_code: "USDC".to_string(),
+///         asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string(),
+///     })).unwrap()
+///     .set_resolution(Resolution(ResolutionData::Duration604800000)).unwrap();
+/// let response = horizon_client.get_trade_aggregations(&request).await?;
+///
+/// // Process the response...
+/// # Ok(())
+/// # }
+/// ```
+pub mod trade_aggregations;
 
 /// Provides `Request` and `Response` structs for retrieving transactions.
 ///
@@ -535,11 +567,11 @@ pub mod order_book;
 /// use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching a transaction
 /// let single_transaction_request = SingleTransactionRequest::new()
-///     .set_transaction_hash("be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f".to_string())
+///     .set_transaction_hash("be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f")
 ///     .unwrap();
 /// let single_transaction_response = horizon_client.get_single_transaction(&single_transaction_request).await?;
 ///
@@ -577,7 +609,7 @@ pub mod transactions;
 /// use stellar_rs::models::Request;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())?;
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 ///
 /// // Example: Fetching all trades
 /// let all_trades_request = AllTradesRequest::new();
@@ -590,6 +622,91 @@ pub mod transactions;
 /// ```
 ///
 pub mod trades;
+
+/// Provides `Request` and `Response` structs for retrieving payment paths.
+///
+/// This module provides a set of specialized request and response structures designed for
+/// interacting with the payment path-related endpoints of the Horizon server. These structures
+/// facilitate the construction of requests to query payment paths and the interpretation of
+/// the corresponding responses.
+///
+/// # Usage
+///
+/// This module is intended to be used in conjunction with the [`HorizonClient`](crate::horizon_client::HorizonClient)
+/// for making specific payment path-related API calls to the Horizon server. The request
+/// structures are designed to be passed to the client's methods, which handle the
+/// communication with the server and return the corresponding response structures.
+///
+/// # Example
+///
+/// To use this module, you can create an instance of a request struct, such as
+/// `FindPaymentPathsRequest`, `ListStrictReceivePaymentPathsRequest`, or `ListStrictSendPaymentPathsRequest`,
+/// set any desired query parameters, and pass the request to the `HorizonClient`. The client
+/// will then execute the request and return the corresponding response struct, like `PathsResponse`.
+///
+/// ```rust
+/// use stellar_rs::horizon_client::HorizonClient;
+/// use stellar_rs::paths::prelude::*;
+/// use stellar_rs::models::prelude::*;
+///
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
+///
+/// // Example: Fetching payment paths
+/// let request = FindPaymentsPathRequest::new()
+///     .set_destination_asset(AssetType::Native).unwrap() // Sets the destination asset to native XLM.
+///     .set_destination_amount("100.0".to_string()).unwrap() // Sets the amount of the destination asset.
+///     .set_source_account("GCDNJUBQSXK57MSKJ4NSXK5DT5CJMMXMWUE7BN6NTJ6JTH23HQVYXG2C".to_string()).unwrap() // Sets the source account.
+///     .set_destination_account("GAZD7JY7RCZN7KJ27SMUGKDPF7GQTYPXLDU7TFTJNSDB3MLO3M22DEIV".to_string()).unwrap(); // Sets the destination account.
+///
+/// let paths_response = horizon_client.get_find_payment_paths(&request).await?;
+///
+/// // Process the responses...
+/// # Ok(())
+/// # }
+/// ```
+pub mod paths;
+
+/// Provides `Request` and `Response` structs for retrieving payments.
+///
+/// This module provides a set of specialized request and response structures designed for
+/// interacting with the payment-related endpoints of the Horizon server. These structures
+/// facilitate the construction of requests to query trade data and the interpretation of
+/// the corresponding responses.
+///
+/// # Usage
+///
+/// This module is intended to be used in conjunction with the [`HorizonClient`](crate::horizon_client::HorizonClient)
+/// for making specific payment-related API calls to the Horizon server. The request
+/// structures are designed to be passed to the client's methods, which handle the
+/// communication with the server and return the corresponding response structures.
+///
+/// /// # Example
+///
+/// To use this module, you can create an instance of a request struct, such as
+/// `AllPaymentsRequest`, set any desired query parameters, and pass the request to the
+/// `HorizonClient`. The client will then execute the request and return the corresponding
+/// response struct, like `AllPaymentsResponse`.
+///
+/// ```rust
+/// use stellar_rs::horizon_client::HorizonClient;
+/// use stellar_rs::payments::prelude::*;
+/// use stellar_rs::models::Request;
+///
+/// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
+///
+/// // Example: Fetching all payments
+/// let all_payments_request = AllPaymentsRequest::new();
+///
+/// let all_payments_response = horizon_client.get_all_payments(&all_payments_request).await?;
+///
+/// // Process the responses...
+/// # Ok(())
+/// # }
+/// ```
+///
+pub mod payments;
 
 /// Contains core data structures and traits.
 ///
@@ -655,16 +772,4 @@ impl<T: ToString> BuildQueryParametersExt<Option<T>> for Vec<Option<T>> {
             false => format!("?{}", params),
         }
     }
-}
-
-pub trait Paginatable {
-    fn set_cursor(self, cursor: u32) -> Result<Self, String>
-    where
-        Self: Sized;
-    fn set_limit(self, limit: u8) -> Result<Self, String>
-    where
-        Self: Sized;
-    fn set_order(self, order: Order) -> Result<Self, String>
-    where
-        Self: Sized;
 }

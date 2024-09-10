@@ -1,7 +1,6 @@
 use crate::models::{Order, Request};
 use crate::BuildQueryParametersExt;
-use crate::Paginatable;
-use stellar_rust_sdk_derive::Pagination;
+use stellar_rust_sdk_derive::pagination;
 
 /// Represents the request to fetch effects for a specific liquidity pool from the Horizon API.
 
@@ -24,11 +23,9 @@ use stellar_rust_sdk_derive::Pagination;
 /// ```rust
 /// # use stellar_rs::effects::effects_for_liquidity_pools_request::EffectsForLiquidityPoolRequest;
 /// # use stellar_rs::models::*;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use stellar_rs::Paginatable;
 ///
 /// let request = EffectsForLiquidityPoolRequest::new()
-///     .set_liquidity_pool_id("01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d".to_string())
+///     .set_liquidity_pool_id("01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d")
 ///     .set_cursor(1234).unwrap()
 ///     .set_limit(20).unwrap()
 ///     .set_order(Order::Desc);
@@ -36,19 +33,11 @@ use stellar_rust_sdk_derive::Pagination;
 /// // The request can now be used with a Horizon client to fetch effects.
 /// ```
 ///
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct EffectsForLiquidityPoolRequest {
     /// The liquidity pool id
     liquidity_pool_id: Option<String>,
-    /// A pointer to a specific location in a collection of responses, derived from the
-    ///   `paging_token` value of a record. Used for pagination control in the API response.
-    cursor: Option<u32>,
-    /// Specifies the maximum number of records to be returned in a single response.
-    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
-    limit: Option<u8>,
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    order: Option<Order>,
 }
 
 impl EffectsForLiquidityPoolRequest {
@@ -64,10 +53,10 @@ impl EffectsForLiquidityPoolRequest {
     ///
     pub fn set_liquidity_pool_id(
         self,
-        liquidity_pool_id: String,
+        liquidity_pool_id: impl Into<String>,
     ) -> EffectsForLiquidityPoolRequest {
         EffectsForLiquidityPoolRequest {
-            liquidity_pool_id: Some(liquidity_pool_id),
+            liquidity_pool_id: Some(liquidity_pool_id.into()),
             ..self
         }
     }
@@ -100,12 +89,12 @@ impl Request for EffectsForLiquidityPoolRequest {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{BuildQueryParametersExt};
+    use crate::BuildQueryParametersExt;
 
     #[test]
     fn test_effects_for_liquidity_pools_request() {
         let request = EffectsForLiquidityPoolRequest::new()
-            .set_liquidity_pool_id("liquidity_pool_id".to_string())
+            .set_liquidity_pool_id("liquidity_pool_id")
             .set_cursor(1)
             .unwrap()
             .set_limit(10)

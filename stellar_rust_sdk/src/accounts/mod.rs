@@ -102,8 +102,7 @@ pub mod test {
     #[tokio::test]
     async fn test_get_account_list() {
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         // construct request
         let accounts_request = AccountsRequest::new()
@@ -131,11 +130,20 @@ pub mod test {
         assert_eq!(response.flags().auth_required(), AUTH_REQUIRED);
         assert_eq!(response.flags().auth_revocable(), AUTH_REVOCABLE);
         assert_eq!(response.flags().auth_immutable(), AUTH_IMMUTABLE);
-        assert_eq!(response.flags().auth_clawback_enabled(), AUTH_CLAWBACK_ENABLED);
+        assert_eq!(
+            response.flags().auth_clawback_enabled(),
+            AUTH_CLAWBACK_ENABLED
+        );
         assert_eq!(response.balances()[0].balance(), BALANCE);
         assert_eq!(response.balances()[0].asset_type(), ASSET_TYPE);
-        assert_eq!(response.balances()[0].buying_liabilities(), BUYING_LIABILITY);
-        assert_eq!(response.balances()[0].selling_liabilities(), SELLING_LIABILITY);
+        assert_eq!(
+            response.balances()[0].buying_liabilities(),
+            BUYING_LIABILITY
+        );
+        assert_eq!(
+            response.balances()[0].selling_liabilities(),
+            SELLING_LIABILITY
+        );
         assert_eq!(response.signers()[0].key(), ACCOUNT_ID);
         assert_eq!(response.signers()[0].weight(), WEIGHT);
         assert_eq!(response.signers()[0].singer_type(), SIGNER_TYPE);
@@ -147,12 +155,11 @@ pub mod test {
     #[tokio::test]
     async fn test_get_single_account() {
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         // construct request
         let single_account_request = SingleAccountRequest::new()
-            .set_account_id(ACCOUNT_ID.to_string())
+            .set_account_id(ACCOUNT_ID)
             .unwrap();
 
         let single_account_response = horizon_client
@@ -172,11 +179,20 @@ pub mod test {
         assert_eq!(response.flags().auth_required(), AUTH_REQUIRED);
         assert_eq!(response.flags().auth_revocable(), AUTH_REVOCABLE);
         assert_eq!(response.flags().auth_immutable(), AUTH_IMMUTABLE);
-        assert_eq!(response.flags().auth_clawback_enabled(), AUTH_CLAWBACK_ENABLED);
+        assert_eq!(
+            response.flags().auth_clawback_enabled(),
+            AUTH_CLAWBACK_ENABLED
+        );
         assert_eq!(response.balances()[0].balance(), BALANCE);
         assert_eq!(response.balances()[0].asset_type(), ASSET_TYPE);
-        assert_eq!(response.balances()[0].buying_liabilities(), BUYING_LIABILITY);
-        assert_eq!(response.balances()[0].selling_liabilities(), SELLING_LIABILITY);
+        assert_eq!(
+            response.balances()[0].buying_liabilities(),
+            BUYING_LIABILITY
+        );
+        assert_eq!(
+            response.balances()[0].selling_liabilities(),
+            SELLING_LIABILITY
+        );
         assert_eq!(response.signers()[0].key(), ACCOUNT_ID);
         assert_eq!(response.signers()[0].weight(), WEIGHT);
         assert_eq!(response.signers()[0].singer_type(), SIGNER_TYPE);

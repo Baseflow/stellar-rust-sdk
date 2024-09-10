@@ -1,28 +1,14 @@
-use stellar_rust_sdk_derive::Pagination;
-use crate::Paginatable;
-
 use crate::{
     models::{IncludeFailed, Order, Request},
     BuildQueryParametersExt,
 };
+use stellar_rust_sdk_derive::pagination;
 
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct OperationsForLedgerRequest {
     /// The account ID for which to retrieve operations.
     ledger_sequence: Option<String>,
-
-    /// A pointer to a specific location in a collection of responses, derived from the
-    ///   `paging_token` value of a record. Used for pagination control in the API response.
-    cursor: Option<u32>,
-
-    /// Specifies the maximum number of records to be returned in a single response.
-    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
-    limit: Option<u8>,
-
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    order: Option<Order>,
-
     /// A boolean value that determines whether to include failed operations in the response.
     include_failed: Option<IncludeFailed>,
 }
@@ -49,9 +35,9 @@ impl OperationsForLedgerRequest {
     /// # Arguments
     /// * `account_id` - A `String` representing the account ID.
     ///
-    pub fn set_account_id(self, ledger_sequence: String) -> OperationsForLedgerRequest {
+    pub fn set_account_id(self, ledger_sequence: impl Into<String>) -> OperationsForLedgerRequest {
         OperationsForLedgerRequest {
-            ledger_sequence: Some(ledger_sequence),
+            ledger_sequence: Some(ledger_sequence.into()),
             ..self
         }
     }
@@ -98,7 +84,7 @@ mod tests {
             .set_order(Order::Desc)
             .unwrap()
             .set_include_failed(IncludeFailed::True)
-            .set_account_id("00000000".to_string());
+            .set_account_id("00000000");
 
         assert_eq!(
             request.get_query_parameters(),

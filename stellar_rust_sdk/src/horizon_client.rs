@@ -18,13 +18,13 @@ use crate::{
             AllLiquidityPoolsResponse, LiquidityPool, LiquidityPoolId, SingleLiquidityPoolRequest,
         },
     },
-    models::{Request, Response},
+    models::{PostRequest, Request, Response},
     offers::prelude::*,
     operations::{
         operations_for_account_request::OperationsForAccountRequest,
         prelude::{
             AllOperationsRequest, OperationResponse, OperationsForLedgerRequest,
-            OperationsForLiquidityPoolRequest,
+            OperationsForLiquidityPoolRequest, OperationsForTransactionRequest,
         },
         response::Operation,
         single_operation_request::{OperationId, SingleOperationRequest},
@@ -33,8 +33,11 @@ use crate::{
         details_request::{BuyingAsset, DetailsRequest, SellingAsset},
         response::DetailsResponse,
     },
-    transactions::prelude::*,
+    paths::prelude::*,
+    payments::prelude::*,
+    trade_aggregations::prelude::*,
     trades::prelude::*,
+    transactions::prelude::*,
 };
 use reqwest;
 use url::Url;
@@ -61,12 +64,119 @@ impl HorizonClient {
     /// # Example
     /// ```rust
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string())
+    /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")
     ///     .expect("Failed to create HorizonClient");
     /// ```
-    pub fn new(base_url: String) -> Result<Self, String> {
+    pub fn new(base_url: impl Into<String>) -> Result<Self, String> {
+        let base_url = base_url.into();
         url_validate(&base_url)?;
         Ok(Self { base_url })
+    }
+
+    /// Sends a GET request to the Horizon server and retrieves a specified response type.
+    ///
+    /// This internal asynchronous method is designed to handle various GET requests to the
+    /// Horizon server. It is generic over the response type, allowing for flexibility in
+    /// handling different types of responses as dictated by the caller. This method performs
+    /// key tasks such as request validation, URL construction, sending the request, and
+    /// processing the received response.
+    ///
+    /// # Type Parameters
+    ///
+    /// * `Response` - Defines the expected response type. This type must implement the
+    /// [`Response`] trait.
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - A reference to an object implementing the [`Request`] trait. It contains
+    /// specific details about the GET request to be sent.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing the response of type [`Response`] if the request is
+    /// successful. In case of failure (e.g., network issues, server errors), it returns an
+    /// error encapsulated as a `String`.
+    ///
+    /// # Example Usage
+    ///
+    /// This function is typically not called directly but through other specific methods of
+    /// the `HorizonClient` that define the type of request and response.
+    ///
+    /// # Remarks
+    ///
+    /// As a core utility function within `HorizonClient`, it centralizes the logic of sending
+    /// GET requests and handling responses. Modifications or enhancements to the request or
+    /// response handling logic should be implemented here to maintain consistency across the
+    /// client's interface.
+    ///
+    async fn get<R: Response>(&self, request: &impl Request) -> Result<R, String> {
+        // Construct the URL with potential query parameters.
+        let url = request.build_url(&self.base_url);
+
+        // Send the request and await the response.
+        let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
+
+        // Process the response and return the result.
+        let result: R = handle_response(response).await?;
+
+        Ok(result)
+    }
+
+    /// Sends a POST request to the Horizon server and retrieves a specified response type.
+    ///
+    /// This internal asynchronous method is designed to handle various POST requests to the
+    /// Horizon server. It is generic over the response type, allowing for flexibility in
+    /// handling different types of responses as dictated by the caller. This method performs
+    /// key tasks such as request validation, URL construction, sending the request, and
+    /// processing the received response.
+    ///
+    /// # Type Parameters
+    ///
+    /// * `Response` - Defines the expected response type. This type must implement the
+    /// [`Response`] trait.
+    ///
+    /// # Arguments
+    ///
+    /// * `request` - A reference to an object implementing the [`PostRequest`] trait. It contains
+    /// specific details about the POST request to be sent.
+    ///
+    /// # Returns
+    ///
+    /// Returns a `Result` containing the response of type [`Response`] if the request is
+    /// successful. In case of failure (e.g., network issues, server errors), it returns an
+    /// error encapsulated as a `String`.
+    ///
+    /// # Example Usage
+    ///
+    /// This function is typically not called directly but through other specific methods of
+    /// the `HorizonClient` that define the type of request and response.
+    ///
+    /// # Remarks
+    ///
+    /// As a core utility function within `HorizonClient`, it centralizes the logic of sending
+    /// POST requests and handling responses. Modifications or enhancements to the request or
+    /// response handling logic should be implemented here to maintain consistency across the
+    /// client's interface.
+    ///
+    async fn post<R: Response>(&self, request: &impl PostRequest) -> Result<R, String> {
+        // Construct the URL.
+        let url = request.build_url(&self.base_url);
+
+        // Send the request and await the response.
+        // The vector of tuples (containing the key/value pairs) returned by the `get_body()` method can
+        // be passed directly to `reqwest`s `form()` method, which will automatically create a valid
+        // formdata body for the request.
+        let response = reqwest::Client::new()
+            .post(&url)
+            .form(&request.get_body())
+            .send()
+            .await
+            .map_err(|e| e.to_string())?;
+
+        // Process the response and return the result.
+        let result: R = handle_response(response).await?;
+
+        Ok(result)
     }
 
     /// Retrieves a list of accounts filtered by specific criteria.
@@ -96,7 +206,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AccountsRequest::new()
@@ -150,11 +260,11 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleAccountRequest::new()
-    ///     .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
+    ///     .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_single_account(&request).await;
@@ -201,7 +311,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllAssetsRequest::new()
@@ -253,11 +363,11 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllClaimableBalancesRequest::new()
-    ///     .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
+    ///     .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_all_claimable_balances(&request).await;
@@ -311,11 +421,11 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     ///  let request = SingleClaimableBalanceRequest::new()
-    ///    .set_claimable_balance_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string());
+    ///    .set_claimable_balance_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca");
     ///
     /// let response = horizon_client.get_single_claimable_balance(&request).await;
     ///
@@ -360,11 +470,11 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = EffectsForAccountRequest::new()
-    ///    .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string());
+    ///    .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7");
     ///
     /// let response = horizon_client.get_effects_for_account(&request).await;
     ///
@@ -411,11 +521,11 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = EffectsForAccountRequest::new()
-    ///    .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string());
+    ///    .set_account_id("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7");
     ///
     /// let response = horizon_client.get_effects_for_account(&request).await;
     ///
@@ -462,7 +572,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = EffectsForOperationRequest::new()
@@ -513,11 +623,11 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = EffectForTransactionRequest::new()
-    ///  .set_transaction_hash("transaction_hash".to_string());
+    ///  .set_transaction_hash("transaction_hash");
     ///
     /// let response = horizon_client.get_effects_for_transaction(&request).await;
     ///
@@ -567,11 +677,9 @@ impl HorizonClient {
     /// # use stellar_rs::ledgers::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// # use stellar_rust_sdk_derive::Pagination;
-    /// # use stellar_rs::Paginatable;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = LedgersRequest::new()
@@ -628,7 +736,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleLedgerRequest::new()
@@ -677,11 +785,9 @@ impl HorizonClient {
     /// # use stellar_rs::effects::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// # use stellar_rust_sdk_derive::Pagination;
-    /// # use crate::stellar_rs::Paginatable;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllEffectsRequest::new()
@@ -733,11 +839,9 @@ impl HorizonClient {
     /// # use stellar_rs::effects::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// # use stellar_rust_sdk_derive::Pagination;
-    /// # use stellar_rs::Paginatable;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)?;
     /// let mut request = EffectsForLedgerRequest::new()
     ///     .set_sequence(&125)
@@ -779,7 +883,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = FeeStatsRequest::new();
@@ -832,11 +936,11 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleOfferRequest::new()
-    ///     .set_offer_id("1".to_string()) // example offer ID
+    ///     .set_offer_id("1") // example offer ID
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_single_offer(&request).await;
@@ -878,11 +982,9 @@ impl HorizonClient {
     /// # use stellar_rs::offers::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// # use stellar_rust_sdk_derive::Pagination;
-    /// # use stellar_rs::Paginatable;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllOffersRequest::new()
@@ -957,11 +1059,9 @@ impl HorizonClient {
     /// # use stellar_rs::operations::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// # use stellar_rust_sdk_derive::Pagination;
-    /// # use stellar_rs::Paginatable;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllOperationsRequest::new()
@@ -1010,11 +1110,11 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleOperationRequest::new()
-    ///    .set_operation_id("459561504769".to_string());
+    ///    .set_operation_id("459561504769");
     ///
     /// let response = horizon_client.get_single_operation(&request).await;
     ///
@@ -1044,7 +1144,7 @@ impl HorizonClient {
     ///
     /// # Returns
     ///
-    /// On successful execution, returns a `Result` containing a [`OperationsForAccountRequest`], which includes
+    /// On successful execution, returns a `Result` containing a [`OperationResponse`], which includes
     /// the list of all operations obtained from the Horizon server. If the request fails, it returns an error within `Result`.
     ///
     /// # Usage
@@ -1055,16 +1155,15 @@ impl HorizonClient {
     /// # use stellar_rs::operations::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// # use crate::stellar_rs::Paginatable;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = OperationsForAccountRequest::new()
     ///   .set_limit(2).unwrap();
     ///
-    /// let response = horizon_client.get_operation_for_account(&request).await;
+    /// let response = horizon_client.get_operations_for_account(&request).await;
     ///
     /// // Access the payments
     /// if let Ok(operations_for_account_response) = response {
@@ -1077,13 +1176,56 @@ impl HorizonClient {
     /// # }
     /// ```
     ///
-    pub async fn get_operation_for_account(
+    pub async fn get_operations_for_account(
         &self,
         request: &OperationsForAccountRequest,
     ) -> Result<OperationResponse, String> {
         self.get::<OperationResponse>(request).await
     }
 
+    /// Retrieves a list of all operations for a ledger from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all operations for a ledger from the Horizon server.
+    /// It requires an [`OperationsForLedgerRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`OperationsForLedgerRequest`] instance, containing the
+    /// parameters for the operations for ledger request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing a [`OperationResponse`], which includes
+    /// the list of all operations obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`OperationsForLedgerRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::operations::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org";
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = OperationsForLedgerRequest::new()
+    ///   .set_limit(2).unwrap();
+    ///
+    /// let response = horizon_client.get_operations_for_ledger(&request).await;
+    ///
+    /// // Access the payments
+    /// if let Ok(operations_for_ledger_response) = response {
+    ///   for operation in operations_for_ledger_response.embedded().records() {
+    ///    println!("operation ID: {}", operation.id());
+    ///  // Further processing...
+    /// }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
     pub async fn get_operations_for_ledger(
         &self,
         request: &OperationsForLedgerRequest,
@@ -1091,53 +1233,200 @@ impl HorizonClient {
         self.get::<OperationResponse>(request).await
     }
 
-    /// Retrieves a list of order book details from the Horizon server.
-    /// 
-    /// This asynchronous method fetches a list of order book details from the Horizon server.
-    /// It requires a [`DetailsRequest`] to specify the parameters for the order book details request.
-    /// 
+    /// Retrieves a list of all operations for a specific liquidity pool from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all operations for a specific liquidity pool from the Horizon server.
+    /// It requires an [`OperationsForLiquidityPoolRequest`] to specify the liquidity pool ID and optional query parameters.
+    ///
     /// # Arguments
-    /// * `request` - A reference to a [`DetailsRequest`] instance, containing the parameters for the order book details request.
-    /// 
+    /// * `request` - A reference to an [`OperationsForLiquidityPoolRequest`] instance, containing the liquidity pool ID
+    /// and optional query parameters for the operations for liquidity pool request.
+    ///
     /// # Returns
-    /// 
-    /// On successful execution, returns a `Result` containing a [`DetailsResponse`], which includes the list of order book details obtained from the Horizon server.
-    /// If the request fails, it returns an error within `Result`.
-    /// 
+    ///
+    /// On successful execution, returns a `Result` containing a [`OperationResponse`], which includes
+    /// the list of all operations obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
     /// # Usage
-    /// To use this method, create an instance of [`DetailsRequest`] and set any desired filters or parameters.
-    /// 
+    /// To use this method, create an instance of [`OperationsForLiquidityPoolRequest`] and set the liquidity pool ID and any desired
+    /// filters or parameters.
+    ///
     /// ```
-    /// # use stellar_rs::order_book::prelude::*;
+    /// # use stellar_rs::operations::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// 
+    /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = OperationsForLiquidityPoolRequest::new()
+    ///  .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca");
+    ///
+    /// let response = horizon_client.get_operations_for_liquidity_pool(&request).await;
+    ///
+    /// // Access the operations
+    /// if let Ok(operations_for_liquidity_pool_response) = response {
+    ///  for operation in operations_for_liquidity_pool_response.embedded().records() {
+    ///
+    ///   println!("Operation ID: {}", operation.id());
+    /// // Further processing...
+    /// }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn get_operations_for_liquidity_pool(
+        &self,
+        request: &OperationsForLiquidityPoolRequest,
+    ) -> Result<OperationResponse, String> {
+        self.get::<OperationResponse>(request).await
+    }
+
+    /// Retrieves a list of all operations for a specific transaction from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all operations for a specific transaction from the Horizon server.
+    /// It requires an [`OperationsForTransactionRequest`] to specify the transaction hash and optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`OperationsForTransactionRequest`] instance, containing the transaction hash
+    /// and optional query parameters for the operations for transaction request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing a [`OperationResponse`], which includes
+    /// the list of all operations obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`OperationsForTransactionRequest`] and set the transaction hash and any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::operations::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org";
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = OperationsForTransactionRequest::new()
+    ///  .set_transaction_hash("b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020");
+    ///
+    /// let response = horizon_client.get_operations_for_transaction(&request).await;
+    ///
+    /// // Access the operations
+    /// if let Ok(operations_for_transaction_response) = response {
+    ///     for operation in operations_for_transaction_response.embedded().records() {
+    ///         println!("Operation ID: {}", operation.id());
+    ///         // Further processing...
+    ///     }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn get_operations_for_transaction(
+        &self,
+        request: &OperationsForTransactionRequest,
+    ) -> Result<OperationResponse, String> {
+        self.get::<OperationResponse>(request).await
+    }
+
+    /// Retrieves a list of order book details from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of order book details from the Horizon server.
+    /// It requires a [`DetailsRequest`] to specify the parameters for the order book details request.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to a [`DetailsRequest`] instance, containing the parameters for the order book details request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing a [`DetailsResponse`], which includes the list of order book details obtained from the Horizon server.
+    /// If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`DetailsRequest`] and set any desired filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::order_book::prelude::*;
+    /// # use stellar_rs::models::prelude::*;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// # let details_request = DetailsRequest::new()
     /// # .set_buying_asset(AssetType::Native)
     /// # .unwrap()
-    /// # .set_selling_asset(AssetType::Alphanumeric4(Asset {
+    /// # .set_selling_asset(AssetType::Alphanumeric4(AssetData {
     /// #     asset_code: "USDC".to_string(),
     /// #     asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
     /// #         .to_string(),
     /// # }))
     /// # .unwrap();
-    /// 
+    ///
     /// let response = horizon_client.get_order_book_details(&details_request).await;
-    /// 
+    ///
     /// assert!(response.is_ok());
     /// # Ok({})
     /// # }
     /// ```
-    /// 
+    ///
     pub async fn get_order_book_details(
         &self,
         request: &DetailsRequest<SellingAsset, BuyingAsset>,
     ) -> Result<DetailsResponse, String> {
         self.get::<DetailsResponse>(request).await
+    }
+
+    /// Retrieves a list of trade aggregations from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of trade aggregations from the Horizon server.
+    /// It requires a [`TradeAggregationsRequest`] to specify the parameters for the trade aggregations request.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to a [`TradeAggregationsRequest`] instance, containing the parameters for the order book details request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing a [`AllTradeAggregationsResponse`], which includes the list of order book details obtained from the Horizon server.
+    /// If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`TradeAggregationsRequest`] and set any desired filters or parameters.
+    ///
+    /// ```rust
+    /// use stellar_rs::horizon_client::HorizonClient;
+    /// use stellar_rs::trade_aggregations::prelude::*;
+    /// use stellar_rs::models::prelude::*;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
+    ///
+    /// // Example: Fetching trade aggregations
+    /// let request = TradeAggregationsRequest::new()
+    ///     .set_base_asset(AssetType::Native).unwrap()
+    ///     .set_counter_asset(AssetType::Alphanumeric4(AssetData {
+    ///         asset_code: "USDC".to_string(),
+    ///         asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string(),
+    ///     })).unwrap()
+    ///     .set_resolution(Resolution(ResolutionData::Duration604800000)).unwrap();
+    /// let response = horizon_client.get_trade_aggregations(&request).await?;
+    ///
+    /// // Process the response...
+    /// # Ok(())
+    /// # }
+    /// ```
+    ///
+    pub async fn get_trade_aggregations(
+        &self,
+        request: &TradeAggregationsRequest<BaseAsset, CounterAsset, Resolution>,
+    ) -> Result<AllTradeAggregationsResponse, String> {
+        self.get::<AllTradeAggregationsResponse>(request).await
     }
 
     /// Retrieves a list of all trades from the Horizon server.
@@ -1164,7 +1453,7 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllTradesRequest::new();
@@ -1213,11 +1502,11 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TradesForAccountRequest::new()
-    ///    .set_account_id("GCUOMNFW7YG55YHY5S5W7FE247PWODUDUZ4SOVZFEON47KZ7AXFG6D6A".to_string())
+    ///    .set_account_id("GCUOMNFW7YG55YHY5S5W7FE247PWODUDUZ4SOVZFEON47KZ7AXFG6D6A")
     ///    .unwrap();
     ///
     /// let response = horizon_client.get_trades_for_account(&request).await;
@@ -1264,11 +1553,11 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TradesForLiquidityPoolRequest::new()
-    ///    .set_liquidity_pool_id("0b3c88caa5aeada296646c1810893e3b04cba0426cff8ff6a63cf6f35cc7f5b3".to_string())
+    ///    .set_liquidity_pool_id("0b3c88caa5aeada296646c1810893e3b04cba0426cff8ff6a63cf6f35cc7f5b3")
     ///    .unwrap();
     ///
     /// let response = horizon_client.get_trades_for_liquidity_pool(&request).await;
@@ -1315,11 +1604,11 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TradesForOfferRequest::new()
-    ///    .set_offer_id("42".to_string())
+    ///    .set_offer_id("42")
     ///    .unwrap();
     ///
     /// let response = horizon_client.get_trades_for_offer(&request).await;
@@ -1340,104 +1629,6 @@ impl HorizonClient {
         request: &TradesForOfferRequest<TradeOfferId>,
     ) -> Result<AllTradesResponse, String> {
         self.get::<AllTradesResponse>(request).await
-    }
-    
-    /// Retrieves a list of all operations for a specific liquidity pool from the Horizon server.
-    ///
-    /// This asynchronous method fetches a list of all operations for a specific liquidity pool from the Horizon server.
-    /// It requires an [`OperationsForLiquidityPoolRequest`] to specify the liquidity pool ID and optional query parameters.
-    ///
-    /// # Arguments
-    /// * `request` - A reference to an [`OperationsForLiquidityPoolRequest`] instance, containing the liquidity pool ID
-    /// and optional query parameters for the operations for liquidity pool request.
-    ///
-    /// # Returns
-    ///
-    /// On successful execution, returns a `Result` containing a [`OperationResponse`], which includes
-    /// the list of all operations obtained from the Horizon server. If the request fails, it returns an error within `Result`.
-    ///
-    /// # Usage
-    /// To use this method, create an instance of [`OperationsForLiquidityPoolRequest`] and set the liquidity pool ID and any desired
-    /// filters or parameters.
-    ///
-    /// ```
-    /// # use stellar_rs::operations::prelude::*;
-    /// # use stellar_rs::models::Request;
-    /// # use stellar_rs::horizon_client::HorizonClient;
-    /// #
-    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
-    /// # let horizon_client = HorizonClient::new(base_url)
-    /// #    .expect("Failed to create Horizon Client");
-    /// let request = OperationsForLiquidityPoolRequest::new()
-    ///  .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string());
-    ///
-    /// let response = horizon_client.get_operations_for_liquidity_pool(&request).await;
-    ///
-    /// // Access the operations
-    /// if let Ok(operations_for_liquidity_pool_response) = response {
-    ///  for operation in operations_for_liquidity_pool_response.embedded().records() {
-    ///
-    ///   println!("Operation ID: {}", operation.id());
-    /// // Further processing...
-    /// }
-    /// }
-    /// # Ok({})
-    /// # }
-    /// ```
-    ///
-    pub async fn get_operations_for_liquidity_pool(
-        &self,
-        request: &OperationsForLiquidityPoolRequest,
-    ) -> Result<OperationResponse, String> {
-        self.get::<OperationResponse>(request).await
-    }
-    /// Sends a GET request to the Horizon server and retrieves a specified response type.
-    ///
-    /// This internal asynchronous method is designed to handle various GET requests to the
-    /// Horizon server. It is generic over the response type, allowing for flexibility in
-    /// handling different types of responses as dictated by the caller. This method performs
-    /// key tasks such as request validation, URL construction, sending the request, and
-    /// processing the received response.
-    ///
-    /// # Type Parameters
-    ///
-    /// * `Response` - Defines the expected response type. This type must implement the
-    /// [`Response`] trait.
-    ///
-    /// # Arguments
-    ///
-    /// * `request` - A reference to an object implementing the [`Request`] trait. It contains
-    /// specific details about the GET request to be sent.
-    ///
-    /// # Returns
-    ///
-    /// Returns a `Result` containing the response of type [`Response`] if the request is
-    /// successful. In case of failure (e.g., network issues, server errors), it returns an
-    /// error encapsulated as a `String`.
-    ///
-    /// # Example Usage
-    ///
-    /// This function is typically not called directly but through other specific methods of
-    /// the `HorizonClient` that define the type of request and response.
-    ///
-    /// # Remarks
-    ///
-    /// As a core utility function within `HorizonClient`, it centralizes the logic of sending
-    /// GET requests and handling responses. Modifications or enhancements to the request or
-    /// response handling logic should be implemented here to maintain consistency across the
-    /// client's interface.
-    ///
-    async fn get<R: Response>(&self, request: &impl Request) -> Result<R, String> {
-        // Construct the URL with potential query parameters.
-        let url = request.build_url(&self.base_url);
-
-        // Send the request and await the response.
-        let response = reqwest::get(&url).await.map_err(|e| e.to_string())?;
-
-        // Process the response and return the result.
-        let result: R = handle_response(response).await?;
-        Ok(result)
     }
 
     /// Fetches all liquidity pools from the Stellar Horizon API.
@@ -1465,10 +1656,10 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)?;
     /// let request = AllLiquidityPoolsRequest::new()
-    ///     .add_alphanumeric4_reserve("USDC".to_string(), "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string());
+    ///     .add_alphanumeric4_reserve("USDC", "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5");
     ///
     /// let response = horizon_client.get_all_liquidity_pools(&request).await;
     ///
@@ -1513,10 +1704,10 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     ///
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)?;
     /// let request = SingleLiquidityPoolRequest::new()
-    ///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string()).unwrap();
+    ///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca").unwrap();
     ///
     /// let response = horizon_client.get_single_liquidity_pool(&request).await;
     ///
@@ -1567,15 +1758,15 @@ impl HorizonClient {
     /// # use stellar_rs::horizon_client::HorizonClient;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleTransactionRequest::new()
-    ///     .set_transaction_hash("be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f".to_string()) // example transaction hash
+    ///     .set_transaction_hash("be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f") // example transaction hash
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_single_transaction(&request).await;
-    /// 
+    ///
     /// // Access the details of the claimable balance
     /// if let Ok(transaction_response) = response {
     ///     println!("Created at: {}", transaction_response.created_at());
@@ -1592,7 +1783,6 @@ impl HorizonClient {
     ) -> Result<TransactionResponse, String> {
         self.get::<TransactionResponse>(request).await
     }
-
 
     /// Retrieves a list of all transactions from the Horizon server.
     ///
@@ -1614,17 +1804,15 @@ impl HorizonClient {
     ///
     /// ```
     /// # use stellar_rs::transactions::prelude::*;
-    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::models::{Request, IncludeFailed};
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// # use stellar_rust_sdk_derive::Pagination;
-    /// # use stellar_rs::Paginatable;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllTransactionsRequest::new()
-    ///   .set_include_failed(true).unwrap();
+    ///   .set_include_failed(IncludeFailed::True).unwrap();
     ///
     /// let response = horizon_client.get_all_transactions(&request).await;
     ///
@@ -1645,7 +1833,7 @@ impl HorizonClient {
     ) -> Result<AllTransactionsResponse, String> {
         self.get::<AllTransactionsResponse>(request).await
     }
-    
+
     /// Retrieves a list of all transactions for a given account from the Horizon server.
     ///
     /// This asynchronous method fetches a list of all transactions for a given account from
@@ -1668,15 +1856,13 @@ impl HorizonClient {
     /// # use stellar_rs::transactions::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// # use stellar_rust_sdk_derive::Pagination;
-    /// # use stellar_rs::Paginatable;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TransactionsForAccountRequest::new()
-    ///     .set_account_id("GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H".to_string()).unwrap()
+    ///     .set_account_id("GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H").unwrap()
     ///     .set_include_failed(true).unwrap();
     ///
     /// let response = horizon_client.get_transactions_for_account(&request).await;
@@ -1698,7 +1884,7 @@ impl HorizonClient {
     ) -> Result<AllTransactionsResponse, String> {
         self.get::<AllTransactionsResponse>(request).await
     }
-    
+
     /// Retrieves a list of all transactions in a given ledger from the Horizon server.
     ///
     /// This asynchronous method fetches a list of all transactions in a given ledger from
@@ -1721,15 +1907,13 @@ impl HorizonClient {
     /// # use stellar_rs::transactions::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// # use stellar_rust_sdk_derive::Pagination;
-    /// # use stellar_rs::Paginatable;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TransactionsForLedgerRequest::new()
-    ///     .set_ledger_sequence("539".to_string()).unwrap()
+    ///     .set_ledger_sequence("539").unwrap()
     ///     .set_include_failed(true).unwrap();
     ///
     /// let response = horizon_client.get_transactions_for_ledger(&request).await;
@@ -1774,15 +1958,13 @@ impl HorizonClient {
     /// # use stellar_rs::transactions::prelude::*;
     /// # use stellar_rs::models::Request;
     /// # use stellar_rs::horizon_client::HorizonClient;
-    /// # use stellar_rust_sdk_derive::Pagination;
-    /// # use stellar_rs::Paginatable;
     /// #
     /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-    /// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+    /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TransactionsForLiquidityPoolRequest::new()
-    ///     .set_liquidity_pool_id("0066b15f5d0dc0be771209c33f3e4126383e58183a598eae8b3813024c6a6d10".to_string()).unwrap()
+    ///     .set_liquidity_pool_id("0066b15f5d0dc0be771209c33f3e4126383e58183a598eae8b3813024c6a6d10").unwrap()
     ///     .set_include_failed(true).unwrap();
     ///
     /// let response = horizon_client.get_transactions_for_liquidity_pool(&request).await;
@@ -1803,6 +1985,326 @@ impl HorizonClient {
         request: &TransactionsForLiquidityPoolRequest<TransactionsLiquidityPoolId>,
     ) -> Result<AllTransactionsResponse, String> {
         self.get::<AllTransactionsResponse>(request).await
+    }
+
+    /// Retrieves payment paths from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of payment paths from
+    /// the Horizon server. It requires an [`FindPaymentsPathRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`FindPaymentsPathRequest`] instance, containing the
+    /// parameters for the paths request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`PathsResponse`], which includes
+    /// the list of the payment paths obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`FindPaymentsPathRequest`] and set any desired
+    /// filters or parameters.
+    pub async fn get_find_payment_paths(
+        &self,
+        request: &FindPaymentsPathRequest<DestinationAsset, DestinationAmount, SourceAccount>,
+    ) -> Result<PathsResponse, String> {
+        self.get::<PathsResponse>(request).await
+    }
+
+    /// Retrieves a list of strict receive payment paths from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of strict receive payment paths from
+    /// the Horizon server. It requires an [`ListStrictReceivePaymentPathsRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`ListStrictReceivePaymentPathsRequest`] instance, containing the
+    /// parameters for the paths request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`PathsResponse`], which includes
+    /// the list of the strict receive payment paths obtained from the Horizon server.
+    /// If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`ListStrictReceivePaymentPathsRequest`] and set any desired
+    /// filters or parameters.
+    pub async fn get_list_strict_receive_payment_paths(
+        &self,
+        request: &ListStrictReceivePaymentPathsRequest<DestinationAsset, DestinationAmount, Source>,
+    ) -> Result<PathsResponse, String> {
+        self.get::<PathsResponse>(request).await
+    }
+
+    /// Retrieves a list of strict send payment paths from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of strict send payment paths from
+    /// the Horizon server. It requires an [`ListStrictSendPaymentPathsRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`ListStrictSendPaymentPathsRequest`] instance, containing the
+    /// parameters for the paths request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing an [`PathsResponse`], which includes
+    /// the list of the strict send payment paths obtained from the Horizon server.
+    /// If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`ListStrictSendPaymentPathsRequest`] and set any desired
+    /// filters or parameters.
+    pub async fn get_list_strict_send_payment_paths(
+        &self,
+        request: &ListStrictSendPaymentPathsRequest<SourceAsset, SourceAmount, Destination>,
+    ) -> Result<PathsResponse, String> {
+        self.get::<PathsResponse>(request).await
+    }
+
+    /// Retrieves a list of all payments from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all payments from the Horizon server.
+    /// It requires an [`AllPaymentsRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`AllPaymentsRequest`] instance, containing the
+    /// parameters for the payments request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing a [`PaymentsResponse`], which includes
+    /// the list of all payments obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`AllPaymentsRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::payments::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org";
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = AllPaymentsRequest::new()
+    ///  .set_limit(2).unwrap();
+    ///
+    /// let response = horizon_client.get_all_payments(&request).await;
+    ///
+    /// // Access the payments
+    /// if let Ok(payments_response) = response {
+    ///    for payment in payments_response.embedded().records() {
+    ///       println!("Payment ID: {}", payment.id());
+    ///      // Further processing...
+    /// }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn get_all_payments(
+        &self,
+        request: &AllPaymentsRequest,
+    ) -> Result<PaymentsResponse, String> {
+        self.get::<PaymentsResponse>(request).await
+    }
+
+    /// Retrieves a list of all payments for an account from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all payments for an account from the Horizon server.
+    /// It requires an [`PaymentsForAccountRequest`] to specify the optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`PaymentsForAccountRequest`] instance, containing the
+    /// parameters for the payments for account request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing a [`PaymentsResponse`], which includes
+    /// the list of all payments obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`PaymentsForAccountRequest`] and set any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::payments::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org";
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = PaymentsForAccountRequest::new()
+    ///  .set_limit(2).unwrap();
+    ///
+    /// let response = horizon_client.get_payments_for_account(&request).await;
+    ///
+    /// // Access the payments
+    /// if let Ok(payments_response) = response {
+    ///   for payment in payments_response.embedded().records() {
+    ///   println!("Payment ID: {}", payment.id());
+    /// // Further processing...
+    /// }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn get_payments_for_account(
+        &self,
+        request: &PaymentsForAccountRequest,
+    ) -> Result<PaymentsResponse, String> {
+        self.get::<PaymentsResponse>(request).await
+    }
+
+    /// Retrieves a list of all payments for a specific ledger from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all payments for a specific ledger from the Horizon server.
+    /// It requires an [`PaymentsForLedgerRequest`] to specify the ledger sequence number and optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`PaymentsForLedgerRequest`] instance, containing the
+    /// parameters for the payments for ledger request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing a [`PaymentsResponse`], which includes
+    /// the list of all payments obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`PaymentsForLedgerRequest`] and set the ledger sequence number and any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::payments::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org";
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = PaymentsForLedgerRequest::new()
+    /// .set_ledger_sequence("48483");
+    ///
+    /// let response = horizon_client.get_payments_for_ledger(&request).await;
+    ///
+    /// // Access the payments
+    /// if let Ok(payments_response) = response {
+    /// for payment in payments_response.embedded().records() {
+    /// println!("Payment ID: {}", payment.id());
+    ///
+    /// // Further processing...
+    /// }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn get_payments_for_ledger(
+        &self,
+        request: &PaymentsForLedgerRequest,
+    ) -> Result<PaymentsResponse, String> {
+        self.get::<PaymentsResponse>(request).await
+    }
+
+    /// Retrieves a list of all payments for a specific transaction from the Horizon server.
+    ///
+    /// This asynchronous method fetches a list of all payments for a specific transaction from the Horizon server.
+    /// It requires an [`PaymentsForTransactionRequest`] to specify the transaction hash and optional query parameters.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to an [`PaymentsForTransactionRequest`] instance, containing the
+    /// parameters for the payments for transaction request.
+    ///
+    /// # Returns
+    ///
+    /// On successful execution, returns a `Result` containing a [`PaymentsResponse`], which includes
+    /// the list of all payments obtained from the Horizon server. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`PaymentsForTransactionRequest`] and set the transaction hash and any desired
+    /// filters or parameters.
+    ///
+    /// ```
+    /// # use stellar_rs::payments::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    ///
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org";
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let request = PaymentsForTransactionRequest::new()
+    /// .set_transaction_hash("be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f");
+    ///
+    /// let response = horizon_client.get_payments_for_transaction(&request).await;
+    ///
+    /// // Access the payments
+    /// if let Ok(payments_response) = response {
+    /// for payment in payments_response.embedded().records() {
+    /// println!("Payment ID: {}", payment.id());
+    ///
+    /// // Further processing...
+    /// }
+    /// }
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn get_payments_for_transaction(
+        &self,
+        request: &PaymentsForTransactionRequest,
+    ) -> Result<PaymentsResponse, String> {
+        self.get::<PaymentsResponse>(request).await
+    }
+
+    /// Submits a transaction to the Horizon server.
+    ///
+    /// This asynchronous method submits a transaction to the Stellar network. It only takes a
+    /// single, required parameter: the signed transaction. Refer to the Transactions page for
+    /// details on how to craft a proper one. If you submit a transaction that has already been
+    /// included in a ledger, this endpoint will return the same response as would have been
+    /// returned for the original transaction submission. This allows for safe resubmission of
+    /// transactions in error scenarios, as highlighted in the error handling guide.
+    ///
+    /// # Arguments
+    /// * `request` - A reference to a [`PostTransactionRequest<TransactionEnvelope>`] instance, containing the
+    /// signed transaction to be submitted.
+    ///
+    /// # Returns
+    /// On successful execution, returns a `Result` containing a [`TransactionResponse`], which includes
+    /// the details of the submitted transaction. If the request fails, it returns an error within `Result`.
+    ///
+    /// # Usage
+    /// To use this method, create an instance of [`PostTransactionRequest`] and set the signed
+    /// transaction to be submitted.
+    /// ```
+    /// # use stellar_rs::transactions::prelude::*;
+    /// # use stellar_rs::models::Request;
+    /// # use stellar_rs::horizon_client::HorizonClient;
+    /// #
+    /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+    /// # let base_url = "https://horizon-testnet.stellar.org";
+    /// # let horizon_client = HorizonClient::new(base_url)
+    /// #    .expect("Failed to create Horizon Client");
+    /// let signed_transaction_xdr = "AAAAAgAAAABi/B0L0JGythwN1lY0aypo19NHxvLCyO5tBEcCVvwF9wAABEwAAAAAAAAAAQAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAAAQfdFrLDgzSIIugR73qs8U0ZiKbwBUclTTPh5thlbgnAFjRXhdigAAAAAAAAAAAAAAAAAA3b5KF6uk1w1fSKYLrzR8gF2lB+AHAi6oU6CaWhunAskAAAAXSHboAAAAAAAAAAAAAAAAAHfmNeMLin2aTUfxa530ZRn4zwRu7ROAQfUJeJco8HSCAAHGv1JjQAAAAAAAAAAAAAAAAAAAlRt2go9sp7E1a5ZWvr7vin4UPrFQThpQax1lOFm33AAAABdIdugAAAAAAAAAAAAAAAAAmv+knlR6JR2VqWeU0k/4FgvZ/tSV5DEY4gu0iOTKgpUAAAAXSHboAAAAAAAAAAAAAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAAF0h26AAAAAABAAAAAACVG3aCj2ynsTVrlla+vu+KfhQ+sVBOGlBrHWU4WbfcAAAABgAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bf/////////8AAAABAAAAAJr/pJ5UeiUdlalnlNJP+BYL2f7UleQxGOILtIjkyoKVAAAABgAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bf/////////8AAAABAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAAAQAAAAAAlRt2go9sp7E1a5ZWvr7vin4UPrFQThpQax1lOFm33AAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAJGE5yoAAAAAABAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAAAQAAAACa/6SeVHolHZWpZ5TST/gWC9n+1JXkMRjiC7SI5MqClQAAAAFURVNUAAAAANpaWLojuOtfC0cmMh+DvQTfPDrkfXhblQTdFXrGYc0bAAAJGE5yoAAAAAAAAAAAAAAAAABKBB+2UBMP/abwcm/M1TXO+/JQWhPwkalgqizKmXyRIQx7qh6aAFYAAAAAAAAAAARW/AX3AAAAQDVB8fT2ZXF0PZqtZX9brK0kz+P4G8VKs1DkDklP6ULsvXRexXFBdH4xG8xRAsR1HJeEBH278hiBNNvUwNw6zgzGYc0bAAAAQLgZUU/oYGL7frWDQhJHhCQu9JmfqN03PrJq4/cJrN1OSUWXnmLc94sv8m2L+cxl2p0skr2Jxy+vt1Lcxkv7wAI4WbfcAAAAQHvZEVqlygIProf3jVTZohDWm2WUNrFAFXf1LctTqDCQBHph14Eo+APwrTURLLYTIvNoXeGzBKbL03SsOARWcQLkyoKVAAAAQHAvKv2/Ro4+cNh6bKQO/G9NNiUozYysGwG1GvJQkFjwy/OTsL6WBfuI0Oye84lVBVrQVk2EY1ERFhgdMpuFSg4=";
+    /// let request = PostTransactionRequest::new()
+    ///    .set_transaction_envelope_xdr(signed_transaction_xdr).unwrap();
+    /// let response = horizon_client.post_transaction(&request).await;
+    /// # Ok({})
+    /// # }
+    /// ```
+    ///
+    pub async fn post_transaction(
+        &self,
+        request: &PostTransactionRequest<TransactionEnvelope>,
+    ) -> Result<TransactionResponse, String> {
+        self.post::<TransactionResponse>(request).await
     }
 }
 

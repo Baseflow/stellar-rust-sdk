@@ -1,9 +1,8 @@
 use crate::{
     models::{Order, Request},
     BuildQueryParametersExt,
-    Paginatable,
 };
-use stellar_rust_sdk_derive::Pagination;
+use stellar_rust_sdk_derive::pagination;
 
 /// Represents the request to fetch the effects for a specific operation from the Horizon API.
 ///
@@ -26,8 +25,6 @@ use stellar_rust_sdk_derive::Pagination;
 /// ```rust
 /// # use stellar_rs::effects::effects_for_operation_request::EffectsForOperationRequest;
 /// # use stellar_rs::models::*;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use stellar_rs::Paginatable;
 ///
 /// let request = EffectsForOperationRequest::new()
 ///     .set_operation_id("123")
@@ -38,20 +35,11 @@ use stellar_rust_sdk_derive::Pagination;
 /// // The request can now be used with a Horizon client to fetch effects.
 /// ```
 ///
-
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct EffectsForOperationRequest {
     /// The operation id to filter effects.
     operation_id: Option<String>,
-    /// A pointer to a specific location in a collection of responses, derived from the
-    ///   `paging_token` value of a record. Used for pagination control in the API response.
-    cursor: Option<u32>,
-    /// Specifies the maximum number of records to be returned in a single response.
-    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
-    limit: Option<u8>,
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    order: Option<Order>,
 }
 
 impl EffectsForOperationRequest {
@@ -59,9 +47,9 @@ impl EffectsForOperationRequest {
         EffectsForOperationRequest::default()
     }
 
-    pub fn set_operation_id(self, operation_id: &str) -> EffectsForOperationRequest {
+    pub fn set_operation_id(self, operation_id: impl Into<String>) -> EffectsForOperationRequest {
         EffectsForOperationRequest {
-            operation_id: Some(operation_id.to_string()),
+            operation_id: Some(operation_id.into()),
             ..self
         }
     }

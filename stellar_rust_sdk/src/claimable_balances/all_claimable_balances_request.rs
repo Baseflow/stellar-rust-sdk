@@ -1,5 +1,5 @@
-use crate::{models::*, BuildQueryParametersExt, Paginatable};
-use stellar_rust_sdk_derive::Pagination;
+use crate::{models::*, BuildQueryParametersExt};
+use stellar_rust_sdk_derive::pagination;
 
 /// Represents a request to list all claimable balances from the Stellar Horizon API.
 ///
@@ -19,12 +19,11 @@ use stellar_rust_sdk_derive::Pagination;
 /// ```
 /// # use stellar_rs::claimable_balances::all_claimable_balances_request::AllClaimableBalancesRequest;
 /// # use stellar_rs::models::{Asset, Order, IssuedAsset};
-/// # use crate::stellar_rs::Paginatable;
 ///
 /// let request = AllClaimableBalancesRequest::new()
-///     .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()).unwrap() // Optional sponsor filter
+///     .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap() // Optional sponsor filter
 ///     .set_asset(Asset::new().set_issued("USD", "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap()) // Optional asset filter
-///     .set_claimant("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()).unwrap() // Optional claimant filter
+///     .set_claimant("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap() // Optional claimant filter
 ///     .set_cursor(123).unwrap() // Optional cursor for pagination
 ///     .set_limit(100).unwrap() // Optional limit for response records
 ///     .set_order(Order::Desc); // Optional order of records
@@ -32,7 +31,8 @@ use stellar_rust_sdk_derive::Pagination;
 /// // Use with HorizonClient::get_all_claimable_balances
 /// ```
 ///
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct AllClaimableBalancesRequest {
     /// Optional. Representing the account ID of the sponsor. When set, the response will
     ///   only include claimable balances sponsored by the specified account.
@@ -45,18 +45,6 @@ pub struct AllClaimableBalancesRequest {
     /// Optional. Represents the account ID of the claimant. If provided, the response will
     ///   include only claimable balances that are claimable by the specified account.
     claimant: Option<String>,
-
-    /// A pointer to a specific location in a collection of responses, derived from the
-    ///   `paging_token` value of a record. Used for pagination control in the API response.
-    cursor: Option<u32>,
-
-    /// Specifies the maximum number of records to be returned in a single response.
-    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
-    limit: Option<u8>,
-
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    order: Option<Order>,
 }
 
 impl Request for AllClaimableBalancesRequest {
@@ -93,7 +81,8 @@ impl AllClaimableBalancesRequest {
     /// # Arguments
     /// * `sponsor` - A Stellar public key of the sponsor whose claimable balances are to be retrieved.
     ///
-    pub fn set_sponsor(self, sponsor: String) -> Result<AllClaimableBalancesRequest, String> {
+    pub fn set_sponsor(self, sponsor: impl Into<String>) -> Result<AllClaimableBalancesRequest, String> {
+        let sponsor = sponsor.into();
         if let Err(e) = is_public_key(&sponsor) {
             return Err(e.to_string());
         }
@@ -121,7 +110,8 @@ impl AllClaimableBalancesRequest {
     /// # Arguments
     /// * `claimant` - A Stellar public key of the claimant whose claimable balances are to be retrieved.
     ///
-    pub fn set_claimant(self, claimant: String) -> Result<AllClaimableBalancesRequest, String> {
+    pub fn set_claimant(self, claimant: impl Into<String>) -> Result<AllClaimableBalancesRequest, String> {
+        let claimant = claimant.into();
         if let Err(e) = is_public_key(&claimant) {
             return Err(e.to_string());
         }

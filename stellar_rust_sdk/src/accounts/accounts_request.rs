@@ -18,7 +18,7 @@ use crate::{models::*, BuildQueryParametersExt};
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// #
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-/// # let base_url = "https://horizon-testnet.stellar.org".to_string();
+/// # let base_url = "https://horizon-testnet.stellar.org";
 /// # let horizon_client = HorizonClient::new(base_url)
 /// #    .expect("Failed to create Horizon Client");
 /// let request = AccountsRequest::new()
@@ -196,9 +196,9 @@ macro_rules! valid_generic_account_request_impl {
 /// # use stellar_rs::accounts::prelude::AccountsRequest;
 /// # use stellar_rs::horizon_client::HorizonClient;
 /// # use stellar_rs::models::Request;
-/// # let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+/// # let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 /// let request = AccountsRequest::new()
-///     .set_sponsor_filter("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
+///     .set_sponsor_filter("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
 ///     .unwrap();
 /// // Now, you can pass `request` to `horizon_client.get_account_list`.
 /// ```
@@ -345,11 +345,12 @@ impl AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidity
     ///
     pub fn set_sponsor_filter(
         self,
-        sponsor: String,
+        sponsor: impl Into<String>
     ) -> Result<
         AccountsRequest<SponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidityPoolFilter>,
         String,
     > {
+        let sponsor = sponsor.into();
         if let Err(e) = is_public_key(&sponsor) {
             return Err(e.to_string());
         }
@@ -437,7 +438,7 @@ mod tests {
 
     #[test]
     fn test_accounts_request_set_sponsor_filter() {
-        let request = AccountsRequest::new().set_sponsor_filter("sponsor".to_string());
+        let request = AccountsRequest::new().set_sponsor_filter("sponsor");
 
         assert!(request.is_err());
     }
@@ -445,9 +446,7 @@ mod tests {
     #[test]
     fn test_accounts_set_sponsor_valid() {
         let request = AccountsRequest::new()
-            .set_sponsor_filter(
-                "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string(),
-            )
+            .set_sponsor_filter("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
             .unwrap();
         assert_eq!(
             request.sponsor.0,

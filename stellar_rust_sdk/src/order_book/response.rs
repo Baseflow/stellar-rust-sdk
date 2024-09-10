@@ -95,4 +95,3 @@ impl Response for DetailsResponse {
         Ok(operation_record)
     }
 }
-

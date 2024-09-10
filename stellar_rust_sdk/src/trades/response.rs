@@ -70,7 +70,7 @@ pub struct TradeResponse {
     ledger_close_time: String,
     // Can be set to `all`, `orderbook`, or `liquidity_pools` to filter only trades executed across a given mechanism.
     trade_type: String,
-    // The value for the liquidity pool fee's base points. 
+    // The value for the liquidity pool fee's base points.
     liquidity_pool_fee_bp: Option<u32>,
     // The base liquidity pool ID, if this trade was executed against a liquidity pool.
     base_liquidity_pool_id: Option<String>,
@@ -88,10 +88,10 @@ pub struct TradeResponse {
     base_asset_issuer: Option<String>,
     // The counter liquidity pool ID, if this trade was executed against a liquidity pool.
     counter_liquidity_pool_id: Option<String>,
-    // The counter offer ID.
-    counter_offer_id: String,
+    // The counter offer ID. Optional.
+    counter_offer_id: Option<String>,
     // The account ID of the counter party for this trade.
-    counter_account: String,
+    counter_account: Option<String>,
     // The amount of the counter asset that was moved from `counter_account` to `base_account`.
     counter_amount: String,
     // The type for the counter asset. Either `native`, `credit_alphanum4`, or `credit_alphanum12`.

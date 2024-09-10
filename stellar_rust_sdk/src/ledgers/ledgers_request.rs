@@ -1,5 +1,5 @@
-use crate::{models::*, BuildQueryParametersExt, Paginatable};
-use stellar_rust_sdk_derive::Pagination;
+use crate::{models::*, BuildQueryParametersExt};
+use stellar_rust_sdk_derive::pagination;
 
 /// Represents a request to fetch ledger data from the Stellar Horizon API.
 ///
@@ -16,8 +16,6 @@ use stellar_rust_sdk_derive::Pagination;
 /// ```rust
 /// # use stellar_rs::ledgers::ledgers_request::LedgersRequest;
 /// # use stellar_rs::models::*;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use stellar_rs::Paginatable;
 ///
 /// let request = LedgersRequest::new()
 ///     .set_cursor(1234).unwrap()
@@ -27,19 +25,10 @@ use stellar_rust_sdk_derive::Pagination;
 /// // The request can now be used with a Horizon client to fetch ledgers.
 /// ```
 ///
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct LedgersRequest {
-    /// A pointer to a specific location in a collection of responses, derived from the
-    ///   `paging_token` value of a record. Used for pagination control in the API response.
-    cursor: Option<u32>,
-
-    /// Specifies the maximum number of records to be returned in a single response.
-    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
-    limit: Option<u8>,
-
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    order: Option<Order>,
+    // All fields are injected by the `pagination` macro.
 }
 
 impl LedgersRequest {

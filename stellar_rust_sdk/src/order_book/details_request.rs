@@ -1,25 +1,9 @@
+use crate::models::prelude::AssetType;
 use crate::models::Request;
 pub struct SellingAsset(AssetType);
 pub struct NoSellingAsset;
 pub struct BuyingAsset(AssetType);
 pub struct NoBuyingAsset;
-
-#[derive(PartialEq, Debug)]
-pub struct Asset {
-    pub asset_code: String,
-    pub asset_issuer: String,
-}
-
-/// Represents the asset type of an asset.
-#[derive(PartialEq, Debug)]
-pub enum AssetType {
-    /// A native asset_type type. It holds no Value
-    Native,
-    /// An alphanumeric 4 asset_type type. It holds a Asset struct with asset code and asset issuer.
-    Alphanumeric4(Asset),
-    /// An alphanumeric 12 asset_type type. It holds a Asset struct with asset code and asset issuer.
-    Alphanumeric12(Asset),
-}
 
 /// Represents the request for the details of an order book.
 #[derive(PartialEq, Debug)]
@@ -40,10 +24,10 @@ impl DetailsRequest<NoSellingAsset, NoBuyingAsset> {
     }
 
     /// Sets the selling asset of the order book.
-    /// 
+    ///
     /// # Arguments
     /// * `selling_asset` - An [`AssetType`] enum value specifying the selling asset.
-    /// 
+    ///
     pub fn set_selling_asset(
         self,
         selling_asset: AssetType,
@@ -55,7 +39,7 @@ impl DetailsRequest<NoSellingAsset, NoBuyingAsset> {
     }
 
     /// Sets the buying asset of the order book.
-    /// 
+    ///
     /// # Arguments
     /// * `buying_asset` - An [`AssetType`] enum value specifying the buying asset.
     pub fn set_buying_asset(
@@ -71,9 +55,8 @@ impl DetailsRequest<NoSellingAsset, NoBuyingAsset> {
 
 /// Implements the setting of a selling asset of the order book with a buying asset and no selling asset
 impl DetailsRequest<NoSellingAsset, BuyingAsset> {
-
     /// Sets the selling asset of the order book.
-    /// 
+    ///
     /// # Arguments
     /// * `selling_asset` - An [`AssetType`] enum value specifying the selling asset.
     pub fn set_selling_asset(
@@ -89,9 +72,8 @@ impl DetailsRequest<NoSellingAsset, BuyingAsset> {
 
 /// Implements the setting of a buying asset of the order book with a selling asset and no buying asset
 impl DetailsRequest<SellingAsset, NoBuyingAsset> {
-
     /// Sets the buying asset of the order book.
-    /// 
+    ///
     /// # Arguments
     /// * `buying_asset` - An [`AssetType`] enum value specifying the buying asset.
     pub fn set_buying_asset(
@@ -155,11 +137,12 @@ impl Request for DetailsRequest<SellingAsset, BuyingAsset> {
 }
 
 mod tests {
-    
+
     #[test]
     fn test_details_request() {
+        use super::DetailsRequest;
+        use crate::models::prelude::{AssetData, AssetType};
         use crate::models::Request;
-        use super::{Asset, AssetType, DetailsRequest};
         let details_request = DetailsRequest::new()
             .set_buying_asset(AssetType::Native)
             .unwrap()
@@ -174,9 +157,10 @@ mod tests {
         let details_request = DetailsRequest::new()
             .set_buying_asset(AssetType::Native)
             .unwrap()
-            .set_selling_asset(AssetType::Alphanumeric4(Asset {
+            .set_selling_asset(AssetType::Alphanumeric4(AssetData {
                 asset_code: "USDC".to_string(),
-                asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string(),
+                asset_issuer: "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
+                    .to_string(),
             }))
             .unwrap();
 

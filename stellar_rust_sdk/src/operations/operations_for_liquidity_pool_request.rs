@@ -1,25 +1,14 @@
-use stellar_rust_sdk_derive::Pagination;
-use crate::Paginatable;
-
 use crate::{
     models::{IncludeFailed, Order, Request},
     BuildQueryParametersExt,
 };
+use stellar_rust_sdk_derive::pagination;
 
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct OperationsForLiquidityPoolRequest {
     /// A unique identifier for the liquidity pool of the operation(s).
     liquidity_pool_id: Option<String>,
-    /// A number that points to a specific location in a collection of responses and is pulled
-    /// from the paging_token value of a record.
-    cursor: Option<u32>,
-    /// The maximum number of records returned. The limit can range from 1 to 200 - an upper limit
-    /// that is hardcoded in Horizon for performance reasons. If this argument isn’t designated, it
-    /// defaults to 10.
-    limit: Option<u8>,
-    /// A designation of the [`Order`] in which records should appear. Options include [`Order::Asc`] (ascending)
-    /// or [`Order::Desc`] (descending). If this argument isn’t set, it defaults to asc.
-    order: Option<Order>,
     /// Set to true to include failed operations in results. Options include true and false.
     include_failed: Option<IncludeFailed>,
 }
@@ -49,9 +38,12 @@ impl OperationsForLiquidityPoolRequest {
     /// # Arguments
     /// * `account_id` - A `String` representing the account ID.
     ///
-    pub fn set_liquidity_pool_id(self, liquidity_pool_id: String) -> OperationsForLiquidityPoolRequest {
+    pub fn set_liquidity_pool_id(
+        self,
+        liquidity_pool_id: impl Into<String>,
+    ) -> OperationsForLiquidityPoolRequest {
         OperationsForLiquidityPoolRequest {
-            liquidity_pool_id: Some(liquidity_pool_id),
+            liquidity_pool_id: Some(liquidity_pool_id.into()),
             ..self
         }
     }

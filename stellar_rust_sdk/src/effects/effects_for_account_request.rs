@@ -1,9 +1,8 @@
 use crate::{
     models::{Order, Request},
     BuildQueryParametersExt,
-    Paginatable,
 };
-use stellar_rust_sdk_derive::Pagination;
+use stellar_rust_sdk_derive::pagination;
 
 /// Represents the request to fetch effects for a specific account from the Horizon API.
 ///
@@ -26,8 +25,6 @@ use stellar_rust_sdk_derive::Pagination;
 /// ```rust
 /// # use stellar_rs::effects::effects_for_account_request::EffectsForAccountRequest;
 /// # use stellar_rs::models::*;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use crate::stellar_rs::Paginatable;
 ///
 /// let request = EffectsForAccountRequest::new()
 ///     .set_cursor(1234).unwrap()
@@ -37,20 +34,11 @@ use stellar_rust_sdk_derive::Pagination;
 /// // The request can now be used with a Horizon client to fetch effects.
 /// ```
 ///
-
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct EffectsForAccountRequest {
     /// The accounts public id
     account_id: Option<String>,
-    /// A pointer to a specific location in a collection of responses, derived from the
-    ///   `paging_token` value of a record. Used for pagination control in the API response.
-    cursor: Option<u32>,
-    /// Specifies the maximum number of records to be returned in a single response.
-    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
-    limit: Option<u8>,
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    order: Option<Order>,
 }
 
 impl EffectsForAccountRequest {
@@ -64,9 +52,9 @@ impl EffectsForAccountRequest {
     /// # Arguments
     /// * `account_id` - A `String` value representing the account id.
     ///
-    pub fn set_account_id(self, account_id: String) -> EffectsForAccountRequest {
+    pub fn set_account_id(self, account_id: impl Into<String>) -> EffectsForAccountRequest {
         EffectsForAccountRequest {
-            account_id: Some(account_id),
+            account_id: Some(account_id.into()),
             ..self
         }
     }
@@ -109,7 +97,7 @@ mod tests {
     #[test]
     fn test_effects_for_account_request_with_params() {
         let request = EffectsForAccountRequest::new()
-            .set_account_id("GBL3QJ2MB3KJ7YV7YVXJ5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z".to_string())
+            .set_account_id("GBL3QJ2MB3KJ7YV7YVXJ5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z5ZL5V6Z")
             .set_cursor(1)
             .unwrap()
             .set_limit(10)

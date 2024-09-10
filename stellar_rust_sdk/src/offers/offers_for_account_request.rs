@@ -1,4 +1,5 @@
 use crate::models::*;
+use stellar_rust_sdk_derive::pagination;
 
 /// Represents the ID of an account for which the offers are to be retrieved.
 #[derive(Default, Clone)]
@@ -7,8 +8,9 @@ pub struct OfferAccountId(String);
 /// Represents the absence of the ID of an account for which the offers are to be retrieved.
 #[derive(Default, Clone)]
 pub struct NoOfferAccountId;
-#[derive(Default)]
 
+#[pagination]
+#[derive(Default)]
 pub struct OffersForAccountRequest<I> {
     /// The ID of the account for which the offers are to be retrieved.
     account_id: I,
@@ -22,14 +24,18 @@ impl OffersForAccountRequest<NoOfferAccountId> {
 
     pub fn set_account_id(
         self,
-        account_id: String,
+        account_id: impl Into<String>
     ) -> Result<OffersForAccountRequest<OfferAccountId>, String> {
+        let account_id = account_id.into();
         if let Err(e) = is_public_key(&account_id) {
             return Err(e.to_string());
         }
 
         Ok(OffersForAccountRequest {
-            account_id: OfferAccountId(account_id,)
+            account_id: OfferAccountId(account_id),
+            cursor: self.cursor,
+            limit: self.limit,
+            order: self.order,
         })
     }
 }

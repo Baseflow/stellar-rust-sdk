@@ -26,7 +26,7 @@ impl Response for AllOffersResponse {
 
 /// Represents the asset to buy or to sell.
 ///
-/// This struct details information about the asset to buy or to sell, including its type, 
+/// This struct details information about the asset to buy or to sell, including its type,
 /// code (optional) and issuer (optional).
 ///
 #[derive(Debug, Deserialize, Serialize, Clone, Getters)]

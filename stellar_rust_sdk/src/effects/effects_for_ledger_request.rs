@@ -1,9 +1,8 @@
 use crate::{
     models::{Order, Request},
     BuildQueryParametersExt,
-    Paginatable,
 };
-use stellar_rust_sdk_derive::Pagination;
+use stellar_rust_sdk_derive::pagination;
 
 /// Represents a request to fetch effects associated with a specific ledger from the Stellar Horizon API.
 ///
@@ -15,8 +14,6 @@ use stellar_rust_sdk_derive::Pagination;
 /// ```rust
 /// # use stellar_rs::effects::effects_for_ledger_request::EffectsForLedgerRequest;
 /// # use stellar_rs::models::Order;
-/// # use stellar_rust_sdk_derive::Pagination;
-/// # use stellar_rs::Paginatable;
 ///
 /// let mut request = EffectsForLedgerRequest::new()
 ///     .set_sequence(&1000)
@@ -25,19 +22,11 @@ use stellar_rust_sdk_derive::Pagination;
 /// // The request is now ready to be used with a Horizon client to fetch effects for the specified ledger.
 /// ```
 ///
-#[derive(Default, Pagination)]
+#[pagination]
+#[derive(Default)]
 pub struct EffectsForLedgerRequest {
     /// The ledger's sequence number for which effects are to be retrieved.
     sequence: Option<u32>,
-    /// A pointer to a specific location in a collection of responses, derived from the
-    ///   `paging_token` value of a record. Used for pagination control in the API response.
-    cursor: Option<u32>,
-    /// Specifies the maximum number of records to be returned in a single response.
-    ///   The range for this parameter is from 1 to 200. The default value is set to 10.
-    limit: Option<u8>,
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    ///   and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    order: Option<Order>,
 }
 
 impl EffectsForLedgerRequest {

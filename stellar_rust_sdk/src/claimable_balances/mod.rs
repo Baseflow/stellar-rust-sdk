@@ -89,14 +89,16 @@ fn parse_epoch(epoch_str: &str) -> DateTime<Utc> {
 }
 
 pub mod prelude {
-    pub use super::{all_claimable_balances_request::*, response::*, single_claimable_balance_request::*};
+    pub use super::{
+        all_claimable_balances_request::*, response::*, single_claimable_balance_request::*,
+    };
 }
 
 #[cfg(test)]
 mod tests {
     use super::parse_epoch;
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient, Paginatable};
+    use crate::horizon_client::HorizonClient;
     use chrono::DateTime;
     use chrono::{TimeZone, Utc};
     use lazy_static::lazy_static;
@@ -151,7 +153,8 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_all_claimable_balances() {
-        static ID: &str = "0000000010a8f6991f79df306f22a2032f6007ad594dd30f966b21556f7d75658ec1c4e9";
+        static ID: &str =
+            "0000000010a8f6991f79df306f22a2032f6007ad594dd30f966b21556f7d75658ec1c4e9";
         static ASSET: &str = "native";
         static AMOUNT: &str = "3.0000000";
         static SPONSOR: &str = "GCRHSLTKEPLLRLC4MB5OJPO4DJYIMYHYBDHX4TET3XKUKFAYMWERHXVG";
@@ -160,8 +163,7 @@ mod tests {
         static CLAWBACK_ENABLED: &bool = &false;
 
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         // construct request
         let all_claimable_balances_request =
@@ -183,51 +185,41 @@ mod tests {
         assert_eq!(predicate.is_valid(valid_date), true);
         let record = &binding.embedded().records()[0];
 
-        assert_eq!(
-            record.id(),
-            ID
-        );
+        assert_eq!(record.id(), ID);
 
-        assert_eq!(
-            record.asset(),
-            ASSET
-        );
+        assert_eq!(record.asset(), ASSET);
 
         assert_eq!(record.amount(), AMOUNT);
 
-        assert_eq!(
-            record.sponsor(),
-            SPONSOR
-        );
+        assert_eq!(record.sponsor(), SPONSOR);
 
         assert_eq!(record.last_modified_ledger(), LAST_MODIFIED_LEDGER);
 
-        assert_eq!(
-            record.last_modified_time().to_string(),
-            LAST_MODIFIED_TIME
-        );
+        assert_eq!(record.last_modified_time().to_string(), LAST_MODIFIED_TIME);
 
         assert_eq!(record.flags().clawback_enabled(), CLAWBACK_ENABLED);
     }
 
     #[tokio::test]
     async fn test_get_single_claimable_balance() {
-        static CLAIMABLE_BALANCE_ID: &str = "00000000fe3d8209ed9662e92f0d3a5c55068e18bd5e0697c3c6db6ac4c0870c6f3e0b38";
-        static ID: &str = "00000000fe3d8209ed9662e92f0d3a5c55068e18bd5e0697c3c6db6ac4c0870c6f3e0b38";
+        static CLAIMABLE_BALANCE_ID: &str =
+            "00000000fe3d8209ed9662e92f0d3a5c55068e18bd5e0697c3c6db6ac4c0870c6f3e0b38";
+        static ID: &str =
+            "00000000fe3d8209ed9662e92f0d3a5c55068e18bd5e0697c3c6db6ac4c0870c6f3e0b38";
         static ASSET: &str = "IOM:GBSUM7J4W2IH5LAMSQGI7Y2OZBV2BJB6EOK7TIK66DXNJUU4JAY36VR2";
         static AMOUNT: &str = "2.0000000";
         static SPONSOR: &str = "GA7UL5DDCP6WR7KV5GXKXSHBMP577U7TBDBTBY33J57RZE2A37KW67JB";
         static LAST_MODIFIED_LEDGER: &i64 = &9234;
         static LAST_MODIFIED_TIME: &str = "2024-06-12T10:19:12Z";
         static CLAWBACK_ENABLED: &bool = &false;
-        static PAGING_TOKEN: &str = "9234-00000000fe3d8209ed9662e92f0d3a5c55068e18bd5e0697c3c6db6ac4c0870c6f3e0b38";
+        static PAGING_TOKEN: &str =
+            "9234-00000000fe3d8209ed9662e92f0d3a5c55068e18bd5e0697c3c6db6ac4c0870c6f3e0b38";
 
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let single_claimable_balance_request = SingleClaimableBalanceRequest::new()
-            .set_claimable_balance_id(CLAIMABLE_BALANCE_ID.to_string());
+            .set_claimable_balance_id(CLAIMABLE_BALANCE_ID);
 
         let single_claimable_balance_response = horizon_client
             .get_single_claimable_balance(&single_claimable_balance_request)
@@ -245,39 +237,40 @@ mod tests {
         assert_eq!(predicate.is_valid(valid_date), true);
 
         let single_claimable_balance_response = single_claimable_balance_response.unwrap();
-        assert_eq!(
-            single_claimable_balance_response.id().to_string(),
-            ID
-        );
+        assert_eq!(single_claimable_balance_response.id().to_string(), ID);
 
-        assert_eq!(
-            single_claimable_balance_response.asset().to_string(),
-            ASSET);
+        assert_eq!(single_claimable_balance_response.asset().to_string(), ASSET);
 
         assert_eq!(
             single_claimable_balance_response.amount().to_string(),
-            AMOUNT);
+            AMOUNT
+        );
 
         assert_eq!(
             single_claimable_balance_response.sponsor().to_string(),
-            SPONSOR);
+            SPONSOR
+        );
 
         assert_eq!(
             single_claimable_balance_response.last_modified_ledger(),
-            LAST_MODIFIED_LEDGER);
+            LAST_MODIFIED_LEDGER
+        );
 
         assert_eq!(
             single_claimable_balance_response
                 .last_modified_time()
                 .to_string(),
-            LAST_MODIFIED_TIME);
+            LAST_MODIFIED_TIME
+        );
 
         assert_eq!(
             single_claimable_balance_response.flags().clawback_enabled(),
-            CLAWBACK_ENABLED);
+            CLAWBACK_ENABLED
+        );
 
         assert_eq!(
             single_claimable_balance_response.paging_token().to_string(),
-            PAGING_TOKEN);
+            PAGING_TOKEN
+        );
     }
 }

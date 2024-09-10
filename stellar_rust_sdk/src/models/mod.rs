@@ -1,18 +1,62 @@
+mod request_models;
 mod response_models;
 
 pub mod prelude {
+    pub use super::request_models::*;
     pub use super::response_models::*;
     pub use super::Request;
     pub use super::Response;
 }
 
+pub(crate) trait PostRequest {
+    /// Generates a vector of tuples, containing key/value pairs to be used in the request's formdata.
+    ///
+    /// This method is responsible for constructing the formdata body for an HTTP request.
+    /// It processes the request's parameters and converts them into a vector of tuples. These tuples
+    /// contain key/value pairs.
+    ///
+    /// # Returns
+    /// Returns a `Vector` representing the query parameters of the request. If the request does not
+    /// have any parameters, or if they are not applicable, this method may return an empty vector.
+    ///
+    /// # Usage
+    /// This method is typically used internally when creating the formdata body for the request.
+    ///
+    fn get_body(&self) -> Vec<(String, String)>;
+
+    /// Constructs the complete URL for the HTTP request.
+    ///
+    /// This method combines the base URL of the Horizon server with the query parameters specific
+    /// to the request. It is responsible for assembling the full URL used to make the HTTP request
+    /// to the server. The method should appropriately format the URL, ensuring that the base URL
+    /// and query parameters are correctly concatenated.
+    ///
+    /// # Arguments
+    /// * `base_url` - A string slice representing the base URL of the Horizon server. This URL
+    ///   provides the foundational part of the request URL.
+    ///
+    /// # Returns
+    /// Returns a `String` representing the full URL for the request. This URL includes the base
+    /// URL and any query parameters, correctly formatted for use in an HTTP request.
+    ///
+    /// # Usage
+    /// This method is typically called when an HTTP request is being prepared. The returned URL
+    /// is used as the target for the request.
+    ///
+    /// Implementers of this method should ensure that the full URL is correctly structured,
+    /// particularly in cases where the base URL has specific path components or the request
+    /// includes complex query parameters.
+    ///
+    fn build_url(&self, base_url: &str) -> String;
+}
+
 /// Defines methods for creating HTTP requests to the Horizon server.
 ///
-/// Implementors of this trait represent different types of requests that can be made to the server.
+/// Implementers of this trait represent different types of requests that can be made to the server.
 /// The trait provides methods for assembling the request's query parameters and building the
 /// full URL for the request.
 ///
-/// Implementors of this trait should provide the specific logic for these methods based on the
+/// Implementers of this trait should provide the specific logic for these methods based on the
 /// type of request they represent.
 ///
 pub trait Request {
@@ -217,7 +261,7 @@ impl std::fmt::Display for Asset<IssuedAsset> {
 /// * `Asc` - Indicates ascending order.
 /// * `Desc` - Indicates descending order.
 ///
-#[derive(PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum Order {
     Asc,
     Desc,
@@ -232,8 +276,10 @@ impl std::fmt::Display for Order {
     }
 }
 
+#[derive(Default, Clone, PartialEq)]
 pub enum IncludeFailed {
     True,
+    #[default]
     False,
 }
 

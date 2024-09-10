@@ -1,28 +1,10 @@
+use crate::models::prelude::AssetType;
 use crate::models::*;
-use stellar_rust_sdk_derive::Pagination;
-use crate::Paginatable;
+use stellar_rust_sdk_derive::pagination;
 
 /// Represents the base and counter assets. Contains an enum of one of the possible asset types.
 #[derive(PartialEq, Debug)]
 pub struct TradeAsset(AssetType);
-
-// Contains the details of a non-native asset.
-#[derive(PartialEq, Debug)]
-pub struct AssetData {
-    pub asset_code: String,
-    pub asset_issuer: String,
-}
-
-/// Represents the asset type of an asset.
-#[derive(PartialEq, Debug)]
-pub enum AssetType {
-    /// A native asset_type type. It holds no value.
-    Native,
-    /// An alphanumeric 4 asset_type type. It holds an Asset struct with asset code and asset issuer.
-    Alphanumeric4(AssetData),
-    /// An alphanumeric 12 asset_type type. It holds an Asset struct with asset code and asset issuer.
-    Alphanumeric12(AssetData),
-}
 
 /// Represents a request to list all trades from the Stellar Horizon API.
 ///
@@ -39,8 +21,8 @@ pub enum AssetType {
 ///
 /// # Example
 /// ```
-/// use stellar_rs::{trades::prelude::*, models::*, Paginatable};
-/// use stellar_rust_sdk_derive::Pagination;
+/// use stellar_rs::{trades::prelude::*, models::*};
+/// use stellar_rs::models::prelude::AssetType;
 ///
 /// let request = AllTradesRequest::new()
 ///     .set_base_asset(AssetType::Native).unwrap() // Optional selling asset filter
@@ -51,7 +33,8 @@ pub enum AssetType {
 /// // Use with HorizonClient::get_all_offers
 /// ```
 ///
-#[derive(PartialEq, Default, Pagination)]
+#[pagination]
+#[derive(PartialEq, Default)]
 pub struct AllTradesRequest {
     /// The base asset of the trade.
     pub base_asset: Option<TradeAsset>,
@@ -59,17 +42,7 @@ pub struct AllTradesRequest {
     pub counter_asset: Option<TradeAsset>,
     // The offer ID. Used to filter for trades originating from a specific offer.
     pub offer_id: Option<String>,
-    /// A pointer to a specific location in a collection of responses, derived from the
-    /// `paging_token` value of a record. Used for pagination control in the API response.
-    pub cursor: Option<u32>,
-    /// Specifies the maximum number of records to be returned in a single response.
-    /// The range for this parameter is from 1 to 200. The default value is set to 10.
-    pub limit: Option<u8>,
-    /// Determines the [`Order`] of the records in the response. Valid options are [`Order::Asc`] (ascending)
-    /// and [`Order::Desc`] (descending). If not specified, it defaults to ascending.
-    pub order: Option<Order>,
 }
-
 
 impl AllTradesRequest {
     /// Creates a new `AllOffersRequest` with default parameters.
@@ -89,10 +62,7 @@ impl AllTradesRequest {
     /// # Returns
     ///
     /// The updated `AllTradesRequest` with the base asset set.    
-    pub fn set_base_asset(
-        self,
-        base_asset: AssetType,
-    ) -> Result<AllTradesRequest, String> {
+    pub fn set_base_asset(self, base_asset: AssetType) -> Result<AllTradesRequest, String> {
         Ok(AllTradesRequest {
             base_asset: Some(TradeAsset(base_asset)),
             ..self
@@ -111,10 +81,7 @@ impl AllTradesRequest {
     /// # Returns
     ///
     /// The updated `AllTradesRequest` with the counter asset set.    
-    pub fn set_counter_asset(
-        self,
-        counter_asset: AssetType,
-    ) -> Result<AllTradesRequest, String> {
+    pub fn set_counter_asset(self, counter_asset: AssetType) -> Result<AllTradesRequest, String> {
         Ok(AllTradesRequest {
             counter_asset: Some(TradeAsset(counter_asset)),
             ..self
@@ -125,7 +92,7 @@ impl AllTradesRequest {
 impl Request for AllTradesRequest {
     fn get_query_parameters(&self) -> String {
         let mut query: Vec<String> = Vec::new();
-        
+
         if let Some(base_asset) = &self.base_asset {
             match &base_asset.0 {
                 AssetType::Native => {

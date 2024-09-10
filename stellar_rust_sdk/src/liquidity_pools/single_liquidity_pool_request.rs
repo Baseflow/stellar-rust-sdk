@@ -29,7 +29,7 @@ pub struct NoLiquidityPoolId;
 /// # use stellar_rs::liquidity_pools::prelude::SingleLiquidityPoolRequest;
 /// # use stellar_rs::models::Request;
 /// let request = SingleLiquidityPoolRequest::new()
-///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string())
+///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca")
 ///     .unwrap();
 /// // Use with HorizonClient::get_single_liquidity_pool
 /// ```
@@ -53,11 +53,10 @@ impl SingleLiquidityPoolRequest<NoLiquidityPoolId> {
     ///
     pub fn set_liquidity_pool_id(
         self,
-        liquidity_pool_id: String,
+        liquidity_pool_id: impl Into<String>,
     ) -> Result<SingleLiquidityPoolRequest<LiquidityPoolId>, String> {
-
         Ok(SingleLiquidityPoolRequest {
-            liquidity_pool_id: LiquidityPoolId(liquidity_pool_id),
+            liquidity_pool_id: LiquidityPoolId(liquidity_pool_id.into()),
         })
     }
 }

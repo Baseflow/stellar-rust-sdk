@@ -1,7 +1,7 @@
 /// Provides the `AllEffectsRequest` struct.
 ///
 /// This module contains the `AllEffectsRequest` struct, which is designed to create requests
-/// for querying comprehensive lists of effects from the Horizon server. 
+/// for querying comprehensive lists of effects from the Horizon server.
 ///
 /// The `AllEffectsRequest` struct is meant to be used in conjunction with the [`HorizonClient`](crate::horizon_client::HorizonClient)
 /// to perform the actual API calls and fetch asset data. It adheres to the structure
@@ -119,7 +119,7 @@ pub mod prelude {
 #[cfg(test)]
 mod tests {
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient, Paginatable};
+    use crate::horizon_client::HorizonClient;
 
     #[test]
     fn dummy_test() {
@@ -128,8 +128,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_all_effects() {
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let num_records_to_fetch = 2;
 
@@ -174,8 +173,7 @@ mod tests {
         const CREATED_AT: &str = "2024-06-11T21:36:12Z";
         const STARTING_BALANCE: &str = "10000000000.0000000";
         // Initialize horizon client
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let effects_for_account_request = EffectsForAccountRequest::new().set_limit(2).unwrap();
 
@@ -209,8 +207,7 @@ mod tests {
         const CREATED_AT: &str = "2024-06-11T21:36:12Z";
         const STARTING_BALANCE: &str = "10000000000.0000000";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let effects_for_liquidity_pools_request =
             EffectsForLiquidityPoolRequest::new().set_limit(2).unwrap();
@@ -237,7 +234,7 @@ mod tests {
         let _effects_for_liquidity_pools_request_with_id = EffectsForLiquidityPoolRequest::new()
             .set_limit(2)
             .expect("REASON")
-            .set_liquidity_pool_id("0000000459561504769-0000000001".to_string());
+            .set_liquidity_pool_id("0000000459561504769-0000000001");
         let effects_for_liquidity_pools_response = horizon_client
             .get_effects_for_liquidity_pools(&effects_for_liquidity_pools_request)
             .await;
@@ -258,8 +255,7 @@ mod tests {
         const CREATED_AT: &str = "2024-06-11T22:16:55Z";
         const STARTING_BALANCE: &str = "0.0000000";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let effects_for_ledger_request =
             EffectsForLedgerRequest::new().set_sequence(LEDGER_SEQUENCE);
@@ -271,33 +267,19 @@ mod tests {
         let binding = effects_for_ledger_response.clone().unwrap();
         let record = &binding.embedded().records()[0];
 
-        assert_eq!(
-            record.id,
-            ID);
+        assert_eq!(record.id, ID);
 
-        assert_eq!(
-            record.paging_token,
-            PAGING_TOKEN);
+        assert_eq!(record.paging_token, PAGING_TOKEN);
 
-        assert_eq!(
-            record.account,
-            ACCOUNT);
+        assert_eq!(record.account, ACCOUNT);
 
-        assert_eq!(
-            record.effect_type,
-            RECORD_TYPE);
+        assert_eq!(record.effect_type, RECORD_TYPE);
 
-        assert_eq!(
-            record.type_i,
-            TYPE_I);
+        assert_eq!(record.type_i, TYPE_I);
 
-        assert_eq!(
-            record.created_at,
-            CREATED_AT);
+        assert_eq!(record.created_at, CREATED_AT);
 
-        assert_eq!(
-            record.starting_balance.as_ref().unwrap(),
-            STARTING_BALANCE);
+        assert_eq!(record.starting_balance.as_ref().unwrap(), STARTING_BALANCE);
     }
 
     #[tokio::test]
@@ -311,8 +293,7 @@ mod tests {
         const CREATED_AT: &str = "2024-06-11T21:36:12Z";
         const STARTING_BALANCE: &str = "10000000000.0000000";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let effects_for_operation_request = EffectsForOperationRequest::new()
             .set_operation_id(OPERATION_ID)
@@ -351,11 +332,10 @@ mod tests {
         const CREATED_AT: &str = "2024-06-11T21:36:12Z";
         const STARTING_BALANCE: &str = "10000000000.0000000";
 
-        let horizon_client =
-            HorizonClient::new("https://horizon-testnet.stellar.org".to_string()).unwrap();
+        let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let effects_for_transaction_request = EffectForTransactionRequest::new()
-            .set_transaction_hash(TRANSACTION_HASH.to_string())
+            .set_transaction_hash(TRANSACTION_HASH)
             .set_limit(2)
             .unwrap();
 
