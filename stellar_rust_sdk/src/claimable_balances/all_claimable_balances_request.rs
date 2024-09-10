@@ -21,9 +21,9 @@ use stellar_rust_sdk_derive::pagination;
 /// # use stellar_rs::models::{Asset, Order, IssuedAsset};
 ///
 /// let request = AllClaimableBalancesRequest::new()
-///     .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()).unwrap() // Optional sponsor filter
+///     .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap() // Optional sponsor filter
 ///     .set_asset(Asset::new().set_issued("USD", "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap()) // Optional asset filter
-///     .set_claimant("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()).unwrap() // Optional claimant filter
+///     .set_claimant("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap() // Optional claimant filter
 ///     .set_cursor(123).unwrap() // Optional cursor for pagination
 ///     .set_limit(100).unwrap() // Optional limit for response records
 ///     .set_order(Order::Desc); // Optional order of records
@@ -81,7 +81,8 @@ impl AllClaimableBalancesRequest {
     /// # Arguments
     /// * `sponsor` - A Stellar public key of the sponsor whose claimable balances are to be retrieved.
     ///
-    pub fn set_sponsor(self, sponsor: String) -> Result<AllClaimableBalancesRequest, String> {
+    pub fn set_sponsor(self, sponsor: impl Into<String>) -> Result<AllClaimableBalancesRequest, String> {
+        let sponsor = sponsor.into();
         if let Err(e) = is_public_key(&sponsor) {
             return Err(e.to_string());
         }
@@ -109,7 +110,8 @@ impl AllClaimableBalancesRequest {
     /// # Arguments
     /// * `claimant` - A Stellar public key of the claimant whose claimable balances are to be retrieved.
     ///
-    pub fn set_claimant(self, claimant: String) -> Result<AllClaimableBalancesRequest, String> {
+    pub fn set_claimant(self, claimant: impl Into<String>) -> Result<AllClaimableBalancesRequest, String> {
+        let claimant = claimant.into();
         if let Err(e) = is_public_key(&claimant) {
             return Err(e.to_string());
         }

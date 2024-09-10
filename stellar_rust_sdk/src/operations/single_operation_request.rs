@@ -24,7 +24,7 @@ pub struct NoOperationId;
 /// # use stellar_rs::operations::prelude::SingleOperationRequest;
 /// # use stellar_rs::models::Request;
 /// let request = SingleOperationRequest::new()
-///    .set_operation_id("123456".to_string());
+///    .set_operation_id("123456");
 /// // Use with HorizonClient::get_single_operation
 /// ```
 ///
@@ -45,9 +45,9 @@ impl SingleOperationRequest<NoOperationId> {
     /// # Arguments
     /// * `operation_id` - A `String` specifying the operation ID.
     ///
-    pub fn set_operation_id(self, operation_id: String) -> SingleOperationRequest<OperationId> {
+    pub fn set_operation_id(self, operation_id: impl Into<String>) -> SingleOperationRequest<OperationId> {
         SingleOperationRequest {
-            operation_id: OperationId(operation_id),
+            operation_id: OperationId(operation_id.into()),
         }
     }
 }

@@ -32,10 +32,10 @@ impl TradesForLiquidityPoolRequest<TradeLiquidityPoolId> {
     ///
     pub fn set_liquidity_pool_id(
         self,
-        liquidity_pool_id: String,
+        liquidity_pool_id: impl Into<String>,
     ) -> Result<TradesForLiquidityPoolRequest<TradeLiquidityPoolId>, String> {
         Ok(TradesForLiquidityPoolRequest {
-            liquidity_pool_id: TradeLiquidityPoolId(liquidity_pool_id),
+            liquidity_pool_id: TradeLiquidityPoolId(liquidity_pool_id.into()),
             cursor: self.cursor,
             limit: self.limit,
             order: self.order,

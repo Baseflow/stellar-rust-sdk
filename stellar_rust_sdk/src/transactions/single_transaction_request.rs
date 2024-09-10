@@ -27,8 +27,9 @@ impl SingleTransactionRequest<NoTransactionHash> {
     ///
     pub fn set_transaction_hash(
         self,
-        transaction_hash: String,
+        transaction_hash: impl Into<String>,
     ) -> Result<SingleTransactionRequest<TransactionHash>, String> {
+        let transaction_hash = transaction_hash.into();
         match transaction_hash.len() {
             64 => Ok(SingleTransactionRequest {
                 transaction_hash: TransactionHash(transaction_hash),

@@ -33,7 +33,7 @@ pub struct NoClaimableBalanceId;
 /// # async fn fetch_single_claimable_balance() -> Result<(), Box<dyn std::error::Error>> {
 /// #     let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org")?;
 /// let request = SingleClaimableBalanceRequest::new()
-///     .set_claimable_balance_id("00000000".to_string());  // Example claimable balance ID
+///     .set_claimable_balance_id("00000000");  // Example claimable balance ID
 ///
 /// let response = horizon_client.get_single_claimable_balance(&request).await?;
 /// // Process the response
@@ -59,10 +59,10 @@ impl SingleClaimableBalanceRequest<NoClaimableBalanceId> {
     ///
     pub fn set_claimable_balance_id(
         self,
-        claimable_balance_id: String,
+        claimable_balance_id: impl Into<String>,
     ) -> SingleClaimableBalanceRequest<ClaimableBalanceId> {
         SingleClaimableBalanceRequest {
-            claimable_balance_id: ClaimableBalanceId(claimable_balance_id),
+            claimable_balance_id: ClaimableBalanceId(claimable_balance_id.into()),
         }
     }
 }
@@ -91,13 +91,13 @@ mod tests {
     #[test]
     fn test_single_claimable_balance_request() {
         let request =
-            SingleClaimableBalanceRequest::new().set_claimable_balance_id("00000000".to_string());
+            SingleClaimableBalanceRequest::new().set_claimable_balance_id("00000000");
 
-        assert_eq!(request.get_query_parameters(), "00000000".to_string());
+        assert_eq!(request.get_query_parameters(), "00000000");
 
         assert_eq!(
             request.build_url("https://horizon-testnet.stellar.org"),
-            "https://horizon-testnet.stellar.org/claimable_balances/00000000".to_string()
+            "https://horizon-testnet.stellar.org/claimable_balances/00000000"
         );
     }
 }

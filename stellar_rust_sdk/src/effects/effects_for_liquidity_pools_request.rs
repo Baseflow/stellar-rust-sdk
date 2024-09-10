@@ -25,7 +25,7 @@ use stellar_rust_sdk_derive::pagination;
 /// # use stellar_rs::models::*;
 ///
 /// let request = EffectsForLiquidityPoolRequest::new()
-///     .set_liquidity_pool_id("01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d".to_string())
+///     .set_liquidity_pool_id("01c58ab8fb283c8b083a26bf2fe06b7b6c6304c13f9d29d956cdf15a48bea72d")
 ///     .set_cursor(1234).unwrap()
 ///     .set_limit(20).unwrap()
 ///     .set_order(Order::Desc);
@@ -53,10 +53,10 @@ impl EffectsForLiquidityPoolRequest {
     ///
     pub fn set_liquidity_pool_id(
         self,
-        liquidity_pool_id: String,
+        liquidity_pool_id: impl Into<String>,
     ) -> EffectsForLiquidityPoolRequest {
         EffectsForLiquidityPoolRequest {
-            liquidity_pool_id: Some(liquidity_pool_id),
+            liquidity_pool_id: Some(liquidity_pool_id.into()),
             ..self
         }
     }
@@ -94,7 +94,7 @@ mod tests {
     #[test]
     fn test_effects_for_liquidity_pools_request() {
         let request = EffectsForLiquidityPoolRequest::new()
-            .set_liquidity_pool_id("liquidity_pool_id".to_string())
+            .set_liquidity_pool_id("liquidity_pool_id")
             .set_cursor(1)
             .unwrap()
             .set_limit(10)

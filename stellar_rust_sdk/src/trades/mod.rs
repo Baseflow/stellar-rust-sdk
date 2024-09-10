@@ -316,7 +316,7 @@ pub mod test {
         const PRICE_D: &str = "93486278";
 
         let trades_for_liquidity_pool_request = TradesForLiquidityPoolRequest::new()
-            .set_liquidity_pool_id(LIQUIDITY_POOL_ID.to_string())
+            .set_liquidity_pool_id(LIQUIDITY_POOL_ID)
             .unwrap();
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
         let trades_for_liquidity_pool_response = horizon_client

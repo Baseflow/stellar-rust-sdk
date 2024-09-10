@@ -367,7 +367,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = AllClaimableBalancesRequest::new()
-    ///     .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
+    ///     .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_all_claimable_balances(&request).await;
@@ -425,7 +425,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     ///  let request = SingleClaimableBalanceRequest::new()
-    ///    .set_claimable_balance_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string());
+    ///    .set_claimable_balance_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca");
     ///
     /// let response = horizon_client.get_single_claimable_balance(&request).await;
     ///
@@ -627,7 +627,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = EffectForTransactionRequest::new()
-    ///  .set_transaction_hash("transaction_hash".to_string());
+    ///  .set_transaction_hash("transaction_hash");
     ///
     /// let response = horizon_client.get_effects_for_transaction(&request).await;
     ///
@@ -1114,7 +1114,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleOperationRequest::new()
-    ///    .set_operation_id("459561504769".to_string());
+    ///    .set_operation_id("459561504769");
     ///
     /// let response = horizon_client.get_single_operation(&request).await;
     ///
@@ -1261,7 +1261,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = OperationsForLiquidityPoolRequest::new()
-    ///  .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string());
+    ///  .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca");
     ///
     /// let response = horizon_client.get_operations_for_liquidity_pool(&request).await;
     ///
@@ -1312,7 +1312,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = OperationsForTransactionRequest::new()
-    ///  .set_transaction_hash("b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020".to_string());
+    ///  .set_transaction_hash("b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020");
     ///
     /// let response = horizon_client.get_operations_for_transaction(&request).await;
     ///
@@ -1557,7 +1557,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TradesForLiquidityPoolRequest::new()
-    ///    .set_liquidity_pool_id("0b3c88caa5aeada296646c1810893e3b04cba0426cff8ff6a63cf6f35cc7f5b3".to_string())
+    ///    .set_liquidity_pool_id("0b3c88caa5aeada296646c1810893e3b04cba0426cff8ff6a63cf6f35cc7f5b3")
     ///    .unwrap();
     ///
     /// let response = horizon_client.get_trades_for_liquidity_pool(&request).await;
@@ -1707,7 +1707,7 @@ impl HorizonClient {
     /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)?;
     /// let request = SingleLiquidityPoolRequest::new()
-    ///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string()).unwrap();
+    ///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca").unwrap();
     ///
     /// let response = horizon_client.get_single_liquidity_pool(&request).await;
     ///
@@ -1762,7 +1762,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleTransactionRequest::new()
-    ///     .set_transaction_hash("be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f".to_string()) // example transaction hash
+    ///     .set_transaction_hash("be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f") // example transaction hash
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_single_transaction(&request).await;
@@ -1913,7 +1913,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TransactionsForLedgerRequest::new()
-    ///     .set_ledger_sequence("539".to_string()).unwrap()
+    ///     .set_ledger_sequence("539").unwrap()
     ///     .set_include_failed(true).unwrap();
     ///
     /// let response = horizon_client.get_transactions_for_ledger(&request).await;
@@ -1964,7 +1964,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TransactionsForLiquidityPoolRequest::new()
-    ///     .set_liquidity_pool_id("0066b15f5d0dc0be771209c33f3e4126383e58183a598eae8b3813024c6a6d10".to_string()).unwrap()
+    ///     .set_liquidity_pool_id("0066b15f5d0dc0be771209c33f3e4126383e58183a598eae8b3813024c6a6d10").unwrap()
     ///     .set_include_failed(true).unwrap();
     ///
     /// let response = horizon_client.get_transactions_for_liquidity_pool(&request).await;
@@ -2189,7 +2189,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = PaymentsForLedgerRequest::new()
-    /// .set_ledger_sequence("48483".to_string());
+    /// .set_ledger_sequence("48483");
     ///
     /// let response = horizon_client.get_payments_for_ledger(&request).await;
     ///
@@ -2240,7 +2240,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = PaymentsForTransactionRequest::new()
-    /// .set_transaction_hash("be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f".to_string());
+    /// .set_transaction_hash("be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f");
     ///
     /// let response = horizon_client.get_payments_for_transaction(&request).await;
     ///

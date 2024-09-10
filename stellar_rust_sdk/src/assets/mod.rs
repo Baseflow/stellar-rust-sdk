@@ -105,6 +105,11 @@ pub mod test {
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         // construct request
+        AllAssetsRequest::new()
+            .set_asset_code(ASSET_CODE)
+            .unwrap()
+            .set_asset_issuer(ASSET_ISSUER)
+            .unwrap();
         let all_assets_request: AllAssetsRequest = AllAssetsRequest::new().set_limit(1).unwrap();
 
         let response = horizon_client.get_all_assets(&all_assets_request).await;

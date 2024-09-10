@@ -21,7 +21,7 @@ use stellar_rust_sdk_derive::pagination;
 /// # use stellar_rs::models::*;
 ///
 /// let request = EffectForTransactionRequest::new()
-///     .set_transaction_hash("transaction_hash".to_string())
+///     .set_transaction_hash("transaction_hash")
 ///     .set_cursor(1234).unwrap()
 ///     .set_limit(20).unwrap()
 ///     .set_order(Order::Desc);
@@ -46,9 +46,9 @@ impl EffectForTransactionRequest {
     /// # Arguments
     /// * `liquidity_pool_id` - A `String` value representing the liquidity pool id.
     ///
-    pub fn set_transaction_hash(self, transaction_hash: String) -> EffectForTransactionRequest {
+    pub fn set_transaction_hash(self, transaction_hash: impl Into<String>) -> EffectForTransactionRequest {
         EffectForTransactionRequest {
-            transaction_hash: Some(transaction_hash),
+            transaction_hash: Some(transaction_hash.into()),
             ..self
         }
     }
@@ -85,7 +85,7 @@ mod tests {
     #[test]
     fn test_effects_for_liquidity_pools_request() {
         let request = EffectForTransactionRequest::new()
-            .set_transaction_hash("transaction_hash".to_string())
+            .set_transaction_hash("transaction_hash")
             .set_cursor(1)
             .unwrap()
             .set_limit(10)

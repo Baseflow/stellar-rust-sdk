@@ -28,9 +28,9 @@ impl PaymentsForTransactionRequest {
     ///
     pub fn set_transaction_hash(
         mut self,
-        transaction_hash: String,
+        transaction_hash: impl Into<String>,
     ) -> PaymentsForTransactionRequest {
-        self.transaction_hash = Some(transaction_hash);
+        self.transaction_hash = Some(transaction_hash.into());
         self
     }
 }

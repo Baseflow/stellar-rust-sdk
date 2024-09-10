@@ -47,9 +47,9 @@ impl EffectsForOperationRequest {
         EffectsForOperationRequest::default()
     }
 
-    pub fn set_operation_id(self, operation_id: &str) -> EffectsForOperationRequest {
+    pub fn set_operation_id(self, operation_id: impl Into<String>) -> EffectsForOperationRequest {
         EffectsForOperationRequest {
-            operation_id: Some(operation_id.to_string()),
+            operation_id: Some(operation_id.into()),
             ..self
         }
     }

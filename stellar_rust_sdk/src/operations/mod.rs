@@ -196,7 +196,7 @@ pub mod tests {
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let single_operation_request =
-            SingleOperationRequest::new().set_operation_id(ID.to_string());
+            SingleOperationRequest::new().set_operation_id(ID);
 
         let all_operations_response: Result<Operation, String> = horizon_client
             .get_single_operation(&single_operation_request)
@@ -412,7 +412,7 @@ pub mod tests {
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let operations_for_transaction_request = OperationsForTransactionRequest::new()
-            .set_transaction_hash(REQUEST_TRANSACTION_HASH.to_string())
+            .set_transaction_hash(REQUEST_TRANSACTION_HASH)
             .set_limit(2)
             .unwrap();
 

@@ -156,7 +156,7 @@ pub mod test {
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let payments_for_ledger_request: PaymentsForLedgerRequest = PaymentsForLedgerRequest::new()
-            .set_ledger_sequence(LEDGER_SEQUENCE.to_string())
+            .set_ledger_sequence(LEDGER_SEQUENCE)
             .set_include_failed(IncludeFailed::False)
             .set_limit(1)
             .unwrap();
@@ -190,9 +190,7 @@ pub mod test {
 
         let payments_for_transaction_request: PaymentsForTransactionRequest =
             PaymentsForTransactionRequest::new()
-                .set_transaction_hash(
-                    "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020".to_string(),
-                )
+                .set_transaction_hash("b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020")
                 .set_limit(1)
                 .unwrap();
 

@@ -40,10 +40,10 @@ impl OperationsForLiquidityPoolRequest {
     ///
     pub fn set_liquidity_pool_id(
         self,
-        liquidity_pool_id: String,
+        liquidity_pool_id: impl Into<String>,
     ) -> OperationsForLiquidityPoolRequest {
         OperationsForLiquidityPoolRequest {
-            liquidity_pool_id: Some(liquidity_pool_id),
+            liquidity_pool_id: Some(liquidity_pool_id.into()),
             ..self
         }
     }

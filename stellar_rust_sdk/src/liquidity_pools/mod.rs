@@ -302,7 +302,7 @@ async fn test_get_single_liquidity_pool() {
 
     let single_liquidity_pool_request = SingleLiquidityPoolRequest::new()
         .set_liquidity_pool_id(
-            "03eac63a834b31201652ed575c816b4e7beb0c4eece47caf956ff83648f486d0".to_string(),
+            "03eac63a834b31201652ed575c816b4e7beb0c4eece47caf956ff83648f486d0"
         )
         .unwrap();
 

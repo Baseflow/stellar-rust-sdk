@@ -29,8 +29,8 @@ impl PaymentsForLedgerRequest {
     /// # Arguments
     /// * `account_id` - The Stellar address of the account for which you want to retrieve payments.
     ///
-    pub fn set_ledger_sequence(mut self, ledger_sequence: String) -> PaymentsForLedgerRequest {
-        self.ledger_sequence = Some(ledger_sequence);
+    pub fn set_ledger_sequence(mut self, ledger_sequence: impl Into<String>) -> PaymentsForLedgerRequest {
+        self.ledger_sequence = Some(ledger_sequence.into());
         self
     }
 

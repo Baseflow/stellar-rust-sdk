@@ -20,8 +20,8 @@ use stellar_rust_sdk_derive::pagination;
 /// use stellar_rs::models::{Asset, NativeAsset, Order};
 ///
 /// let request = AllOffersRequest::new()
-///     .set_sponsor("GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string()).unwrap() // Optional sponsor filter
-///     .set_seller("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string()).unwrap() // Optional seller filter
+///     .set_sponsor("GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5").unwrap() // Optional sponsor filter
+///     .set_seller("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap() // Optional seller filter
 ///     .set_selling(Asset::new().set_issued("USD", "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap()) // Optional selling asset filter
 ///     .set_buying(Asset::new().set_issued("USD", "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7").unwrap()) // Optional buying asset filter
 ///     .set_cursor(123).unwrap() // Optional cursor for pagination
@@ -83,7 +83,8 @@ impl AllOffersRequest {
     /// # Arguments
     /// * `sponsor` - A Stellar public key of the sponsor to filter offers by.
     ///
-    pub fn set_sponsor(self, sponsor: String) -> Result<AllOffersRequest, String> {
+    pub fn set_sponsor(self, sponsor: impl Into<String>) -> Result<AllOffersRequest, String> {
+        let sponsor = sponsor.into();
         if let Err(e) = is_public_key(&sponsor) {
             return Err(e.to_string());
         }
@@ -99,7 +100,8 @@ impl AllOffersRequest {
     /// # Arguments
     /// * `seller` - A Stellar public key of the seller to filter offers by.
     ///
-    pub fn set_seller(self, seller: String) -> Result<AllOffersRequest, String> {
+    pub fn set_seller(self, seller: impl Into<String>) -> Result<AllOffersRequest, String> {
+        let seller = seller.into();
         if let Err(e) = is_public_key(&seller) {
             return Err(e.to_string());
         }

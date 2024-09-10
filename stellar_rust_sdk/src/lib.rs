@@ -368,7 +368,7 @@ pub mod fee_stats;
 ///
 /// // Example: Fetching fee stats
 /// let single_lp_request = SingleLiquidityPoolRequest::new()
-///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca".to_string())
+///     .set_liquidity_pool_id("000000006520216af66d20d63a58534d6cbdf28ba9f2a9c1e03f8d9a756bb7d988b29bca")
 ///     .unwrap();
 /// let lp_response = horizon_client.get_single_liquidity_pool(&single_lp_request).await?;
 ///
@@ -571,7 +571,7 @@ pub mod trade_aggregations;
 ///
 /// // Example: Fetching a transaction
 /// let single_transaction_request = SingleTransactionRequest::new()
-///     .set_transaction_hash("be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f".to_string())
+///     .set_transaction_hash("be0d59c8706e8fd525d2ab10910a55ec57323663858c65b330a3f93afb13ab0f")
 ///     .unwrap();
 /// let single_transaction_response = horizon_client.get_single_transaction(&single_transaction_request).await?;
 ///

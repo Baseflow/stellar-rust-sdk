@@ -34,10 +34,10 @@ impl TransactionsForLiquidityPoolRequest<NoTransactionsLiquidityPoolId> {
     ///
     pub fn set_liquidity_pool_id(
         self,
-        liquidity_pool_id: String,
+        liquidity_pool_id: impl Into<String>,
     ) -> Result<TransactionsForLiquidityPoolRequest<TransactionsLiquidityPoolId>, String> {
         Ok(TransactionsForLiquidityPoolRequest {
-            liquidity_pool_id: TransactionsLiquidityPoolId(liquidity_pool_id),
+            liquidity_pool_id: TransactionsLiquidityPoolId(liquidity_pool_id.into()),
             include_failed: self.include_failed,
             cursor: self.cursor,
             limit: self.limit,

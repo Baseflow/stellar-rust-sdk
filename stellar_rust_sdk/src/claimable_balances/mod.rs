@@ -219,7 +219,7 @@ mod tests {
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let single_claimable_balance_request = SingleClaimableBalanceRequest::new()
-            .set_claimable_balance_id(CLAIMABLE_BALANCE_ID.to_string());
+            .set_claimable_balance_id(CLAIMABLE_BALANCE_ID);
 
         let single_claimable_balance_response = horizon_client
             .get_single_claimable_balance(&single_claimable_balance_request)

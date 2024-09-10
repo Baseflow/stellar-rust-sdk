@@ -238,7 +238,7 @@ pub mod test {
 
         // Create a request and supply values for optional filters.
         let all_offers_request = AllOffersRequest::new()
-            .set_seller(SELLER.to_string())
+            .set_seller(SELLER)
             .unwrap()
             .set_cursor(1)
             .unwrap()

@@ -34,10 +34,10 @@ impl TransactionsForLedgerRequest<NoTransactionsLedgerId> {
     ///
     pub fn set_ledger_sequence(
         self,
-        ledger_sequence: String,
+        ledger_sequence: impl Into<String>,
     ) -> Result<TransactionsForLedgerRequest<TransactionsLedgerId>, String> {
         Ok(TransactionsForLedgerRequest {
-            ledger_sequence: TransactionsLedgerId(ledger_sequence),
+            ledger_sequence: TransactionsLedgerId(ledger_sequence.into()),
             include_failed: self.include_failed,
             cursor: self.cursor,
             limit: self.limit,

@@ -234,7 +234,7 @@ mod tests {
         let _effects_for_liquidity_pools_request_with_id = EffectsForLiquidityPoolRequest::new()
             .set_limit(2)
             .expect("REASON")
-            .set_liquidity_pool_id("0000000459561504769-0000000001".to_string());
+            .set_liquidity_pool_id("0000000459561504769-0000000001");
         let effects_for_liquidity_pools_response = horizon_client
             .get_effects_for_liquidity_pools(&effects_for_liquidity_pools_request)
             .await;
@@ -335,7 +335,7 @@ mod tests {
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let effects_for_transaction_request = EffectForTransactionRequest::new()
-            .set_transaction_hash(TRANSACTION_HASH.to_string())
+            .set_transaction_hash(TRANSACTION_HASH)
             .set_limit(2)
             .unwrap();
 

@@ -163,7 +163,7 @@ pub mod test {
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let single_transaction_request = SingleTransactionRequest::new()
-            .set_transaction_hash(ID.to_string())
+            .set_transaction_hash(ID)
             .unwrap();
 
         let single_transaction_response = horizon_client
@@ -385,7 +385,7 @@ pub mod test {
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let transactions_for_ledger_request = TransactionsForLedgerRequest::new()
-            .set_ledger_sequence(LEDGER_SEQUENCE.to_string())
+            .set_ledger_sequence(LEDGER_SEQUENCE)
             .unwrap()
             .set_include_failed(true)
             .unwrap();
@@ -490,7 +490,7 @@ pub mod test {
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let transactions_for_liquidity_pool_request = TransactionsForLiquidityPoolRequest::new()
-            .set_liquidity_pool_id(LIQUIDITY_POOL_ID.to_string())
+            .set_liquidity_pool_id(LIQUIDITY_POOL_ID)
             .unwrap()
             .set_include_failed(true)
             .unwrap();
