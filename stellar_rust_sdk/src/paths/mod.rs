@@ -136,6 +136,11 @@ mod tests {
     use super::{AssetType, IssuedOrNative};
     use crate::{horizon_client::HorizonClient, models::*};
 
+    const SOURCE_ASSET_TYPE: &str = "native";
+    const SOURCE_AMOUNT: &str = "100.0000000";
+    const DESTINATION_ASSET_TYPE: &str = "native";
+    const DESTINATION_AMOUNT: &str = "100.0000000";
+
     #[tokio::test]
     async fn test_find_payment_paths_request() {
         use crate::paths::{Asset, PATHS_PATH};
@@ -200,10 +205,6 @@ mod tests {
 
         let response = horizon_client.get_find_payment_paths(&request).await;
 
-        const SOURCE_ASSET_TYPE: &str = "native";
-        const SOURCE_AMOUNT: &str = "100.0000000";
-        const DESTINATION_ASSET_TYPE: &str = "native";
-        const DESTINATION_AMOUNT: &str = "100.0000000";
 
         assert!(response.clone().is_ok());
         let binding = response.unwrap();
@@ -307,11 +308,6 @@ mod tests {
         let response = horizon_client
             .get_list_strict_receive_payment_paths(&request)
             .await;
-
-        const SOURCE_ASSET_TYPE: &str = "native";
-        const SOURCE_AMOUNT: &str = "100.0000000";
-        const DESTINATION_ASSET_TYPE: &str = "native";
-        const DESTINATION_AMOUNT: &str = "100.0000000";
 
         assert!(response.clone().is_ok());
         let binding = response.unwrap();
@@ -439,11 +435,6 @@ mod tests {
         let response = horizon_client
             .get_list_strict_send_payment_paths(&request)
             .await;
-
-        const SOURCE_ASSET_TYPE: &str = "native";
-        const SOURCE_AMOUNT: &str = "100.0000000";
-        const DESTINATION_ASSET_TYPE: &str = "native";
-        const DESTINATION_AMOUNT: &str = "100.0000000";
 
         assert!(response.clone().is_ok());
         let binding = response.unwrap();
