@@ -3,14 +3,14 @@ use stellar_rust_sdk_derive::Pagination;
 use crate::Paginatable;
 
 /// Represents the ID of a liquidity pool for which the trades are to be retrieved.
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Debug)]
 pub struct TradeLiquidityPoolId(String);
 
 /// Represents the absence of an ID of a liquidity pool for which the trades are to be retrieved.
 #[derive(Default, Clone)]
 pub struct NoTradeLiquidityPoolId;
 
-#[derive(Default, Pagination)]
+#[derive(Default, Pagination, Debug)]
 pub struct TradesForLiquidityPoolRequest<I> {
     /// The ID of the liquidity pool for which the trades are to be retrieved.
     liquidity_pool_id: I,

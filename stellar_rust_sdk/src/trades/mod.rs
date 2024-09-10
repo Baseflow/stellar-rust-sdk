@@ -145,8 +145,8 @@ pub mod test {
         assert_eq!(response.base_asset_type().as_ref().unwrap(), BASE_ASSET_TYPE);
         assert_eq!(response.base_asset_code().as_ref().unwrap(), BASE_ASSET_CODE);
         assert_eq!(response.base_asset_issuer().as_ref().unwrap(), BASE_ASSET_ISSUER);
-        assert_eq!(response.counter_offer_id(), COUNTER_OFFER_ID);
-        assert_eq!(response.counter_account(), COUNTER_ACCOUNT);
+        assert_eq!(response.counter_offer_id().as_ref().unwrap(), COUNTER_OFFER_ID);
+        assert_eq!(response.counter_account().as_ref().unwrap(), COUNTER_ACCOUNT);
         assert_eq!(response.counter_amount(), COUNTER_AMOUNT);
         assert_eq!(response.counter_asset_type().as_ref().unwrap(), COUNTER_ASSET_TYPE);
         assert_eq!(response.counter_asset_code().as_ref().unwrap(), COUNTER_ASSET_CODE);
@@ -211,8 +211,8 @@ pub mod test {
         assert_eq!(response.base_asset_type().as_ref().unwrap(), BASE_ASSET_TYPE);
         assert_eq!(response.base_asset_code().as_ref().unwrap(), BASE_ASSET_CODE);
         assert_eq!(response.base_asset_issuer().as_ref().unwrap(), BASE_ASSET_ISSUER);
-        assert_eq!(response.counter_offer_id(), COUNTER_OFFER_ID);
-        assert_eq!(response.counter_account(), COUNTER_ACCOUNT);
+        assert_eq!(response.counter_offer_id().as_ref().unwrap(), COUNTER_OFFER_ID);
+        assert_eq!(response.counter_account().as_ref().unwrap(), COUNTER_ACCOUNT);
         assert_eq!(response.counter_amount(), COUNTER_AMOUNT);
         assert_eq!(response.counter_asset_type().as_ref().unwrap(), COUNTER_ASSET_TYPE);
         assert_eq!(response.counter_asset_code().as_ref().unwrap(), COUNTER_ASSET_CODE);
@@ -260,6 +260,9 @@ pub mod test {
             .get_trades_for_liquidity_pool(&trades_for_liquidity_pool_request)
             .await;
 
+        println!("{:?}", trades_for_liquidity_pool_request);
+        println!("{:?}", trades_for_liquidity_pool_response.clone().unwrap());
+
         assert!(trades_for_liquidity_pool_response.clone().is_ok());
         let binding = trades_for_liquidity_pool_response.unwrap();
         let response = &binding.embedded().records()[0];
@@ -277,8 +280,8 @@ pub mod test {
         assert_eq!(response.base_asset_type().as_ref().unwrap(), BASE_ASSET_TYPE);
         assert_eq!(response.base_asset_code().as_ref().unwrap(), BASE_ASSET_CODE);
         assert_eq!(response.base_asset_issuer().as_ref().unwrap(), BASE_ASSET_ISSUER);
-        assert_eq!(response.counter_offer_id(), COUNTER_OFFER_ID);
-        assert_eq!(response.counter_account(), COUNTER_ACCOUNT);
+        assert_eq!(response.counter_offer_id().as_ref().unwrap(), COUNTER_OFFER_ID);
+        assert_eq!(response.counter_account().as_ref().unwrap(), COUNTER_ACCOUNT);
         assert_eq!(response.counter_amount(), COUNTER_AMOUNT);
         assert_eq!(response.counter_asset_type().as_ref().unwrap(), COUNTER_ASSET_TYPE);
         assert_eq!(response.counter_asset_code().as_ref().unwrap(), COUNTER_ASSET_CODE);
@@ -343,8 +346,8 @@ pub mod test {
         assert_eq!(response.base_asset_type().as_ref().unwrap(), BASE_ASSET_TYPE);
         assert_eq!(response.base_asset_code().as_ref().unwrap(), BASE_ASSET_CODE);
         assert_eq!(response.base_asset_issuer().as_ref().unwrap(), BASE_ASSET_ISSUER);
-        assert_eq!(response.counter_offer_id(), COUNTER_OFFER_ID);
-        assert_eq!(response.counter_account(), COUNTER_ACCOUNT);
+        assert_eq!(response.counter_offer_id().as_ref().unwrap(), COUNTER_OFFER_ID);
+        assert_eq!(response.counter_account().as_ref().unwrap(), COUNTER_ACCOUNT);
         assert_eq!(response.counter_amount(), COUNTER_AMOUNT);
         assert_eq!(response.counter_asset_type().as_ref().unwrap(), COUNTER_ASSET_TYPE);
         assert_eq!(response.counter_asset_code().as_ref().unwrap(), COUNTER_ASSET_CODE);
