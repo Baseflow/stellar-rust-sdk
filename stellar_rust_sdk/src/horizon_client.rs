@@ -1659,7 +1659,7 @@ impl HorizonClient {
     /// # let base_url = "https://horizon-testnet.stellar.org";
     /// # let horizon_client = HorizonClient::new(base_url)?;
     /// let request = AllLiquidityPoolsRequest::new()
-    ///     .add_alphanumeric4_reserve("USDC".to_string(), "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string());
+    ///     .add_alphanumeric4_reserve("USDC", "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5");
     ///
     /// let response = horizon_client.get_all_liquidity_pools(&request).await;
     ///

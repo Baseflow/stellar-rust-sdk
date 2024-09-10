@@ -1,27 +1,8 @@
 use crate::{
-    models::{Order, Request},
+    models::{prelude::{AssetData, AssetType}, Order, Request},
     BuildQueryParametersExt,
 };
 use stellar_rust_sdk_derive::pagination;
-
-/// Represents a reserve for a liquidity pool. This struct is used to specify the asset code and
-#[derive(PartialEq, Debug)]
-pub struct Reserve {
-    pub asset_code: String,
-    pub asset_issuer: String,
-}
-
-/// Represents a reserve type for a liquidity pool. This enum is used to specify the type of reserve
-/// to filter by when querying the Horizon server for liquidity pool records.
-#[derive(PartialEq, Debug)]
-pub enum ReserveType {
-    /// A native reserve type. It holds no value.
-    Native,
-    /// An alphanumeric 4 reserve type. It holds a Reserve struct with asset code and asset issuer.
-    Alphanumeric4(Reserve),
-    /// An alphanumeric 12 reserve type. It holds a Reserve struct with asset code and asset issuer.
-    Alphanumeric12(Reserve),
-}
 
 /// Represents a request for listing all liquidity pools on the Stellar Horizon API.
 ///
@@ -42,7 +23,7 @@ pub enum ReserveType {
 ///     .set_limit(20).unwrap()
 ///     .set_order(Order::Desc).unwrap()
 ///     .add_native_reserve()
-///     .add_alphanumeric4_reserve("USD".to_string(), "GAXLYH...".to_string());
+///     .add_alphanumeric4_reserve("USD", "GAXLYH...");
 ///
 /// // The request can now be used with a Horizon client to fetch liquidity pools.
 /// ```
@@ -51,7 +32,7 @@ pub enum ReserveType {
 #[derive(Default)]
 pub struct AllLiquidityPoolsRequest {
     /// A list of reserves to filter by.
-    reserves: Option<Vec<ReserveType>>,
+    reserves: Option<Vec<AssetType>>,
 }
 
 impl AllLiquidityPoolsRequest {
@@ -68,8 +49,8 @@ impl AllLiquidityPoolsRequest {
     /// Adds a native reserve to the request.
     pub fn add_native_reserve(mut self) -> AllLiquidityPoolsRequest {
         match self.reserves {
-            Some(ref mut reserves) => reserves.push(ReserveType::Native),
-            None => self.reserves = Some(vec![ReserveType::Native]),
+            Some(ref mut reserves) => reserves.push(AssetType::Native),
+            None => self.reserves = Some(vec![AssetType::Native]),
         }
         self
     }
@@ -82,16 +63,18 @@ impl AllLiquidityPoolsRequest {
     ///
     pub fn add_alphanumeric4_reserve(
         mut self,
-        asset_code: String,
-        asset_issuer: String,
+        asset_code: impl Into<String>,
+        asset_issuer: impl Into<String>,
     ) -> AllLiquidityPoolsRequest {
+        let asset_code = asset_code.into();
+        let asset_issuer = asset_issuer.into();
         match self.reserves {
-            Some(ref mut reserves) => reserves.push(ReserveType::Alphanumeric4(Reserve {
+            Some(ref mut reserves) => reserves.push(AssetType::Alphanumeric4(AssetData {
                 asset_code,
                 asset_issuer,
             })),
             None => {
-                self.reserves = Some(vec![ReserveType::Alphanumeric4(Reserve {
+                self.reserves = Some(vec![AssetType::Alphanumeric4(AssetData{
                     asset_code,
                     asset_issuer,
                 })])
@@ -108,16 +91,18 @@ impl AllLiquidityPoolsRequest {
     ///
     pub fn add_alphanumeric12_reserve(
         mut self,
-        asset_code: String,
-        asset_issuer: String,
+        asset_code: impl Into<String>,
+        asset_issuer: impl Into<String>,
     ) -> AllLiquidityPoolsRequest {
+        let asset_code = asset_code.into();
+        let asset_issuer = asset_issuer.into();
         match self.reserves {
-            Some(ref mut reserves) => reserves.push(ReserveType::Alphanumeric12(Reserve {
+            Some(ref mut reserves) => reserves.push(AssetType::Alphanumeric12(AssetData {
                 asset_code,
                 asset_issuer,
             })),
             None => {
-                self.reserves = Some(vec![ReserveType::Alphanumeric12(Reserve {
+                self.reserves = Some(vec![AssetType::Alphanumeric12(AssetData {
                     asset_code,
                     asset_issuer,
                 })])
@@ -139,9 +124,9 @@ impl Request for AllLiquidityPoolsRequest {
                     .fold(Vec::new(), |mut acc, (i, reserve)| {
                         let separator = if i == 0 { "reserves=" } else { "%2C" };
                         match reserve {
-                            ReserveType::Native => acc.push(format!("{}native", separator)),
-                            ReserveType::Alphanumeric4(reserve)
-                            | ReserveType::Alphanumeric12(reserve) => {
+                            AssetType::Native => acc.push(format!("{}native", separator)),
+                            AssetType::Alphanumeric4(reserve)
+                            | AssetType::Alphanumeric12(reserve) => {
                                 acc.push(format!(
                                     "{}{}%3A{}",
                                     separator, reserve.asset_code, reserve.asset_issuer
@@ -207,7 +192,7 @@ mod tests {
     #[test]
     fn test_add_native_reserve() {
         let request = AllLiquidityPoolsRequest::new().add_native_reserve();
-        assert_eq!(request.reserves, Some(vec![ReserveType::Native]));
+        assert_eq!(request.reserves, Some(vec![AssetType::Native]));
     }
 
     #[test]
@@ -217,23 +202,23 @@ mod tests {
             .add_native_reserve();
         assert_eq!(
             request.reserves,
-            Some(vec![ReserveType::Native, ReserveType::Native])
+            Some(vec![AssetType::Native, AssetType::Native])
         );
     }
 
     #[test]
     fn test_add_alphanumeric4_reserve() {
         let mut request = AllLiquidityPoolsRequest::new();
-        request = request.add_alphanumeric4_reserve("USD".to_string(), "issuer".to_string());
+        request = request.add_alphanumeric4_reserve("USD", "issuer");
 
         if let Some(reserves) = request.reserves {
             assert_eq!(reserves.len(), 1);
             match &reserves[0] {
-                ReserveType::Alphanumeric4(reserve) => {
+                AssetType::Alphanumeric4(reserve) => {
                     assert_eq!(reserve.asset_code, "USD");
                     assert_eq!(reserve.asset_issuer, "issuer");
                 }
-                _ => panic!("Reserve type is not Alphanumeric4"),
+                _ => panic!("AssetData type is not Alphanumeric4"),
             }
         } else {
             panic!("Reserves is None");
@@ -243,16 +228,16 @@ mod tests {
     #[test]
     fn test_add_alphanumeric12_reserve() {
         let mut request = AllLiquidityPoolsRequest::new();
-        request = request.add_alphanumeric12_reserve("LONGASSET".to_string(), "issuer".to_string());
+        request = request.add_alphanumeric12_reserve("LONGASSET", "issuer");
 
         if let Some(reserves) = request.reserves {
             assert_eq!(reserves.len(), 1);
             match &reserves[0] {
-                ReserveType::Alphanumeric12(reserve) => {
+                AssetType::Alphanumeric12(reserve) => {
                     assert_eq!(reserve.asset_code, "LONGASSET");
                     assert_eq!(reserve.asset_issuer, "issuer");
                 }
-                _ => panic!("Reserve type is not Alphanumeric12"),
+                _ => panic!("AssetData type is not Alphanumeric12"),
             }
         } else {
             panic!("Reserves is None");
@@ -262,7 +247,7 @@ mod tests {
     #[test]
     fn test_get_query_parameters() {
         let mut request = AllLiquidityPoolsRequest::new();
-        request = request.add_alphanumeric4_reserve("USD".to_string(), "issuer".to_string());
+        request = request.add_alphanumeric4_reserve("USD", "issuer");
         let query_parameters = request.get_query_parameters();
 
         assert_eq!(query_parameters, "?reserves=USD%3Aissuer");

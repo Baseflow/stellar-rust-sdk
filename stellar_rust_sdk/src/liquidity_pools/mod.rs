@@ -118,8 +118,8 @@ async fn test_get_all_liquidity_pools() {
     let all_liquidity_pools_request_1 = AllLiquidityPoolsRequest::new()
         .add_native_reserve()
         .add_alphanumeric4_reserve(
-            "USDC".to_string(),
-            "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5".to_string(),
+            "USDC",
+            "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5",
         )
         .set_limit(2)
         .unwrap();
@@ -168,8 +168,8 @@ async fn test_get_all_liquidity_pools() {
     let all_liquidity_pools_request_2 = AllLiquidityPoolsRequest::new()
         .add_native_reserve()
         .add_alphanumeric12_reserve(
-            "FLUTTER".to_string(),
-            "GCGTOQSNERFVVJ6Y7YZYDF3MTZIY63KIEFMKA26Q7YPV3AFYD2JSRNYN".to_string(),
+            "FLUTTER",
+            "GCGTOQSNERFVVJ6Y7YZYDF3MTZIY63KIEFMKA26Q7YPV3AFYD2JSRNYN",
         )
         .set_limit(2)
         .unwrap();
@@ -223,8 +223,8 @@ async fn test_get_all_liquidity_pools() {
 
     let all_liquidity_pools_request_3 = AllLiquidityPoolsRequest::new()
         .add_alphanumeric4_reserve(
-            "SDK".to_string(),
-            "GAGTRBIF75N7NUA37JGGJZKXIS4JJKTQERRFWTP5DN4SM4OC2T6QPMQB".to_string(),
+            "SDK",
+            "GAGTRBIF75N7NUA37JGGJZKXIS4JJKTQERRFWTP5DN4SM4OC2T6QPMQB",
         )
         .set_limit(2)
         .unwrap();
@@ -301,9 +301,7 @@ async fn test_get_single_liquidity_pool() {
     let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
     let single_liquidity_pool_request = SingleLiquidityPoolRequest::new()
-        .set_liquidity_pool_id(
-            "03eac63a834b31201652ed575c816b4e7beb0c4eece47caf956ff83648f486d0"
-        )
+        .set_liquidity_pool_id("03eac63a834b31201652ed575c816b4e7beb0c4eece47caf956ff83648f486d0")
         .unwrap();
 
     let single_liquidity_pool_response = horizon_client
