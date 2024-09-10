@@ -940,7 +940,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = SingleOfferRequest::new()
-    ///     .set_offer_id("1".to_string()) // example offer ID
+    ///     .set_offer_id("1") // example offer ID
     ///     .unwrap();
     ///
     /// let response = horizon_client.get_single_offer(&request).await;
@@ -1608,7 +1608,7 @@ impl HorizonClient {
     /// # let horizon_client = HorizonClient::new(base_url)
     /// #    .expect("Failed to create Horizon Client");
     /// let request = TradesForOfferRequest::new()
-    ///    .set_offer_id("42".to_string())
+    ///    .set_offer_id("42")
     ///    .unwrap();
     ///
     /// let response = horizon_client.get_trades_for_offer(&request).await;

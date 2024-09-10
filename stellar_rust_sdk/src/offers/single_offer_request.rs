@@ -29,7 +29,7 @@ pub struct NoOfferId;
 /// # use stellar_rs::offers::prelude::SingleOfferRequest;
 /// # use stellar_rs::models::Request;
 /// let request = SingleOfferRequest::new()
-///     .set_offer_id("1".to_string()); // example offer ID
+///     .set_offer_id("1"); // example offer ID
 ///
 /// // Use with HorizonClient::get_single_offer
 /// ```
@@ -54,7 +54,8 @@ impl SingleOfferRequest<NoOfferId> {
     /// # Returns
     /// A `SingleOfferRequest` with the specified offer ID, or an error if the offer ID is invalid.
     ///
-    pub fn set_offer_id(self, offer_id: String) -> Result<SingleOfferRequest<OfferId>, String> {
+    pub fn set_offer_id(self, offer_id: impl Into<String>) -> Result<SingleOfferRequest<OfferId>, String> {
+        let offer_id = offer_id.into();
         match offer_id.parse::<u32>() {
             Ok(id) => {
                 if id > 0 {

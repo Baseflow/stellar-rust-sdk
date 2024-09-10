@@ -419,7 +419,7 @@ pub mod test {
         const PRICE_D: &str = "10";
 
         let trades_for_offer_request = TradesForOfferRequest::new()
-            .set_offer_id(OFFER_ID.to_string())
+            .set_offer_id(OFFER_ID)
             .unwrap();
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
         let trades_for_liquidity_pools_response = horizon_client

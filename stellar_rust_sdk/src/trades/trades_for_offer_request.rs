@@ -32,10 +32,10 @@ impl TradesForOfferRequest<TradeOfferId> {
     ///
     pub fn set_offer_id(
         self,
-        offer_id: String,
+        offer_id: impl Into<String>,
     ) -> Result<TradesForOfferRequest<TradeOfferId>, String> {
         Ok(TradesForOfferRequest {
-            offer_id: TradeOfferId(offer_id),
+            offer_id: TradeOfferId(offer_id.into()),
             cursor: self.cursor,
             limit: self.limit,
             order: self.order,

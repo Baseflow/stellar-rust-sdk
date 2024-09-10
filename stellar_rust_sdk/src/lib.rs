@@ -410,7 +410,7 @@ pub mod liquidity_pools;
 ///
 /// // Example: Fetching all effects
 /// let single_offer_request = SingleOfferRequest::new()
-///     .set_offer_id("1".to_string())
+///     .set_offer_id("1")
 ///     .unwrap();
 /// let single_offer_response = horizon_client.get_single_offer(&single_offer_request).await?;
 ///
