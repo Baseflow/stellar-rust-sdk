@@ -54,7 +54,10 @@ impl SingleOfferRequest<NoOfferId> {
     /// # Returns
     /// A `SingleOfferRequest` with the specified offer ID, or an error if the offer ID is invalid.
     ///
-    pub fn set_offer_id(self, offer_id: impl Into<String>) -> Result<SingleOfferRequest<OfferId>, String> {
+    pub fn set_offer_id(
+        self,
+        offer_id: impl Into<String>,
+    ) -> Result<SingleOfferRequest<OfferId>, String> {
         let offer_id = offer_id.into();
         match offer_id.parse::<u32>() {
             Ok(id) => {

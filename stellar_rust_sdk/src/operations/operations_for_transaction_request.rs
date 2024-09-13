@@ -22,7 +22,10 @@ impl OperationsForTransactionRequest {
     /// # Arguments
     /// * `transaction_hash` - A `String` representing the transaction hash.
     ///
-    pub fn set_transaction_hash(self, transaction_hash: impl Into<String>) -> OperationsForTransactionRequest {
+    pub fn set_transaction_hash(
+        self,
+        transaction_hash: impl Into<String>,
+    ) -> OperationsForTransactionRequest {
         OperationsForTransactionRequest {
             transaction_hash: Some(transaction_hash.into()),
             ..self

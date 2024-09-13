@@ -45,7 +45,10 @@ impl SingleOperationRequest<NoOperationId> {
     /// # Arguments
     /// * `operation_id` - A `String` specifying the operation ID.
     ///
-    pub fn set_operation_id(self, operation_id: impl Into<String>) -> SingleOperationRequest<OperationId> {
+    pub fn set_operation_id(
+        self,
+        operation_id: impl Into<String>,
+    ) -> SingleOperationRequest<OperationId> {
         SingleOperationRequest {
             operation_id: OperationId(operation_id.into()),
         }

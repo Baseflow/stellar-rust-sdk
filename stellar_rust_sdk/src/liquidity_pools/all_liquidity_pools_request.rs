@@ -1,5 +1,8 @@
 use crate::{
-    models::{prelude::{AssetData, AssetType}, Order, Request},
+    models::{
+        prelude::{AssetData, AssetType},
+        Order, Request,
+    },
     BuildQueryParametersExt,
 };
 use stellar_rust_sdk_derive::pagination;
@@ -74,7 +77,7 @@ impl AllLiquidityPoolsRequest {
                 asset_issuer,
             })),
             None => {
-                self.reserves = Some(vec![AssetType::Alphanumeric4(AssetData{
+                self.reserves = Some(vec![AssetType::Alphanumeric4(AssetData {
                     asset_code,
                     asset_issuer,
                 })])

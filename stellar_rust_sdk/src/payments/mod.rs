@@ -108,9 +108,8 @@ pub mod test {
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
         let payments_for_account_request: PaymentsForAccountRequest =
-            PaymentsForAccountRequest::new().set_account_id(
-                "GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H",
-            );
+            PaymentsForAccountRequest::new()
+                .set_account_id("GBRPYHIL2CI3FNQ4BXLFMNDLFJUNPU2HY3ZMFSHONUCEOASW7QC7OX2H");
 
         let response: Result<PaymentsResponse, String> = horizon_client
             .get_payments_for_account(&payments_for_account_request)
@@ -190,7 +189,9 @@ pub mod test {
 
         let payments_for_transaction_request: PaymentsForTransactionRequest =
             PaymentsForTransactionRequest::new()
-                .set_transaction_hash("b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020")
+                .set_transaction_hash(
+                    "b9d0b2292c4e09e8eb22d036171491e87b8d2086bf8b265874c8d182cb9c9020",
+                )
                 .set_limit(1)
                 .unwrap();
 

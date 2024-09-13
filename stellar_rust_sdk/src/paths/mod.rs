@@ -1,4 +1,5 @@
 use crate::models::prelude::*;
+
 /// Provides the `FindPaymentPathsRequest`.
 ///
 /// # Usage
@@ -74,14 +75,6 @@ pub struct NoSourceAccount;
 /// Represents the source account for a payment path request.
 #[derive(Default, Clone, Debug)]
 pub struct SourceAccount(String);
-
-/// Represents structure of an asset used in the vector of optional assets.
-#[derive(Default, Clone, Debug)]
-pub enum IssuedOrNative {
-    #[default]
-    Native,
-    Issued(AssetData),
-}
 
 /// The `prelude` module of the `paths` module.
 ///

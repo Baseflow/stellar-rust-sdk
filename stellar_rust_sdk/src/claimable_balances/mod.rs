@@ -98,6 +98,7 @@ pub mod prelude {
 mod tests {
     use super::parse_epoch;
     use super::prelude::*;
+    use crate::models::prelude::*;
     use crate::horizon_client::HorizonClient;
     use chrono::DateTime;
     use chrono::{TimeZone, Utc};
@@ -184,20 +185,34 @@ mod tests {
         assert_eq!(predicate.is_valid(jan_first_2024), true);
         assert_eq!(predicate.is_valid(valid_date), true);
         let record = &binding.embedded().records()[0];
-
         assert_eq!(record.id(), ID);
-
         assert_eq!(record.asset(), ASSET);
-
         assert_eq!(record.amount(), AMOUNT);
-
         assert_eq!(record.sponsor(), SPONSOR);
-
         assert_eq!(record.last_modified_ledger(), LAST_MODIFIED_LEDGER);
-
         assert_eq!(record.last_modified_time().to_string(), LAST_MODIFIED_TIME);
-
         assert_eq!(record.flags().clawback_enabled(), CLAWBACK_ENABLED);
+
+        // Create request with parameters.
+        let all_claimable_balances_request =
+        AllClaimableBalancesRequest::new()
+            .set_sponsor("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7")
+            .unwrap()
+            .set_asset(IssuedOrNative::Issued(AssetData{
+                asset_code: "USDC".to_string(),
+                asset_issuer: "GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string(),
+            }))
+            .set_claimant("GDQJUTQYK2MQX2VGDR2FYWLIYAQIEGXTQVTFEMGH2BEWFG4BRUY4CKI7".to_string())
+            .unwrap()
+            .set_limit(4)
+            .unwrap();
+
+        let all_claimable_balances_response = horizon_client
+            .get_all_claimable_balances(&all_claimable_balances_request)
+            .await;
+
+        assert!(all_claimable_balances_response.is_ok()); // only test response status code
+
     }
 
     #[tokio::test]
@@ -218,8 +233,8 @@ mod tests {
         // Initialize horizon client
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
-        let single_claimable_balance_request = SingleClaimableBalanceRequest::new()
-            .set_claimable_balance_id(CLAIMABLE_BALANCE_ID);
+        let single_claimable_balance_request =
+            SingleClaimableBalanceRequest::new().set_claimable_balance_id(CLAIMABLE_BALANCE_ID);
 
         let single_claimable_balance_response = horizon_client
             .get_single_claimable_balance(&single_claimable_balance_request)
