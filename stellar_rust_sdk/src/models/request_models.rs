@@ -5,7 +5,16 @@ pub struct AssetData {
     pub asset_issuer: String,
 }
 
-/// Represents the asset type of an asset.
+/// Represents 1 of the asset types which can be specified in a request.
+#[derive(Default, Clone, Debug)]
+pub enum IssuedOrNative {
+    #[default]
+    Native,
+    Issued(AssetData),
+}
+
+/// Represents 1 of the asset types which can be specified in a request.
+/// This type has more specific options to choose from.
 #[derive(Default, Clone, PartialEq, Debug)]
 pub enum AssetType {
     /// A native asset_type type. It holds no value.
