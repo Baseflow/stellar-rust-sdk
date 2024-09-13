@@ -90,49 +90,49 @@ impl DetailsRequest<SellingAsset, NoBuyingAsset> {
 impl Request for DetailsRequest<SellingAsset, BuyingAsset> {
     fn get_query_parameters(&self) -> String {
         vec![&self.selling_asset.0, &self.buying_asset.0]
-        .iter()
-        .enumerate()
-        .fold(Vec::new(), |mut parameters, (i, asset)| {
-            let asset_type_prefix = if i == 0 {
-                "selling_asset_type="
-            }
-            // no `&` for `base_asset_type`, as the query begins with `?`
-            else {
-                "&buying_asset_type="
-            };
-            match asset {
-                AssetType::Native => parameters.push(format!("{}native", asset_type_prefix)),
-                AssetType::Alphanumeric4(asset_data)
-                | AssetType::Alphanumeric12(asset_data) => {
-                    let asset_type = match asset {
-                        AssetType::Alphanumeric4(_) => "credit_alphanum4",
-                        AssetType::Alphanumeric12(_) => "credit_alphanum12",
-                        _ => "", // should not be reached
-                    };
-                    let asset_issuer_prefix = if i == 0 {
-                        "&selling_asset_issuer="
-                    } else {
-                        "&buying_asset_issuer="
-                    };
-                    let asset_code_prefix = if i == 0 {
-                        "&selling_asset_code="
-                    } else {
-                        "&buying_asset_code="
-                    };
-                    parameters.push(format!(
-                        "{}{}{}{}{}{}",
-                        asset_type_prefix,
-                        asset_type,
-                        asset_code_prefix,
-                        asset_data.asset_code,
-                        asset_issuer_prefix,
-                        asset_data.asset_issuer
-                    ));
+            .iter()
+            .enumerate()
+            .fold(Vec::new(), |mut parameters, (i, asset)| {
+                let asset_type_prefix = if i == 0 {
+                    "selling_asset_type="
                 }
-            }
-            parameters
-        })
-        .join("")
+                // no `&` for `base_asset_type`, as the query begins with `?`
+                else {
+                    "&buying_asset_type="
+                };
+                match asset {
+                    AssetType::Native => parameters.push(format!("{}native", asset_type_prefix)),
+                    AssetType::Alphanumeric4(asset_data)
+                    | AssetType::Alphanumeric12(asset_data) => {
+                        let asset_type = match asset {
+                            AssetType::Alphanumeric4(_) => "credit_alphanum4",
+                            AssetType::Alphanumeric12(_) => "credit_alphanum12",
+                            _ => "", // should not be reached
+                        };
+                        let asset_issuer_prefix = if i == 0 {
+                            "&selling_asset_issuer="
+                        } else {
+                            "&buying_asset_issuer="
+                        };
+                        let asset_code_prefix = if i == 0 {
+                            "&selling_asset_code="
+                        } else {
+                            "&buying_asset_code="
+                        };
+                        parameters.push(format!(
+                            "{}{}{}{}{}{}",
+                            asset_type_prefix,
+                            asset_type,
+                            asset_code_prefix,
+                            asset_data.asset_code,
+                            asset_issuer_prefix,
+                            asset_data.asset_issuer
+                        ));
+                    }
+                }
+                parameters
+            })
+            .join("")
     }
 
     fn build_url(&self, base_url: &str) -> String {

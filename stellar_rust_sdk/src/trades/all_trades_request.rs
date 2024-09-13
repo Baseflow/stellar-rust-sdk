@@ -102,7 +102,9 @@ impl Request for AllTradesRequest {
                     "&counter_asset_type="
                 };
                 match asset {
-                    Some(TradeAsset(AssetType::Native)) => parameters.push(format!("{}native", asset_type_prefix)),
+                    Some(TradeAsset(AssetType::Native)) => {
+                        parameters.push(format!("{}native", asset_type_prefix))
+                    }
                     Some(TradeAsset(AssetType::Alphanumeric4(asset_data)))
                     | Some(TradeAsset(AssetType::Alphanumeric12(asset_data))) => {
                         let asset_type = match asset {
@@ -130,11 +132,11 @@ impl Request for AllTradesRequest {
                             asset_data.asset_issuer
                         ));
                     }
-                    None => {},
+                    None => {}
                 }
-            parameters
-        })
-        .join("");
+                parameters
+            })
+            .join("");
 
         vec![
             Some(asset_parameters),
@@ -144,7 +146,6 @@ impl Request for AllTradesRequest {
             self.order.as_ref().map(|o| format!("order={}", o)),
         ]
         .build_query_parameters()
-    
     }
 
     fn build_url(&self, base_url: &str) -> String {

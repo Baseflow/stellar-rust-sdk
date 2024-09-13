@@ -190,19 +190,19 @@ pub mod test {
         // To get valid results, make an empty 'all trades request' (for example, in the Stellar Laboratory),
         // and enter the results in the following request.
         let all_trades_request = AllTradesRequest::new()
-        .set_base_asset(AssetType::Alphanumeric4(AssetData{
-            asset_code: "XETH".to_string(),
-            asset_issuer: "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI".to_string(),
-            }
-        ))
-        .unwrap()
-        .set_counter_asset(AssetType::Alphanumeric4(AssetData{
-            asset_code: "XUSD".to_string(),
-            asset_issuer: "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI".to_string()
-            }
-        ))
-        .unwrap();
-        
+            .set_base_asset(AssetType::Alphanumeric4(AssetData {
+                asset_code: "XETH".to_string(),
+                asset_issuer: "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI"
+                    .to_string(),
+            }))
+            .unwrap()
+            .set_counter_asset(AssetType::Alphanumeric4(AssetData {
+                asset_code: "XUSD".to_string(),
+                asset_issuer: "GBZXN7PIRZGNMHGA7MUUUF4GWPY5AYPV6LY4UV2GL6VJGIQRXFDNMADI"
+                    .to_string(),
+            }))
+            .unwrap();
+
         let all_trades_response = horizon_client.get_all_trades(&all_trades_request).await;
         assert!(all_trades_response.clone().is_ok());
     }
@@ -439,9 +439,7 @@ pub mod test {
         const PRICE_N: &str = "3";
         const PRICE_D: &str = "10";
 
-        let trades_for_offer_request = TradesForOfferRequest::new()
-            .set_offer_id(OFFER_ID)
-            .unwrap();
+        let trades_for_offer_request = TradesForOfferRequest::new().set_offer_id(OFFER_ID).unwrap();
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
         let trades_for_liquidity_pools_response = horizon_client
             .get_trades_for_offer(&trades_for_offer_request)
