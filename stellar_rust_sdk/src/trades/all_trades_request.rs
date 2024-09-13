@@ -1,5 +1,4 @@
-use crate::models::prelude::AssetType;
-use crate::models::*;
+use crate::{models::prelude::*, models::*, BuildQueryParametersExt};
 use stellar_rust_sdk_derive::pagination;
 
 /// Represents the base and counter assets. Contains an enum of one of the possible asset types.
@@ -91,49 +90,67 @@ impl AllTradesRequest {
 
 impl Request for AllTradesRequest {
     fn get_query_parameters(&self) -> String {
-        let mut query: Vec<String> = Vec::new();
+        let asset_parameters = vec![&self.base_asset, &self.counter_asset]
+            .iter()
+            .enumerate()
+            .fold(Vec::new(), |mut parameters, (i, asset)| {
+                let asset_type_prefix = if i == 0 {
+                    "base_asset_type="
+                }
+                // no `&` for `base_asset_type`, as the query begins with `?`
+                else {
+                    "&counter_asset_type="
+                };
+                match asset {
+                    Some(TradeAsset(AssetType::Native)) => {
+                        parameters.push(format!("{}native", asset_type_prefix))
+                    }
+                    Some(TradeAsset(AssetType::Alphanumeric4(asset_data)))
+                    | Some(TradeAsset(AssetType::Alphanumeric12(asset_data))) => {
+                        let asset_type = match asset {
+                            Some(TradeAsset(AssetType::Alphanumeric4(_))) => "credit_alphanum4",
+                            Some(TradeAsset(AssetType::Alphanumeric12(_))) => "credit_alphanum12",
+                            _ => "", // should not be reached
+                        };
+                        let asset_issuer_prefix = if i == 0 {
+                            "&base_asset_issuer="
+                        } else {
+                            "&counter_asset_issuer="
+                        };
+                        let asset_code_prefix = if i == 0 {
+                            "&base_asset_code="
+                        } else {
+                            "&counter_asset_code="
+                        };
+                        parameters.push(format!(
+                            "{}{}{}{}{}{}",
+                            asset_type_prefix,
+                            asset_type,
+                            asset_code_prefix,
+                            asset_data.asset_code,
+                            asset_issuer_prefix,
+                            asset_data.asset_issuer
+                        ));
+                    }
+                    None => {}
+                }
+                parameters
+            })
+            .join("");
 
-        if let Some(base_asset) = &self.base_asset {
-            match &base_asset.0 {
-                AssetType::Native => {
-                    query.push(format!("base_asset_type=native"));
-                }
-                AssetType::Alphanumeric4(asset) => {
-                    query.push(format!("base_asset_type=credit_alphanum4"));
-                    query.push(format!("&base_asset_code={}", asset.asset_code));
-                    query.push(format!("&base_asset_issuer={}", asset.asset_issuer));
-                }
-                AssetType::Alphanumeric12(asset) => {
-                    query.push(format!("base_asset_type=credit_alphanum12"));
-                    query.push(format!("&base_asset_code={}", asset.asset_code));
-                    query.push(format!("&base_asset_issuer={}", asset.asset_issuer));
-                }
-            }
-        }
-
-        if let Some(counter_asset) = &self.counter_asset {
-            match &counter_asset.0 {
-                AssetType::Native => {
-                    query.push(format!("&counter_asset_type=native"));
-                }
-                AssetType::Alphanumeric4(asset) => {
-                    query.push(format!("&counter_asset_type=credit_alphanum4"));
-                    query.push(format!("&counter_asset_code={}", asset.asset_code));
-                    query.push(format!("&counter_asset_issuer={}", asset.asset_issuer));
-                }
-                AssetType::Alphanumeric12(asset) => {
-                    query.push(format!("&counter_asset_type=credit_alphanum12"));
-                    query.push(format!("&counter_asset_code={}", asset.asset_code));
-                    query.push(format!("&counter_asset_issuer={}", asset.asset_issuer));
-                }
-            }
-        }
-        query.join("")
+        vec![
+            Some(asset_parameters),
+            self.offer_id.as_ref().map(|o| format!("offer_id={}", o)),
+            self.cursor.as_ref().map(|c| format!("cursor={}", c)),
+            self.limit.as_ref().map(|l| format!("limit={}", l)),
+            self.order.as_ref().map(|o| format!("order={}", o)),
+        ]
+        .build_query_parameters()
     }
 
     fn build_url(&self, base_url: &str) -> String {
         format!(
-            "{}/{}?{}",
+            "{}/{}{}",
             base_url,
             super::TRADES_PATH,
             self.get_query_parameters()
