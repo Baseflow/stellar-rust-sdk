@@ -83,7 +83,10 @@ pub mod prelude {
 #[cfg(test)]
 pub mod test {
     use super::prelude::*;
-    use crate::{horizon_client::HorizonClient, models::*};
+    use crate::{horizon_client::HorizonClient,
+        models::*,
+        models::prelude::*
+    };
 
     #[tokio::test]
     async fn test_get_single_offer() {
@@ -208,6 +211,28 @@ pub mod test {
         assert_eq!(record.price_decimal(), PRICE);
         assert_eq!(record.last_modified_ledger(), LAST_MODIFIED_LEDGER);
         assert_eq!(record.last_modified_time(), LAST_MODIFIED_TIME);
+
+        // Create a request with parameters.
+        let all_offers_request = AllOffersRequest::new()
+            .set_sponsor("GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5")
+            .unwrap()
+            .set_seller("GBAKINTNEGR7PO6Z6XW2S5ITT5VARNW6DZ5K4OYSLFNEA2CSMUM2UEF4")
+            .unwrap()
+            .set_selling(IssuedOrNative::Issued(AssetData {
+                asset_code: "USDC".to_string(),
+                asset_issuer: "GBAKINTNEGR7PO6Z6XW2S5ITT5VARNW6DZ5K4OYSLFNEA2CSMUM2UEF4"
+                    .to_string(),
+            }))
+            .set_buying(IssuedOrNative::Native)
+            .set_cursor(123)
+            .unwrap()
+            .set_limit(100)
+            .unwrap()
+            .set_order(Order::Desc)
+            .unwrap();
+
+        let all_offers_response = horizon_client.get_all_offers(&all_offers_request).await;
+        assert!(all_offers_response.is_ok()); // only test response status code
     }
 
     #[tokio::test]
