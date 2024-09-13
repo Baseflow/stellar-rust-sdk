@@ -345,7 +345,7 @@ impl AccountsRequest<NoSponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidity
     ///
     pub fn set_sponsor_filter(
         self,
-        sponsor: impl Into<String>
+        sponsor: impl Into<String>,
     ) -> Result<
         AccountsRequest<SponsorFilter, NoSignerFilter, NoAssetFilter, NoLiquidityPoolFilter>,
         String,

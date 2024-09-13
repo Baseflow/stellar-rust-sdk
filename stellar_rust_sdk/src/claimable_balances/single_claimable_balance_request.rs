@@ -90,8 +90,7 @@ mod tests {
 
     #[test]
     fn test_single_claimable_balance_request() {
-        let request =
-            SingleClaimableBalanceRequest::new().set_claimable_balance_id("00000000");
+        let request = SingleClaimableBalanceRequest::new().set_claimable_balance_id("00000000");
 
         assert_eq!(request.get_query_parameters(), "00000000");
 

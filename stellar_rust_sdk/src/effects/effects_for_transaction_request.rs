@@ -46,7 +46,10 @@ impl EffectForTransactionRequest {
     /// # Arguments
     /// * `liquidity_pool_id` - A `String` value representing the liquidity pool id.
     ///
-    pub fn set_transaction_hash(self, transaction_hash: impl Into<String>) -> EffectForTransactionRequest {
+    pub fn set_transaction_hash(
+        self,
+        transaction_hash: impl Into<String>,
+    ) -> EffectForTransactionRequest {
         EffectForTransactionRequest {
             transaction_hash: Some(transaction_hash.into()),
             ..self

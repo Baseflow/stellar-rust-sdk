@@ -34,7 +34,7 @@ impl TransactionsForAccountRequest<NoTransactionsAccountId> {
     ///
     pub fn set_account_id(
         self,
-        account_id: impl Into<String>
+        account_id: impl Into<String>,
     ) -> Result<TransactionsForAccountRequest<TransactionsAccountId>, String> {
         Ok(TransactionsForAccountRequest {
             account_id: TransactionsAccountId(account_id.into()),

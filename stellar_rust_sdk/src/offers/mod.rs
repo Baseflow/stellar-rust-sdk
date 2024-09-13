@@ -109,9 +109,7 @@ pub mod test {
 
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
-        let single_offer_request = SingleOfferRequest::new()
-            .set_offer_id(OFFER_ID)
-            .unwrap();
+        let single_offer_request = SingleOfferRequest::new().set_offer_id(OFFER_ID).unwrap();
 
         let single_offer_response = horizon_client.get_single_offer(&single_offer_request).await;
 

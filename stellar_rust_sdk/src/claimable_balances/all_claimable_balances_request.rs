@@ -81,7 +81,10 @@ impl AllClaimableBalancesRequest {
     /// # Arguments
     /// * `sponsor` - A Stellar public key of the sponsor whose claimable balances are to be retrieved.
     ///
-    pub fn set_sponsor(self, sponsor: impl Into<String>) -> Result<AllClaimableBalancesRequest, String> {
+    pub fn set_sponsor(
+        self,
+        sponsor: impl Into<String>,
+    ) -> Result<AllClaimableBalancesRequest, String> {
         let sponsor = sponsor.into();
         if let Err(e) = is_public_key(&sponsor) {
             return Err(e.to_string());
@@ -110,7 +113,10 @@ impl AllClaimableBalancesRequest {
     /// # Arguments
     /// * `claimant` - A Stellar public key of the claimant whose claimable balances are to be retrieved.
     ///
-    pub fn set_claimant(self, claimant: impl Into<String>) -> Result<AllClaimableBalancesRequest, String> {
+    pub fn set_claimant(
+        self,
+        claimant: impl Into<String>,
+    ) -> Result<AllClaimableBalancesRequest, String> {
         let claimant = claimant.into();
         if let Err(e) = is_public_key(&claimant) {
             return Err(e.to_string());

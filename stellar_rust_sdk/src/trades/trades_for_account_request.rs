@@ -32,7 +32,7 @@ impl TradesForAccountRequest<NoTradeAccountId> {
     ///
     pub fn set_account_id(
         self,
-        account_id: impl Into<String>
+        account_id: impl Into<String>,
     ) -> Result<TradesForAccountRequest<TradeAccountId>, String> {
         let account_id = account_id.into();
         if let Err(e) = is_public_key(&account_id) {

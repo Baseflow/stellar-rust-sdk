@@ -24,7 +24,7 @@ impl OffersForAccountRequest<NoOfferAccountId> {
 
     pub fn set_account_id(
         self,
-        account_id: impl Into<String>
+        account_id: impl Into<String>,
     ) -> Result<OffersForAccountRequest<OfferAccountId>, String> {
         let account_id = account_id.into();
         if let Err(e) = is_public_key(&account_id) {

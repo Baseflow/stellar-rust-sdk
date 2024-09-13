@@ -195,8 +195,7 @@ pub mod tests {
 
         let horizon_client = HorizonClient::new("https://horizon-testnet.stellar.org").unwrap();
 
-        let single_operation_request =
-            SingleOperationRequest::new().set_operation_id(ID);
+        let single_operation_request = SingleOperationRequest::new().set_operation_id(ID);
 
         let all_operations_response: Result<Operation, String> = horizon_client
             .get_single_operation(&single_operation_request)
