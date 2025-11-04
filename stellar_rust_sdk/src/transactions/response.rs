@@ -137,7 +137,7 @@ pub struct TransactionResponse {
     /// A base64 encoded string of the raw `TransactionResult` XDR struct for this transaction.
     result_xdr: String,
     /// A base64 encoded string of the raw `TransactionMeta` XDR struct for this transaction
-    result_meta_xdr: String,
+    result_meta_xdr: Option<String>,
     /// A base64 encoded string of the raw `L`edgerEntryChanges` XDR struct produced by taking fees for this transaction.
     fee_meta_xdr: String,
     /// The optional memo attached to a transaction.
